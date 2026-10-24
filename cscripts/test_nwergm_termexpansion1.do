@@ -1,10 +1,19 @@
 cscript
 
+* The core package nwcommands is found through the environment variable NWCORE (path of the core checkout).
+local nwcore : env NWCORE
+if `"`nwcore'"' == "" {
+	di as error "set the environment variable NWCORE to the directory of the nwcommands (core) package"
+	exit 198
+}
+adopath ++ `"`nwcore'"'
+adopath ++ `"`c(pwd)'"'
+quietly do `"`nwcore'/unw_core.do"'
 do unw_ergm.do
 
 /*
 	Certifies term-expansion wave 1 (harmonisation unit 88,
-	docs/CERTIFICATION.md - phase D): absdist, nodematch(diff=TRUE),
+	the development notes - phase D): absdist, nodematch(diff=TRUE),
 	nodefactor, nodemix, gwdsp. Uses the same brute-force change-statistic
 	cross-check every existing term is certified with
 	(ErgmCertifyChangeStat: compares change()'s own returned value against

@@ -1,5 +1,14 @@
 cscript
 
+* The core package nwcommands is found through the environment variable NWCORE (path of the core checkout).
+local nwcore : env NWCORE
+if `"`nwcore'"' == "" {
+	di as error "set the environment variable NWCORE to the directory of the nwcommands (core) package"
+	exit 198
+}
+adopath ++ `"`nwcore'"'
+adopath ++ `"`c(pwd)'"'
+quietly do `"`nwcore'/unw_core.do"'
 do unw_ergm.do
 
 * Certifies the theta -> eta curved-decay map/gradient
@@ -227,7 +236,7 @@ di "=== project_eta_to_theta() satisfies the GLS stationarity condition under no
 * networks found the underlying MCMC chain can be driven into a
 * degenerate (0% acceptance) state even with the backtracking fix
 * above, a genuinely deeper outer-loop step-length problem not yet
-* solved (see docs/CERTIFICATION.md unit 138 and docs/ERGM_ROADMAP.md
+* solved (see the development notes unit 138 and the development notes
 * for the full account) - nwergm.ado deliberately does NOT expose
 * method(mcmle) for gwespfree() models as a result. This checks only
 * that the plumbing itself is mechanically correct and does not crash:

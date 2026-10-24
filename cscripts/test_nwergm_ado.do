@@ -1,6 +1,14 @@
 cscript
 
-do unw_core.do
+* The core package nwcommands is found through the environment variable NWCORE (path of the core checkout).
+local nwcore : env NWCORE
+if `"`nwcore'"' == "" {
+	di as error "set the environment variable NWCORE to the directory of the nwcommands (core) package"
+	exit 198
+}
+adopath ++ `"`nwcore'"'
+adopath ++ `"`c(pwd)'"'
+quietly do `"`nwcore'/unw_core.do"'
 do unw_ergm.do
 
 * Certifies nwergm.ado itself (the Stata-facing eclass command), on top
@@ -389,7 +397,7 @@ assert _N == 4
 assert mydata[1] == 1
 di "=== edgeless-network MPLE-crash REGRESSION VERIFIED ==="
 
-* --- spcache (docs/CERTIFICATION.md unit 132): the incremental
+* --- spcache (the development notes unit 132): the incremental
 * shared-partner cache is a pure performance optimization - enabling it
 * must never change a fit's numeric result. Reuses unet10/refnet10;
 * used to rely on edges+hamming forcing the Mata fallback path on its
@@ -504,9 +512,9 @@ assert _rc == 198
 * with error 198 - curved MCMLE now implemented via the Hummel/Hunter/
 * Handcock (2012) steplength, done directly in theta-space as of
 * harmonisation unit 180; see nwergm.ado's own gwespfree() gate comment
-* and docs/ERGM_ROADMAP.md for the full account). `curvedgwespnet' is
+* and the development notes for the full account). `curvedgwespnet' is
 * THIS package's own documented known-pathological network (see this
-* file's earlier gwespfree() MPLE block and docs/ERGM_ROADMAP.md's own
+* file's earlier gwespfree() MPLE block and the development notes' own
 * extensive account - R's own reference implementation independently
 * fails outright on it too, "did not mix at all"), so at the
 * deliberately tiny budget below either a real result (_rc==0) or this

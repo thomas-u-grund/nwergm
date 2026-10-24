@@ -1,10 +1,19 @@
 cscript
 
+* The core package nwcommands is found through the environment variable NWCORE (path of the core checkout).
+local nwcore : env NWCORE
+if `"`nwcore'"' == "" {
+	di as error "set the environment variable NWCORE to the directory of the nwcommands (core) package"
+	exit 198
+}
+adopath ++ `"`nwcore'"'
+adopath ++ `"`c(pwd)'"'
+quietly do `"`nwcore'/unw_core.do"'
 do unw_ergm.do
 
 /*
 	Certifies the native (C) MCMC backend (harmonisation unit 83,
-	docs/CERTIFICATION.md) against its own Mata reference implementation,
+	the development notes) against its own Mata reference implementation,
 	per this unit's own explicit "correctness before speed" and "full
 	MCMC cross-certification" requirements.
 

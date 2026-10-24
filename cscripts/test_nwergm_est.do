@@ -1,3 +1,14 @@
+* The core package nwcommands is found through the environment variable NWCORE (path of the core checkout).
+local nwcore : env NWCORE
+if `"`nwcore'"' == "" {
+	di as error "set the environment variable NWCORE to the directory of the nwcommands (core) package"
+	exit 198
+}
+adopath ++ `"`nwcore'"'
+adopath ++ `"`c(pwd)'"'
+quietly do `"`nwcore'/unw_core.do"'
+do unw_ergm.do
+
 * test_nwergm_est.do -- estimation methods: MPLE variants (Firth penalised, MPLE existence check, init()),
 * checked against R ergm (4.13 development version for the penalised fit; 4.12.0 errors there).
 * R scripts: dev/ergm_reference/ref_est_*.R

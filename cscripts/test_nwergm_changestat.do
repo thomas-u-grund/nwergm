@@ -1,5 +1,14 @@
 cscript
 
+* The core package nwcommands is found through the environment variable NWCORE (path of the core checkout).
+local nwcore : env NWCORE
+if `"`nwcore'"' == "" {
+	di as error "set the environment variable NWCORE to the directory of the nwcommands (core) package"
+	exit 198
+}
+adopath ++ `"`nwcore'"'
+adopath ++ `"`c(pwd)'"'
+quietly do `"`nwcore'/unw_core.do"'
 do unw_ergm.do
 
 * Certifies unw_ergm.do's change() implementations for all 8 v1 terms
@@ -7,7 +16,7 @@ do unw_ergm.do
 * statistic(before)), via the built-in ErgmCertifyChangeStat() helper -
 * the permanent certification methodology this package's own ERGM
 * engine relies on before any MCMC/estimation code is trusted to consume
-* a term's change() (see docs/ERGM_ARCHITECTURE.md's "Term API" section).
+* a term's change() (see the development notes' "Term API" section).
 * Run across several random directed/undirected small networks and two
 * full model specifications (all 6 undirected-compatible terms together;
 * all 5 directed-only-relevant terms together) so every term is checked

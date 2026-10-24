@@ -1,6 +1,14 @@
 cscript
 
-do unw_core.do
+* The core package nwcommands is found through the environment variable NWCORE (path of the core checkout).
+local nwcore : env NWCORE
+if `"`nwcore'"' == "" {
+	di as error "set the environment variable NWCORE to the directory of the nwcommands (core) package"
+	exit 198
+}
+adopath ++ `"`nwcore'"'
+adopath ++ `"`c(pwd)'"'
+quietly do `"`nwcore'/unw_core.do"'
 do unw_ergm.do
 
 * Certifies `nwergm simulate' (Part X's own example syntax:
@@ -203,7 +211,7 @@ qui nwergm simulate 12, edges nodematch(grp3) degree(2) theta(-2 1 .5) nsim(1) m
 qui _nwsyntax combosim, max(1)
 assert `nodes' == 12
 
-* --- spcache (docs/CERTIFICATION.md unit 132): wired through the
+* --- spcache (the development notes unit 132): wired through the
 * simulate path too (consistency with the estimation command, even
 * though its own cost-benefit is weaker there - see nwergm.ado's own
 * build-up comment). Two checks: (1) it runs without error on an

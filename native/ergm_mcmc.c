@@ -1,8 +1,16 @@
 /*
+ * Copyright (C) 2026 Thomas U. Grund
+ * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
+ * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
+ * Public License, version 3, as published by the Free Software Foundation. It is distributed in the hope
+ * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the file LICENSE for the full text.
+ */
+/*
 	ergm_mcmc.c -- native (C) Metropolis-Hastings MCMC kernel for nwergm's
-	ERGM sampler (harmonisation unit 83, docs/CERTIFICATION.md).
+	ERGM sampler (harmonisation unit 83, the development notes).
 
-	WHY THIS EXISTS: docs/ERGM_STATNET_STUDY.md documents (Part I, this
+	WHY THIS EXISTS: the development notes documents (Part I, this
 	project's own earlier clean-room architecture study) and a fresh
 	verification pass against Statnet's own current C source (August 2026,
 	statnet/ergm on GitHub - inst/include/ergm_edgetree.h,
@@ -23,7 +31,7 @@
 	execution of the SAME algorithm, not a smarter algorithm. This is
 	exactly the profile where moving to compiled code helps, and the
 	explicit trigger for relaxing this project's earlier Mata-first
-	default (see docs/ERGM_ROADMAP.md's "Native backend" section for the
+	default (see the development notes' "Native backend" section for the
 	full decision record).
 
 	SCOPE: originally exactly the four terms exercised by the R-vs-Stata
@@ -63,7 +71,7 @@
 	awareness at all - routing one to native would have silently
 	sampled the FULL one-mode dyad space); measured directly (not
 	assumed) at ~38.9x slower than R before this unit, ~1.9x after -
-	dev/ergm_benchmark_bipartite/, docs/CERTIFICATION.md unit 159. The
+	dev/ergm_benchmark_bipartite/, the development notes unit 159. The
 	eight new termcodes (60-67, TERMCODE_B1COV..TERMCODE_B2STAR) are
 	direct ports of unw_ergm.do's own bipartite change_*() functions
 	(units 156/157) - see change_term()'s own comment on these for why
@@ -77,7 +85,7 @@
 	comment for exactly what is still NOT covered (edgecov/hamming - need
 	an n x n matrix marshalled across the boundary, a genuinely different
 	wire-protocol shape from everything else here) and why - the one
-	remaining well-scoped, documented follow-on (docs/ERGM_ROADMAP.md's
+	remaining well-scoped, documented follow-on (the development notes'
 	own "Native backend" section), not attempted here to keep this wave's
 	own scope controlled. The two existing proposals (uniform,
 	TNT), directed and undirected graphs, are unchanged. Any model using
@@ -118,7 +126,7 @@
 	on-demand common_neighbors()-style traversal below is a direct,
 	correctness-preserving port of unw_ergm.do's own default (cache-
 	disabled) code path. A future degree-adaptive cache remains a
-	documented open item (docs/ERGM_ROADMAP.md), not implemented here to
+	documented open item (the development notes), not implemented here to
 	keep this unit's scope controlled per its own governing instructions.
 
 	RNG: a self-contained xorshift128+ generator (Vigna & Blackman 2014
@@ -513,7 +521,7 @@ static double gw_kernel(double d, double decay) {
 
 /* ===================================================================
    Curved-MPLE fit, entirely native (harmonisation unit 146,
-   docs/CERTIFICATION.md). Direct C ports of unw_ergm.do's own
+   the development notes). Direct C ports of unw_ergm.do's own
    ergm_log1mexp()/ergm_gwdecay_map()/ergm_gwdecay_gradient() - see
    those functions' own header comments in unw_ergm.do for the full
    derivation/R-cross-certification account; this is a line-for-line
@@ -2117,7 +2125,7 @@ static double change_term(graph_t *g, int termcode, double p1, double p2, double
    Proposals (mirrors ergm_propose_uniform()/ergm_propose_tnt() in
    unw_ergm.do exactly, including the TNT Hastings-ratio formulas -
    see that file's own header comments for the derivation and
-   docs/ERGM_STATNET_STUDY.md Appendix B section 6 for the fresh
+   the development notes Appendix B section 6 for the fresh
    verification against Statnet's own current MHproposals.c)
    =================================================================== */
 
@@ -2274,7 +2282,7 @@ static int propose_tnt_masked(graph_t *g, rng_t *rng, long *pi, long *pj, double
    Small string-token reader over the single args string Stata hands
    the plugin in argv[0] (empirically confirmed NOT pre-tokenized by
    Stata - see native/smoke/'s own probe and
-   docs/ERGM_ARCHITECTURE.md's native-backend section for this and
+   the development notes' native-backend section for this and
    other Stata Plugin Interface contract details confirmed by direct
    trial rather than assumed from general SPI documentation).
    =================================================================== */
@@ -2363,7 +2371,7 @@ static double curved_loglik_c(const double *X, const double *y, long ndyads, lon
    pseudolikelihood) and graceful boundary-stop (clamp decay to 1e-6
    and report converged=1 rather than propagate a degenerate estimate)
    the Mata reference already has certified, real-network evidence for
-   (docs/CERTIFICATION.md units 136-141) - see that function's own
+   (the development notes units 136-141) - see that function's own
    header comment for the full account of why each piece is there.
    `maxit'/`tol' match the ONLY values nwergm.ado's own call site ever
    actually passes (100, 1e-10) - hardcoded here rather than threaded
@@ -2670,7 +2678,7 @@ STDLL stata_call(int argc, char *argv[]) {
 	   behavior below); 1 = build the MPLE design matrix instead - one
 	   pass over every dyad, writing each slot's own change_toward_one()
 	   value plus the observed tie indicator, no MCMC at all (harmonisation
-	   unit 145, docs/CERTIFICATION.md - the same "build_mple_data()" role
+	   unit 145, the development notes - the same "build_mple_data()" role
 	   ErgmModel::build_mple_data() plays in unw_ergm.do, natively). Every
 	   OTHER field below is parsed identically in both modes (the parser
 	   itself never branches on mode) so the two modes cannot silently

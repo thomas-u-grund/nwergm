@@ -1,12 +1,21 @@
 cscript
 
+* The core package nwcommands is found through the environment variable NWCORE (path of the core checkout).
+local nwcore : env NWCORE
+if `"`nwcore'"' == "" {
+	di as error "set the environment variable NWCORE to the directory of the nwcommands (core) package"
+	exit 198
+}
+adopath ++ `"`nwcore'"'
+adopath ++ `"`c(pwd)'"'
+quietly do `"`nwcore'/unw_core.do"'
 do unw_ergm.do
 
 * Certifies ErgmGraph's live edge array (elist/edgepos - harmonisation
 * unit 80, Part XXV performance work), the incremental data structure
 * that replaced all_ties()'s own O(n+nties) neighbor-set reconstruction
 * with an O(nties) direct slice, and made TNT's own tie-pick O(1)
-* (measured 129x faster - see docs/CERTIFICATION.md's own unit 80 entry
+* (measured 129x faster - see the development notes' own unit 80 entry
 * and dev/ergm_benchmark.do). Since toggle() now maintains elist/edgepos
 * incrementally (amortized O(1) append via capacity doubling, O(1)
 * removal via swap-with-last), this is a genuinely new, previously-

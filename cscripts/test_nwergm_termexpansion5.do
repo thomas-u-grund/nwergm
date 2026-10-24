@@ -1,10 +1,19 @@
 cscript
 
+* The core package nwcommands is found through the environment variable NWCORE (path of the core checkout).
+local nwcore : env NWCORE
+if `"`nwcore'"' == "" {
+	di as error "set the environment variable NWCORE to the directory of the nwcommands (core) package"
+	exit 198
+}
+adopath ++ `"`nwcore'"'
+adopath ++ `"`c(pwd)'"'
+quietly do `"`nwcore'/unw_core.do"'
 do unw_ergm.do
 
 /*
 	Certifies term-expansion wave 5 (harmonisation unit 91 continuation,
-	docs/CERTIFICATION.md - phase D): the directed "outgoing two-path"
+	the development notes - phase D): the directed "outgoing two-path"
 	(OTP) shared-partner definition for gwesp/gwdsp/gwnsp/esp/dsp
 	(td.sptype == "OTP"), R ergm's own default `type=' for directed
 	shared-partner terms. Same brute-force ErgmCertifyChangeStat()

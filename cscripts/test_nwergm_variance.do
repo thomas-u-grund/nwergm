@@ -1,11 +1,20 @@
 cscript
 
+* The core package nwcommands is found through the environment variable NWCORE (path of the core checkout).
+local nwcore : env NWCORE
+if `"`nwcore'"' == "" {
+	di as error "set the environment variable NWCORE to the directory of the nwcommands (core) package"
+	exit 198
+}
+adopath ++ `"`nwcore'"'
+adopath ++ `"`c(pwd)'"'
+quietly do `"`nwcore'/unw_core.do"'
 do unw_ergm.do
 
 /*
 	Certifies the AR(p)/Yule-Walker long-run-variance estimator
 	(`ergm_ar_yw_infl()'/`ergm_spectral0_ar()', harmonisation unit 86,
-	docs/CERTIFICATION.md - phase B, "inferential parity") that replaced
+	the development notes - phase B, "inferential parity") that replaced
 	the plain lag-1 `(1+rho)/(1-rho)' correction as ErgmMCMLE()'s own
 	production variance-inflation method.
 

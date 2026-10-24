@@ -1,6 +1,14 @@
 cscript
 
-do unw_core.do
+* The core package nwcommands is found through the environment variable NWCORE (path of the core checkout).
+local nwcore : env NWCORE
+if `"`nwcore'"' == "" {
+	di as error "set the environment variable NWCORE to the directory of the nwcommands (core) package"
+	exit 198
+}
+adopath ++ `"`nwcore'"'
+adopath ++ `"`c(pwd)'"'
+quietly do `"`nwcore'/unw_core.do"'
 do unw_ergm.do
 
 * Certifies nwergm_estat.ado's `estat gof' (Part XX of the governing
@@ -13,7 +21,7 @@ do unw_ergm.do
 * wide" (r(111)) on a zero-tie network - a real, pre-existing bug in
 * nwtriads.ado itself, confirmed via an isolated repro independent of
 * nwergm entirely, and NOT fixed at the source since it is out of this
-* subsystem's scope - see docs/CERTIFICATION.md. `estat gof' defends
+* subsystem's scope - see the development notes. `estat gof' defends
 * against it with `capture' around every nwtriads/nwgeodesic call on a
 * simulated network, exactly the discipline this test certifies).
 

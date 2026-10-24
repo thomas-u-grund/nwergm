@@ -1,4 +1,12 @@
 /*
+ * Copyright (C) 2026 Thomas U. Grund
+ * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
+ * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
+ * Public License, version 3, as published by the Free Software Foundation. It is distributed in the hope
+ * that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the file LICENSE for the full text.
+ */
+/*
 	unw_ergm.do -- native ERGM estimation core for nwcommands (nwergm).
 
 	Compiled into the same lnwcommands.mlib as unw_core.do (see lib/build.do,
@@ -16,10 +24,10 @@
 	using the public Statnet `ergm` R package purely as a behavioural/
 	architectural reference and as a development-time certification target
 	(never a runtime dependency). No `ergm` source code, comment, or
-	identifier is copied here. See docs/ERGM_PROVENANCE.md for the full
-	licensing/attribution account and docs/ERGM_STATNET_STUDY.md for the
+	identifier is copied here. See the development notes for the full
+	licensing/attribution account and the development notes for the
 	architecture study this implementation is based on. See
-	docs/ERGM_ARCHITECTURE.md for the developer-facing design document
+	the development notes for the developer-facing design document
 	(term API, extension guide, deliberate simplifications relative to
 	Statnet's own, much larger implementation).
 
@@ -59,7 +67,7 @@ class ErgmGraph {
 					// with-last) so TNT's own tie-pick never has to
 					// rebuild the tie list from scratch - see
 					// ergm_propose_tnt()'s own header comment and
-					// docs/CERTIFICATION.md's harmonisation-unit-80
+					// the development notes' harmonisation-unit-80
 					// entry for the benchmarked payoff (this replaced
 					// an O(n+nties)-per-proposal cost measured at
 					// ~185x the uniform proposal's own cost).
@@ -88,7 +96,7 @@ class ErgmGraph {
 					// nwset's own row/label order with no
 					// reordering anywhere, so this field is a
 					// general, non-contiguous per-node label
-					// instead (see docs/ERGM_ROADMAP.md's own
+					// instead (see the development notes' own
 					// bipartite-terms planning note for the full
 					// reasoning).
 	real colvector mode1nodes	// cached node indices with mode==1, built
@@ -99,7 +107,7 @@ class ErgmGraph {
 					// `mode` itself.
 	real scalar has_dyadmask	// 0 (default) or 1 - set once via
 					// set_dyadmask() (constraints, first piece -
-					// docs/ERGM_ROADMAP.md's "Constraints beyond
+					// the development notes' "Constraints beyond
 					// v1's free binary dyad space" row), mirroring
 					// bipartite/sp_cache_enabled's own "opt-in flag,
 					// never touched by init() again" contract.
@@ -206,7 +214,7 @@ void ErgmGraph::init(real scalar n0, real scalar directed0){
 
 /*
 	Opt-in bipartite marking (harmonisation unit 155 - see
-	docs/ERGM_ROADMAP.md's own bipartite-terms plan), called once
+	the development notes' own bipartite-terms plan), called once
 	right after init(), mirroring enable_sp_cache()'s own contract.
 	Deliberately does NOT reorder nodes or touch `directed` - a
 	bipartite network is always undirected (nwergm.ado's own caller
@@ -242,7 +250,7 @@ void ErgmGraph::set_bipartite(real colvector modevec){
 
 /*
 	Opt-in dyad-eligibility mask (constraints, first piece -
-	docs/ERGM_ROADMAP.md's "Constraints beyond v1's free binary dyad
+	the development notes' "Constraints beyond v1's free binary dyad
 	space" row - R ergm's own `constraints=~fixallbut(free)`), called
 	once right after init()/set_bipartite(), mirroring their own
 	"opt-in flag, never touched again by init()" contract. `freemat' is
@@ -268,7 +276,7 @@ void ErgmGraph::set_bipartite(real colvector modevec){
 	forever.
 */
 /*
-	blockdiag(attr) (constraints, second piece - docs/ERGM_ROADMAP.md's
+	blockdiag(attr) (constraints, second piece - the development notes'
 	"Constraints beyond v1's free binary dyad space" row): R ergm's own
 	`constraints=~blockdiag(attr)` - "Only dyads (i,j) for which
 	attr(i)==attr(j) can have edges" (R ergm's own real Rd doc,
@@ -401,7 +409,7 @@ void ErgmGraph::toggle(real scalar i, real scalar j){
 		}
 		asarray_remove(*edgepos, (ci,cj))
 		nties = nties - 1
-		// freedyads() follow-on (masked TNT, docs/ERGM_ROADMAP.md's
+		// freedyads() follow-on (masked TNT, the development notes'
 		// "Constraints beyond v1's free binary dyad space" row): mirror
 		// the SAME O(1) swap-removal into freeelist/freeedgepos, but
 		// ONLY for a free dyad - gated on has_dyadmask (a single cheap
@@ -495,7 +503,7 @@ real scalar ErgmGraph::degree_total(real scalar i){
 	of the theoretical worst case (`nodes-2`/`nodes-1`) - see
 	ErgmCurvedMPLEFit()'s own header comment (below) for why the
 	registered basis width matters so much for curved-MPLE performance,
-	and docs/CERTIFICATION.md unit 145 for the real-network profiling
+	and the development notes unit 145 for the real-network profiling
 	that motivated this (a 418-node network's own true maximum
 	edgewise-shared-partner value was 10, not the 416 the unconditional
 	`nodes-2` bound registered).
@@ -711,7 +719,7 @@ real scalar ErgmGraph::common_neighbors(real scalar i, real scalar j){
 
 /*
 	Enables the incremental shared-partner cache (Part XXV performance
-	work, docs/CERTIFICATION.md harmonisation unit 82): builds
+	work, the development notes harmonisation unit 82): builds
 	`sp_counts' from scratch in O(sum_i deg_i^2) = O(m*davg) - for each
 	node i, every UNORDERED PAIR of i's own neighbors gains i as exactly
 	one shared partner. This specific "iterate pairs of one node's own
@@ -998,7 +1006,7 @@ real matrix ErgmGraph::to_dense(){
 	`nwset, mat(X)' fails with "X not found" in a bare, freshly-started
 	Stata session using only the compiled lnwcommands.mlib) - a genuine,
 	previously-undiscovered bug in `nwset.ado' itself, recorded in
-	docs/CERTIFICATION.md's own Pending list rather than fixed here (out
+	the development notes' own Pending list rather than fixed here (out
 	of this subsystem's scope; every OTHER `nwset, mat(...)' call in this
 	package's own existing tests happens to always pass a literal
 	expression, which is why this had never previously surfaced). This
@@ -1104,7 +1112,7 @@ real rowvector change_mutual(class ErgmGraph scalar G, real scalar i, real scala
 
 /*
 	Homophily on a single categorical node attribute (exact match,
-	v1 scope - see docs/ERGM_ARCHITECTURE.md for the diff=/levels
+	v1 scope - see the development notes for the diff=/levels
 	extension already anticipated by this same td.attr field). Counts
 	ties whose two endpoints share the same (already numeric-coded)
 	attribute value.
@@ -1178,7 +1186,7 @@ real rowvector change_nodeicov(class ErgmGraph scalar G, real scalar i, real sca
 
 /*
 	Dyadic covariate: sum over ties of covmat[i,j]. v1 takes a dense
-	n x n matrix (docs/ERGM_ROADMAP.md records sparse-input edgecov as
+	n x n matrix (the development notes records sparse-input edgecov as
 	a follow-on - the term interface itself does not care how
 	td.edgecovmat was populated).
 */
@@ -1253,7 +1261,7 @@ real rowvector change_hamming(class ErgmGraph scalar G, real scalar i, real scal
 }
 
 /* ===================================================================
-   Term-expansion wave 1 (harmonisation unit 88, docs/CERTIFICATION.md -
+   Term-expansion wave 1 (harmonisation unit 88, the development notes -
    phase D): absdist, nodematch(diff=TRUE), nodefactor, nodemix. All four
    are dyad-independent (their own change statistic depends only on the
    toggled dyad's own endpoints' covariate values, never on the rest of
@@ -1893,7 +1901,7 @@ real rowvector change_covw(class ErgmGraph scalar G, real scalar i, real scalar 
 
 /* ===================================================================
    Bipartite (two-mode) Stage 2 terms (harmonisation unit 156,
-   docs/ERGM_ROADMAP.md/docs/CERTIFICATION.md): the first bipartite-
+   the development notesthe development notes): the first bipartite-
    family terms beyond `edges' (Stage 1, unit 155). Definitions taken
    directly from R ergm 4.12.0's own current Rd docs (`b1cov`, `b2cov`,
    `b1factor`, `b2factor` - `tools::Rd_db("ergm")`), not guessed from the
@@ -2020,7 +2028,7 @@ real rowvector change_b2factor(class ErgmGraph scalar G, real scalar i, real sca
 }
 
 /* ===================================================================
-   Term-expansion wave 2 (harmonisation unit 90, docs/CERTIFICATION.md -
+   Term-expansion wave 2 (harmonisation unit 90, the development notes -
    phase D, continuation of unit 88): degree(d)/idegree(d)/odegree(d),
    concurrent, triangle, ctriple, gwnsp. Fresh verification against R
    ergm's own current source (R/InitErgmTerm.R, R/InitErgmTerm.dgw_sp.R)
@@ -2120,7 +2128,7 @@ real rowvector change_idegree(class ErgmGraph scalar G, real scalar i, real scal
 	convention of shipping it as a named term despite the overlap with
 	`degrange(2,.)' (not itself implemented - `concurrent' is the
 	single, by far most commonly used instance of that family, per the
-	prioritized survey in docs/ERGM_ROADMAP.md).
+	prioritized survey in the development notes).
 */
 real rowvector stat_concurrent(class ErgmGraph scalar G, class ErgmTermData scalar td){
 	real scalar i, tot
@@ -2225,7 +2233,7 @@ real rowvector change_gwnsp(class ErgmGraph scalar G, real scalar i, real scalar
 }
 
 /* ===================================================================
-   Term-expansion wave 3 (harmonisation unit 91, docs/CERTIFICATION.md -
+   Term-expansion wave 3 (harmonisation unit 91, the development notes -
    phase D, continuation of units 88/90): nodeifactor/nodeofactor
    (directed analogues of nodefactor - unit 90's own base-level-omission
    fix applies identically, done in nwergm.ado at construction time, not
@@ -2378,7 +2386,7 @@ real rowvector change_istar(class ErgmGraph scalar G, real scalar i, real scalar
 
 /* ===================================================================
    Bipartite (two-mode) Stage 3 terms (harmonisation unit 157,
-   docs/ERGM_ROADMAP.md/docs/CERTIFICATION.md): the dyad-DEPENDENT
+   the development notesthe development notes): the dyad-DEPENDENT
    bipartite family, mode-restricted analogues of the degree() and
    kstar() families just above (reusing their own already-certified
    `_ergm_level_index()'/`_ergm_degree_change()'/`_ergm_choose()'
@@ -3332,7 +3340,7 @@ real rowvector change_gwidegree(class ErgmGraph scalar G, real scalar i, real sc
    inspection, harmonisation unit 133) - see
    cscripts/test_nwergm_curved.do for the exact transcribed reference
    values. That inspection resolved a real ambiguity left open in
-   docs/ERGM_STATNET_STUDY.md's own earlier transcription (which was
+   the development notes' own earlier transcription (which was
    unsure whether ergm_GWDECAY's second free parameter is the decay
    alpha itself or log(alpha)): confirmed directly, by matching
    ergm_GWDECAY$map() against the closed-form GWESP weighted-sum
@@ -3448,7 +3456,7 @@ real matrix ergm_gwdecay_gradient(real scalar theta_w, real scalar alpha, real s
 	deemed sufficient at v1's own target scale); a real R-vs-Stata
 	benchmark subsequently showed GWESP-involving models 40-68x slower
 	than Statnet's own ergm() where GWESP-free models of similar or
-	larger size were only ~3x slower (docs/CERTIFICATION.md harmonisation
+	larger size were only ~3x slower (the development notes harmonisation
 	unit 81), pinning the gap specifically on this shared-partner
 	machinery - both functions below now call ErgmGraph::shared_partners()
 	instead, which is O(1) once a caller has enabled the incremental
@@ -4025,7 +4033,7 @@ real rowvector change_gwdsp_rtp(class ErgmGraph scalar G, real scalar i, real sc
 	various directed common-neighbor definitions, defaulting to `OTP`).
 	`nwergm` v1's own GWESP/GWDSP only implement the undirected UTP
 	definition (both are documented "undirected only" - no directed
-	common-neighbor machinery exists yet, see docs/ERGM_ROADMAP.md's own
+	common-neighbor machinery exists yet, see the development notes' own
 	still-open "Directed GWESP variants" item) - `esp()`/`dsp()` here are
 	scoped identically (undirected/UTP only), reusing the exact same
 	`ErgmGraph::shared_partners()` traversal GWESP/GWDSP already use and
@@ -4106,7 +4114,7 @@ real rowvector change_esp(class ErgmGraph scalar G, real scalar i, real scalar j
 	zero, from `gw_kernel()`'s own closed form). Caught by a direct
 	cross-check against the five old `stat_dsp_otp/itp/osp/isp/rtp()'
 	functions below before they were retired (a real bug, not a
-	hypothetical one - see docs/CERTIFICATION.md unit 151 for the full
+	hypothetical one - see the development notes unit 151 for the full
 	account), added back explicitly here rather than silently relying
 	on level 0 never being requested.
 */
@@ -4640,11 +4648,11 @@ real rowvector change_cyclicalties(class ErgmGraph scalar G, real scalar i, real
    EXTENSION DEMONSTRATION - NOT part of the real v1 term registry.
 
    istar2: the undirected 2-star count, sum_i C(deg(i),2). Built and
-   certified purely to PROVE that docs/ERGM_ARCHITECTURE.md's own "how to
+   certified purely to PROVE that the development notes' own "how to
    add a new term" walkthrough actually works end to end for a future
    implementer who is not this code's original author - it deliberately
    does NOT appear in nwergm.ado's option surface (2-star family terms
-   are, deliberately, a docs/ERGM_ROADMAP.md item rather than in v1
+   are, deliberately, a the development notes item rather than in v1
    scope), and existing only as a certified, working term is the entire
    point: see cscripts/test_nwergm_demoterm.do.
 
@@ -4740,7 +4748,7 @@ class ErgmModel {
 	real rowvector curved
 
 	// Fixed-coefficient (offset) support (harmonisation unit 183,
-	// docs/ERGM_ROADMAP.md's own "Offsets/fixed-coefficient terms" row) -
+	// the development notes' own "Offsets/fixed-coefficient terms" row) -
 	// PER COEFFICIENT/eta-column (length nparam(), same indexing as
 	// `coefnames' - NOT per term instance like `curved' above, since a
 	// single multi-column term instance, e.g. a 3-level `nodefactor()',
@@ -6904,7 +6912,7 @@ real scalar ErgmCertifyChangeStat(class ErgmModel scalar M, class ErgmGraph scal
 
 /* ===================================================================
    MPLE (maximum pseudolikelihood estimation; Hunter & Handcock 2006 -
-   see docs/ERGM_STATNET_STUDY.md Appendix A section 5). For every dyad
+   see the development notes Appendix A section 5). For every dyad
    (i,j), the change statistic "toward tie present" (NOT the raw
    change() value, which is signed by the dyad's CURRENT state - a tied
    dyad's own change() returns the REMOVAL effect, the negative of the
@@ -6916,7 +6924,7 @@ real scalar ErgmCertifyChangeStat(class ErgmModel scalar M, class ErgmGraph scal
    Stata's own logit rather than reimplementing IRLS) recovers the MPLE
    theta. This is exactly the MLE when every term is dyad-independent
    AND the sample space itself is unconstrained (the "MPLE_is_MLE"
-   shortcut Statnet itself also takes - see docs/ERGM_STATNET_STUDY.md
+   shortcut Statnet itself also takes - see the development notes
    section 1 step 5); it is the STARTING VALUE for MCMLE otherwise.
    =================================================================== */
 
@@ -6954,7 +6962,7 @@ real matrix ErgmModel::build_mple_data(class ErgmGraph scalar G){
 	p = nparam()
 	masked = G.has_dyadmask
 
-	// freedyads() (constraints, first piece - docs/ERGM_ROADMAP.md's
+	// freedyads() (constraints, first piece - the development notes'
 	// "Constraints beyond v1's free binary dyad space" row): a FIXED
 	// dyad's own likelihood contribution is a constant given theta under
 	// R ergm's own `constraints=~fixallbut(free)' (its tie state can
@@ -6973,7 +6981,7 @@ real matrix ErgmModel::build_mple_data(class ErgmGraph scalar G){
 	// solving to match, it just never appears as its own row in the
 	// per-dyad pseudolikelihood design matrix.
 
-	// harmonisation unit 155 (bipartite support, docs/ERGM_ROADMAP.md):
+	// harmonisation unit 155 (bipartite support, the development notes):
 	// a bipartite model's own valid dyad space is ONLY cross-mode pairs
 	// (mode1nodes x mode2nodes), never the full n(n-1)/2 undirected
 	// space - iterating the ordinary loop below would silently include
@@ -7051,7 +7059,7 @@ end
 mata:
 
 /* ===================================================================
-   Native (C) MCMC backend - harmonisation unit 83, docs/CERTIFICATION.md.
+   Native (C) MCMC backend - harmonisation unit 83, the development notes.
 
    See native/ergm_mcmc.c's own header comment for the full evidence
    trail (Statnet source study, Mata microbenchmarks) motivating this
@@ -7091,7 +7099,7 @@ mata:
    - Large, dyad-scale data (the edge list) crosses the boundary via
      Stata dataset variables (SF_vdata/st_store), never st_matrix() -
      the same package-wide rule this unit's own predecessor (unit 81)
-     established in docs/SPARSE_BACKEND.md. Small, model-scale data
+     established in the development notes. Small, model-scale data
      (theta, term codes/decays, the observed statistic) crosses via a
      single space-separated argument string.
    - A dedicated Stata FRAME (`__ergm_native`) holds the plugin's own
@@ -7113,7 +7121,7 @@ mata:
 
 /*
 	Platform-aware plugin location (harmonisation unit 87,
-	docs/CERTIFICATION.md - phase C, cross-platform native builds).
+	the development notes - phase C, cross-platform native builds).
 	Three different platforms' own compiled plugin binaries need to
 	coexist in the SAME repository/install tree simultaneously (built by
 	separate CI runners on separate operating systems - see
@@ -7126,7 +7134,7 @@ mata:
 	suffix too - see why below.
 
 	TWO genuinely different lookup strategies are needed (harmonisation
-	2026-09-02, docs/CERTIFICATION.md), tried in order:
+	2026-09-02, the development notes), tried in order:
 	 (1) `findfile()` on the platform-specific basename alone - this is
 	     what actually finds the plugin after a real `net install`,
 	     which flattens every package "f" line into
@@ -7338,7 +7346,7 @@ real matrix _ergm_mat_appendcol(real matrix A, real colvector v){
 	marshalled across the boundary - a genuinely different wire-protocol
 	shape (a dense matrix, not a per-node attribute array) from
 	everything else this function handles, deferred as the one
-	remaining scoped follow-on (docs/ERGM_ROADMAP.md's own "Native
+	remaining scoped follow-on (the development notes' own "Native
 	backend" section) rather than folded into this wave to keep it
 	controlled, exactly the same discipline the Mata term-expansion
 	waves used throughout.
@@ -8534,7 +8542,7 @@ real matrix ErgmNativeBuildMPLEData(class ErgmModel scalar M, class ErgmGraph sc
 	profiling showing the Newton-Raphson loop itself, not the (already-
 	native, already fast) design-matrix build, is the dominant
 	remaining cost once the per-count basis width is already small
-	(docs/CERTIFICATION.md unit 146). `ncurved' is derived directly from
+	(the development notes unit 146). `ncurved' is derived directly from
 	M's own structure (the LAST registered term instance's own `npar',
 	when `curved[nterms]' is set) rather than passed by the caller -
 	the same "registered last" invariant every other curved-MPLE code
@@ -8708,7 +8716,7 @@ real scalar ErgmNativeCurvedMPLEFit(class ErgmModel scalar M, class ErgmGraph sc
    its own selection asymmetry (0 for a symmetric proposal). Proposals
    know NOTHING about terms/change statistics, and terms know NOTHING
    about how a toggle was chosen - the same separation Statnet's own
-   MHProposal/ModelTerm split enforces (docs/ERGM_STATNET_STUDY.md
+   MHProposal/ModelTerm split enforces (the development notes
    Appendix B §6), confirmed as the right design rather than reinvented.
    Adding a future proposal (e.g. a degree-constrained or block-
    restricted one) means writing one such function; the sampler loop
@@ -8767,7 +8775,7 @@ real rowvector ergm_propose_uniform(class ErgmGraph scalar G){
 
 /*
 	Masked uniform-random-dyad proposal (constraints, first piece -
-	docs/ERGM_ROADMAP.md's "Constraints beyond v1's free binary dyad
+	the development notes' "Constraints beyond v1's free binary dyad
 	space" row - R ergm's own `constraints=~fixallbut(free)`): identical
 	to ergm_propose_uniform() above, restricted to dyads G.freedyadmat
 	marks eligible. Implemented as plain rejection sampling over the
@@ -8786,7 +8794,7 @@ real rowvector ergm_propose_uniform(class ErgmGraph scalar G){
 	expected path.
 
 	A masked TNT variant (ergm_propose_tnt_masked(), below) now also
-	exists (docs/ERGM_ROADMAP.md's "Constraints beyond v1's free binary
+	exists (the development notes' "Constraints beyond v1's free binary
 	dyad space" row) - nwergm.ado's own proposal() dispatch picks between
 	this function and that one purely on `freedyads()' presence, not
 	`proposal()' itself, so this remains the ONLY masked proposal when
@@ -8811,7 +8819,7 @@ real rowvector ergm_propose_uniform_masked(class ErgmGraph scalar G){
 
 /*
 	TNT ("tie/no-tie") proposal (Morris, Handcock & Hunter 2008 - see
-	docs/ERGM_STATNET_STUDY.md Appendix B §6 for the exact formulas this
+	the development notes Appendix B §6 for the exact formulas this
 	reproduces, re-derived from the published construction, independently
 	confirmed against the actual shipped Statnet constants during the
 	Part I study). With probability P=0.5, propose removing a uniformly
@@ -8829,7 +8837,7 @@ real rowvector ergm_propose_uniform_masked(class ErgmGraph scalar G){
 	incrementally by toggle() - see ErgmGraph's own field comments),
 	O(1) - originally this materialized the full tie list from scratch
 	on every single proposal via all_ties() (O(n+nties)), benchmarked at
-	~185x the uniform proposal's own per-step cost (docs/CERTIFICATION.md
+	~185x the uniform proposal's own per-step cost (the development notes
 	harmonisation unit 79); this is the O(1) live-edge-list fix that
 	unit's own follow-on roadmap item called for (unit 80), matching
 	Statnet's own C implementation's approach. The Q-branch below
@@ -8876,7 +8884,7 @@ real rowvector ergm_propose_tnt(class ErgmGraph scalar G){
 }
 
 /*
-	Masked TNT proposal (freedyads() follow-on - docs/ERGM_ROADMAP.md's
+	Masked TNT proposal (freedyads() follow-on - the development notes'
 	"Constraints beyond v1's free binary dyad space" row): the SAME
 	construction as ergm_propose_tnt() above, with every population count
 	restricted to the free-dyad subspace. TNT's own derivation (Morris,
@@ -9020,7 +9028,7 @@ real rowvector ergm_propose_swap(class ErgmGraph scalar G){
    one row per post-interval draw, starting the running total from G's
    own CURRENT statistic() (not from zero) so the returned rows are
    statistic LEVELS, not deviations - matching Statnet's own convention
-   (docs/ERGM_STATNET_STUDY.md Appendix B §5) and letting a caller
+   (the development notes Appendix B §5) and letting a caller
    compare them directly against the observed network's own statistic.
 */
 
@@ -9334,7 +9342,7 @@ mata:
 
 /* ===================================================================
    MCMLE (Monte Carlo maximum likelihood; Geyer & Thompson 1992,
-   Hummel/Hunter/Handcock 2012 - see docs/ERGM_STATNET_STUDY.md
+   Hummel/Hunter/Handcock 2012 - see the development notes
    Appendix A §6 for the full algorithm this is a deliberately
    simplified version of). Outer loop: simulate at the current theta,
    take a Newton step on the "naive" (non-lognormal) importance-
@@ -9343,12 +9351,12 @@ mata:
    network's own statistic - the target is exactly Dbar=0), continuing
    sequentially (MCMLE.sequential=TRUE, Statnet's own default: the
    network carries over between iterations rather than restarting from
-   the observed network every time - docs/ERGM_STATNET_STUDY.md
+   the observed network every time - the development notes
    Appendix A §9).
 
    Step length: rather than Hummel's own convex-hull linear program
    (no general LP solver is available in Mata - see
-   docs/ERGM_STATNET_STUDY.md Appendix A §6a's own explicit
+   the development notes Appendix A §6a's own explicit
    recommendation), v1 uses a trust-region-style cap on the Newton
    step's own Mahalanobis norm (in the metric of the simulated sample's
    covariance) - a simpler, well-understood damping device serving the
@@ -9381,7 +9389,7 @@ mata:
    Bread^-1', with a lag-1-autocorrelation inflation factor
    `(1+rho)/(1-rho)' applied per statistic dimension before inverting -
    a basic, disclosed stand-in for Statnet's own spectral/HAC long-run-
-   variance correction (docs/ERGM_STATNET_STUDY.md Appendix A §7's own
+   variance correction (the development notes Appendix A §7's own
    explicit finding that skipping this correction entirely would give
    systematically too-small standard errors). A batch-means alternative
    (robust to any autocorrelation shape, not assuming pure AR(1)
@@ -9475,7 +9483,7 @@ real rowvector ergm_lag1_autocorr(real matrix samp){
 
 /*
 	AR(p)/Yule-Walker long-run-variance inflation factor (harmonisation
-	unit 86, docs/CERTIFICATION.md - phase B, "inferential parity")
+	unit 86, the development notes - phase B, "inferential parity")
 	replacing `ergm_lag1_autocorr()'-based `(1+rho)/(1-rho)' as the
 	production variance correction. Motivation, verified directly rather
 	than assumed: Statnet's own current R/mcmc_se.R (fresh GitHub check)
@@ -9514,7 +9522,7 @@ real rowvector ergm_lag1_autocorr(real matrix samp){
 	approximation is a deliberate, disclosed simplification, matching
 	this file's own established practice of disclosing where it departs
 	from Statnet's own, larger implementation - see
-	docs/ERGM_ARCHITECTURE.md). Off-diagonal covariances are left
+	the development notes). Off-diagonal covariances are left
 	untouched (only each dimension's own diagonal variance is inflated),
 	exactly mirroring how `ergm_lag1_autocorr()' was already used.
 */
@@ -9537,7 +9545,7 @@ real scalar ergm_ar_yw_infl(real colvector x, real scalar pmax){
 	sumphi = 0
 
 	// Durbin-Levinson recursion (harmonisation unit 181,
-	// docs/ERGM_ROADMAP.md's own unit-180 follow-up account) - matches
+	// the development notes' own unit-180 follow-up account) - matches
 	// what R's own `ar(x, method="yule-walker")' (the function
 	// `coda::spectrum0.ar()' - and therefore Statnet's own
 	// `spectrum0.mvar()' this file's own header comment already cites -
@@ -9691,7 +9699,7 @@ real scalar ergm_spec0_scalar(real colvector xcentered){
 
 // Hummel/Hunter/Handcock (2012) MCMLE steplength - replaces the ad hoc
 // Mahalanobis-2-capped Newton step both branches of ErgmMCMLE() used
-// previously (harmonisation units 138/152/159 - see docs/ERGM_ROADMAP.md's
+// previously (harmonisation units 138/152/159 - see the development notes'
 // own "Curved parameters" row for the full account of why that damping
 // scheme failed even after several rounds of tuning: it caps the SIZE of
 // the theta/eta-space step but never checks whether the resulting target
@@ -9711,7 +9719,7 @@ real scalar ergm_spec0_scalar(real colvector xcentered){
 // it. Both independently certified against R's own installed `ergm'
 // 4.12.0 (`ergm:::shrink_into_CH'/`ergm:::.Hummel.steplength', called
 // directly via Rscript on identical generated data) to <1e-7 relative
-// difference across n=20-3000, k=2-6 - see docs/CERTIFICATION.md's own
+// difference across n=20-3000, k=2-6 - see the development notes' own
 // entry for this unit.
 //
 // The geometry: R poses this as the DUAL LP (minimize c'y subject to
@@ -10561,7 +10569,7 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 	// ErgmModel::project_eta_to_theta() (unit 135) before using it for
 	// the next MCMC sample - Hunter's own two-stage "Newton step in
 	// eta-space, then project to theta" design
-	// (docs/ERGM_STATNET_STUDY.md's own study already anticipated
+	// (the development notes' own study already anticipated
 	// this exact shape). `theta_c' is the running theta-space
 	// iterate (unused, left empty, for an ordinary model); `theta_c0'
 	// is the caller-supplied starting point (the curved MPLE fit's own
@@ -10584,7 +10592,7 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 	// console output: "Converged with 99% confidence").
 	confidence = ctl[2]
 
-	// ADAPTIVE INTERVAL (harmonisation unit 85, docs/CERTIFICATION.md) -
+	// ADAPTIVE INTERVAL (harmonisation unit 85, the development notes) -
 	// closes the open question unit 84 surfaced rather than resolved:
 	// that unit's own effective-sample-size fix can correctly report
 	// "converged" from a genuinely tiny neff (35.7 out of 3000 raw draws
@@ -10609,7 +10617,7 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 	// backend (unit 83), which simply receives whatever `interval' this
 	// loop passes it each call.
 	// `freeidx' (harmonisation unit 183, fixed-coefficient/offset()
-	// support, docs/ERGM_ROADMAP.md's own "Offsets/fixed-coefficient
+	// support, the development notes' own "Offsets/fixed-coefficient
 	// terms" row): the eta-space columns actually being ESTIMATED -
 	// `1..p' unchanged whenever no coefficient is fixed (`M.isfixed'
 	// all zero, the ordinary case), a strict subset otherwise. v1 scope
@@ -10662,13 +10670,13 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 		D = samp :- obs
 
 		// THETA-SPACE Newton step for curved models (harmonisation unit
-		// 180, docs/ERGM_ROADMAP.md's own scoped-investigation entry) -
+		// 180, the development notes' own scoped-investigation entry) -
 		// replaces the previous eta-space-Newton-then-project-onto-the-
 		// manifold design (units 138/152/159/162) entirely, after
 		// tracing R's own `ergm.MCMLE()' source and finding the actual
 		// reason nwergm's own curved fits kept drifting to an extreme
 		// decay while R stayed put on the SAME network/starting point
-		// (docs/ERGM_ROADMAP.md's own unit-177/178/179 benchmark
+		// (the development notes' own unit-177/178/179 benchmark
 		// entries): R's Newton step, Hummel steplength check, AND
 		// convergence test are ALL computed on `ergm.estfun()''s own
 		// output, which for a curved model is `-stats %*% etagradmult'
@@ -10726,7 +10734,7 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 		}
 
 		// Non-identifiability/collinearity check (harmonisation unit 179,
-		// docs/ERGM_ROADMAP.md's own scoped item #2 for this) - ported
+		// the development notes' own scoped item #2 for this) - ported
 		// from R's `check_nonidentifiability()'/`ergm_lindep()', run at
 		// the SAME point in the loop R runs it (right after drawing the
 		// sample, before the Newton step) and on the SAME quantity R
@@ -10791,7 +10799,7 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 		// iteration) AND, independently, a plain (non-curved) `gwesp()'
 		// fit on a real directed network (edges coefficient exploding
 		// to ~900, vcov collapsing entirely to missing - see
-		// docs/ERGM_ROADMAP.md and nwergm.ado's own post-fit
+		// the development notes and nwergm.ado's own post-fit
 		// degeneracy guards on both branches). `missing()'
 		// (gamma_hummel==.) signals either "target already at the
 		// sample mean" (no damping needed - handled naturally below,
@@ -10875,7 +10883,7 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 		coefhist = coefhist \ theta
 
 		// Importance-sampling reweighting toward the point the Newton
-		// step just proposed (harmonisation unit 178, docs/ERGM_ROADMAP.md's
+		// step just proposed (harmonisation unit 178, the development notes'
 		// own scoped item for this - ported from R's `ergm.MCMLE()' own
 		// `IS.lw()'/`lw2w()'): `samp'/`D' were drawn at `theta_old', not
 		// at the NEW `theta' this iteration just moved to, so testing
@@ -10883,7 +10891,7 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 		// answers "was the OLD point already adequate?" rather than the
 		// actually useful question, "does the sample support the point
 		// I am ABOUT TO report?" - confirmed directly relevant to the
-		// observed curved-MCMLE drift (docs/ERGM_ROADMAP.md's own
+		// observed curved-MCMLE drift (the development notes' own
 		// R-vs-nwergm benchmark entry): a step can look locally fine
 		// against the stale sample while the reweighted-to-new-theta
 		// picture would already show trouble. Per-draw
@@ -10945,11 +10953,11 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 		// cause of this estimator needing far more MCMLE iterations than
 		// Statnet's own joint "confidence" test on the same data
 		// (confirmed empirically: 10-20 iterations here vs. Statnet's
-		// own 1, on the same network/model - see docs/CERTIFICATION.md's
+		// own 1, on the same network/model - see the development notes'
 		// harmonisation-unit-80 entry).
 		//
 		// EFFECTIVE-SAMPLE-SIZE CORRECTION (harmonisation unit 84,
-		// docs/CERTIFICATION.md): the T^2 -> F transformation above is
+		// the development notes): the T^2 -> F transformation above is
 		// exact only for i.i.d. draws - `samp' is a THINNED MCMC chain
 		// (thinned by `interval', not fully decorrelated), and treating
 		// it as i.i.d. of size `samplesize' badly UNDERSTATES the true
@@ -11067,7 +11075,7 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 		// the single worst possible outcome this project's own "never
 		// silently report a wrong answer" convention exists to prevent.
 		// Convergence via a SECOND, independent path for curved models
-		// (harmonisation unit 182, docs/ERGM_ROADMAP.md's own unit-181
+		// (harmonisation unit 182, the development notes' own unit-181
 		// follow-up account) - direct THETA-SPACE STABILITY, not just
 		// the statistical test above. Two real problems were found and
 		// fixed in sequence building this: (1) gating on the post-clamp
@@ -11253,7 +11261,7 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 	// mutual=2.1778 (9% low / 0.3% off - essentially exact on the harder
 	// term) - a measurable improvement on the one case with an exact
 	// external ground truth, not merely a theoretical upgrade. See
-	// docs/CERTIFICATION.md unit 86 for the full account, including why
+	// the development notes unit 86 for the full account, including why
 	// this is a per-dimension approximation to Statnet's own genuinely
 	// multivariate spectrum0.mvar() rather than a full VAR fit (a
 	// disclosed, deliberate simplification, not an oversight).

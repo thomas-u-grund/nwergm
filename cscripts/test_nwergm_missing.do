@@ -3,7 +3,15 @@
 * Reference values: R ergm 4.12.0 (dev/ergm_missing/ref_miss.R, ref_miss2.R, mple_dd.R).
 cscript
 
-do unw_core.do
+* The core package nwcommands is found through the environment variable NWCORE (path of the core checkout).
+local nwcore : env NWCORE
+if `"`nwcore'"' == "" {
+	di as error "set the environment variable NWCORE to the directory of the nwcommands (core) package"
+	exit 198
+}
+adopath ++ `"`nwcore'"'
+adopath ++ `"`c(pwd)'"'
+quietly do `"`nwcore'/unw_core.do"'
 do unw_ergm.do
 local d "dev/ergm_missing"
 

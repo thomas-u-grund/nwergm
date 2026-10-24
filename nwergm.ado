@@ -1,3 +1,9 @@
+* Copyright (C) 2026 Thomas U. Grund
+* This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
+* nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
+* Public License, version 3, as published by the Free Software Foundation. It is distributed in the hope
+* that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+* or FITNESS FOR A PARTICULAR PURPOSE. See the file LICENSE for the full text.
 
 capture program drop nwergm
 program nwergm, eclass
@@ -68,7 +74,7 @@ program nwergm, eclass
 		di "{err}option {bf:edges} is required - every v1 nwergm model includes an edges term."
 		error 198
 	}
-	// fixdensity (constraints, third piece - see docs/ERGM_ROADMAP.md's
+	// fixdensity (constraints, third piece - see the development notes'
 	// "Constraints beyond v1's free binary dyad space" row): R ergm's
 	// own `constraints=~edges'. Unlike freedyads()/blockdiag() (which
 	// restrict WHICH single dyad the ordinary proposal may touch),
@@ -84,7 +90,7 @@ program nwergm, eclass
 	// directly: R fits `edges' anyway and reports its coefficient fixed
 	// at exactly 0 with a "will be ignored" warning) is not attempted
 	// via this project's own still-incomplete general isfixed-through-
-	// MCMLE machinery (docs/ERGM_ROADMAP.md's own disclosed gap) -
+	// MCMLE machinery (the development notes' own disclosed gap) -
 	// instead, `edges' is simply never registered as an estimated term
 	// for a fixdensity model (the user must still type `edges' per the
 	// check just above, for a consistent model-specification syntax,
@@ -101,7 +107,7 @@ program nwergm, eclass
 		local method "mcmle"
 	}
 	// freedyads() now has a masked TNT variant too (ergm_propose_tnt_masked(),
-	// docs/ERGM_ROADMAP.md's "Constraints beyond v1's free binary dyad
+	// the development notes' "Constraints beyond v1's free binary dyad
 	// space" row) - freedyads() alone no longer needs its own special
 	// default, `proposal()' defaults to `tnt' exactly as it does without
 	// freedyads().
@@ -129,7 +135,7 @@ program nwergm, eclass
 	// unit 156 Stage 2, per
 	// /Users/tgrund/.claude/plans/dreamy-popping-deer.md): R's own ergm
 	// package requires bipartite networks to be undirected
-	// (docs/ERGM_STATNET_STUDY.md:401) - a real modeling constraint (a
+	// (the development notes:401) - a real modeling constraint (a
 	// directed two-mode dyad space has no standard ERGM treatment in
 	// the reference implementation this package studies), not a v1
 	// simplification - so directed+two-mode is rejected unconditionally
@@ -251,7 +257,7 @@ program nwergm, eclass
 	// first, mirroring gwodegreefree()/gwidegreefree()'s own unit-141
 	// precedent that the curved-MPLE pipeline never assumed
 	// undirected-ness anywhere; unit 170 widened it to ITP/OSP/ISP/RTP,
-	// each individually R-certified - see docs/CERTIFICATION.md unit
+	// each individually R-certified - see the development notes unit
 	// 170). gwdspfree()/gwnspfree() gained the identical directed
 	// extension in unit 171 (see their own registration sites below).
 	if "`gwespfree'" != "" {
@@ -283,7 +289,7 @@ program nwergm, eclass
 		// it could (and on two independent real networks, did) drive
 		// the chain to 0% Metropolis-Hastings acceptance - the same
 		// root cause independently confirmed on a plain (non-curved)
-		// gwesp() fit too (see docs/ERGM_ROADMAP.md). Replaced with
+		// gwesp() fit too (see the development notes). Replaced with
 		// R's own actual mechanism: damp the TARGET STATISTIC (shrink
 		// it into the convex hull of what the current MCMC sample
 		// explored) rather than the raw parameter step - agnostic to
@@ -595,7 +601,7 @@ program nwergm, eclass
 		mata: __nwergm_last_G.set_bipartite(strtoreal(`netobj'->get_modes())')
 	}
 	// freedyads(netname) (constraints, first piece - see
-	// docs/ERGM_ROADMAP.md's "Constraints beyond v1's free binary dyad
+	// the development notes' "Constraints beyond v1's free binary dyad
 	// space" row): R ergm's own `constraints=~fixallbut(free)` - `free'
 	// is a SECOND network whose own ties mark which dyads of `netname'
 	// are eligible to vary during MCMC; every dyad NOT tied in `free' is
@@ -624,7 +630,7 @@ program nwergm, eclass
 		mata: __nwergm_last_G.set_dyadmask(*(`fdnetobj'->get_matrix_mod(0,("`directed'"=="true"))))
 	}
 	// blockdiag(varname) (constraints, second piece - see
-	// docs/ERGM_ROADMAP.md's "Constraints beyond v1's free binary dyad
+	// the development notes' "Constraints beyond v1's free binary dyad
 	// space" row): R ergm's own `constraints=~blockdiag(attr)` - `varname'
 	// is a categorical node attribute; only same-block dyads (equal
 	// varname value) are eligible to vary during MCMC. Builds its own
@@ -719,7 +725,7 @@ program nwergm, eclass
 		error 198
 	}
 
-	// --- spcache (Part XXV performance work, docs/CERTIFICATION.md unit
+	// --- spcache (Part XXV performance work, the development notes unit
 	// 82/132): the incremental shared-partner cache exists and is fully
 	// certified, but is NOT auto-enabled by default - unit 82's own
 	// direct A/B benchmarking found it a NET LOSS below roughly degree
@@ -1421,7 +1427,7 @@ program nwergm, eclass
 		mata: __nwergm_last_M.addterm("gwesp", 1, &stat_gwesp(), &change_gwesp(), `__td_gwesp', ("gwesp_`gwesp'"))
 		local __ergm_matatemps "`__ergm_matatemps' `__td_gwesp'"
 		// ErgmGraph::enable_sp_cache() (Part XXV performance work,
-		// docs/CERTIFICATION.md unit 82) is DELIBERATELY NOT called here.
+		// the development notes unit 82) is DELIBERATELY NOT called here.
 		// It was built, exhaustively certified for correctness, wired in,
 		// and then measured directly against this suite's own realistic
 		// GWESP benchmarks (100-node and 500-node sparse networks) - and
@@ -1440,8 +1446,8 @@ program nwergm, eclass
 		// entirely: the machinery itself is correct and useful for
 		// genuinely dense networks, just not a good default for the
 		// sparse case this package's own realistic test networks
-		// represent. See docs/CERTIFICATION.md unit 82 and
-		// docs/ERGM_ROADMAP.md's own Performance section for the full,
+		// represent. See the development notes unit 82 and
+		// the development notes' own Performance section for the full,
 		// disclosed account - the same "implement, measure, and report
 		// honestly even when the obvious optimization does not pan out"
 		// discipline this project used for the batch-means variance
@@ -1511,7 +1517,7 @@ program nwergm, eclass
 		// partners with every other node) - real networks fall far
 		// short of it, and the curved-MPLE Newton-Raphson loop's own
 		// cost scales with the SQUARE of this per-count basis width
-		// (docs/CERTIFICATION.md unit 145's own profiling: a 418-node
+		// (the development notes unit 145's own profiling: a 418-node
 		// real network registered 416 columns for a true maximum
 		// edgewise-shared-partner value of 10). Registered at the TRUE
 		// maximum reachable edgewise-shared-partner value across every
@@ -1786,7 +1792,7 @@ program nwergm, eclass
 	if `"`coeflabel'"' != "" {
 		_nwergm_coeflabel `coeflabel'
 	}
-	// offset() (harmonisation unit 183, docs/ERGM_ROADMAP.md's own
+	// offset() (harmonisation unit 183, the development notes' own
 	// "Offsets/fixed-coefficient terms" row) - holds one or more named
 	// coefficients fixed at a user-supplied value rather than
 	// estimating them, matching R ergm's own `offset()' formula
@@ -1870,7 +1876,7 @@ program nwergm, eclass
 	// targets is what Stata itself uses for that, and performs
 	// accordingly. Found and fixed while building the R-vs-Stata
 	// benchmark suite's own large-network control case
-	// (docs/CERTIFICATION.md harmonisation unit 81).
+	// (the development notes harmonisation unit 81).
 	if `__ergm_curved' & ("`method'" == "cd" | "`mainmethod'" == "sa") {
 		di "{err}contrastive divergence and stochastic approximation are not available for models with curved terms."
 		error 198
@@ -2177,7 +2183,7 @@ program nwergm, eclass
 		local __ergm_matatemps "`__ergm_matatemps' `__theta0'"
 
 		// freedyads() now has a masked TNT variant too
-		// (ergm_propose_tnt_masked() - docs/ERGM_ROADMAP.md's
+		// (ergm_propose_tnt_masked() - the development notes'
 		// "Constraints beyond v1's free binary dyad space" row) - picks
 		// the masked form of whichever proposal() was actually
 		// requested/defaulted to, rather than forcing uniform.
@@ -2231,7 +2237,7 @@ program nwergm, eclass
 		// the native backend's own current scope, or a platform with no
 		// compiled lib/plugins/ergm_mcmc.plugin, is completely
 		// unaffected by this call. See unw_ergm.do's own "Native (C)
-		// MCMC backend" section and docs/ERGM_ARCHITECTURE.md for the
+		// MCMC backend" section and the development notes for the
 		// full design.
 		// BUGFIX: ErgmNativeSetup() returns real scalar (1/0, whether the
 		// native backend ended up eligible) - calling it bare left Mata
@@ -2493,7 +2499,7 @@ program nwergm, eclass
 		// this run's own simulations; 0 if the Mata sampler ran instead
 		// (either because a term outside the native backend's current
 		// scope was present, or no compiled plugin exists for this
-		// platform) - see docs/ERGM_ARCHITECTURE.md's own "Native (C)
+		// platform) - see the development notes' own "Native (C)
 		// MCMC backend" section for exactly which terms are covered
 		// today. Purely informational: both backends are certified
 		// statistically indistinguishable (cscripts/test_nwergm_native.do)
@@ -2520,7 +2526,7 @@ program nwergm, eclass
 		// pulls coefficient names from e(b) instead.
 		//
 		// PERFORMANCE NOTE, `nomcmcsample' (harmonisation unit 154):
-		// docs/ERGM_ROADMAP.md's own unit-81 entry flagged this as a
+		// the development notes' own unit-81 entry flagged this as a
 		// "related, lower-priority risk" and guessed the fix would need
 		// "reworking estat mcmcdiag's own matrix-based consumption of
 		// e(mcmcsample)" - directly profiled before acting on that
@@ -2611,7 +2617,7 @@ end
 	v1 scope deliberately covers only the terms needing no external
 	covariate data (edges/mutual/the gw family) - see this program's own
 	SMCL doc header above ("Simulation" section) for the full rationale
-	and docs/ERGM_ROADMAP.md for extending this to covariate terms.
+	and the development notes for extending this to covariate terms.
 */
 capture program drop nwergm_simulate
 program nwergm_simulate

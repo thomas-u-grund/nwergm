@@ -1,6 +1,14 @@
 cscript
 
-do unw_core.do
+* The core package nwcommands is found through the environment variable NWCORE (path of the core checkout).
+local nwcore : env NWCORE
+if `"`nwcore'"' == "" {
+	di as error "set the environment variable NWCORE to the directory of the nwcommands (core) package"
+	exit 198
+}
+adopath ++ `"`nwcore'"'
+adopath ++ `"`c(pwd)'"'
+quietly do `"`nwcore'/unw_core.do"'
 do unw_ergm.do
 
 * Certifies harmonisation unit 155 Stage 1 (bipartite/two-mode ERGM
@@ -711,7 +719,7 @@ di "=== bipartite (two-mode) Stage 2 (bcov1/bcov2/bfactor1/bfactor2): all certif
 * and so the first to exercise the Stage-1 bipartite MCMC proposal
 * (ergm_propose_uniform()/ergm_propose_tnt()) for real. Certified
 * against real, independently generated R ergm 4.12.0 MCMLE output
-* (dev/bipartite_stage3_crosscheck.R) - see docs/CERTIFICATION.md unit
+* (dev/bipartite_stage3_crosscheck.R) - see the development notes unit
 * 157 for the exact numeric comparison (agreement within a few percent,
 * the same Monte Carlo tolerance this package's own unit 71 MCMLE
 * certification already established as the right standard for a
@@ -721,7 +729,7 @@ di "=== bipartite (two-mode) Stage 2 (bcov1/bcov2/bfactor1/bfactor2): all certif
 * tight numeric match against R, since two independent MCMC engines
 * with different RNG streams will never reproduce each other's draws
 * exactly - the tight numeric comparison is a one-time, documented
-* finding (CERTIFICATION.md), not a per-run assertion.
+* finding (the development notes), not a per-run assertion.
 *
 * Two networks, not one: the 6x4 (11-tie) bipartite network Stage 1/2
 * already use is too small/sparse to identify b1star(2)/b2star(2) at

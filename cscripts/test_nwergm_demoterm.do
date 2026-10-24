@@ -1,10 +1,19 @@
 cscript
 
+* The core package nwcommands is found through the environment variable NWCORE (path of the core checkout).
+local nwcore : env NWCORE
+if `"`nwcore'"' == "" {
+	di as error "set the environment variable NWCORE to the directory of the nwcommands (core) package"
+	exit 198
+}
+adopath ++ `"`nwcore'"'
+adopath ++ `"`c(pwd)'"'
+quietly do `"`nwcore'/unw_core.do"'
 do unw_ergm.do
 
 * Certifies `istar2` (undirected 2-star count, sum_i C(deg(i),2)) - the
 * deliberately minimal, clearly-marked DEMONSTRATION term in unw_ergm.do
-* (see its own header comment there, and docs/ERGM_ARCHITECTURE.md's "How
+* (see its own header comment there, and the development notes' "How
 * to add a new term" section, which this test is the worked example for).
 * It exists purely to prove that a new term can be added and certified
 * through the documented process WITHOUT touching ErgmModel, the MCMC
@@ -13,7 +22,7 @@ do unw_ergm.do
 * combine terms), and none needed any change to add istar2.
 *
 * istar2 is NOT wired into nwergm.ado's real option surface (2-star
-* family terms are a docs/ERGM_ROADMAP.md item, not v1 scope) - this test
+* family terms are a the development notes item, not v1 scope) - this test
 * exercises unw_ergm.do's Mata layer directly, exactly like
 * test_nwergm_statistics.do/changestat.do do for the real v1 terms.
 

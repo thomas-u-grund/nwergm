@@ -1,10 +1,19 @@
 cscript
 
+* The core package nwcommands is found through the environment variable NWCORE (path of the core checkout).
+local nwcore : env NWCORE
+if `"`nwcore'"' == "" {
+	di as error "set the environment variable NWCORE to the directory of the nwcommands (core) package"
+	exit 198
+}
+adopath ++ `"`nwcore'"'
+adopath ++ `"`c(pwd)'"'
+quietly do `"`nwcore'/unw_core.do"'
 do unw_ergm.do
 
 /*
 	Certifies the adaptive-interval mechanism in ErgmMCMLE() (harmonisation
-	unit 85, docs/CERTIFICATION.md) - added to close an open question unit
+	unit 85, the development notes) - added to close an open question unit
 	84's own effective-sample-size convergence-test fix surfaced: that fix
 	can correctly report "converged" from a genuinely tiny effective MCMC
 	sample size (autocorrelation-corrected), which is statistically valid
@@ -37,7 +46,7 @@ do unw_ergm.do
 	which would have certified an artificial case rather than a real one).
 	Real growth is already documented from actual production runs, not
 	merely asserted: dev/ergm_benchmark_r_vs_stata/30_bench_500sparse.do
-	and 40_bench_1000dir_control.do (docs/CERTIFICATION.md units 84-85)
+	and 40_bench_1000dir_control.do (the development notes units 84-85)
 	show interval growing 50->300->600 and reaching convergence with a
 	real, measured precision improvement (the 500-node benchmark's own
 	gwesp coefficient moved from 0.0179 to 0.0363, R's own value: 0.0371)

@@ -6,6 +6,16 @@
 * 277.8 262.0 317.8 291.8. The lag-1 AR(1) formula used before gave
 * 472-539 on the same chain.
 clear all
+* The core package nwcommands is found through the environment variable NWCORE (path of the core checkout).
+local nwcore : env NWCORE
+if `"`nwcore'"' == "" {
+	di as error "set the environment variable NWCORE to the directory of the nwcommands (core) package"
+	exit 198
+}
+adopath ++ `"`nwcore'"'
+adopath ++ `"`c(pwd)'"'
+quietly do `"`nwcore'/unw_core.do"'
+do unw_ergm.do
 set more off
 nwwebuse mesa, nwclear
 encode race, generate(racen)

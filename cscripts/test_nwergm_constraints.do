@@ -1,10 +1,18 @@
 cscript
 
-do unw_core.do
+* The core package nwcommands is found through the environment variable NWCORE (path of the core checkout).
+local nwcore : env NWCORE
+if `"`nwcore'"' == "" {
+	di as error "set the environment variable NWCORE to the directory of the nwcommands (core) package"
+	exit 198
+}
+adopath ++ `"`nwcore'"'
+adopath ++ `"`c(pwd)'"'
+quietly do `"`nwcore'/unw_core.do"'
 do unw_ergm.do
 
 * Certifies nwergm's freedyads() option - constraints, first concrete piece
-* (docs/ERGM_ROADMAP.md, "Constraints beyond v1's free binary dyad space"
+* (the development notes, "Constraints beyond v1's free binary dyad space"
 * row): R ergm's own constraints=~fixallbut(free) - a boolean mask over the
 * dyad space marking which dyads are eligible to vary during MCMC; every
 * other dyad is held permanently fixed at its OBSERVED value. Only the
@@ -320,7 +328,7 @@ assert e(native) == 1
 assert reldif(_b[edges], -0.4054651) < 0.10
 
 * ===================================================================
-* blockdiag() - constraints, second concrete piece (docs/ERGM_ROADMAP.md,
+* blockdiag() - constraints, second concrete piece (the development notes,
 * "Constraints beyond v1's free binary dyad space" row): R ergm's own
 * constraints=~blockdiag(attr) - "only dyads (i,j) for which
 * attr(i)==attr(j) can have edges" (R ergm's own real Rd doc, fetched via
@@ -455,7 +463,7 @@ assert _rc == 198
 * anyway and reports it fixed at exactly 0 with a "will be ignored"
 * warning - not reproduced verbatim here since this project's own
 * isfixed-through-MCMLE machinery is still incomplete, see
-* docs/ERGM_ROADMAP.md; simply omitting the term achieves the same
+* the development notes; simply omitting the term achieves the same
 * practical estimation outcome). ---
 capture nwergm fdnet, edges fixdensity method(mcmle)
 assert _rc == 198

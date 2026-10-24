@@ -1,4 +1,10 @@
 *! _nwergm_gofplot.ado -- one panel of the estat gof plot
+* Copyright (C) 2026 Thomas U. Grund
+* This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
+* nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
+* Public License, version 3, as published by the Free Software Foundation. It is distributed in the hope
+* that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+* or FITNESS FOR A PARTICULAR PURPOSE. See the file LICENSE for the full text.
 capture program drop _nwergm_gofplot
 program define _nwergm_gofplot
 	args obsvec summvec xlabel graphname startval ncat lastlabel

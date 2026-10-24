@@ -1,6 +1,14 @@
 cscript
 
-do unw_core.do
+* The core package nwcommands is found through the environment variable NWCORE (path of the core checkout).
+local nwcore : env NWCORE
+if `"`nwcore'"' == "" {
+	di as error "set the environment variable NWCORE to the directory of the nwcommands (core) package"
+	exit 198
+}
+adopath ++ `"`nwcore'"'
+adopath ++ `"`c(pwd)'"'
+quietly do `"`nwcore'/unw_core.do"'
 do unw_ergm.do
 * Cross-validation of the bipartite (two-mode) terms against R ergm 4.12.0 (tag bip).
 * For every case: the observed statistic (summary() in R) and, where R's pseudolikelihood is well identified, the MPLE coefficients and standard errors.

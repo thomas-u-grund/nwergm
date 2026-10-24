@@ -1,10 +1,19 @@
 cscript
 
+* The core package nwcommands is found through the environment variable NWCORE (path of the core checkout).
+local nwcore : env NWCORE
+if `"`nwcore'"' == "" {
+	di as error "set the environment variable NWCORE to the directory of the nwcommands (core) package"
+	exit 198
+}
+adopath ++ `"`nwcore'"'
+adopath ++ `"`c(pwd)'"'
+quietly do `"`nwcore'/unw_core.do"'
 do unw_ergm.do
 
 /*
 	Certifies term-expansion wave 7 (harmonisation unit 91 continuation,
-	docs/CERTIFICATION.md - phase D): hamming(netname) (Hamming distance
+	the development notes - phase D): hamming(netname) (Hamming distance
 	to a reference network) and sender()/receiver() (per-node out-/
 	in-degree fixed effects, base=1 omitted, implemented as a THIN
 	convenience wrapper around the already-certified stat_nodeofactor()/

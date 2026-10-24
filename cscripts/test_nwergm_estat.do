@@ -1,6 +1,14 @@
 cscript
 
-do unw_core.do
+* The core package nwcommands is found through the environment variable NWCORE (path of the core checkout).
+local nwcore : env NWCORE
+if `"`nwcore'"' == "" {
+	di as error "set the environment variable NWCORE to the directory of the nwcommands (core) package"
+	exit 198
+}
+adopath ++ `"`nwcore'"'
+adopath ++ `"`c(pwd)'"'
+quietly do `"`nwcore'/unw_core.do"'
 do unw_ergm.do
 
 * Certifies nwergm_estat.ado (`estat mcmcdiag' - Part XIX of the governing
@@ -42,7 +50,7 @@ mata: assert(!missing(st_matrix("e(mcmcsample)")))
 
 * --- estat mcmcdiag survives estimates store/restore (the same
 * estimates-machinery Mata-tempvar-leak class of bug fixed in
-* docs/CERTIFICATION.md unit 73 would show up here too if reintroduced).
+* the development notes unit 73 would show up here too if reintroduced).
 estimates store m1
 estimates restore m1
 qui estat mcmcdiag
@@ -68,7 +76,7 @@ di "=== estat mcmcdiag, plot REGRESSION VERIFIED ==="
 * (unw_ergm.do) were ALREADY certified once this unit, directly against
 * real `coda` 0.19.4.1 output (fetched and read from a local R install,
 * not recalled from memory) on two synthetic reference series - see
-* docs/CERTIFICATION.md unit 144 for that full numeric comparison. What
+* the development notes unit 144 for that full numeric comparison. What
 * follows is the PERMANENT regression test: (1) through the real
 * `estat mcmcdiag` command end to end on an actual nwergm fit, checking
 * the returned matrices are well-formed and internally consistent
@@ -146,7 +154,7 @@ di "=== estat mcmcdiag, pvalue(): 4-level table enforced ==="
 * statistical contract both tests exist to enforce. Built via Mata's own
 * rseed()/runiform() for full reproducibility (no external RNG/file
 * dependency), not a claim to reproduce R's own specific RNG stream -
-* see docs/CERTIFICATION.md unit 144 for the separate, one-time exact
+* see the development notes unit 144 for the separate, one-time exact
 * numeric comparison against real coda output that already happened.
 mata: rseed(4242)
 mata: __ergm_n = 2000
@@ -184,7 +192,7 @@ di "=== ergm_geweke_z()/ergm_heidel_diag(): correctly distinguish converged from
 * consumption could help with, since reading an already-posted matrix
 * back is fast at any size; see nwergm.ado's own build-up comment at
 * the e(mcmcsample) posting site for the full account, including the
-* correction to docs/ERGM_ROADMAP.md's own earlier guess about where
+* correction to the development notes' own earlier guess about where
 * the fix would need to live). Run LAST in this file, after every
 * other test, so it does not disturb the e(mcmcsample)-bearing active
 * fit earlier tests in this file depend on. Coefficients/SEs are

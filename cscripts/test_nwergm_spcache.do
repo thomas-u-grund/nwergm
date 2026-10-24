@@ -1,10 +1,19 @@
 cscript
 
+* The core package nwcommands is found through the environment variable NWCORE (path of the core checkout).
+local nwcore : env NWCORE
+if `"`nwcore'"' == "" {
+	di as error "set the environment variable NWCORE to the directory of the nwcommands (core) package"
+	exit 198
+}
+adopath ++ `"`nwcore'"'
+adopath ++ `"`c(pwd)'"'
+quietly do `"`nwcore'/unw_core.do"'
 do unw_ergm.do
 
 * Certifies ErgmGraph's incremental shared-partner cache
 * (enable_sp_cache()/sp_adjust()/shared_partners() - Part XXV performance
-* work, docs/CERTIFICATION.md harmonisation unit 82). NOT currently wired
+* work, the development notes harmonisation unit 82). NOT currently wired
 * into nwergm.ado by default (see that file's own gwesp block for the
 * full, measured account of why: a real head-to-head benchmark found it
 * makes nwergm's own realistic sparse-network GWESP benchmarks SLOWER,
