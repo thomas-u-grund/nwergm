@@ -33,7 +33,7 @@ Terms that depend on more than a dyad's own covariates make the model dyad-depen
 
 {pstd}
 Undirected networks only: {cmd:isolatededges}, {cmd:degree1.5}, {cmd:degcrossprod}, {cmd:degcor}, {cmd:concurrentties}[{cmd:(by=}{it:attr}{cmd:)}], {cmd:concurrent}[{cmd:(by=}{it:attr}{cmd:)}],
-{cmd:altkstar(lambda=}{it:#}{cmd: fixed)}, {cmd:tripercent}[{cmd:(attr=}{it:attr}[{cmd: diff}]{cmd:)}], {cmd:opentriad}, {cmd:degree(d=}{it:numlist}[{cmd: by=}{it:attr}][{cmd: homophily}]{cmd:)},
+{cmd:altkstar(lambda=}{it:#}{cmd: fixed)} (without {cmd:fixed}: the curved term, see Remarks), {cmd:tripercent}[{cmd:(attr=}{it:attr}[{cmd: diff}]{cmd:)}], {cmd:opentriad}, {cmd:degree(d=}{it:numlist}[{cmd: by=}{it:attr}][{cmd: homophily}]{cmd:)},
 {cmd:degrange(from=}{it:numlist}[{cmd: to=}{it:numlist}][{cmd: by=}{it:attr}][{cmd: homophily}]{cmd:)}, {cmd:kstar(k=}{it:numlist}[{cmd: attr=}{it:attr}]{cmd:)}.
 
 {pstd}
@@ -43,7 +43,7 @@ Directed networks only: {cmd:m2star}, {cmd:odegree1.5}, {cmd:idegree1.5}, {cmd:a
 
 {pstd}
 Both kinds of network: {cmd:density}, {cmd:meandeg}, {cmd:twopath}, {cmd:isolates}, {cmd:cycle(k=}{it:numlist}[{cmd: semi}]{cmd:)} (semicycles for directed networks), {cmd:triangle}[{cmd:(attr=}{it:attr}[{cmd: diff}]{cmd:)}],
-{cmd:threetrail}[{cmd:(keep=}{it:numlist}{cmd:)}] (four types RRR RRL LRR LRL for directed networks), {cmd:triadcensus}[{cmd:(levels=}{it:numlist or labels}{cmd:)}],
+{cmd:threetrail}[{cmd:(keep=}{it:numlist}{cmd:)}] (four types RRR RRL LRR LRL for directed networks), {cmd:balance} (balanced triads: of type 102 or 300 in a directed network, with an odd number of ties in an undirected one), {cmd:triadcensus}[{cmd:(levels=}{it:numlist or labels}{cmd:)}],
 {cmd:localtriangle(x=}{it:netname}{cmd:)} (a binary network with the same nodes), {cmd:nsp(d=}{it:numlist}[{cmd: type=}{it:OTP|ITP|OSP|ISP|RTP}]{cmd:)}.
 
 {title:Remarks}
@@ -52,7 +52,8 @@ Both kinds of network: {cmd:density}, {cmd:meandeg}, {cmd:twopath}, {cmd:isolate
 Statistics, maximum pseudolikelihood estimates and maximum likelihood estimates are checked against R's ergm 4.12.0.
 Three points where the result is not simply R's: (1) {cmd:opentriad}: in ergm 4.12.0 the change statistic for removing a tie overflows an unsigned integer, so R's estimation with this term is wrong
 (its observed statistic is right); {cmd:nwergm} computes the correct change statistic. (2) {cmd:degcor} and {cmd:degcrossprod} are scaled by quantities of the observed network, as in R,
-and are therefore not available in {cmd:nwergm simulate}. (3) {cmd:altkstar} is available with a fixed {cmd:lambda} only (R's default is the curved form with estimated {cmd:lambda}).
+and are therefore not available in {cmd:nwergm simulate}. (3) {cmd:altkstar} without {cmd:fixed} is R's default, the curved form with an estimated {cmd:lambda}: it is estimated by {cmd:method(mple)} with starting values given by {cmd:init(}{it:edges weight lambda}{cmd:)}, as R needs them
+to fit this term, and has the coefficients {cmd:altkstar} and {cmd:altkstar_lambda}; {cmd:altkstar(lambda=}{it:#} {cmd:fixed)} is the fixed form.
 
 {pstd}
 {cmd:structural()} needs the native plugin that ships with the package; there is no slower fallback. The {cmd:levels=} argument of the attribute terms is not available (all levels of the attribute are used).

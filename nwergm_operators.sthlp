@@ -48,6 +48,9 @@ All operators run in the native plugin that ships with the package; there is no 
 {synopt:{cmd:Label(}{it:terms}{cmd:, label(}{it:names}{cmd:)} [{cmd:pos(}{it:pos}{cmd:)}]{cmd:)}}The terms with other coefficient names; {it:pos} is {cmd:paren} (default: {cmd:label(coefficient)}), {cmd:prepend}, {cmd:append} or {cmd:replace}{p_end}
 {synopt:{cmd:Log(}{it:terms}[{cmd:, log0(}{it:#}{cmd:)}]{cmd:)}}Natural logarithm of the statistics; {opt log0()} (default -1/sqrt(epsdouble)) stands in for the logarithm of zero{p_end}
 {synopt:{cmd:Exp(}{it:terms}{cmd:)}}Exponential function of the statistics{p_end}
+{synopt:{cmd:Curve(}{it:terms}{cmd:, params(}{it:names}{cmd:) map(}{it:map}{cmd:))}}The coefficients of the terms are a linear function of the parameters: eta = L * theta, where {it:map} is {cmd:rep} or {cmd:matrix(}{it:name}{cmd:)}. {cmd:map(rep)} recycles the parameters over the terms' coefficients,
+	{cmd:map(matrix(L))} takes the matrix L (one row per coefficient, one column per parameter). The model is estimated for the parameters, which carry the names given in {opt params()}. {cmd:Parametrise()} and {cmd:Parametrize()} are the same operator. Map functions, {opt gradient()},
+	{opt minpar()}, {opt maxpar()} and {opt cov()} of R are not available{p_end}
 {synopt:{cmd:Offset(}{it:terms}[{cmd:, coef(}{it:numlist}{cmd:) which(}{it:selection}{cmd:)}]{cmd:)}}Coefficients held at fixed values (default 0) instead of being estimated; {opt which()} selects them by position or coefficient name, default all. The fixed coefficients are reported with
 	standard error 0{p_end}
 {synoptline}

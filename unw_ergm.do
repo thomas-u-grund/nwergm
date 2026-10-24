@@ -3432,6 +3432,30 @@ real matrix ergm_gwdecay_gradient(real scalar theta_w, real scalar alpha, real s
 }
 
 /*
+	theta -> eta map of R's altkstar (fixed = FALSE): theta = (weight, lambda), eta_i = weight * (lambda * ((1-1/lambda)^i + i) - 1)
+	for the degree counts i = 1..n, and its 2 x n Jacobian (R: the map and gradient of InitErgmTerm.altkstar).
+*/
+real rowvector ergm_altk_map(real scalar w, real scalar lam, real scalar n){
+	real rowvector i
+	i = 1..n
+	return(w :* (lam :* ((1 - 1/lam):^i :+ i) :- 1))
+}
+real matrix ergm_altk_gradient(real scalar w, real scalar lam, real scalar n){
+	real rowvector i
+	i = 1..n
+	return((lam :* ((1 - 1/lam):^i :+ i) :- 1) \ (w :* (i :- 1 :+ (lam*lam - lam :+ i) :* ((1 - 1/lam):^(i :- 1)) :/ (lam*lam))))
+}
+// the map and gradient of a curved term of type 1 (geometric weights: gwesp, gwdegree ...) or 2 (altkstar)
+real rowvector ergm_curve_map(real scalar type, real scalar a, real scalar b, real scalar n){
+	if (type == 2) return(ergm_altk_map(a, b, n))
+	return(ergm_gwdecay_map(a, b, n))
+}
+real matrix ergm_curve_gradient(real scalar type, real scalar a, real scalar b, real scalar n){
+	if (type == 2) return(ergm_altk_gradient(a, b, n))
+	return(ergm_gwdecay_gradient(a, b, n))
+}
+
+/*
 	Geometrically weighted edgewise shared partners (GWESP; Hunter
 	2007). Undirected only in v1 (directed OTP/ITP/OSP/ISP variants -
 	see the Part I study - are a roadmap item, not a cheap extension of
@@ -6110,7 +6134,7 @@ real rowvector ErgmModel::theta_to_eta(real rowvector theta){
 	epos = 1
 	for (t=1; t<=nterms; t++) {
 		if (curved[t]) {
-			eta[(epos..epos+npar[t]-1)] = ergm_gwdecay_map(theta[tpos], theta[tpos+1], npar[t])
+			eta[(epos..epos+npar[t]-1)] = ergm_curve_map(curved[t], theta[tpos], theta[tpos+1], npar[t])
 			tpos = tpos + 2
 		}
 		else {
@@ -6146,7 +6170,7 @@ real matrix ErgmModel::theta_to_eta_jacobian(real rowvector theta){
 	epos = 1
 	for (t=1; t<=nterms; t++) {
 		if (curved[t]) {
-			g = ergm_gwdecay_gradient(theta[tpos], theta[tpos+1], npar[t])
+			g = ergm_curve_gradient(curved[t], theta[tpos], theta[tpos+1], npar[t])
 			Jac[(epos..epos+npar[t]-1), (tpos..tpos+1)] = g'
 			tpos = tpos + 2
 		}
@@ -6206,10 +6230,10 @@ real rowvector ErgmModel::project_eta_to_theta(real rowvector eta_target, real m
 			theta[(tpos..tpos+1)] = theta_start[(tpos..tpos+1)]
 			target_block = eta_target[(epos..epos+npar[t]-1)]
 			Wb = W[(epos..epos+npar[t]-1), (epos..epos+npar[t]-1)]
-			resid = target_block - ergm_gwdecay_map(theta[tpos], theta[tpos+1], npar[t])
+			resid = target_block - ergm_curve_map(curved[t], theta[tpos], theta[tpos+1], npar[t])
 			obj0 = resid * Wb * resid'
 			for (iter=1; iter<=maxit; iter++) {
-				Jb = ergm_gwdecay_gradient(theta[tpos], theta[tpos+1], npar[t])'
+				Jb = ergm_curve_gradient(curved[t], theta[tpos], theta[tpos+1], npar[t])'
 				delta = (invsym(Jb' * Wb * Jb) * Jb' * Wb * resid')'
 
 				// Damped Gauss-Newton (backtracking line search): an
@@ -6235,7 +6259,7 @@ real rowvector ErgmModel::project_eta_to_theta(real rowvector eta_target, real m
 				for (halvings=1; halvings<=30; halvings++) {
 					theta_try = theta[(tpos..tpos+1)] + step :* delta
 					if (theta_try[2] > 1e-6) {
-						resid_try = target_block - ergm_gwdecay_map(theta_try[1], theta_try[2], npar[t])
+						resid_try = target_block - ergm_curve_map(curved[t], theta_try[1], theta_try[2], npar[t])
 						obj1 = resid_try * Wb * resid_try'
 						if (obj1 <= obj0) {
 							found = 1
@@ -6285,6 +6309,7 @@ real rowvector ErgmModel::project_eta_to_theta(real rowvector eta_target, real m
 string rowvector ErgmModel::theta_coefnames(){
 	string rowvector out
 	real scalar t, tpos, epos
+	class ErgmTermData scalar tdt
 
 	out = J(1, ntheta(), "")
 	tpos = 1
@@ -6301,7 +6326,20 @@ string rowvector ErgmModel::theta_coefnames(){
 			// one curved term per model (nwergm.ado's own mutual-
 			// exclusivity checks enforce this), so no per-model
 			// disambiguation beyond this lookup is needed.
-			if (names[t] == "degree") {
+			if (curved[t] == 2) {
+				out[tpos] = "altkstar"
+				out[tpos+1] = "altkstar_lambda"
+			}
+			else if (names[t] == "b1degree" | names[t] == "b2degree") {
+				out[tpos] = "gw" + names[t] + "_weight"
+				out[tpos+1] = "gw" + names[t] + "_decay"
+			}
+			else if (names[t] == "bipx") {
+				tdt = *td[t]
+				out[tpos] = "gwb" + strofreal(tdt.levelpairs[1,3]) + "dsp_weight"
+				out[tpos+1] = "gwb" + strofreal(tdt.levelpairs[1,3]) + "dsp_decay"
+			}
+			else if (names[t] == "degree") {
 				out[tpos] = "gwdegree_weight"
 				out[tpos+1] = "gwdegree_decay"
 			}
@@ -6522,7 +6560,7 @@ void _ergm_curved_obj(class ErgmModel scalar M, real matrix X, real colvector y,
 void ErgmCurvedMPLEFit(class ErgmModel scalar M, real matrix D,
 	real rowvector theta_start, real scalar maxit, real scalar tol,
 	string scalar theta_matname, string scalar V_theta_matname,
-	string scalar converged_matname){
+	string scalar converged_matname, | real rowvector theta_init){
 
 	real matrix X, B, V, L, hess, Bh, hesst
 	real colvector y, g, gq, ev, beta, ptry, grad, wtry, gt, vtry
@@ -6541,6 +6579,14 @@ void ErgmCurvedMPLEFit(class ErgmModel scalar M, real matrix D,
 	theta = theta_start
 	theta[1..(alpha_pos-1)] = J(1, alpha_pos-1, 0)
 	theta[alpha_pos] = sqrt(EPS)
+	// R's init= (control.ergm): a given starting value replaces the default (missing entries keep it); the decay is
+	// kept at least sqrt(eps) above its lower bound 0 (R: .constrain_init)
+	if (args() > 8) {
+		if (cols(theta_init) == cols(theta)) {
+			for (k=1; k<=cols(theta); k++) if (theta_init[k] < .) theta[k] = theta_init[k]
+			theta[alpha_pos] = max((theta[alpha_pos], sqrt(EPS)))
+		}
+	}
 	fterm = sqrt(EPS)
 	mterm = sqrt(EPS)
 	r = 1
@@ -8080,6 +8126,65 @@ void ergm_ops_finalize(class ErgmModel scalar M)
 		M.opkind = (M.opkind, J(1, p - cols(M.opkind), 0))
 		M.opparam = (M.opparam, J(1, p - cols(M.opparam), 0))
 	}
+}
+
+// weights of Curve(): the q x n matrix L' for the map eta = L theta (rep, or the n x q matrix named in matrix(name))
+void ergm_ops_curve_W(class ErgmTermData scalar td, string scalar map, real scalar q, real scalar n)
+{
+	real matrix L
+	real scalar i
+	string scalar m
+	m = strtrim(strlower(map))
+	if (m == "rep") {
+		L = J(n, q, 0)
+		for (i=1; i<=n; i++) L[i, mod(i-1, q) + 1] = 1
+	}
+	else if (substr(m, 1, 7) == "matrix(") {
+		L = st_matrix(strtrim(substr(strtrim(map), 8, strlen(strtrim(map)) - 8)))
+		if (rows(L) != n | cols(L) != q) {
+			errprintf("Curve(): the map matrix must have %g rows (statistics) and %g columns (parameters)\n", n, q)
+			_error(198)
+		}
+	}
+	else {
+		errprintf("Curve(): map() is rep or matrix(name); map functions are not available\n")
+		_error(198)
+	}
+	td.opW = L'
+}
+
+// altkstar written without fixed (R's default fixed = FALSE) is the curved term: removes it from the structural() list in the
+// Stata local `structural' and sets the local `__altk' to 1
+void ergm_altk_extract()
+{
+	string rowvector w, a
+	string scalar nm, args, out
+	real scalar k, found, fixed, j
+	w = ergm_ops_words(st_local("structural"))
+	out = ""
+	found = 0
+	for (k=1; k<=cols(w); k++) {
+		nm = w[k]
+		if (nm == "altkstar") {
+			found = 1
+			continue
+		}
+		if (regexm(nm, "^altkstar[(](.*)[)]$")) {
+			args = regexs(1)
+			a = ergm_ops_words(subinstr(args, ",", " "))
+			fixed = 0
+			for (j=1; j<=cols(a); j++) {
+				if (strlower(a[j]) == "fixed" | any(strlower(a[j]) :== ("fixed=true", "fixed=t", "fixed=1"))) fixed = 1
+			}
+			if (!fixed) {
+				found = 1
+				continue
+			}
+		}
+		out = out + " " + nm
+	}
+	st_local("structural", strtrim(out))
+	st_local("__altk", strofreal(found))
 }
 
 // the suboptions in opts that are not in the list allowed

@@ -95,7 +95,7 @@ to_nw <- function(z) {
 
 # ---------------------------------------------------------------- cases: R formula and nwergm operators() text
 cases <- list()
-add <- function(net, id, r, s, mcmle=FALSE, brute=FALSE, fixed=NULL) cases[[length(cases)+1]] <<- list(net=net, id=id, r=r, s=s, mcmle=mcmle, brute=brute, fixed=fixed)
+add <- function(net, id, r, s, mcmle=FALSE, brute=FALSE, fixed=NULL, pre=NULL, lmat=NULL) cases[[length(cases)+1]] <<- list(net=net, id=id, r=r, s=s, mcmle=mcmle, brute=brute, fixed=fixed, pre=pre, lmat=lmat)
 for (nm in c("ru", "flo", "mesa")) {
   z <- nets[[nm]]; c1 <- z$c1; c2 <- z$c2; ct <- z$cont; th <- z$thr
   q <- function(a) sprintf('"%s"', a)
@@ -147,6 +147,14 @@ for (nm in c("ru", "flo", "mesa")) {
       'Exp(~triangle)', 'Exp(triangle)')
   add(nm, "Offset",
       'Offset(~triangle+kstar(2), coef=0.1, which=1)', 'Offset(triangle kstar(2), coef(0.1) which(1))', fixed=list(pos=2, val=0.1))
+  add(nm, "Curve rep",
+      sprintf('Curve(~nodematch(%s)+nodematch(%s)+nodecov(%s), params=c("a","b"), map="rep")', q(c1), q(c2), q(ct)),
+      sprintf('Curve(nodematch(%s) nodematch(%s) nodecov(%s), params(a b) map(rep))', c1, c2, ct),
+      lmat = matrix(c(1,0, 0,1, 1,0), 3, 2, byrow=TRUE))
+  add(nm, "Curve matrix",
+      sprintf('Curve(~nodematch(%s)+nodecov(%s)+kstar(2), params=c("a","b"), map=function(x, n, ...) c(x[1], x[1]+x[2], x[2]), gradient=matrix(c(1,1,0, 0,1,1), 2, 3, byrow=TRUE))', q(c1), q(ct)),
+      sprintf('Curve(nodematch(%s) nodecov(%s) kstar(2), params(a b) map(matrix(L)))', c1, ct),
+      pre = "matrix L = (1,0 \\ 1,1 \\ 0,1)", lmat = matrix(c(1,0, 1,1, 0,1), 3, 2, byrow=TRUE))
   add(nm, "Sum of F and S",
       sprintf('Sum(list(~F(~triangle+kstar(2), ~nodematch(%s)), ~S(~triangle+kstar(2), ~%s>%g)), label=c("a","b"))', q(c2), ct, th),
       sprintf('Sum(F(triangle kstar(2), filter(nodematch(%s))) | S(triangle kstar(2), attrs(%s>%g)), label(a b))', c2, ct, th))
@@ -215,6 +223,7 @@ for (cs in cases) {
   z <- nets[[cs$net]]; nw <- to_nw(z)
   f <- as.formula(paste("nw ~ edges +", cs$r))
   s <- try(summary(f), silent=TRUE)
+  if (!inherits(s, "try-error") && !is.null(cs$lmat)) s <- c(s[1], as.numeric(t(cs$lmat) %*% s[-1]))
   if (inherits(s, "try-error")) { cat("SUMMARY FAILED:", cs$net, cs$id, as.character(s), "\n"); next }
   if (cs$mcmle) {
     fit <- try(suppressWarnings(suppressMessages(ergm(f, control=control.ergm(seed=11, MCMC.samplesize=20000, MCMC.interval=1000, MCMC.burnin=50000)))), silent=TRUE)
@@ -433,6 +442,7 @@ for (nm in names(nets)) {
   emit_net(nm)
   for (r in cs) {
     if (is.na(r$s)) next
+    if (!is.null(r$pre)) w("%s", r$pre)
     if (r$mcmle) w("ops_mcmle %s `\"%s\"' `\"%s\"' `\"%s\"' `\"%s\"'", nm, r$id, r$s, fmt(r$coef), fmt(r$se))
     else if (!is.null(r$fixed)) w("ops_check_off %s `\"%s\"' `\"%s\"' `\"%s\"' `\"%s\"' `\"%s\"' %d %s", nm, r$id, r$s, fmt(r$stat), fmt(r$coef), fmt(r$se), r$fixed$pos, format(r$fixed$val))
     else w("ops_check %s `\"%s\"' `\"%s\"' `\"%s\"' `\"%s\"' `\"%s\"' %s", nm, r$id, r$s, fmt(r$stat), fmt(r$coef), fmt(r$se), if (grepl("^Prod", r$id)) "1e-6" else "")

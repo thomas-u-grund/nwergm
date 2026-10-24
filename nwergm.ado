@@ -73,6 +73,9 @@ program nwergm, eclass
 		}
 	}
 
+	// altkstar without fixed is the curved term (R's default): taken out of structural() here
+	local __altk 0
+	if `"`structural'"' != "" mata: ergm_altk_extract()
 	// edges may be left out only when density or meandeg (collinear with it) stands in for it
 	local __sub = (`"`submodel'"' != "")
 	if `__sub' {
@@ -270,7 +273,7 @@ program nwergm, eclass
 	// before any of the five options' own validation blocks below, so
 	// each block can just check `` `__ergm_ncurved' > 1 `` instead of
 	// naming every other curved option individually.
-	local __ergm_ncurved = ("`gwespfree'"!="") + ("`gwdegreefree'"!="") + ("`gwdspfree'"!="") + ("`gwodegreefree'"!="") + ("`gwidegreefree'"!="") + ("`gwnspfree'"!="") + ("`bgwdegreefree1'`bgwdegreefree2'`bgwdspfree1'`bgwdspfree2'"!="")
+	local __ergm_ncurved = ("`gwespfree'"!="") + ("`gwdegreefree'"!="") + ("`gwdspfree'"!="") + ("`gwodegreefree'"!="") + ("`gwidegreefree'"!="") + ("`gwnspfree'"!="") + ("`bgwdegreefree1'`bgwdegreefree2'`bgwdspfree1'`bgwdspfree2'"!="") + `__altk'
 
 	// gwespfree() (harmonisation unit 136 MPLE, unit 138 MCMLE): curved
 	// (free-decay) gwesp - the first user-facing curved term. Dyad-
@@ -1627,6 +1630,7 @@ program nwergm, eclass
 		// network that is not itself nearly complete.
 		mata: st_local("__ergm_maxdeg", strofreal(ergm_graph_maxdegree(__nwergm_last_G, "total")))
 		local __ergm_curved_maxd = max(1, min(`nodes' - 1, `__ergm_maxdeg' + 1))
+		if "`method'" != "mple" local __ergm_curved_maxd = max(1, `nodes' - 1)
 		local __td_gwdegreefree "__netd_`++__ne_n'"
 		mata: `__td_gwdegreefree' = ErgmTermData()
 		mata: `__td_gwdegreefree'.levels = (1..`__ergm_curved_maxd')'
@@ -1644,7 +1648,7 @@ program nwergm, eclass
 			di "{err}In term {bf:bgwdegreefree/bgwdspfree}: Term may not be used with networks with bipartite==FALSE."
 			error 198
 		}
-		_nwergm_bip_curved, bgwdegreefree1(`"`bgwdegreefree1'"') bgwdegreefree2(`"`bgwdegreefree2'"') bgwdspfree1(`"`bgwdspfree1'"') bgwdspfree2(`"`bgwdspfree2'"')
+		_nwergm_bip_curved, bgwdegreefree1(`"`bgwdegreefree1'"') bgwdegreefree2(`"`bgwdegreefree2'"') bgwdspfree1(`"`bgwdspfree1'"') bgwdspfree2(`"`bgwdspfree2'"') full(`=("`method'" != "mple")')
 		local __ergm_matatemps "`__ergm_matatemps' `__ergm_bipnewtemps'"
 	}
 	// gwdspfree() (harmonisation unit 140): mirrors the other two
@@ -1729,6 +1733,7 @@ program nwergm, eclass
 		// rather than total degree.
 		mata: st_local("__ergm_maxdeg", strofreal(ergm_graph_maxdegree(__nwergm_last_G, "out")))
 		local __ergm_curved_maxd = max(1, min(`nodes' - 1, `__ergm_maxdeg' + 1))
+		if "`method'" != "mple" local __ergm_curved_maxd = max(1, `nodes' - 1)
 		local __td_gwodegreefree "__netd_`++__ne_n'"
 		mata: `__td_gwodegreefree' = ErgmTermData()
 		mata: `__td_gwodegreefree'.levels = (1..`__ergm_curved_maxd')'
@@ -1745,6 +1750,7 @@ program nwergm, eclass
 		// Harmonisation unit 145: same rationale, bounded by in-degree.
 		mata: st_local("__ergm_maxdeg", strofreal(ergm_graph_maxdegree(__nwergm_last_G, "in")))
 		local __ergm_curved_maxd = max(1, min(`nodes' - 1, `__ergm_maxdeg' + 1))
+		if "`method'" != "mple" local __ergm_curved_maxd = max(1, `nodes' - 1)
 		local __td_gwidegreefree "__netd_`++__ne_n'"
 		mata: `__td_gwidegreefree' = ErgmTermData()
 		mata: `__td_gwidegreefree'.levels = (1..`__ergm_curved_maxd')'
@@ -1767,6 +1773,28 @@ program nwergm, eclass
 		}
 	}
 
+	// altkstar with fixed = FALSE (R's default): the degree counts 1..n-1 with R's own weight/lambda map (curved type 2)
+	if `__altk' {
+		if "`directed'" == "true" | "`is2mode'" == "true" {
+			di "{err}In term {bf:altkstar}: Term may not be used with networks with `=cond("`directed'" == "true", "directed==TRUE", "bipartite > 0")'; the curved form is available for one-mode undirected networks."
+			error 198
+		}
+		if "`method'" != "mple" {
+			di "{err}altkstar with an estimated decay (R: fixed=FALSE) is available with {bf:method(mple)} only, with starting values given by {bf:init()}; use {bf:altkstar(lambda=#  fixed)} for a fixed decay."
+			error 198
+		}
+		local __td_altk "__netd_`++__ne_n'"
+		mata: `__td_altk' = ErgmTermData()
+		mata: `__td_altk'.levels = (1..`=`nodes'-1')'
+		local __ergm_altk_cn ""
+		forvalues __k = 1/`=`nodes'-1' {
+			local __ergm_altk_cn "`__ergm_altk_cn' altkstar_`__k'"
+		}
+		mata: __nwergm_last_M.addterm("degree", `=`nodes'-1', &stat_degree(), &change_degree(), `__td_altk', tokens("`__ergm_altk_cn'"))
+		mata: __nwergm_last_M.mark_curved()
+		mata: __nwergm_last_M.curved[__nwergm_last_M.nterms] = 2
+		local __ergm_matatemps "`__ergm_matatemps' `__td_altk'"
+	}
 	// Unified curved-model flag/starting-value (harmonisation unit
 	// 139): v1 scope allows at most one curved term per model (the
 	// mutual-exclusivity checks above enforce this), so exactly one of
@@ -1782,6 +1810,7 @@ program nwergm, eclass
 	else if "`gwnspfree'" != "" local __ergm_curved_start "`gwnspfree'"
 	else if "`gwodegreefree'" != "" local __ergm_curved_start "`gwodegreefree'"
 	else if "`bgwdegreefree1'`bgwdegreefree2'`bgwdspfree1'`bgwdspfree2'" != "" local __ergm_curved_start "`bgwdegreefree1'`bgwdegreefree2'`bgwdspfree1'`bgwdspfree2'"
+	else if `__altk' local __ergm_curved_start 1
 	else local __ergm_curved_start "`gwidegreefree'"
 
 	// dyad-independent iff only edges/nodematch/nodecov/nodeicov/nodeocov/
@@ -1932,11 +1961,23 @@ program nwergm, eclass
 	local __e7_initmode 0
 	if `"`init'"' != "" {
 		if `__ergm_curved' {
-			di "{err}option {bf:init()} is not currently supported for a model containing a curved (free-decay) term."
-			error 198
+			// the starting values of the curved pseudolikelihood fit (R: control.ergm(init=)): one per parameter, . = default
+			if "`method'" != "mple" {
+				di "{err}option {bf:init()} with a curved (free-decay) term is available with {bf:method(mple)} only."
+				error 198
+			}
+			capture mata: mata drop __ergm_curved_init
+			mata: __ergm_curved_init = strtoreal(tokens(st_local("init")))
+			mata: st_local("__ergm_ci_ok", strofreal(cols(__ergm_curved_init) == __nwergm_last_M.ntheta()))
+			if !`__ergm_ci_ok' {
+				di "{err}option {bf:init()} needs one value (or .) for each parameter of the curved model."
+				error 198
+			}
 		}
-		_nwergm_est init `"`init'"' "`method'"
-		local __e7_initmode = r(mode)
+		else {
+			_nwergm_est init `"`init'"' "`method'"
+			local __e7_initmode = r(mode)
+		}
 	}
 
 	tempname __nw_D
@@ -2036,12 +2077,13 @@ program nwergm, eclass
 		// re-fetching of anything, `__nw_D' was already built above
 		// regardless of which path fits it).
 		local __ergm_curved_native_used = 0
-		if `__ergm_mple_native_used' & `__ergm_nmiss' == 0 {
+		if `__ergm_mple_native_used' & `__ergm_nmiss' == 0 & !`__altk' & `"`init'"' == "" {
 			mata: st_local("__ergm_curved_native_used", strofreal(ErgmNativeCurvedMPLEFit(__nwergm_last_M, __nwergm_last_G, `__ergm_curved_start', "`__b_mple'", "`__V_mple'", "`__ergm_curvedconv'")))
 		}
 		if !`__ergm_curved_native_used' {
 			mata: __ergm_theta_start = (J(1, __nwergm_last_M.ntheta()-2, 0), 0, `__ergm_curved_start')
-			mata: ErgmCurvedMPLEFit(__nwergm_last_M, `__nw_D', __ergm_theta_start, 10000, 1e-10, "`__b_mple'", "`__V_mple'", "`__ergm_curvedconv'")
+			if `"`init'"' != "" mata: ErgmCurvedMPLEFit(__nwergm_last_M, `__nw_D', __ergm_theta_start, 10000, 1e-10, "`__b_mple'", "`__V_mple'", "`__ergm_curvedconv'", __ergm_curved_init)
+			else mata: ErgmCurvedMPLEFit(__nwergm_last_M, `__nw_D', __ergm_theta_start, 10000, 1e-10, "`__b_mple'", "`__V_mple'", "`__ergm_curvedconv'")
 			mata: mata drop __ergm_theta_start
 		}
 		mata: st_local("__ergm_curved_converged", strofreal(st_matrix("`__ergm_curvedconv'")[1,1]))

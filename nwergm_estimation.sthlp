@@ -40,7 +40,8 @@ covariance in {cmd:e(V)} is that of the CD sample, R reports it as missing). {cm
 set SA.burnin, SA.interval, SA.phase3_n, SA.initial_gain and SA.nsubphases.
 
 {phang}
-{opt init(numlist)} ({cmd:control.ergm(init=)}) gives one value per coefficient, in the order of the coefficient table; {cmd:.} or {cmd:NA} leaves a value to be estimated. Values for
+{opt init(numlist)} ({cmd:control.ergm(init=)}) gives one value per coefficient, in the order of the coefficient table; {cmd:.} or {cmd:NA} leaves a value to be estimated. Values for With a curved (free-decay) term, {cmd:init()} is available for {cmd:method(mple)} and needs one value (or
+{cmd:.}) for each parameter of the model, the curved term's weight and decay or lambda last; it is the starting point of the pseudolikelihood fit.
 {opt offset()} coefficients replace those of {opt offset()}; other values are starting values for the Monte Carlo fit (and are held fixed in the pseudolikelihood step that finds the missing ones). If every
 value is given the pseudolikelihood start is skipped. With {cmd:estimate(mple)} only the offset values are used.
 

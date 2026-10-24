@@ -127,3 +127,35 @@ coercion to 'logical(1)'" (R >= 4.3); fixed in 4.13 (`anyNA(start)`), which `erg
 `nwergm simulate, nsim(5)` has `simulate,` as its first blank-delimited token; the dispatcher compares the first token parsed with
 `parse(" ,")`. Testing `"`1'" == "simulate"` never matched when a comma follows directly.
 
+
+## Operators: R ergm 4.12.0 builds the symmetrized network of `Symmetrize(rule="weak")` without the reciprocated pairs when it starts a fit (found 2026-11-01)
+
+`summary(nw ~ Symmetrize(~triangle+kstar(2), rule="weak"))` is right, because R adds the arcs one by one through the update function. `ergm()` and
+`ergmMPLE()` start from the observed network, and the auxiliary network is then filled with the initialisation macro `__undir_net_totoggle`, which for the rule
+`weak` is "toggle unless the reverse arc exists": every reciprocated dyad is missing from the symmetrized network the MPLE change statistics are computed on
+(108 of 182 change statistics differed from brute-force differences of `summary()` on a 14-node directed network; the rules strong, upper, lower agree exactly).
+nwergm computes the exact change statistics, so its `rule(weak)` MPLE equals R's only on a network without reciprocated ties. `cscripts/test_nwergm_ops.do`
+therefore compares `rule(weak)` on networks with reciprocated ties with a pseudolikelihood fitted to R's own `summary()` differences (generator `dev/gen_test_ops.R`, `brute = TRUE`),
+and on a network without reciprocated ties with `ergm(estimate = "MPLE")` itself. Do not "fix" nwergm to reproduce R's initial network.
+
+## R computes `Prod()` statistics as `Exp(Sum(Log))` with log(0) = -1/sqrt(eps); its own summary() is only exact to about 1e-8
+
+Built up edge by edge from the empty network, the statistic passes through values of about 6.7e7 and loses 8 digits (mesa: 522.48718785 in R, exactly 522.48719458 = (3491*659*62)^(1/3)
+in nwergm). The Prod rows of `test_nwergm_ops.do` use the tolerance 1e-6 for the statistics for this reason; the MPLE coefficients agree to 1e-5.
+
+## An ado-file's other programs are private to that file
+
+`_nwergm_numvar` is defined at the end of `nwergm.ado` and cannot be called from `_nwergm_ops.ado` ("command _nwergm_numvar is unrecognized"), although it works inside `nwergm`.
+A helper that several files need has to be a file of its own, or be repeated (the operators check numeric attributes with their own few lines).
+
+## Mata at the command line cannot copy class instances
+
+`mata: B = A` for a class instance A fails with "transmorphic = class not allowed", and `class T scalar x` is not accepted as a declaration there. Inside a function `b = a`
+copies the instance (value semantics, the pointers inside are shared), and an argument written `*p` is passed by reference. `unw_ergm.do` therefore has `ergm_ops_copyM/copyG`
+(typed arguments) for the places where `_nwergm_ops.ado` has to save and restore `__nwergm_last_M` and `__nwergm_last_G` around a model-building call of `nwergm`.
+Also: `template` is a reserved word in Mata, and `mata:` blocks cannot be nested in a `forvalues` loop of a do-file (the batch run stops with --Break--): repeat the statements.
+
+## The operators run in the native plugin only; a changed plugin has to be rebuilt for every platform
+
+`native/ergm_mcmc.c` now evaluates composite columns and derived networks (`TERMCODE_COMP`, contexts 1-4). The macOS plugin in `lib/plugins/macos` was rebuilt here;
+`lib/plugins/unix` and `lib/plugins/windows` have to be rebuilt on a Linux and a Windows host (`make -C native unix`; Windows: see native/Makefile) before a release.

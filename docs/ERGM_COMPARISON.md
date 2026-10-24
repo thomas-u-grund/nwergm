@@ -60,7 +60,7 @@ A real nwergm network-type matrix (every term option run on one undirected, one 
 | MH proposals | 25 (TNT, randomtoggle, ConstantEdges, CondDegree family, BDStratTNT, SPDyad, HammingTNT, dyadnoise, ...) and `hints` (`sparse`, `strat`, `triadic`) | 2 (uniform, TNT) each with a masked variant, plus a tie/non-tie swap move for `fixdensity`; no hints |
 | Sample-size controls | 145 `control.ergm()` arguments | `mcmcburnin`, `mcmcinterval`, `mcmcsamplesize`, `mcmleiterations`, `seed`; adaptive interval |
 | Offset / fixed coefficients | `offset()` term wrapper, `offset.coef` | `offset(coefname #)`; not allowed on a curved term's weight/decay |
-| Curved ERGMs | `gwesp/gwdsp/gwnsp/gwdegree/gwodegree/gwidegree` curved by default (`fixed=FALSE`), `altkstar`, `gwb1degree/gwb2degree`; generic `Curve()`; `fixed=TRUE` fixes decay | Fixed decay: `gwesp()` etc. (opposite default to R). Free decay: `gwespfree()`, `gwdspfree()`, `gwnspfree()`, `gwdegreefree()`, `gwodegreefree()`, `gwidegreefree()`, with MPLE and MCMLE. No `altkstar`, no curved bipartite terms, no generic `Curve()` |
+| Curved ERGMs | `gwesp/gwdsp/gwnsp/gwdegree/gwodegree/gwidegree` curved by default (`fixed=FALSE`), `altkstar`, `gwb1degree/gwb2degree/gwb1dsp/gwb2dsp`; generic `Curve()`; `fixed=TRUE` fixes decay | Fixed decay: `gwesp()` etc. (opposite default to R). Free decay: `gwespfree()`, `gwdspfree()`, `gwnspfree()`, `gwdegreefree()`, `gwodegreefree()`, `gwidegreefree()`, `bgwdegreefree1/2()`, `bgwdspfree1/2()` with MPLE and MCMLE; `structural(altkstar)` (estimated lambda) with `method(mple)` and `init()`; `Curve()` with linear maps (`operators()`) |
 | Dyad-independent exact estimation | MPLE = MLE | Same (automatic) |
 | Missing data | Missing dyads via `observed` constraint and MCMLE imputation; `obs.*` controls | **None, and silent**: a missing tie in the matrix is treated as no tie and still counted among the dyads; a missing covariate value is treated as 0 (both checked, same coefficients as an explicit 0). No warning. |
 | Valued ERGM (ergm.count) | CMP/CMB, Poisson, geometric, `sum`, `nonzero`, ... | Rejected with an explicit error; not planned |
@@ -150,3 +150,18 @@ Caveats: the settings differ (R's longer chains vs nwergm's shorter ones with ad
 - Certification suite: `run_cscripts.sh` (logs in `cscript_logs/`, tallies in `cscript_summary.csv`).
 - Timing and MCMLE/SE comparison: `timing/time_gen.R`, `time_r.R`, `time_stata.do`, `se_r.R`, `se_stata.do`, `curved_r.R`, `curved_stata.do`.
 - Misc checks (missing data, `estat ic`, `predict`, unsupported options): inline Stata runs, logs not kept.
+
+
+## (f) Update (branch `operators`): operators, balance, altkstar, curved two-mode terms
+
+Recount with `dev/update_inventory.py` (it rewrites `ERGM_TERMS_INVENTORY.csv` from the option names in `nwergm.ado` and the tests in `cscripts/`): of the 139 ergm terms,
+**123 IMPLEMENTED, 2 PARTIAL (`altkstar`: estimated lambda for `method(mple)` with `init()` only; `Curve`: linear maps only), 0 NOT IMPLEMENTED, 14 NOT PLANNED = 125 of 139 (89.9%)**.
+The 14 are `B` and the 13 valued-only terms (`atleast atmost cdf cyclicalweights equalto greaterthan ininterval nodecovar nodeicovar nodeocovar smallerthan sum transitiveweights`),
+which R itself refuses on a binary network: of the 126 terms that can be used on a binary network, 125 are covered (99.2%). Sections (a) to (e) above describe the state of 2026-10-23.
+
+What was added and how it was checked against R ergm 4.12.0 (generators in `dev/`, tests in `cscripts/`):
+- Operators `Sum Prod S F NodematchFilter Symmetrize Project (Proj1 Proj2) I For Label Log Exp Offset Curve` (option `operators()`, `help nwergm_operators`): `test_nwergm_ops` (94 comparisons: observed
+  statistics, MPLE coefficients and standard errors, MCMLE for six models, on random and real undirected, directed and two-mode networks) and `test_nwergm_ops_native` (plugin change statistics against brute force).
+- `balance`: `test_nwergm_balance` (statistic, MPLE, MCMLE).
+- Curved two-mode terms `gwb1degree gwb2degree gwb1dsp gwb2dsp` (fixed = FALSE): `test_nwergm_bipcurved` (MPLE to 1e-6, MCMLE for the degree terms; the degree counts of the MCMLE now run over all possible degrees).
+- `altkstar` with an estimated lambda: `test_nwergm_altkstar` (map and gradient; MPLE from given starting values on four networks, four starting values each, to 1e-5); `init()` for the other curved terms is checked too.

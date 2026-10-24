@@ -29,12 +29,15 @@ program _nwergm_ops, rclass
 		else if inlist("`opname'", "s", "f", "nodematchfilter", "symmetrize", "project", "proj1", "proj2") {
 			_nwergm_ops_derived `netname', args(`"`opargs'"') nodes(`nodes') directed(`directed') twomode(`twomode') nebase(`ne') type(`type') kind(`opname')
 		}
+		else if inlist("`opname'", "curve", "parametrise", "parametrize") {
+			_nwergm_ops_curve `netname', args(`"`opargs'"') nodes(`nodes') directed(`directed') twomode(`twomode') nebase(`ne') type(`type')
+		}
 		else if inlist("`opname'", "i", "for", "label", "log", "exp", "offset") {
 			_nwergm_ops_inline `netname', args(`"`opargs'"') nodes(`nodes') directed(`directed') twomode(`twomode') nebase(`ne') type(`type') kind(`opname')
 		}
 		else {
 			mata: mata drop __ops_calls`d'
-			di "{err}operators(): unknown operator {bf:`opname'}; the operators are Sum, Prod, S, F, NodematchFilter, Symmetrize, Project, Proj1, Proj2, I, For, Label, Log, Exp and Offset."
+			di "{err}operators(): unknown operator {bf:`opname'}; the operators are Sum, Prod, S, F, NodematchFilter, Symmetrize, Project, Proj1, Proj2, I, For, Label, Log, Exp, Offset and Curve."
 			error 198
 		}
 		local ne = r(nebase)
@@ -502,6 +505,43 @@ program _nwergm_ops_inline, rclass
 		mata: ergm_ops_setkind(__nwergm_last_M, `first', `first' + `np' - 1, `=cond("`kind'" == "log", 1, 2)', `log0')
 	}
 	return local temps ""
+	return scalar dep = `dep'
+	return scalar nebase = `ne'
+end
+
+* Curve(terms, params(names), map(rep | matrix(name))): the coefficients of the terms are a linear function of the parameters,
+* eta = L * theta (map(rep) recycles the parameters, as R's map = "rep"; matrix(name) is the n x q matrix L).  Maximum likelihood
+* with eta = L * theta is the model with the statistics L' * g(y), which is how it is estimated (a weighted Sum).
+capture program drop _nwergm_ops_curve
+program _nwergm_ops_curve, rclass
+	version 14
+	syntax anything(name=netname), ARGS(string) NODES(integer) DIRECTED(string) TWOMODE(string) NEBASE(integer) [TYPE(string)]
+	local ne = `nebase'
+	mata: __a = ergm_ops_split1(st_local("args"))
+	mata: st_local("terms", __a[1])
+	mata: st_local("opts", __a[2])
+	mata: st_local("bad", ergm_ops_badopts(st_local("opts"), "params map"))
+	mata: __ok = 0
+	mata: st_local("params", ergm_ops_getopt(st_local("opts"), "params", __ok))
+	mata: __ok = 0
+	mata: st_local("map", ergm_ops_getopt(st_local("opts"), "map", __ok))
+	if "`bad'" != "" | "`params'" == "" | "`map'" == "" {
+		di "{err}Curve(): the syntax is Curve(terms, params(names) map(rep)) or map(matrix(name)); R's other arguments (gradient, minpar, maxpar, cov) and map functions are not available."
+		error 198
+	}
+	_nwergm_opsub `netname', terms(`terms') nodes(.) directed(.) twomode(.) nebase(`ne') type(`type')
+	local sname "`r(name)'"
+	local np = r(np)
+	local dep = !r(dind)
+	local q : word count `params'
+	local td "__netd_`++ne'"
+	mata: `td' = ErgmTermData()
+	mata: `td'.opkind = "sum"
+	mata: `td'.opsub = (&`sname')
+	mata: `td'.opdims = (`np')
+	mata: ergm_ops_curve_W(`td', st_local("map"), `q', `np')
+	mata: __nwergm_last_M.addterm("op:sum", `q', &stat_op(), &change_op(), `td', ergm_ops_words(st_local("params")))
+	return local temps "`td'"
 	return scalar dep = `dep'
 	return scalar nebase = `ne'
 end

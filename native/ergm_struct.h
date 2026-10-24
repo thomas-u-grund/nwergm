@@ -55,6 +55,7 @@
 #define STC_KSTAR_ATTR      1037  /* kstar/ostar/istar with attr: p1 = k */
 #define STC_OSTAR_ATTR      1038
 #define STC_ISTAR_ATTR      1039
+#define STC_BALANCE         1040  /* balance: triads of type 102 or 300 (directed), with 1 or 3 ties (undirected) */
 
 #define S_OUT(g, v) ((g)->directed ? &(g)->outadj[(v)] : &(g)->adj[(v)])
 #define S_IN(g, v)  ((g)->directed ? &(g)->inadj[(v)] : (adjlist_t *)NULL)
@@ -433,6 +434,29 @@ static double change_struct(graph_t *g, int code, double p1, double p2, double *
 		}
 		case STC_TRIPERCENT:
 			return s_tripercent(g, i, j, tied, attr, p1, p2);
+		case STC_BALANCE: {
+			long k, n2 = g->n;
+			for (k = 1; k <= n2; k++) {
+				int before, after;
+				if (k == i || k == j) continue;
+				if (g->directed) {
+					int a12 = has_edge(g, i, j), a21 = has_edge(g, j, i);
+					int a13 = has_edge(g, i, k), a31 = has_edge(g, k, i);
+					int a23 = has_edge(g, j, k), a32 = has_edge(g, k, j);
+					int code = a12 + 2 * a21 + 4 * a13 + 8 * a31 + 16 * a23 + 32 * a32;
+					int t0 = s_tri_tab[code], t1 = s_tri_tab[tied ? code - 1 : code + 1];
+					before = (t0 == 2 || t0 == 15);
+					after = (t1 == 2 || t1 == 15);
+				}
+				else {
+					int ne = (has_edge(g, i, k) ? 1 : 0) + (has_edge(g, j, k) ? 1 : 0);
+					before = (ne + (tied ? 1 : 0)) & 1;
+					after = (ne + (tied ? 0 : 1)) & 1;
+				}
+				chg += (double)(after - before);
+			}
+			return chg;
+		}
 		case STC_OPENTRIAD: {
 			double c = 0.0, c2;
 			S_NB_FOR(g, j, k) if (has_edge(g, k, i)) c += 1.0; S_NB_END
