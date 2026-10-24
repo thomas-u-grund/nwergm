@@ -7,7 +7,6 @@
 {p2colset 9 31 32 2}{...}
 {p2col :nwergm estimation methods {hline 2}}Estimation methods, controls, simulation and diagnostics of {helpb nwergm}{p_end}
 {p2colreset}{...}
-{pstd}{it:nwergm version 1.1.0, 24 October 2026}{p_end}{* nwversion}
 
 {title:Syntax}
 
@@ -99,3 +98,6 @@ Hummel, R. M., Hunter, D. R. and Handcock, M. S. 2012. Improving simulation-base
 Konis, K. 2007. {it:Linear Programming Algorithms for Detecting Separated Data in Binary Logistic Regression Models}. DPhil thesis, University of Oxford.{p_end}
 {phang}
 Snijders, T. A. B. 2002. Markov chain Monte Carlo estimation of exponential random graph models. {it:Journal of Social Structure} 3(2).{p_end}
+
+{hline}
+{pstd}{it:nwergm version 1.1.0, 24 October 2026}{p_end}{* nwversion}

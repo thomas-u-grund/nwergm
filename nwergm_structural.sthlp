@@ -5,7 +5,6 @@
 {p2colset 9 33 34 2}{...}
 {p2col :nwergm structural() {hline 2}}Structural terms of R's ergm package in {helpb nwergm}{p_end}
 {p2colreset}{...}
-{pstd}{it:nwergm version 1.1.0, 24 October 2026}{p_end}{* nwversion}
 
 {title:Syntax}
 
@@ -62,3 +61,6 @@ to fit this term, and has the coefficients {cmd:altkstar} and {cmd:altkstar_lamb
 
 {psee}
 {helpb nwergm}, {helpb nwergm_estat}
+
+{hline}
+{pstd}{it:nwergm version 1.1.0, 24 October 2026}{p_end}{* nwversion}

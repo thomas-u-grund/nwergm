@@ -9,7 +9,6 @@
 {p2colset 5 27 29 2}{...}
 {p2col:{bf:nwergm (two-mode)} {hline 2}}Two-mode (bipartite) terms of {help nwergm}{p_end}
 {p2colreset}{...}
-{pstd}{it:nwergm version 1.1.0, 24 October 2026}{p_end}{* nwversion}
 
 {marker syntax}{...}
 {title:Syntax}
@@ -67,3 +66,6 @@ Constraints ({opt blockdiag()}, {opt freedyads()}) and {opt edgecov()} with a tw
 {pstd}
 The pseudolikelihood fit solves the logistic regression to a tighter tolerance than Stata's default so that the coefficients agree with R to about 1e-6 when the fit is well identified.
 {p_end}
+
+{hline}
+{pstd}{it:nwergm version 1.1.0, 24 October 2026}{p_end}{* nwversion}

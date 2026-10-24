@@ -6,7 +6,6 @@
 {p2colset 9 33 34 2}{...}
 {p2col :nwergm constraints {hline 2}}Sample-space constraints, proposals and sampling controls of nwergm{p_end}
 {p2colreset}{...}
-{pstd}{it:nwergm version 1.1.0, 24 October 2026}{p_end}{* nwversion}
 
 {title:Syntax}
 
@@ -97,3 +96,6 @@ simulates under the constraints of the fit.
 {title:Author}
 
 {pstd}Thomas Grund, University College Dublin and RWTH Aachen{p_end}
+
+{hline}
+{pstd}{it:nwergm version 1.1.0, 24 October 2026}{p_end}{* nwversion}
