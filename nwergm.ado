@@ -689,6 +689,11 @@ program nwergm, eclass
 		local __con_w "default"
 		if "`proposal'" == "uniform" local __con_w "random"
 		_nwergm_constr, spec(`constraints') nodes(`nodes') directed(`directed') twomode(`is2mode') matobj(`netobj') weights(`__con_w')
+		if "`con_observed'" == "miss" {
+			di "{err}constraints(observed) cannot be used on a network with missing dyads: R's ergm stops on it with an internal error ('types' and 'constraints' are not the same length). Use {bf:obsconstraints(observed)}, which fits on the observed dyads and lets only the missing dyads vary."
+			error 198
+		}
+		if "`con_observed'" == "none" di "{txt}Note: network `netname' has no missing dyads, so the {bf:observed} constraint leaves every dyad free (as in R's ergm); the model is fitted without it."
 		local __con_active 1
 		if `con_hasdyad' mata: __nwergm_last_G.set_dyadmask(__ncon_free)
 		mata: __nwergm_c1_par = __ncon_par
@@ -717,23 +722,31 @@ program nwergm, eclass
 			else local __obs_spec `"`constraints' + `obsconstraints'"'
 		}
 		_nwergm_constr, spec(`__obs_spec') nodes(`nodes') directed(`directed') twomode(`is2mode') matobj(`netobj') weights(default) prefix(o)
-		capture mata: mata drop __nwergm_obs_G
-		mata: __nwergm_obs_G = ErgmGraph()
-		mata: __nwergm_obs_G.init(`nodes', ("`directed'"=="true"))
-		mata: ergm_bridge_from_netobj(`netobj', __nwergm_obs_G, ("`directed'"=="true"))
-		if `ocon_hasdyad' mata: __nwergm_obs_G.set_dyadmask(__ncon_free)
-		mata: __nwergm_obs_par = __ncon_par
-		mata: __nwergm_obs_cols = __ncon_cols
-		// dyad-independent sample spaces: the pseudolikelihood start uses the informative dyads, i.e. those that
-		// vary under the constraints but are fixed once the observation constraints are added (R: which="informative")
-		if `ocon_dind' {
-			if `__con_active' {
-				mata: __nwergm_info = __nwergm_c1_free :& !(`=cond(`ocon_hasdyad',"__ncon_free","J(`nodes',`nodes',1)")')
+		if "`ocon_observed'" == "none" di "{txt}Note: network `netname' has no missing dyads, so the {bf:observed} constraint leaves every dyad free (as in R's ergm)."
+		// R drops an observation constraint that is empty (only `observed' on a network without missing dyads): plain MCMLE
+		if "`ocon_observed'" == "none" & `ocon_hasdyad' == 0 & inlist("`ocon_code'", "10", "11") {
+			local __obs_active 0
+		}
+		else {
+			capture mata: mata drop __nwergm_obs_G
+			mata: __nwergm_obs_G = ErgmGraph()
+			mata: __nwergm_obs_G.init(`nodes', ("`directed'"=="true"))
+			mata: ergm_bridge_from_netobj(`netobj', __nwergm_obs_G, ("`directed'"=="true"))
+			if "`is2mode'" == "true" mata: __nwergm_obs_G.set_bipartite(strtoreal(`netobj'->get_modes())')
+			if `ocon_hasdyad' mata: __nwergm_obs_G.set_dyadmask(__ncon_free)
+			mata: __nwergm_obs_par = __ncon_par
+			mata: __nwergm_obs_cols = __ncon_cols
+			// dyad-independent sample spaces: the pseudolikelihood start uses the informative dyads, i.e. those that
+			// vary under the constraints but are fixed once the observation constraints are added (R: which="informative")
+			if `ocon_dind' {
+				if `__con_active' {
+					mata: __nwergm_info = __nwergm_c1_free :& !(`=cond(`ocon_hasdyad',"__ncon_free","J(`nodes',`nodes',1)")')
+				}
+				else {
+					mata: __nwergm_info = !(`=cond(`ocon_hasdyad',"__ncon_free","J(`nodes',`nodes',1)")')
+				}
+				mata: st_local("__obs_info", strofreal(sum(__nwergm_info :* (1 :- I(`nodes'))) > 0))
 			}
-			else {
-				mata: __nwergm_info = !(`=cond(`ocon_hasdyad',"__ncon_free","J(`nodes',`nodes',1)")')
-			}
-			mata: st_local("__obs_info", strofreal(sum(__nwergm_info :* (1 :- I(`nodes'))) > 0))
 		}
 	}
 	// captured HERE, before any MCMC ever runs: __nwergm_last_G's own
@@ -2024,6 +2037,11 @@ program nwergm, eclass
 	else {
 		mata: `__nw_D' = __nwergm_last_M.build_mple_data(__nwergm_last_G)
 	}
+	// the missing-dyad row filter must see the same dyad mask the design matrix was built with (the informative
+	// dyads), so it runs before the mask is restored below
+	if `__ergm_nmiss' > 0 {
+		mata: `__nw_D' = select(`__nw_D', ergm_mple_keep(__nwergm_last_G, __nwergm_missmat))
+	}
 	if `__obs_info' {
 		if `__con_active' & `__c1_hasdyad' {
 			mata: __nwergm_last_G.set_dyadmask(__nwergm_c1_free)
@@ -2033,9 +2051,6 @@ program nwergm, eclass
 		}
 	}
 	local __ergm_matatemps "`__ergm_matatemps' `__nw_D'"
-	if `__ergm_nmiss' > 0 {
-		mata: `__nw_D' = select(`__nw_D', ergm_mple_keep(__nwergm_last_G, __nwergm_missmat))
-	}
 	mata: st_local("__ergm_nrows", strofreal(rows(`__nw_D')))
 	mata: st_local("__ergm_p", strofreal(cols(`__nw_D')-1))
 

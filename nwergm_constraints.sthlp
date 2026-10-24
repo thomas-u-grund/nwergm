@@ -47,7 +47,7 @@ or their positions {cmd:c(1,2)}, {cmd:-c(1,2)} in R's ordering{p_end}
 {p2col :{cmd:blockdiag(}{it:attr, noncontig}{cmd:)}}only dyads within the same value of {it:attr} may vary; {it:noncontig} is {cmd:merge} (default, values must form runs) or {cmd:split}{p_end}
 {p2col :{cmd:fixedas(}{it:fixed.dyads, present, absent}{cmd:)}}fix the dyads that are ties in the given networks; present/absent dyads must match the network being fitted{p_end}
 {p2col :{cmd:fixallbut(}{it:free.dyads}{cmd:)}}only the dyads that are ties in the given network may vary{p_end}
-{p2col :{cmd:observed}}only the missing dyads may vary{p_end}
+{p2col :{cmd:observed}}only the missing dyads may vary (with no missing dyad the constraint is empty and the model is fitted without it, as in R; in {opt constraints()} R itself fails on a network with missing dyads, so use {opt obsconstraints(observed)} there){p_end}
 {p2col :{cmd:egocentric(}{it:attr, direction}{cmd:)}}fix the dyads of nodes for which the 0/1 node variable {it:attr} is nonzero; {it:direction} is {cmd:both} (default), {cmd:out} or {cmd:in}{p_end}
 {p2col :{cmd:dyadnoise(}{it:p01, p10}{cmd:)}}soft constraint: the sampled network is an observation of the given one with independent dyad errors of those probabilities{p_end}
 {p2colreset}{...}
