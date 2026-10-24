@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.0.1  24oct2026 author: Thomas Grund}{...}
+{* *! version 1.1.0  24oct2026 author: Thomas Grund}{...}
 {vieweralsosee "nwergm" "help nwergm"}{...}
 {vieweralsosee "nwergm postestimation" "help nwergm_estat"}{...}
 {title:Title}
@@ -7,7 +7,7 @@
 {p2colset 9 31 32 2}{...}
 {p2col :nwergm estimation methods {hline 2}}Estimation methods, controls, simulation and diagnostics of {helpb nwergm}{p_end}
 {p2colreset}{...}
-{pstd}{it:nwergm version 1.0.1, 24 October 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.1.0, 24 October 2026}{p_end}{* nwversion}
 
 {title:Syntax}
 

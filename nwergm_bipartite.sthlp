@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.0.1  24oct2026 nwergm_bipartite.sthlp  two-mode terms of nwergm}{...}
+{* *! version 1.1.0  24oct2026 nwergm_bipartite.sthlp  two-mode terms of nwergm}{...}
 {vieweralsosee "nwergm" "help nwergm"}{...}
 {viewerjumpto "Syntax" "nwergm_bipartite##syntax"}{...}
 {viewerjumpto "Terms" "nwergm_bipartite##terms"}{...}
@@ -9,7 +9,7 @@
 {p2colset 5 27 29 2}{...}
 {p2col:{bf:nwergm (two-mode)} {hline 2}}Two-mode (bipartite) terms of {help nwergm}{p_end}
 {p2colreset}{...}
-{pstd}{it:nwergm version 1.0.1, 24 October 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.1.0, 24 October 2026}{p_end}{* nwversion}
 
 {marker syntax}{...}
 {title:Syntax}

@@ -1,11 +1,11 @@
 {smcl}
-{* *! version 1.0.1  24oct2026 nwergm_fit.sthlp}{...}
+{* *! version 1.1.0  24oct2026 nwergm_fit.sthlp}{...}
 {vieweralsosee "nwergm" "help nwergm"}{...}
 {viewerjumpto "Missing" "nwergm_fit##missing"}{...}
 {viewerjumpto "Fit" "nwergm_fit##fit"}{...}
 {viewerjumpto "predict" "nwergm_fit##predict"}{...}
 {title:Title}
-{pstd}{it:nwergm version 1.0.1, 24 October 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.1.0, 24 October 2026}{p_end}{* nwversion}
 
 {pstd}
 {bf:nwergm} - missing data, fit statistics and prediction

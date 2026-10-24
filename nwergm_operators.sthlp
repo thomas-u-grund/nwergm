@@ -1,11 +1,11 @@
 {smcl}
-{* *! version 1.0.1  24oct2026 author: Thomas Grund}{...}
+{* *! version 1.1.0  24oct2026 author: Thomas Grund}{...}
 {title:Title}
 
 {p2colset 9 33 34 2}{...}
 {p2col :nwergm operators() {hline 2}}Operator terms of R's ergm package in {helpb nwergm}{p_end}
 {p2colreset}{...}
-{pstd}{it:nwergm version 1.0.1, 24 October 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.1.0, 24 October 2026}{p_end}{* nwversion}
 
 {title:Syntax}
 
