@@ -3,6 +3,11 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+- Dialog boxes brought up to date: `db nwergm` now sets every term and option of `nwergm` (the dyadic, curved, two-mode, `structural()` and `operators()` terms, constraints and observation constraints, estimation methods, MCMC, stochastic-approximation and bridge-sampling settings, `offset()`, `coeflabel()`), and there are new dialogs `db nwergm_simulate` and `db nwergm_estat` (`estat gof`, `estat mcmcdiag`, `estat ic`, `nwergm simulate` from a fit). The dialogs are generated from one specification (`dlg/`).
+
 ## [1.1.0] - 2026-10-24
 
 ### Added

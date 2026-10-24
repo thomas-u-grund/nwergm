@@ -19,6 +19,9 @@ The following postestimation commands are available after {helpb nwergm}:
 {p2col: {cmd:estat ic}}Log-likelihood, AIC and BIC (see {help nwergm_fit}){p_end}
 {p2colreset}{...}
 
+{pstd}
+{cmd:db nwergm_estat} opens a dialog for these commands and for {cmd:nwergm simulate} from the last fit; {cmd:db nwergm_simulate} opens the dialog of {cmd:nwergm simulate} with given coefficients.
+
 {title:Supported network types}
 
 {pstd}

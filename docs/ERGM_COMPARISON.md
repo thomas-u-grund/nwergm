@@ -73,7 +73,7 @@ A real nwergm network-type matrix (every term option run on one undirected, one 
 | Covariates | any vertex/edge attribute, vector attributes, NA handled by terms | numeric Stata variables only (encode strings first), exact match for categoricals; `edgecov()`/`hamming()` take a loaded network, not a matrix |
 | Network types | undirected, directed, bipartite, valued, temporal | undirected, directed, two-mode (undirected, 12-term family); binary only |
 
-**Stata-side extras.** `nwergm` integrates with the `nw*` data model (`nwset`, `nwwebuse`, edge covariates taken from other loaded networks); `e(b)`/`e(V)` support `test` and `lincom`; a dialog box (`nwergm.dlg`); native C MCMC plugin (macOS, Linux, Windows builds in the repo) with a pure-Mata fallback that is always the reference (`nonative` option; `e(native)`); the full range of directed shared-partner definitions (`type(OTP|ITP|OSP|ISP|RTP)`, also available for esp/dsp); `spcache` option; `nomcmcsample`; `estat gof` re-uses `nwgeodesic`/`nwtriads`; a tutorial page in the web documentation.
+**Stata-side extras.** `nwergm` integrates with the `nw*` data model (`nwset`, `nwwebuse`, edge covariates taken from other loaded networks); `e(b)`/`e(V)` support `test` and `lincom`; dialog boxes (`db nwergm`, `db nwergm_simulate`, `db nwergm_estat`); native C MCMC plugin (macOS, Linux, Windows builds in the repo) with a pure-Mata fallback that is always the reference (`nonative` option; `e(native)`); the full range of directed shared-partner definitions (`type(OTP|ITP|OSP|ISP|RTP)`, also available for esp/dsp); `spcache` option; `nomcmcsample`; `estat gof` re-uses `nwgeodesic`/`nwtriads`; a tutorial page in the web documentation.
 
 ## (c) Validation status
 

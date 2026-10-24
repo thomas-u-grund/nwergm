@@ -174,6 +174,17 @@ Estimation methods (MPLE variants, contrastive divergence, stochastic approximat
 
 {p2colreset}{...}
 
+{title:Dialog boxes}
+
+{pstd}
+{cmd:db nwergm} opens a dialog with tabs for the terms (basic, degree, triad, covariate, dyadic, two-mode, curved, operators),
+the constraints, missing data and sample space, the estimation method, the MCMC and bridge-sampling settings and the output.
+Every term and option of {cmd:nwergm} can be set there.
+{cmd:db nwergm_simulate} opens the dialog of {cmd:nwergm simulate} (drawing networks from a model with given coefficients) and
+{cmd:db nwergm_estat} the dialog of the postestimation commands {cmd:estat gof}, {cmd:estat mcmcdiag}, {cmd:estat ic} and
+{cmd:nwergm simulate} from a fit. The dialogs are installed with the package and appear in the {cmd:Network Analysis} menu when the
+menu is installed with {cmd:nwinstall}.
+
 {title:Version}
 
 {p 8 17 2}
