@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.0.0  24oct2026 author: Thomas Grund}{...}
+{* *! version 1.0.1  24oct2026 author: Thomas Grund}{...}
 {marker topic}
 {helpb nwtopical##analysis_statmodels:[NW-2.6.6] Statistical Estimation of Networks}
 
@@ -8,7 +8,7 @@
 {p2colset 9 21 22 2}{...}
 {p2col :nwergm {hline 2}}Exponential-family random graph model (ERGM) estimation{p_end}
 {p2colreset}{...}
-{pstd}{it:nwergm version 1.0.0, 24 October 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.0.1, 24 October 2026}{p_end}{* nwversion}
 
 {pstd}
 Estimation methods (MPLE variants, contrastive divergence, stochastic approximation), the {cmd:init()} option, the MCMLE controls, {cmd:nwergm simulate} from a fit and the goodness-of-fit and diagnostic reports are described in {help nwergm_estimation}.{p_end}
@@ -172,6 +172,16 @@ Estimation methods (MPLE variants, contrastive divergence, stochastic approximat
 {synopt:{opt nomcmcsample}}Skip posting {bf:e(mcmcsample)} ({bf:method(mcmle)} only). Populating this matrix from Mata is the single slowest step for a fit with a large {opt mcmcsamplesize()} - a genuine Stata matrix-engine cost at bulk-data scale (confirmed by direct timing: over 30 seconds at 100,000 rows), not something {help nwergm_estat:estat mcmcdiag}'s own consumption of it can be blamed for or sped up (reading the already-posted matrix back is fast regardless of size - the cost is entirely in creating it in the first place). Specify {opt nomcmcsample} when fitting with an unusually large {opt mcmcsamplesize()} and you do not need {cmd:estat mcmcdiag} or to inspect the raw sample directly - the coefficient table, standard errors, and every other stored result are completely unaffected{p_end}
 
 {p2colreset}{...}
+
+{title:Version}
+
+{p 8 17 2}
+{cmd:nwergm version}
+{p_end}
+
+{pstd}
+{cmd:nwergm version} displays the installed release of {cmd:nwergm}, the version of the {cmd:nwcommands} core, the license and the version of the R package that the results were compared with, and the native plugin in use. It stores the release in {cmd:r(version)} and {cmd:r(date)}, the core version in {cmd:r(core)}, and the license in {cmd:r(license)}. After estimation, the release that produced the results is in {cmd:e(version)}; quote it when reporting an analysis. {cmd:nwversion} lists the core and all installed model packages.
+{p_end}
 
 {title:Description}
 
