@@ -37,6 +37,8 @@ f nwergm_fit.sthlp
 f nwergm_operators.sthlp
 f nwergm_structural.sthlp
 f nwergm.dlg
+f nwergm_simulate.dlg
+f nwergm_estat.dlg
 f lib/lnwergm.mlib
 f lib/plugins/macos/ergm_mcmc_macos.plugin
 f lib/plugins/windows/ergm_mcmc_windows.plugin
