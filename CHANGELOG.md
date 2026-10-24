@@ -3,7 +3,7 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.1.1] - 2026-10-25
 
 ### Fixed
 - `estat gof, gof(b1degree)` and `gof(b2degree)` after a two-mode fit treated the fit as one-mode and stopped with "needs a two-mode network" (the two-mode test counted the mode-2 nodes that equal 0, which is always none); the number of first-mode nodes is now read from the network. The observed distributions equal those of R's `gof(fit, GOF = ~ b1degree + b2degree)`. Test `test_nwergm_gofbip`.

@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.1.0  24oct2026 author: Thomas Grund}{...}
+{* *! version 1.1.1  25oct2026 author: Thomas Grund}{...}
 {vieweralsosee "nwergm" "help nwergm"}{...}
 {title:Title}
 
@@ -98,4 +98,4 @@ simulates under the constraints of the fit.
 {pstd}Thomas Grund, University College Dublin and RWTH Aachen{p_end}
 
 {hline}
-{pstd}{it:nwergm version 1.1.0, 24 October 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.1.1, 25 October 2026}{p_end}{* nwversion}

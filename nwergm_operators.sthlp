@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.1.0  24oct2026 author: Thomas Grund}{...}
+{* *! version 1.1.1  25oct2026 author: Thomas Grund}{...}
 {title:Title}
 
 {p2colset 9 33 34 2}{...}
@@ -73,4 +73,4 @@ For {cmd:Symmetrize()} with {cmd:rule(weak)} on a network with reciprocated ties
 {helpb nwergm}, {helpb nwergm_structural}, {helpb nwergm_estimation}
 
 {hline}
-{pstd}{it:nwergm version 1.1.0, 24 October 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.1.1, 25 October 2026}{p_end}{* nwversion}
