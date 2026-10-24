@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 2.0.0  22aug2026 author: Thomas Grund}{...}
+{* *! version 1.0.0  24oct2026 author: Thomas Grund}{...}
 {marker topic}
 {helpb nwtopical##analysis_statmodels:[NW-2.6.6] Statistical Estimation of Networks}
 
@@ -8,6 +8,7 @@
 {p2colset 9 21 22 2}{...}
 {p2col :nwergm {hline 2}}Exponential-family random graph model (ERGM) estimation{p_end}
 {p2colreset}{...}
+{pstd}{it:nwergm version 1.0.0, 24 October 2026}{p_end}{* nwversion}
 
 {pstd}
 Estimation methods (MPLE variants, contrastive divergence, stochastic approximation), the {cmd:init()} option, the MCMLE controls, {cmd:nwergm simulate} from a fit and the goodness-of-fit and diagnostic reports are described in {help nwergm_estimation}.{p_end}

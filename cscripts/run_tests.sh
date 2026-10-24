@@ -3,6 +3,7 @@
 # NWCORE: directory of the core nwcommands package (unw_core.do and the core .ado files).
 # The tests are independent do-files; each runs in its own Stata process (-e); logs are run_<test>.log in the repo root.
 cd "$(dirname "$0")/.." || exit 1
+python3 tools/check_version.py || exit 1
 if [[ -z $NWCORE || ! -f $NWCORE/unw_core.do ]]; then echo "set NWCORE to the nwcommands (core) directory"; exit 1; fi
 export NWCORE
 jobs=${1:-3}

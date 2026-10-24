@@ -1,10 +1,11 @@
 {smcl}
-{* *! version 1.0.0  author: Thomas Grund}{...}
+{* *! version 1.0.0  24oct2026 version 1.0.0  author: Thomas Grund}{...}
 {title:Title}
 
 {p2colset 9 32 33 2}{...}
 {p2col :nwergm covariate terms {hline 2}}Node and dyadic covariate terms of {helpb nwergm}, with R ergm's argument conventions{p_end}
 {p2colreset}{...}
+{pstd}{it:nwergm version 1.0.0, 24 October 2026}{p_end}{* nwversion}
 
 {title:Syntax}
 
