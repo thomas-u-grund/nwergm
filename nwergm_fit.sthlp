@@ -5,7 +5,6 @@
 {viewerjumpto "Fit" "nwergm_fit##fit"}{...}
 {viewerjumpto "predict" "nwergm_fit##predict"}{...}
 {title:Title}
-{pstd}{it:nwergm version 1.1.0, 24 October 2026}{p_end}{* nwversion}
 
 {pstd}
 {bf:nwergm} - missing data, fit statistics and prediction
@@ -66,3 +65,6 @@ set to missing. The prediction is available for the most recent {cmd:nwergm} fit
 {title:References}
 
 {phang}Handcock, M. S. and Gile, K. J. 2010. Modeling social networks from sampled data. {it:Annals of Applied Statistics} 4: 5-25.{p_end}
+
+{hline}
+{pstd}{it:nwergm version 1.1.0, 24 October 2026}{p_end}{* nwversion}

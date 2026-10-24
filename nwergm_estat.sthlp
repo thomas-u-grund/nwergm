@@ -6,7 +6,6 @@
 {p2colset 9 25 26 2}{...}
 {p2col :nwergm postestimation {hline 2}}Postestimation tools for {cmd:nwergm}{p_end}
 {p2colreset}{...}
-{pstd}{it:nwergm version 1.1.0, 24 October 2026}{p_end}{* nwversion}
 
 {title:Description}
 
@@ -191,3 +190,5 @@ goodness of fit:
 
 	{help nwergm}
 
+{hline}
+{pstd}{it:nwergm version 1.1.0, 24 October 2026}{p_end}{* nwversion}

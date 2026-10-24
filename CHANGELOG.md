@@ -12,6 +12,7 @@ project uses [Semantic Versioning](https://semver.org/).
 - `mcmletermination(none)` failed with "subscript invalid" (r(3301)) for about one seed in six: the sample-size boost used `Fstat/Fcrit`, which is below 1 when the test would pass (without a convergence test this is reached), and cut the sample to one draw. The boost is never smaller than 1 now. Test `test_nwergm_termnone` (seeds 1 to 30).
 ### Changed
 - Dialog boxes brought up to date: `db nwergm` now sets every term and option of `nwergm` (the dyadic, curved, two-mode, `structural()` and `operators()` terms, constraints and observation constraints, estimation methods, MCMC, stochastic-approximation and bridge-sampling settings, `offset()`, `coeflabel()`), and there are new dialogs `db nwergm_simulate` and `db nwergm_estat` (`estat gof`, `estat mcmcdiag`, `estat ic`, `nwergm simulate` from a fit). The dialogs are generated from one specification (`dlg/`).
+- The version is shown at the bottom of each help file.
 
 ## [1.1.0] - 2026-10-24
 

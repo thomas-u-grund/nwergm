@@ -8,7 +8,6 @@
 {p2colset 9 21 22 2}{...}
 {p2col :nwergm {hline 2}}Exponential-family random graph model (ERGM) estimation{p_end}
 {p2colreset}{...}
-{pstd}{it:nwergm version 1.1.0, 24 October 2026}{p_end}{* nwversion}
 
 {pstd}
 Estimation methods (MPLE variants, contrastive divergence, stochastic approximation), the {cmd:init()} option, the MCMLE controls, {cmd:nwergm simulate} from a fit and the goodness-of-fit and diagnostic reports are described in {help nwergm_estimation}.{p_end}
@@ -623,3 +622,5 @@ matching {cmd:nwergm}'s own control conventions rather than continuing one long 
 
 	{help nwqap}, {help nwrandom}, {help nwcug}, {help nwintro##limits:feasible network sizes}
 
+{hline}
+{pstd}{it:nwergm version 1.1.0, 24 October 2026}{p_end}{* nwversion}

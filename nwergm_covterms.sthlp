@@ -5,7 +5,6 @@
 {p2colset 9 32 33 2}{...}
 {p2col :nwergm covariate terms {hline 2}}Node and dyadic covariate terms of {helpb nwergm}, with R ergm's argument conventions{p_end}
 {p2colreset}{...}
-{pstd}{it:nwergm version 1.1.0, 24 October 2026}{p_end}{* nwversion}
 
 {title:Syntax}
 
@@ -68,3 +67,6 @@ The curved (free-decay) pseudolikelihood fit follows R's trust-region algorithm,
 
 {psee}
 {helpb nwergm}, {helpb nwergm_estat}
+
+{hline}
+{pstd}{it:nwergm version 1.1.0, 24 October 2026}{p_end}{* nwversion}
