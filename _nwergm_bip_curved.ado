@@ -10,7 +10,7 @@ program _nwergm_bip_curved
 	// curved (estimated-decay) bipartite terms: gwb1degree, gwb2degree, gwb1dsp, gwb2dsp with R's fixed=FALSE.
 	// The raw count statistics 1..max are registered and the term is marked curved (as gwdegreefree()/gwdspfree()).
 	version 14
-	syntax , [BGWDEGREEFREE1(string) BGWDEGREEFREE2(string) BGWDSPFREE1(string) BGWDSPFREE2(string)]
+	syntax , [BGWDEGREEFREE1(string) BGWDEGREEFREE2(string) BGWDSPFREE1(string) BGWDSPFREE2(string) FULL(integer 0)]
 	local temps ""
 	foreach o in bgwdegreefree bgwdspfree {
 		forvalues m = 1/2 {
@@ -24,7 +24,11 @@ program _nwergm_bip_curved
 			if "`o'" == "bgwdegreefree" mata: st_local("__maxd", strofreal(_bx_maxdeg(__nwergm_last_G, `m')))
 			else mata: st_local("__maxd", strofreal(_bx_maxsp(__nwergm_last_G, `m')))
 			mata: st_local("__other", strofreal(rows(_bx_nodes(__nwergm_last_G, 3 - `m'))))
+			// maximum likelihood samples networks in which a node can have more partners than in the observed one:
+			// the degree counts then run over every possible value (the pseudolikelihood needs only the values up to the
+			// observed maximum + 1); the shared-partner counts keep the shorter range (a count per column of the sampler)
 			local maxd = max(1, min(`__other', `__maxd' + 1))
+			if `full' & "`o'" == "bgwdegreefree" local maxd = max(1, `__other')
 			capture mata: __nwbx_cnt = __nwbx_cnt + 1
 			if _rc mata: __nwbx_cnt = 1
 			mata: st_local("td", "__nwbx" + strofreal(__nwbx_cnt))

@@ -19,6 +19,7 @@ f _nwergm_gofplot.ado
 f _nwergm_hints.ado
 f _nwergm_mcdiag.ado
 f _nwergm_miss.ado
+f _nwergm_ops.ado
 f _nwergm_simfit.ado
 f _nwergm_statop.ado
 f _nwergm_struct.ado
@@ -33,6 +34,7 @@ f nwergm_covterms.sthlp
 f nwergm_estat.sthlp
 f nwergm_estimation.sthlp
 f nwergm_fit.sthlp
+f nwergm_operators.sthlp
 f nwergm_structural.sthlp
 f nwergm.dlg
 f lib/lnwergm.mlib

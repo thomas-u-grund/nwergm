@@ -405,7 +405,7 @@ static int e6_step(graph_t *g, rng_t *rng, e6con_t *c, long nterms, const int *t
 		for (k = 0; k < nterms; k++) {
 			double *at = (attridx[k] > 0) ? attrs[attridx[k] - 1] : NULL;
 			double *cmk = (covidx[k] > 0) ? covmats[covidx[k] - 1] : NULL;
-			chg[k] += change_term(g, termcodes[k], p1[k], p2[k], at, cmk, n, delta, P.t[a], P.h[a]);
+			chg[k] += change_any(k, g, termcodes[k], p1[k], p2[k], at, cmk, n, delta, P.t[a], P.h[a]);
 		}
 		toggle(g, P.t[a], P.h[a]);
 	}

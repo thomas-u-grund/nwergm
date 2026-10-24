@@ -1053,6 +1053,13 @@ class ErgmTermData {
 	real matrix levelpairs		// nodemix: distinct UNORDERED level-pairs present, one row (a,b), a<=b, per output statistic
 	string scalar sptype		// gwesp/gwdsp/gwnsp/esp/dsp: shared-partner definition on a DIRECTED network - "" (default) means the undirected/UTP definition (used as-is for undirected networks); one of "OTP"/"ITP"/"OSP"/"ISP"/"RTP" selects the corresponding directed definition (harmonisation unit 91 wave 5 added OTP; a later wave added ITP/OSP/ISP; RTP (reciprocated two-path) added last - all five of R ergm's own directed shared-partner types are now implemented).
 	real scalar center		// nwsaom behsim (unw_saom.do): the behavior variable's similarity mean, subtracted from every tie's similarity (RSiena's simX centering). Unused by every other term.
+	string scalar opkind		// operator terms (name "op:<kind>"): sum, prod, filter, sym, sub, proj - see ergm_op_derive()
+	pointer rowvector opsub	// operator terms: the sub-models (pointers to class ErgmModel scalar)
+	pointer scalar opfilter	// operator F: the filter model (pointer to class ErgmModel scalar)
+	real matrix opW		// operator Sum/Prod: weights, one block of nparam rows per formula, side by side
+	real rowvector opdims		// operator Sum/Prod: number of statistics of each formula
+	real rowvector opnum		// operator parameters (filter comparison and value; Symmetrize rule; Project mode; S: 0, number of nodes)
+	real colvector opnodes	// operator S: the selected nodes
 	pointer(class ErgmGraph scalar) scalar xnet	// nwsaom multiplex's crprod (unw_saom.do): a LIVE pointer to the OTHER co-evolving network's own current ErgmGraph, re-pointed by SaomEstimateRMCoevNetNet()/SaomSimulateIntervalCoevNetNet() every time a fresh working copy of that other network is created (a fresh G1work/G2work per Robbins-Monro replicate) - addterm() stores &td0 (a POINTER into the caller's own td0 storage, not a copy), so mutating td.xnet through that same pointer from inside the estimator is visible to the registered term instance immediately, no re-registration needed. NULL/unused by every other term (nwergm never sets or reads it).
 }
 
@@ -3425,6 +3432,30 @@ real matrix ergm_gwdecay_gradient(real scalar theta_w, real scalar alpha, real s
 }
 
 /*
+	theta -> eta map of R's altkstar (fixed = FALSE): theta = (weight, lambda), eta_i = weight * (lambda * ((1-1/lambda)^i + i) - 1)
+	for the degree counts i = 1..n, and its 2 x n Jacobian (R: the map and gradient of InitErgmTerm.altkstar).
+*/
+real rowvector ergm_altk_map(real scalar w, real scalar lam, real scalar n){
+	real rowvector i
+	i = 1..n
+	return(w :* (lam :* ((1 - 1/lam):^i :+ i) :- 1))
+}
+real matrix ergm_altk_gradient(real scalar w, real scalar lam, real scalar n){
+	real rowvector i
+	i = 1..n
+	return((lam :* ((1 - 1/lam):^i :+ i) :- 1) \ (w :* (i :- 1 :+ (lam*lam - lam :+ i) :* ((1 - 1/lam):^(i :- 1)) :/ (lam*lam))))
+}
+// the map and gradient of a curved term of type 1 (geometric weights: gwesp, gwdegree ...) or 2 (altkstar)
+real rowvector ergm_curve_map(real scalar type, real scalar a, real scalar b, real scalar n){
+	if (type == 2) return(ergm_altk_map(a, b, n))
+	return(ergm_gwdecay_map(a, b, n))
+}
+real matrix ergm_curve_gradient(real scalar type, real scalar a, real scalar b, real scalar n){
+	if (type == 2) return(ergm_altk_gradient(a, b, n))
+	return(ergm_gwdecay_gradient(a, b, n))
+}
+
+/*
 	Geometrically weighted edgewise shared partners (GWESP; Hunter
 	2007). Undirected only in v1 (directed OTP/ITP/OSP/ISP variants -
 	see the Part I study - are a roadmap item, not a cheap extension of
@@ -4723,6 +4754,8 @@ class ErgmModel {
 	real rowvector native_p1		// per-slot: generic scalar parameter #1 (decay for gw* terms; target level for nodefactor-family; low level for nodemix)
 	real rowvector native_p2		// per-slot: generic scalar parameter #2 (high level for nodemix only; unused - left 0 - by every other term)
 	real matrix native_attrmat		// one column per distinct attribute array actually needed across the model's own terms (native_attridx indexes into THIS, not into any one term's own td.attr)
+	real matrix native_con		// operator terms: one row per constituent of a composite column (slot, comb, code, attr, cov, ctx, p1, p2, w, raw, term, formula, stat)
+	real matrix native_ctx		// operator terms: one row per derived network (id, parent, kind, n, v1..v8)
 	real rowvector native_covidx		// per-slot: 1-based index into native_covmatstack's own n-column BLOCKS (0 = no dyadic covariate matrix needed) - edgecov()/hamming() only; every other term leaves this 0, mirroring native_attridx's own "0 = unused" convention
 	real matrix native_covmatstack		// distinct dense n x n dyadic covariate matrices needed across the model's own terms, horizontally concatenated as n-column blocks (block k = columns ((k-1)*n+1)..(k*n)) - a genuinely different shape from native_attrmat's own one-column-per-array convention (a dyadic covariate is one value per DYAD, not per node), so it cannot reuse that mechanism; native_covidx's block index times n tells the wire-protocol callers which columns to slice out and send as their own new dataset variables (see ErgmNativeSampleCore()'s own header comment on this)
 	real scalar native_proposal
@@ -4805,6 +4838,8 @@ void ErgmModel::init(){
 	chgfn = J(1, 0, NULL)
 	td = J(1, 0, NULL)
 	coefnames = J(1, 0, "")
+	native_con = J(0, 13, 0)
+	native_ctx = J(0, 12, 0)
 	native_enabled = 0
 	native_enabled_sample = 0
 	con_par = J(1, 0, 0)
@@ -6099,7 +6134,7 @@ real rowvector ErgmModel::theta_to_eta(real rowvector theta){
 	epos = 1
 	for (t=1; t<=nterms; t++) {
 		if (curved[t]) {
-			eta[(epos..epos+npar[t]-1)] = ergm_gwdecay_map(theta[tpos], theta[tpos+1], npar[t])
+			eta[(epos..epos+npar[t]-1)] = ergm_curve_map(curved[t], theta[tpos], theta[tpos+1], npar[t])
 			tpos = tpos + 2
 		}
 		else {
@@ -6135,7 +6170,7 @@ real matrix ErgmModel::theta_to_eta_jacobian(real rowvector theta){
 	epos = 1
 	for (t=1; t<=nterms; t++) {
 		if (curved[t]) {
-			g = ergm_gwdecay_gradient(theta[tpos], theta[tpos+1], npar[t])
+			g = ergm_curve_gradient(curved[t], theta[tpos], theta[tpos+1], npar[t])
 			Jac[(epos..epos+npar[t]-1), (tpos..tpos+1)] = g'
 			tpos = tpos + 2
 		}
@@ -6195,10 +6230,10 @@ real rowvector ErgmModel::project_eta_to_theta(real rowvector eta_target, real m
 			theta[(tpos..tpos+1)] = theta_start[(tpos..tpos+1)]
 			target_block = eta_target[(epos..epos+npar[t]-1)]
 			Wb = W[(epos..epos+npar[t]-1), (epos..epos+npar[t]-1)]
-			resid = target_block - ergm_gwdecay_map(theta[tpos], theta[tpos+1], npar[t])
+			resid = target_block - ergm_curve_map(curved[t], theta[tpos], theta[tpos+1], npar[t])
 			obj0 = resid * Wb * resid'
 			for (iter=1; iter<=maxit; iter++) {
-				Jb = ergm_gwdecay_gradient(theta[tpos], theta[tpos+1], npar[t])'
+				Jb = ergm_curve_gradient(curved[t], theta[tpos], theta[tpos+1], npar[t])'
 				delta = (invsym(Jb' * Wb * Jb) * Jb' * Wb * resid')'
 
 				// Damped Gauss-Newton (backtracking line search): an
@@ -6224,7 +6259,7 @@ real rowvector ErgmModel::project_eta_to_theta(real rowvector eta_target, real m
 				for (halvings=1; halvings<=30; halvings++) {
 					theta_try = theta[(tpos..tpos+1)] + step :* delta
 					if (theta_try[2] > 1e-6) {
-						resid_try = target_block - ergm_gwdecay_map(theta_try[1], theta_try[2], npar[t])
+						resid_try = target_block - ergm_curve_map(curved[t], theta_try[1], theta_try[2], npar[t])
 						obj1 = resid_try * Wb * resid_try'
 						if (obj1 <= obj0) {
 							found = 1
@@ -6274,6 +6309,7 @@ real rowvector ErgmModel::project_eta_to_theta(real rowvector eta_target, real m
 string rowvector ErgmModel::theta_coefnames(){
 	string rowvector out
 	real scalar t, tpos, epos
+	class ErgmTermData scalar tdt
 
 	out = J(1, ntheta(), "")
 	tpos = 1
@@ -6290,7 +6326,20 @@ string rowvector ErgmModel::theta_coefnames(){
 			// one curved term per model (nwergm.ado's own mutual-
 			// exclusivity checks enforce this), so no per-model
 			// disambiguation beyond this lookup is needed.
-			if (names[t] == "degree") {
+			if (curved[t] == 2) {
+				out[tpos] = "altkstar"
+				out[tpos+1] = "altkstar_lambda"
+			}
+			else if (names[t] == "b1degree" | names[t] == "b2degree") {
+				out[tpos] = "gw" + names[t] + "_weight"
+				out[tpos+1] = "gw" + names[t] + "_decay"
+			}
+			else if (names[t] == "bipx") {
+				tdt = *td[t]
+				out[tpos] = "gwb" + strofreal(tdt.levelpairs[1,3]) + "dsp_weight"
+				out[tpos+1] = "gwb" + strofreal(tdt.levelpairs[1,3]) + "dsp_decay"
+			}
+			else if (names[t] == "degree") {
 				out[tpos] = "gwdegree_weight"
 				out[tpos+1] = "gwdegree_decay"
 			}
@@ -6511,7 +6560,7 @@ void _ergm_curved_obj(class ErgmModel scalar M, real matrix X, real colvector y,
 void ErgmCurvedMPLEFit(class ErgmModel scalar M, real matrix D,
 	real rowvector theta_start, real scalar maxit, real scalar tol,
 	string scalar theta_matname, string scalar V_theta_matname,
-	string scalar converged_matname){
+	string scalar converged_matname, | real rowvector theta_init){
 
 	real matrix X, B, V, L, hess, Bh, hesst
 	real colvector y, g, gq, ev, beta, ptry, grad, wtry, gt, vtry
@@ -6530,6 +6579,14 @@ void ErgmCurvedMPLEFit(class ErgmModel scalar M, real matrix D,
 	theta = theta_start
 	theta[1..(alpha_pos-1)] = J(1, alpha_pos-1, 0)
 	theta[alpha_pos] = sqrt(EPS)
+	// R's init= (control.ergm): a given starting value replaces the default (missing entries keep it); the decay is
+	// kept at least sqrt(eps) above its lower bound 0 (R: .constrain_init)
+	if (args() > 8) {
+		if (cols(theta_init) == cols(theta)) {
+			for (k=1; k<=cols(theta); k++) if (theta_init[k] < .) theta[k] = theta_init[k]
+			theta[alpha_pos] = max((theta[alpha_pos], sqrt(EPS)))
+		}
+	}
 	fterm = sqrt(EPS)
 	mterm = sqrt(EPS)
 	r = 1
@@ -7495,6 +7552,865 @@ real rowvector change_ns(class ErgmGraph scalar G, real scalar i, real scalar j,
 	return(J(1, rows(td.levelpairs), 0))
 }
 
+/* ===================================================================
+   Operator terms of R's ergm: Sum, Prod, S, F, NodematchFilter, Symmetrize,
+   Project (Proj1, Proj2).  A term instance named "op:<kind>" holds one or
+   more sub-models (td.opsub) and, for the operators that evaluate their
+   formula on a derived network, the information to derive that network from
+   the network at hand.
+     op:sum / op:prod   td.opsub = the formulas' models, td.opW = the weights
+                        (one block of nparam rows per formula, side by side),
+                        td.opdims = number of statistics of each formula
+     op:filter          td.opsub[1] = formula model, td.opfilter = filter model,
+                        td.opnum = (comparison code, value)
+     op:sym             td.opnum = rule (1 weak, 2 strong, 3 upper, 4 lower)
+     op:sub             td.opnodes = selected nodes
+     op:proj            td.opnum = mode (1 or 2)
+   The statistic is computed here on the derived ErgmGraph; the change
+   statistics exist only in the native plugin (see ergm_op_flatten()).
+   =================================================================== */
+class ErgmGraph scalar ergm_op_derive(class ErgmGraph scalar G, class ErgmTermData scalar td)
+{
+	class ErgmGraph scalar H, E
+	class ErgmModel scalar F
+	real matrix ties
+	real colvector nmap, rank, nb
+	real scalar k, i, j, cmp, val, f, pass, mode, cnt, a, b, w, q, r
+	string scalar kd
+
+	kd = td.opkind
+	H = ErgmGraph()
+	ties = G.all_ties()
+	if (kd == "filter") {
+		H.init(G.n, G.directed)
+		if (G.bipartite) H.set_bipartite(G.mode)
+		F = *td.opfilter
+		E = ErgmGraph()
+		E.init(G.n, G.directed)
+		if (G.bipartite) E.set_bipartite(G.mode)
+		cmp = td.opnum[1]
+		val = td.opnum[2]
+		for (k=1; k<=rows(ties); k++) {
+			f = F.full_change(E, ties[k,1], ties[k,2])[1]
+			if (cmp == 0) pass = (f != 0)
+			else if (cmp == 1) pass = (f == 0)
+			else if (cmp == 2) pass = (f == val)
+			else if (cmp == 3) pass = (f != val)
+			else if (cmp == 4) pass = (f > val)
+			else if (cmp == 5) pass = (f < val)
+			else if (cmp == 6) pass = (f >= val)
+			else pass = (f <= val)
+			if (pass) H.toggle(ties[k,1], ties[k,2])
+		}
+	}
+	else if (kd == "sym") {
+		H.init(G.n, 0)
+		mode = td.opnum[1]
+		for (k=1; k<=rows(ties); k++) {
+			i = ties[k,1]
+			j = ties[k,2]
+			a = min((i,j))
+			b = max((i,j))
+			if (mode == 1) {
+				if (!H.has_edge(a,b)) H.toggle(a,b)
+			}
+			else if (mode == 2) {
+				if (i < j & G.has_edge(j,i)) H.toggle(a,b)
+			}
+			else if (mode == 3) {
+				if (i < j) H.toggle(a,b)
+			}
+			else {
+				if (i > j) H.toggle(a,b)
+			}
+		}
+	}
+	else if (kd == "sub") {
+		nmap = J(G.n, 1, 0)
+		for (k=1; k<=rows(td.opnodes); k++) nmap[td.opnodes[k]] = k
+		H.init(rows(td.opnodes), G.directed)
+		for (k=1; k<=rows(ties); k++) {
+			if (nmap[ties[k,1]] > 0 & nmap[ties[k,2]] > 0) H.toggle(nmap[ties[k,1]], nmap[ties[k,2]])
+		}
+	}
+	else if (kd == "proj") {
+		mode = td.opnum[1]
+		rank = J(G.n, 1, 0)
+		cnt = 0
+		for (i=1; i<=G.n; i++) {
+			if (G.mode[i] == mode) {
+				cnt++
+				rank[i] = cnt
+			}
+		}
+		H.init(cnt, 0)
+		for (w=1; w<=G.n; w++) {
+			if (G.mode[w] == mode) continue
+			nb = G.neighbors_out(w)'
+			for (q=1; q<=rows(nb); q++) {
+				for (r=q+1; r<=rows(nb); r++) {
+					a = min((rank[nb[q]], rank[nb[r]]))
+					b = max((rank[nb[q]], rank[nb[r]]))
+					if (!H.has_edge(a,b)) H.toggle(a,b)
+				}
+			}
+		}
+	}
+	else _error("unknown operator " + kd)
+	return(H)
+}
+
+real scalar ergm_op_log(real scalar x)
+{
+	return(x == 0 ? -1/sqrt(2.220446049250313e-16) : ln(x))
+}
+
+real rowvector stat_op(class ErgmGraph scalar G, class ErgmTermData scalar td)
+{
+	class ErgmGraph scalar H
+	class ErgmModel scalar S1
+	real rowvector s, out
+	real scalar f, c0, k, isprod
+	string scalar kd
+
+	kd = td.opkind
+	if (kd == "sum" | kd == "prod") {
+		isprod = (kd == "prod")
+		out = J(1, rows(td.opW), 0)
+		c0 = 0
+		for (f=1; f<=cols(td.opsub); f++) {
+			S1 = *td.opsub[f]
+			s = S1.full_statistic(G)
+			if (isprod) for (k=1; k<=cols(s); k++) s[k] = ergm_op_log(s[k])
+			out = out + s * td.opW[., (c0+1)..(c0+cols(s))]'
+			c0 = c0 + cols(s)
+		}
+		if (isprod) out = exp(out)
+		return(out)
+	}
+	H = ergm_op_derive(G, td)
+	S1 = *td.opsub[1]
+	return(S1.full_statistic(H))
+}
+real rowvector change_op(class ErgmGraph scalar G, real scalar i, real scalar j, class ErgmTermData scalar td)
+{
+	errprintf("operator terms (Sum, Prod, S, F, NodematchFilter, Symmetrize, Project) run only in the native plugin (ergm_mcmc): the plugin must be installed and the model may have at most 64 coefficients\n")
+	_error(198)
+	return(J(1, rows(td.opW) > 0 ? rows(td.opW) : 1, 0))
+}
+
+// (A, B) with zero padding of the shorter matrix; both may be empty
+void ergm_op_appendcols(real matrix A, real matrix B)
+{
+	real scalar r
+	if (cols(B) == 0) return
+	if (cols(A) == 0) {
+		A = B
+		return
+	}
+	r = max((rows(A), rows(B)))
+	if (rows(A) < r) A = A \ J(r-rows(A), cols(A), 0)
+	if (rows(B) < r) B = B \ J(r-rows(B), cols(B), 0)
+	A = (A, B)
+}
+
+// The constituents (comb, code, attr, cov, ctx, p1, p2, w) of the m-th column of a set-up sub-model
+real matrix ergm_op_subslot(class ErgmModel scalar S1, real scalar m)
+{
+	real matrix out
+	real colvector sel
+	if (S1.native_termcodes[m] != 9000) {
+		return((0, S1.native_termcodes[m], S1.native_attridx[m], S1.native_covidx[m], 0, S1.native_p1[m], S1.native_p2[m], 1))
+	}
+	sel = selectindex(S1.native_con[., 1] :== (m-1))
+	if (rows(sel) == 0) return(J(0, 8, 0))
+	out = S1.native_con[sel, (2, 3, 4, 5, 6, 7, 8, 9)]
+	return(out)
+}
+
+// Appends the native description of sub-model S1 (attribute columns, covariate blocks, contexts) to the parent's
+// arrays; the contexts of S1 hang below context X (0 = the network itself).  Returns 0 when this is not possible.
+real scalar ergm_op_merge(class ErgmModel scalar S1, real scalar X, real matrix attrmat, real matrix covstack,
+	real matrix ctxrows, real scalar aoff, real scalar coff, real scalar ctxoff, real scalar samenodes)
+{
+	real scalar r, nb1, nb2
+	real matrix sx
+	aoff = cols(attrmat)
+	if (aoff + cols(S1.native_attrmat) > 64) return(0)
+	ergm_op_appendcols(attrmat, S1.native_attrmat)
+	if (cols(S1.native_covmatstack) > 0) {
+		if (!samenodes) return(0)
+		if (cols(covstack) > 0) {
+			if (rows(covstack) != rows(S1.native_covmatstack)) return(0)
+			coff = cols(covstack) / rows(covstack)
+		}
+		else coff = 0
+		if (coff + cols(S1.native_covmatstack) / rows(S1.native_covmatstack) > 8) return(0)
+		if (cols(covstack) == 0) covstack = S1.native_covmatstack
+		else covstack = (covstack, S1.native_covmatstack)
+	}
+	else coff = (cols(covstack) > 0 ? cols(covstack) / rows(covstack) : 0)
+	ctxoff = rows(ctxrows)
+	if (rows(S1.native_ctx) > 0) {
+		sx = S1.native_ctx
+		for (r=1; r<=rows(sx); r++) {
+			sx[r,1] = sx[r,1] + ctxoff
+			sx[r,2] = (sx[r,2] == 0 ? X : sx[r,2] + ctxoff)
+			if (sx[r,3] == 1) {
+				if (sx[r,6] > 0) sx[r,6] = sx[r,6] + aoff
+				if (sx[r,7] > 0) sx[r,7] = sx[r,7] + coff
+			}
+			else if (sx[r,3] == 3) {
+				if (sx[r,5] > 0) sx[r,5] = sx[r,5] + aoff
+			}
+		}
+		ctxrows = ctxrows \ sx
+	}
+	return(1)
+}
+
+// Adds the constituents of the sub-model slot m (offsets applied) to conrows for the output column s (1-based),
+// with the weight factor wgt.  isprod: the sub-slots must be plain.
+real scalar ergm_op_addcons(class ErgmModel scalar S1, real scalar m, real scalar s, real scalar wgt, real scalar X,
+	real scalar aoff, real scalar coff, real scalar ctxoff, real scalar comb, real scalar t, real scalar f, real scalar mm, real matrix conrows)
+{
+	real matrix sc
+	real scalar q
+	sc = ergm_op_subslot(S1, m)
+	for (q=1; q<=rows(sc); q++) {
+		if (sc[q,1] == 1) return(0)			// a product inside the operator: not supported
+		if (comb == 1 & (sc[q,8] != 1 | rows(sc) != 1)) return(0)
+		conrows = conrows \ (s-1, comb, sc[q,2], (sc[q,3] > 0 ? sc[q,3] + aoff : 0), (sc[q,4] > 0 ? sc[q,4] + coff : 0),
+			(sc[q,5] == 0 ? X : sc[q,5] + ctxoff), sc[q,6], sc[q,7], wgt * sc[q,8], 0, t, f, mm)
+	}
+	return(1)
+}
+
+// Native description of the operator term t of M, whose columns start at pos+1.  Returns 0 when the operator
+// (or one of its sub-models) cannot run in the plugin.
+real scalar ergm_op_flatten(class ErgmModel scalar M, real scalar t, class ErgmTermData scalar td, real scalar pos,
+	real rowvector termcodes, real matrix attrmat, real matrix covstack, real matrix conrows, real matrix ctxrows)
+{
+	class ErgmModel scalar S1, F1
+	real scalar P, X, f, m, s, aoff, coff, ctxoff, c0, comb, samenodes, fa, fc, aoff2, coff2
+	real matrix Wf
+	real rowvector crow
+	string scalar kd
+
+	kd = td.opkind
+	P = M.npar[t]
+	for (s=1; s<=P; s++) termcodes[pos+s] = 9000
+	if (kd == "sum" | kd == "prod") {
+		real scalar nf
+		real rowvector AO, CO, XO, CS
+		comb = (kd == "prod")
+		nf = cols(td.opsub)
+		AO = J(1, nf, 0)
+		CO = AO
+		XO = AO
+		CS = J(1, nf, 0)
+		c0 = 0
+		for (f=1; f<=nf; f++) {
+			if (!ErgmNativeSetup(*td.opsub[f], 0)) return(0)
+			S1 = *td.opsub[f]
+			if (!ergm_op_merge(S1, 0, attrmat, covstack, ctxrows, aoff, coff, ctxoff, 1)) return(0)
+			AO[f] = aoff
+			CO[f] = coff
+			XO[f] = ctxoff
+			CS[f] = c0
+			c0 = c0 + td.opdims[f]
+		}
+		for (s=1; s<=P; s++) {
+			for (f=1; f<=nf; f++) {
+				S1 = *td.opsub[f]
+				Wf = td.opW[., (CS[f]+1)..(CS[f]+td.opdims[f])]
+				for (m=1; m<=td.opdims[f]; m++) {
+					if (Wf[s,m] == 0) continue
+					if (!ergm_op_addcons(S1, m, pos+s, Wf[s,m], 0, AO[f], CO[f], XO[f], comb, t, f, m, conrows)) return(0)
+				}
+			}
+		}
+		return(1)
+	}
+	// operators with a derived network: one new context
+	if (!ErgmNativeSetup(*td.opsub[1], 0)) return(0)
+	S1 = *td.opsub[1]
+	samenodes = (kd == "filter" | kd == "sym")
+	X = rows(ctxrows) + 1
+	if (kd == "filter") {
+		if (!ErgmNativeSetup(*td.opfilter, 0)) return(0)
+		F1 = *td.opfilter
+		if (cols(F1.native_termcodes) != 1) return(0)
+		if (F1.native_termcodes[1] == 9000 | rows(F1.native_ctx) > 0) return(0)
+		aoff2 = cols(attrmat)
+		if (aoff2 + cols(F1.native_attrmat) > 64) return(0)
+		ergm_op_appendcols(attrmat, F1.native_attrmat)
+		coff2 = (cols(covstack) > 0 ? cols(covstack) / rows(covstack) : 0)
+		if (cols(F1.native_covmatstack) > 0) {
+			if (cols(covstack) == 0) covstack = F1.native_covmatstack
+			else if (rows(covstack) == rows(F1.native_covmatstack)) covstack = (covstack, F1.native_covmatstack)
+			else return(0)
+		}
+		fa = (F1.native_attridx[1] > 0 ? F1.native_attridx[1] + aoff2 : 0)
+		fc = (F1.native_covidx[1] > 0 ? F1.native_covidx[1] + coff2 : 0)
+		ctxrows = ctxrows \ (X, 0, 1, 0, F1.native_termcodes[1], fa, fc, F1.native_p1[1], F1.native_p2[1], td.opnum[1], td.opnum[2], 0)
+	}
+	else if (kd == "sym") {
+		ctxrows = ctxrows \ (X, 0, 2, 0, td.opnum[1], 0, 0, 0, 0, 0, 0, 0)
+	}
+	else if (kd == "sub") {
+		real colvector nmap
+		// the node map is stored as an attribute column; its length is the number of nodes of the network
+		nmap = J(td.opnum[2], 1, 0)
+		for (m=1; m<=rows(td.opnodes); m++) nmap[td.opnodes[m]] = m
+		aoff2 = cols(attrmat)
+		if (aoff2 + 1 > 64) return(0)
+		ergm_op_appendcols(attrmat, nmap)
+		ctxrows = ctxrows \ (X, 0, 3, rows(td.opnodes), aoff2 + 1, 0, 0, 0, 0, 0, 0, 0)
+	}
+	else if (kd == "proj") {
+		ctxrows = ctxrows \ (X, 0, 4, 0, td.opnum[1], 0, 0, 0, 0, 0, 0, 0)
+	}
+	else return(0)
+	if (!ergm_op_merge(S1, X, attrmat, covstack, ctxrows, aoff, coff, ctxoff, samenodes)) return(0)
+	for (m=1; m<=P; m++) {
+		if (!ergm_op_addcons(S1, m, pos+m, 1, X, aoff, coff, ctxoff, 0, t, 1, m, conrows)) return(0)
+	}
+	return(1)
+}
+
+// wire text of the operator block (appended to the native argument string)
+string scalar _ergm_native_comp(class ErgmModel scalar M, class ErgmGraph scalar G)
+{
+	real matrix cr
+	class ErgmTermData scalar tdt
+	class ErgmModel scalar S1
+	real rowvector s
+	real scalar q, t, f
+	string scalar out
+	transmorphic scalar cache
+
+	if (rows(M.native_con) == 0 & rows(M.native_ctx) == 0) return("")
+	cr = M.native_con
+	cache = asarray_create("real", 2)
+	for (q=1; q<=rows(cr); q++) {
+		if (cr[q,2] != 1) continue
+		t = cr[q,11]
+		f = cr[q,12]
+		if (!asarray_contains(cache, (t,f))) {
+			tdt = *M.td[t]
+			S1 = *tdt.opsub[f]
+			asarray(cache, (t,f), S1.full_statistic(G))
+		}
+		s = asarray(cache, (t,f))
+		cr[q,10] = s[cr[q,13]]
+	}
+	out = " " + strofreal(rows(cr))
+	for (q=1; q<=rows(cr); q++) {
+		out = out + " " + strofreal(cr[q,1]) + " " + strofreal(cr[q,2]) + " " + strofreal(cr[q,3]) + " " + strofreal(cr[q,4]) + " " +
+			strofreal(cr[q,5]) + " " + strofreal(cr[q,6]) + " " + strofreal(cr[q,7], "%25.17g") + " " + strofreal(cr[q,8], "%25.17g") + " " +
+			strofreal(cr[q,9], "%25.17g") + " " + strofreal(cr[q,10], "%25.17g")
+	}
+	out = out + " " + strofreal(rows(M.native_ctx))
+	for (q=1; q<=rows(M.native_ctx); q++) {
+		out = out + " " + strofreal(M.native_ctx[q,1]) + " " + strofreal(M.native_ctx[q,2]) + " " + strofreal(M.native_ctx[q,3]) + " " + strofreal(M.native_ctx[q,4])
+		for (f=5; f<=12; f++) out = out + " " + strofreal(M.native_ctx[q,f], "%25.17g")
+	}
+	return(out)
+}
+
+/* ===================================================================
+   Parsing helpers of the operators() option (see _nwergm_ops.ado).
+   =================================================================== */
+// position of the ")" that matches the "(" at position p of s (0 if there is none)
+real scalar ergm_ops_match(string scalar s, real scalar p)
+{
+	real scalar i, d, q
+	string scalar c
+	d = 0
+	q = 0
+	for (i=p; i<=strlen(s); i++) {
+		c = substr(s, i, 1)
+		if (c == char(34)) q = !q
+		if (q) continue
+		if (c == "(") d++
+		else if (c == ")") {
+			d--
+			if (d == 0) return(i)
+		}
+	}
+	return(0)
+}
+
+// splits s at the characters sep that are outside parentheses and quotes
+string rowvector ergm_ops_split(string scalar s, string scalar sep)
+{
+	real scalar i, d, q, start
+	string scalar c
+	string rowvector out
+	d = 0
+	q = 0
+	start = 1
+	out = J(1, 0, "")
+	for (i=1; i<=strlen(s); i++) {
+		c = substr(s, i, 1)
+		if (c == char(34)) q = !q
+		if (q) continue
+		if (c == "(") d++
+		else if (c == ")") d--
+		else if (d == 0 & c == sep) {
+			out = (out, strtrim(substr(s, start, i - start)))
+			start = i + 1
+		}
+	}
+	out = (out, strtrim(substr(s, start, .)))
+	return(out)
+}
+
+// "Name(args) Name2(args2)" -> one row per call: (name, args)
+string matrix ergm_ops_calls(string scalar spec)
+{
+	string matrix out
+	string scalar s, nm
+	real scalar p, e
+	s = strtrim(spec)
+	out = J(0, 2, "")
+	while (strlen(s) > 0) {
+		p = strpos(s, "(")
+		if (p == 0) {
+			errprintf("operators(): %s: an operator is written Name(...)\n", s)
+			_error(198)
+		}
+		nm = strtrim(substr(s, 1, p - 1))
+		e = ergm_ops_match(s, p)
+		if (e == 0) {
+			errprintf("operators(): unbalanced parenthesis after %s\n", nm)
+			_error(198)
+		}
+		out = out \ (nm, strtrim(substr(s, p + 1, e - p - 1)))
+		s = strtrim(substr(s, e + 1, .))
+	}
+	return(out)
+}
+
+// splits "terms , options" at the first top-level comma
+string rowvector ergm_ops_split1(string scalar s)
+{
+	string rowvector parts
+	string scalar rest
+	real scalar k
+	parts = ergm_ops_split(s, ",")
+	if (cols(parts) == 1) return((parts[1], ""))
+	rest = parts[2]
+	for (k=3; k<=cols(parts); k++) rest = rest + ", " + parts[k]
+	return((parts[1], rest))
+}
+
+// the content of the suboption name(...) in opts ("" if absent); ok is set to 1 when it is present
+string scalar ergm_ops_getopt(string scalar opts, string scalar name, real scalar ok)
+{
+	real scalar p, e, k
+	string scalar s, c
+	s = opts
+	ok = 0
+	p = 1
+	while (1) {
+		k = strpos(strlower(substr(s, p, .)), strlower(name) + "(")
+		if (k == 0) return("")
+		k = k + p - 1
+		if (k > 1) {
+			c = substr(s, k - 1, 1)
+			if (regexm(c, "[A-Za-z0-9_]")) {
+				p = k + 1
+				continue
+			}
+		}
+		e = ergm_ops_match(s, k + strlen(name))
+		if (e == 0) return("")
+		ok = 1
+		return(strtrim(substr(s, k + strlen(name) + 1, e - k - strlen(name) - 1)))
+	}
+}
+
+// the suboption names present in opts (outside parentheses)
+string rowvector ergm_ops_optnames(string scalar opts)
+{
+	string rowvector out
+	string scalar s, nm
+	real scalar p, e
+	s = strtrim(opts)
+	out = J(1, 0, "")
+	while (strlen(s) > 0) {
+		while (substr(s, 1, 1) == ",") s = strtrim(substr(s, 2, .))
+		if (strlen(s) == 0) break
+		p = strpos(s, "(")
+		if (p == 0) {
+			out = (out, strlower(s))
+			break
+		}
+		nm = strlower(strtrim(substr(s, 1, p - 1)))
+		out = (out, nm)
+		e = ergm_ops_match(s, p)
+		if (e == 0) break
+		s = strtrim(substr(s, e + 1, .))
+	}
+	return(out)
+}
+
+// copies of models and graphs (a class instance cannot be assigned from the command line)
+void ergm_ops_copyM(class ErgmModel scalar to, class ErgmModel scalar from)
+{
+	to = from
+}
+void ergm_ops_copyG(class ErgmGraph scalar to, class ErgmGraph scalar from)
+{
+	to = from
+}
+void ergm_ops_derive_into(class ErgmGraph scalar G, class ErgmTermData scalar td, class ErgmGraph scalar H)
+{
+	H = ergm_op_derive(G, td)
+}
+
+// an operator written among the terms of an operator is passed on as operators(...)
+string scalar ergm_ops_wrapop(string scalar w)
+{
+	string scalar nm
+	if (regexm(w, "^([A-Za-z0-9_]+)[(]")) {
+		nm = strlower(regexs(1))
+		if (any(nm :== ("sum", "prod", "s", "f", "nodematchfilter", "symmetrize", "project", "proj1", "proj2", "i", "for", "label"))) return("operators(" + w + ")")
+	}
+	return(w)
+}
+
+// R's Offset(): fixes the coefficients of the selected columns of the sub-model S (which: column numbers or names, default all)
+void ergm_ops_setoffset(class ErgmModel scalar S, string scalar coefs, string scalar which)
+{
+	real rowvector cv, sel
+	string rowvector wk
+	real scalar k, p
+	cv = strtoreal(tokens(coefs))
+	if (cols(cv) == 0 | any(cv :>= .)) {
+		errprintf("Offset(): coef() takes numbers\n")
+		_error(198)
+	}
+	wk = tokens(which)
+	if (cols(wk) == 0) sel = 1..S.nparam()
+	else {
+		sel = J(1, cols(wk), 0)
+		for (k=1; k<=cols(wk); k++) {
+			if (strtoreal(wk[k]) < .) sel[k] = strtoreal(wk[k])
+			else sel[k] = S.findcoef(wk[k])
+			if (sel[k] < 1 | sel[k] > S.nparam()) {
+				errprintf("Offset(): which() does not select a coefficient of the formula\n")
+				_error(198)
+			}
+		}
+	}
+	for (k=1; k<=cols(sel); k++) S.mark_fixed(sel[k], cv[mod(k-1, cols(cv)) + 1])
+}
+
+// R's Log() and Exp(): marks columns first..last of M as log (kind 1, value param at zero) or exp (kind 2) of the statistic
+void ergm_ops_setkind(class ErgmModel scalar M, real scalar first, real scalar last, real scalar kind, real scalar param)
+{
+	_ergm_op_init(M)
+	M.opkind[first..last] = J(1, last - first + 1, kind)
+	M.opparam[first..last] = J(1, last - first + 1, param)
+}
+
+// called when all terms are registered: the transform arrays must have one entry per coefficient
+void ergm_ops_finalize(class ErgmModel scalar M)
+{
+	real scalar p
+	p = M.nparam()
+	if (cols(M.opkind) > 0 & cols(M.opkind) < p) {
+		M.opkind = (M.opkind, J(1, p - cols(M.opkind), 0))
+		M.opparam = (M.opparam, J(1, p - cols(M.opparam), 0))
+	}
+}
+
+// weights of Curve(): the q x n matrix L' for the map eta = L theta (rep, or the n x q matrix named in matrix(name))
+void ergm_ops_curve_W(class ErgmTermData scalar td, string scalar map, real scalar q, real scalar n)
+{
+	real matrix L
+	real scalar i
+	string scalar m
+	m = strtrim(strlower(map))
+	if (m == "rep") {
+		L = J(n, q, 0)
+		for (i=1; i<=n; i++) L[i, mod(i-1, q) + 1] = 1
+	}
+	else if (substr(m, 1, 7) == "matrix(") {
+		L = st_matrix(strtrim(substr(strtrim(map), 8, strlen(strtrim(map)) - 8)))
+		if (rows(L) != n | cols(L) != q) {
+			errprintf("Curve(): the map matrix must have %g rows (statistics) and %g columns (parameters)\n", n, q)
+			_error(198)
+		}
+	}
+	else {
+		errprintf("Curve(): map() is rep or matrix(name); map functions are not available\n")
+		_error(198)
+	}
+	td.opW = L'
+}
+
+// altkstar written without fixed (R's default fixed = FALSE) is the curved term: removes it from the structural() list in the
+// Stata local `structural' and sets the local `__altk' to 1
+void ergm_altk_extract()
+{
+	string rowvector w, a
+	string scalar nm, args, out
+	real scalar k, found, fixed, j
+	w = ergm_ops_words(st_local("structural"))
+	out = ""
+	found = 0
+	for (k=1; k<=cols(w); k++) {
+		nm = w[k]
+		if (nm == "altkstar") {
+			found = 1
+			continue
+		}
+		if (regexm(nm, "^altkstar[(](.*)[)]$")) {
+			args = regexs(1)
+			a = ergm_ops_words(subinstr(args, ",", " "))
+			fixed = 0
+			for (j=1; j<=cols(a); j++) {
+				if (strlower(a[j]) == "fixed" | any(strlower(a[j]) :== ("fixed=true", "fixed=t", "fixed=1"))) fixed = 1
+			}
+			if (!fixed) {
+				found = 1
+				continue
+			}
+		}
+		out = out + " " + nm
+	}
+	st_local("structural", strtrim(out))
+	st_local("__altk", strofreal(found))
+}
+
+// the suboptions in opts that are not in the list allowed
+string scalar ergm_ops_badopts(string scalar opts, string scalar allowed)
+{
+	string rowvector have, ok
+	string scalar out
+	real scalar k
+	have = ergm_ops_optnames(opts)
+	ok = tokens(allowed)
+	out = ""
+	for (k=1; k<=cols(have); k++) {
+		if (have[k] != "" & !any(ok :== have[k])) out = out + " " + have[k]
+	}
+	return(strtrim(out))
+}
+
+// weights of a formula of Sum/Prod from its left-hand side text
+real matrix ergm_ops_weights(string scalar lhs, real scalar nstat, string scalar kind)
+{
+	string scalar l
+	real rowvector v
+	real matrix W
+	string rowvector tk
+	l = strlower(strtrim(lhs))
+	if (l == "") return(I(nstat))
+	if (kind == "sum" & l == "sum") return(J(1, nstat, 1))
+	if (kind == "sum" & l == "mean") return(J(1, nstat, 1/nstat))
+	if (kind == "prod" & l == "prod") return(J(1, nstat, 1))
+	if (kind == "prod" & l == "geomean") return(J(1, nstat, 1/nstat))
+	if (substr(l, 1, 7) == "matrix(") {
+		W = st_matrix(strtrim(substr(l, 8, strlen(l) - 8)))
+		if (cols(W) != nstat) {
+			errprintf("operators(): the weight matrix has %g columns, the formula has %g statistics\n", cols(W), nstat)
+			_error(198)
+		}
+		return(W)
+	}
+	tk = tokens(l)
+	v = J(1, cols(tk), .)
+	if (cols(tk) == 0) _error(198)
+	v = strtoreal(tk)
+	if (any(v :>= .)) {
+		errprintf("operators(): %s: the weights of a formula are a number, numbers, matrix(name), or %s\n", lhs, (kind == "sum" ? "sum or mean" : "prod or geomean"))
+		_error(198)
+	}
+	if (cols(v) == 1) return(v[1] * I(nstat))
+	if (cols(v) != nstat) {
+		errprintf("operators(): %g weights for a formula with %g statistics\n", cols(v), nstat)
+		_error(198)
+	}
+	return(diag(v))
+}
+
+// R's For(): replaces {var} in the template by each value; loops are nested, the first is the outermost
+string scalar ergm_ops_for(string scalar args)
+{
+	string rowvector parts, vals, cur
+	string scalar tmpl, nm, out, t
+	string matrix loops
+	real scalar k, j, m, nl, idx
+	real rowvector sz, ix
+	parts = ergm_ops_split(args, ",")
+	nl = 0
+	loops = J(0, 2, "")
+	tmpl = ""
+	for (k=1; k<=cols(parts); k++) {
+		if (regexm(parts[k], "^([A-Za-z_][A-Za-z0-9_]*)[ ]*=[ ]*(.*)$")) {
+			nm = regexs(1)
+			t = regexs(2)
+			if (regexm(t, "^[-0-9. ]+/[-0-9. ]+$")) {
+				stata("numlist " + char(34) + t + char(34))
+				t = st_global("r(numlist)")
+			}
+			loops = loops \ (nm, t)
+			nl++
+		}
+		else tmpl = (tmpl == "" ? parts[k] : tmpl + ", " + parts[k])
+	}
+	if (nl == 0 | tmpl == "") {
+		errprintf("operators(): For() needs one or more loops (name = values) and the terms to repeat\n")
+		_error(198)
+	}
+	sz = J(1, nl, 0)
+	for (k=1; k<=nl; k++) sz[k] = cols(tokens(loops[k,2]))
+	ix = J(1, nl, 1)
+	out = ""
+	while (1) {
+		t = tmpl
+		for (k=1; k<=nl; k++) t = subinstr(t, "{" + loops[k,1] + "}", tokens(loops[k,2])[ix[k]])
+		out = out + " " + t
+		k = nl
+		while (k >= 1) {
+			ix[k] = ix[k] + 1
+			if (ix[k] <= sz[k]) break
+			ix[k] = 1
+			k--
+		}
+		if (k < 1) break
+	}
+	return(strtrim(out))
+}
+
+// adds the term instances of the model S to M (the terms keep their statistics; names given)
+void ergm_ops_mergemodel(class ErgmModel scalar M, class ErgmModel scalar S, string rowvector cn)
+{
+	real scalar t
+	M.nterms = M.nterms + S.nterms
+	M.names = (M.names, S.names)
+	M.npar = (M.npar, S.npar)
+	M.statfn = (M.statfn, S.statfn)
+	M.chgfn = (M.chgfn, S.chgfn)
+	M.td = (M.td, S.td)
+	M.coefnames = (M.coefnames, cn)
+	M.curved = (M.curved, S.curved)
+	M.isfixed = (M.isfixed, S.isfixed)
+	M.fixedvalue = (M.fixedvalue, S.fixedvalue)
+	if (cols(M.opkind) > 0 | cols(S.opkind) > 0) {
+		if (cols(M.opkind) == 0) {
+			M.opkind = J(1, cols(M.coefnames) - cols(cn), 0)
+			M.opparam = M.opkind
+		}
+		M.opkind = (M.opkind, (cols(S.opkind) > 0 ? S.opkind : J(1, cols(cn), 0)))
+		M.opparam = (M.opparam, (cols(S.opparam) > 0 ? S.opparam : J(1, cols(cn), 0)))
+	}
+}
+
+// R's Label(): new coefficient names (pos is prepend, replace, append or paren, R's "(")
+string rowvector ergm_ops_label(string rowvector cn, string scalar lab, string scalar pos)
+{
+	string rowvector labs, out
+	real scalar k
+	labs = tokens(lab)
+	out = cn
+	if (pos == "replace") {
+		if (cols(labs) != cols(cn)) {
+			if (cols(labs) == 1) labs = J(1, cols(cn), labs[1]) :+ strofreal(1..cols(cn))
+			else {
+				errprintf("operators(): Label() has %g labels for %g statistics\n", cols(labs), cols(cn))
+				_error(198)
+			}
+		}
+		return(labs)
+	}
+	if (cols(labs) != 1) {
+		errprintf("operators(): Label() with pos(%s) takes one label\n", pos)
+		_error(198)
+	}
+	for (k=1; k<=cols(cn); k++) {
+		if (pos == "prepend") out[k] = lab + cn[k]
+		else if (pos == "append") out[k] = cn[k] + lab
+		else out[k] = lab + "(" + cn[k] + ")"
+	}
+	return(out)
+}
+
+// split on blanks outside parentheses, dropping empty pieces
+string rowvector ergm_ops_words(string scalar s)
+{
+	string rowvector w
+	w = ergm_ops_split(s, " ")
+	if (cols(w) == 0) return(w)
+	w = select(w, w :!= "")
+	return(w)
+}
+
+void ergm_ops_setW(class ErgmTermData scalar td, string rowvector lhs, string scalar kind)
+{
+	real scalar f, P, nf
+	real matrix W, Wf
+	nf = cols(td.opdims)
+	W = J(0, 0, .)
+	P = .
+	for (f=1; f<=nf; f++) {
+		Wf = ergm_ops_weights(lhs[f], td.opdims[f], kind)
+		if (P >= .) P = rows(Wf)
+		else if (rows(Wf) != P) {
+			errprintf("operators(): the formulas give different numbers of statistics after their weights are applied\n")
+			_error(198)
+		}
+		if (f == 1) W = Wf
+		else W = (W, Wf)
+	}
+	td.opW = W
+}
+
+string rowvector ergm_ops_names(string scalar label, real scalar P, string scalar Kind)
+{
+	string rowvector l, out
+	l = ergm_ops_words(label)
+	if (cols(l) == 1 & P > 1) l = l[1] :+ strofreal(1..P)
+	if (cols(l) != P) {
+		errprintf("operators(): label() has %g elements, the operator gives %g statistics\n", cols(l), P)
+		_error(198)
+	}
+	out = (Kind + "~") :+ l
+	return(subinstr(out, ".", "_"))
+}
+
+real colvector ergm_ops_blockcode(real matrix X)
+{
+	real matrix U
+	real colvector code
+	real scalar i, k
+	U = uniqrows(X)
+	code = J(rows(X), 1, 0)
+	for (i=1; i<=rows(X); i++) {
+		for (k=1; k<=rows(U); k++) {
+			if (all(X[i,.] :== U[k,.])) {
+				code[i] = k
+				break
+			}
+		}
+	}
+	return(code)
+}
+
+real rowvector ergm_ops_emptystat(class ErgmModel scalar M, class ErgmGraph scalar G)
+{
+	class ErgmGraph scalar E
+	E = ErgmGraph()
+	E.init(G.n, G.directed)
+	if (G.bipartite) E.set_bipartite(G.mode)
+	return(M.full_statistic(E))
+}
+
 real scalar ErgmNativeSPCode(string scalar sptype, real scalar utp, real scalar otp, real scalar itp, real scalar osp, real scalar isp, real scalar rtp){
 	if (sptype == "OTP") return(otp)
 	if (sptype == "ITP") return(itp)
@@ -7507,7 +8423,7 @@ real scalar ErgmNativeSetup(class ErgmModel scalar M, real scalar proposal_code,
 	real scalar t, k, pos, ncols, aidx, cidx, maxcols, maxattr, maxcovmat, masked
 	string scalar nm
 	real rowvector termcodes, attridxs, p1v, p2v, covidxs
-	real matrix attrmat, covmatstack
+	real matrix attrmat, covmatstack, conrows, ctxrows
 	class ErgmTermData scalar tdt
 
 	M.native_enabled = 0
@@ -7575,12 +8491,14 @@ real scalar ErgmNativeSetup(class ErgmModel scalar M, real scalar proposal_code,
 	// model exceeding either falls back to Mata rather than risking the
 	// C plugin's own hard-coded array bounds.
 	maxcols = 256
-	maxattr = 32
+	maxattr = 64
 	maxcovmat = 8
 
 	ncols = M.nparam()
 	if (ncols > maxcols) return(0)
 
+	conrows = J(0, 13, 0)
+	ctxrows = J(0, 12, 0)
 	termcodes = J(1, ncols, 0)
 	attridxs = J(1, ncols, 0)
 	p1v = J(1, ncols, 0)
@@ -8092,9 +9010,15 @@ real scalar ErgmNativeSetup(class ErgmModel scalar M, real scalar proposal_code,
 				if (tdt.levelpairs[k, 6]) covidxs[pos] = cidx2
 			}
 		}
+		else if (substr(nm, 1, 3) == "op:") {
+			if (!ergm_op_flatten(M, t, tdt, pos, termcodes, attrmat, covmatstack, conrows, ctxrows)) return(0)
+			pos = pos + M.npar[t]
+		}
 		else return(0)
 	}
 
+	M.native_con = conrows
+	M.native_ctx = ctxrows
 	M.native_termcodes = termcodes
 	M.native_attridx = attridxs
 	M.native_p1 = p1v
@@ -8338,6 +9262,8 @@ real matrix ErgmNativeSampleCore(class ErgmModel scalar M, class ErgmGraph scala
 		for (i=1; i<=cols(M.con_par); i++) argstr = argstr + " " + strofreal(M.con_par[i], "%25.17g")
 		argstr = argstr + " " + strofreal(ncon)
 	}
+	else if (rows(M.native_con) > 0 | rows(M.native_ctx) > 0) argstr = argstr + " 0 0"
+	argstr = argstr + _ergm_native_comp(M, G)
 
 	// Stata will not let an already-loaded plugin-type program be
 	// dropped and redefined within the same session (confirmed by
@@ -8518,6 +9444,7 @@ real matrix ErgmNativeBuildMPLEData(class ErgmModel scalar M, class ErgmGraph sc
 	for (i=1; i<=p; i++) argstr = argstr + " 0"	// theta (unused)
 	for (i=1; i<=p; i++) argstr = argstr + " 0"	// obs (unused)
 	argstr = argstr + _ergm_native_opstr(M, G)
+	if (rows(M.native_con) > 0 | rows(M.native_ctx) > 0) argstr = argstr + " 0 0" + _ergm_native_comp(M, G)
 
 	stata("capture program ergmnativemcmc, plugin using(" + char(34) + ErgmNativePluginPath() + char(34) + ")")
 

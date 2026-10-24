@@ -297,6 +297,11 @@ program _nwergm_struct, rclass
 			local slots "1021,0,0,0,0,0"
 			local cn "opentriad"
 		}
+		else if "`tname'" == "balance" {
+			_nwergm_struct_noargs `tname', pos(`POSV') attr(`ATTR')
+			local slots "1040,0,0,0,0,0"
+			local cn "balance"
+		}
 		else if "`tname'" == "threetrail" | "`tname'" == "threepath" {
 			if !`dir' {
 				local slots "1022,0,0,0,0,0"

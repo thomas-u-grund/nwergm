@@ -446,7 +446,7 @@ static void free_elist_ensure(graph_t *g, long need) {
 }
 
 /* toggles dyad (i,j); returns 1 if the tie was ADDED, 0 if REMOVED */
-static int toggle(graph_t *g, long i, long j) {
+static int toggle_core(graph_t *g, long i, long j) {
 	long key = dyadkey(g, i, j);
 	long pos;
 	int was_edge = ht_get(&g->ht, key, &pos);
@@ -2301,8 +2301,215 @@ static long next_long(void) {
 }
 
 #define MAXTERMS 256  /* must match unw_ergm.do's own ErgmNativeSetup() maxcols */
-#define MAXATTR  32  /* must match unw_ergm.do's own ErgmNativeSetup() maxattr */
+#define MAXATTR  64  /* must match unw_ergm.do's own ErgmNativeSetup() maxattr */
 #define MAXCOVMAT 8  /* must match unw_ergm.do's own ErgmNativeSetup() maxcovmat (harmonisation unit 160) - distinct dense n x n edgecov()/hamming() matrices are far heavier per slot (n^2 doubles, not n) than an attribute array, so this cap is deliberately much smaller than MAXATTR */
+
+
+/* ===================================================================
+   Operator terms (Sum, Prod, S, F, NodematchFilter, Symmetrize, Project).
+
+   A model column ("slot") whose termcode is TERMCODE_COMP is a composite:
+   it is built from a list of constituents (one plain term each, a
+   change_term() code with its parameters), each evaluated either on the
+   network itself (ctx 0) or on a derived network (a "context") that
+   follows the network through every toggle:
+       kind 1  F / NodematchFilter  the same nodes; a tie is kept when a
+                                    dyad-independent filter term has the
+                                    required value for that dyad
+       kind 2  Symmetrize           the undirected network symmetrized by a
+                                    rule (weak, strong, upper, lower)
+       kind 3  S                    the subgraph induced by a node subset
+       kind 4  Project              the one-mode projection of a bipartite
+                                    network onto one mode (a tie when the two
+                                    nodes share at least one partner)
+   Contexts may be nested (a context's parent is another context).  A toggle
+   of a dyad in the parent graph is mapped (ctx_map()) onto zero or more
+   toggles of the derived graph; the statistic change of a constituent is
+   obtained by applying these toggles one after the other and undoing them
+   again; an accepted toggle of the network is carried through to every
+   derived graph by the toggle() wrapper below.
+   The slot value is the weighted sum of its constituents (comb 0) or
+   exp(sum of w * log(constituent)) (comb 1, R's Prod operator).
+   =================================================================== */
+#define TERMCODE_COMP 9000
+#define MAXCTX 64
+#define COMP_LOG0 (-1.0 / sqrt(2.220446049250313e-16))
+
+typedef struct {
+	int slot, comb, code, attr, cov, ctx;
+	double p1, p2, w, raw, lastchg;
+} con_t;
+
+typedef struct ctx_s {
+	int id, parent, kind, depth;
+	int path[MAXCTX];
+	graph_t g;
+	long n;
+	int fcode, fattr, fcov, fcmp;
+	double fp1, fp2, fval;
+	int rule, mapattr;
+	long *map;
+	int pmode;
+	long *rank;
+	long *tbi, *tbj, tcap;
+} ctx_t;
+
+static graph_t *g_main = NULL;
+static ctx_t *g_ctx = NULL;
+static int g_nctx = 0;
+static con_t *g_con = NULL;
+static long g_ncon = 0;
+static long g_cfirst[MAXTERMS], g_cn[MAXTERMS];
+static int g_ccomb[MAXTERMS];
+static double **g_attrp = NULL;
+static double **g_covp = NULL;
+
+static void ctx_commit(int parent, graph_t *gp, long pi, long pj);
+
+static int toggle(graph_t *g, long i, long j) {
+	if (g == g_main && g_nctx > 0) ctx_commit(0, g, i, j);
+	return toggle_core(g, i, j);
+}
+
+#define ATTRP(ix) (((ix) > 0) ? g_attrp[(ix) - 1] : NULL)
+#define COVP(ix) (((ix) > 0) ? g_covp[(ix) - 1] : NULL)
+
+static int filter_pass(ctx_t *c, graph_t *gp, long i, long j) {
+	double f = change_term(gp, c->fcode, c->fp1, c->fp2, ATTRP(c->fattr), COVP(c->fcov), gp->n, 1.0, i, j);
+	switch (c->fcmp) {
+		case 1: return f == 0.0;
+		case 2: return f == c->fval;
+		case 3: return f != c->fval;
+		case 4: return f > c->fval;
+		case 5: return f < c->fval;
+		case 6: return f >= c->fval;
+		case 7: return f <= c->fval;
+	}
+	return f != 0.0;
+}
+
+/* toggles of the derived graph caused by toggling (i,j) of the parent graph gp (gp still in its old state) */
+static int ctx_map(ctx_t *c, graph_t *gp, long i, long j) {
+	switch (c->kind) {
+		case 1:
+			if (!filter_pass(c, gp, i, j)) return 0;
+			c->tbi[0] = i; c->tbj[0] = j;
+			return 1;
+		case 2: {
+			int r = has_edge(gp, j, i), t;
+			switch (c->rule) {
+				case 1: t = !r; break;
+				case 2: t = r; break;
+				case 3: t = (i < j); break;
+				default: t = (i > j); break;
+			}
+			if (!t) return 0;
+			c->tbi[0] = i; c->tbj[0] = j;
+			return 1;
+		}
+		case 3: {
+			long a = c->map[i], b = c->map[j];
+			if (!a || !b) return 0;
+			c->tbi[0] = a; c->tbj[0] = b;
+			return 1;
+		}
+		case 4: {
+			long u = (gp->mode[i] == 1) ? i : j;
+			long v = (gp->mode[i] == 1) ? j : i;
+			long x = (c->pmode == 1) ? u : v;      /* the node whose neighbours' partners change */
+			long y = (c->pmode == 1) ? v : u;      /* the partner whose adjacency list is walked */
+			int adding = !has_edge(gp, i, j);
+			adjlist_t *nb = &gp->adj[y];
+			long q, m = 0;
+			for (q = 0; q < nb->len; q++) {
+				long k = nb->nb[q], w;
+				if (k == x) continue;
+				w = common_neighbors(gp, x, k);
+				if ((adding && w == 0) || (!adding && w == 1)) {
+					c->tbi[m] = c->rank[x]; c->tbj[m] = c->rank[k];
+					m++;
+				}
+			}
+			return (int)m;
+		}
+	}
+	return 0;
+}
+
+static void ctx_commit(int parent, graph_t *gp, long pi, long pj) {
+	int q;
+	for (q = 0; q < g_nctx; q++) {
+		ctx_t *c = &g_ctx[q];
+		int m, t;
+		if (c->parent != parent) continue;
+		m = ctx_map(c, gp, pi, pj);
+		for (t = 0; t < m; t++) {
+			ctx_commit(c->id, &c->g, c->tbi[t], c->tbj[t]);
+			toggle_core(&c->g, c->tbi[t], c->tbj[t]);
+		}
+	}
+}
+
+static double walk_change(const con_t *k, int lvl, ctx_t *last, graph_t *gp, long pi, long pj) {
+	ctx_t *cx = &g_ctx[last->path[lvl] - 1];
+	graph_t *gc = &cx->g;
+	int m = ctx_map(cx, gp, pi, pj), t;
+	double tot = 0.0;
+	for (t = 0; t < m; t++) {
+		long ci = cx->tbi[t], cj = cx->tbj[t];
+		if (cx == last) {
+			double d = has_edge(gc, ci, cj) ? -1.0 : 1.0;
+			tot += change_term(gc, k->code, k->p1, k->p2, ATTRP(k->attr), COVP(k->cov), cx->n, d, ci, cj);
+		}
+		else tot += walk_change(k, lvl + 1, last, gc, ci, cj);
+		toggle_core(gc, ci, cj);
+	}
+	for (t = m - 1; t >= 0; t--) toggle_core(gc, cx->tbi[t], cx->tbj[t]);
+	return tot;
+}
+
+static double con_change(const con_t *k, graph_t *g, long n, double delta, long i, long j) {
+	if (k->ctx == 0) return change_term(g, k->code, k->p1, k->p2, ATTRP(k->attr), COVP(k->cov), n, delta, i, j);
+	return walk_change(k, 0, &g_ctx[k->ctx - 1], g, i, j);
+}
+
+static double comp_log(double x) { return (x == 0.0) ? COMP_LOG0 : log(x); }
+
+static double comp_change(long s, graph_t *g, long n, double delta, long i, long j) {
+	long a = g_cfirst[s], m = g_cn[s], t;
+	double tot = 0.0;
+	if (g_ccomb[s] == 0) {
+		for (t = 0; t < m; t++) {
+			con_t *k = &g_con[a + t];
+			double ch = con_change(k, g, n, delta, i, j);
+			k->lastchg = ch;
+			tot += k->w * ch;
+		}
+		return tot;
+	}
+	else {
+		double lold = 0.0, lnew = 0.0;
+		for (t = 0; t < m; t++) {
+			con_t *k = &g_con[a + t];
+			double ch = con_change(k, g, n, delta, i, j);
+			k->lastchg = ch;
+			lold += k->w * comp_log(k->raw);
+			lnew += k->w * comp_log(k->raw + ch);
+		}
+		return exp(lnew) - exp(lold);
+	}
+}
+
+static void comp_accept(void) {
+	long t;
+	for (t = 0; t < g_ncon; t++) if (g_ccomb[g_con[t].slot] == 1) g_con[t].raw += g_con[t].lastchg;
+}
+
+/* the terms of the change_slot() below are evaluated for model column k; the e6 constraint code and the loops call this */
+static double change_any(long k, graph_t *g, int termcode, double p1, double p2, double *attr, double *cm, long n, double delta, long i, long j) {
+	if (termcode == TERMCODE_COMP) return comp_change(k, g, n, delta, i, j);
+	return change_term(g, termcode, p1, p2, attr, cm, n, delta, i, j);
+}
 
 /* ---- statistic transforms (R's Log()/Exp(), agent E4) -------------------
    A model column can be declared a transformed column: the slot's raw
@@ -2318,7 +2525,7 @@ static double op_f(int kind, double param, double x) {
 	return exp(x);
 }
 static double change_slot(long k, graph_t *g, int termcode, double p1, double p2, double *attr, double *cm, long n, double delta, long i, long j) {
-	double c = change_term(g, termcode, p1, p2, attr, cm, n, delta, i, j);
+	double c = change_any(k, g, termcode, p1, p2, attr, cm, n, delta, i, j);
 	if (g_opkind[k]) {
 		g_rawchg[k] = c;
 		if (c == 0.0) return 0.0;
@@ -2641,6 +2848,104 @@ static int curved_mple_fit_c(const double *X, const double *y, long ndyads, long
 	return 0;
 }
 
+
+
+/* which optional per-node structures a term code needs (adjacency lists, in/out degrees, directed adjacency lists) */
+static void term_needs(int tc, long directed, int *na, int *no, int *nd) {
+	if (tc >= 1000 && tc < 2000) { *na = 1; *no = 1; *nd = 1; }
+	switch (tc) {
+		case TERMCODE_GWESP: case TERMCODE_GWDSP: case TERMCODE_GWNSP:
+		case TERMCODE_ESP: case TERMCODE_DSP: case TERMCODE_TRIANGLE:
+		case TERMCODE_NSP: case TERMCODE_B1NODEMATCH: case TERMCODE_B2NODEMATCH:
+			*na = 1;
+	}
+	if (tc >= 3000 && tc < 4000) {
+		int bk = tc - 3000;
+		if (bk != 1 && bk != 6 && bk != 9) *na = 1;
+	}
+	switch (tc) {
+		case TERMCODE_GWODEGREE: case TERMCODE_GWIDEGREE:
+		case TERMCODE_ODEGREE: case TERMCODE_IDEGREE:
+		case TERMCODE_OSTAR: case TERMCODE_ISTAR:
+		case TERMCODE_ODEGRANGE: case TERMCODE_IDEGRANGE:
+			*no = 1;
+	}
+	switch (tc) {
+		case TERMCODE_GWESP_OTP: case TERMCODE_GWDSP_OTP:
+		case TERMCODE_GWNSP_OTP: case TERMCODE_ESP_OTP:
+		case TERMCODE_DSP_OTP: case TERMCODE_CTRIPLE:
+		case TERMCODE_TRANSITIVETIES: case TERMCODE_CYCLICALTIES:
+		case TERMCODE_GWESP_ITP: case TERMCODE_GWDSP_ITP:
+		case TERMCODE_GWNSP_ITP: case TERMCODE_ESP_ITP:
+		case TERMCODE_DSP_ITP:
+		case TERMCODE_GWESP_OSP: case TERMCODE_GWDSP_OSP:
+		case TERMCODE_GWNSP_OSP: case TERMCODE_ESP_OSP:
+		case TERMCODE_DSP_OSP:
+		case TERMCODE_GWESP_ISP: case TERMCODE_GWDSP_ISP:
+		case TERMCODE_GWNSP_ISP: case TERMCODE_ESP_ISP:
+		case TERMCODE_DSP_ISP:
+		case TERMCODE_GWESP_RTP: case TERMCODE_GWDSP_RTP:
+		case TERMCODE_GWNSP_RTP: case TERMCODE_ESP_RTP:
+		case TERMCODE_DSP_RTP:
+		case TERMCODE_NSP_OTP: case TERMCODE_NSP_ITP:
+		case TERMCODE_NSP_OSP: case TERMCODE_NSP_ISP:
+		case TERMCODE_NSP_RTP:
+			*nd = 1;
+	}
+	if (tc >= TERMCODE_NODECOVRANGE && tc <= TERMCODE_NODEIFD) {
+		if (directed) *nd = 1; else *na = 1;
+	}
+}
+
+/* graphs of the operator contexts */
+static void graph_make(graph_t *g, long n, int directed, int bip, graph_t *like, int na, int no, int nd) {
+	long q;
+	memset(g, 0, sizeof(*g));
+	g->n = n; g->directed = directed; g->bipartite = bip;
+	if (bip && like) {
+		g->mode = like->mode; g->mode1nodes = like->mode1nodes; g->mode2nodes = like->mode2nodes;
+		g->n1 = like->n1; g->n2 = like->n2;
+	}
+	g->need_adj = na;
+	g->need_outin = no && directed;
+	g->need_dirsp = nd;
+	ht_alloc(&g->ht, ht_next_pow2(64));
+	g->deg = (long *)calloc((size_t)(n + 1), sizeof(long));
+	if (g->need_outin) {
+		g->outdeg = (long *)calloc((size_t)(n + 1), sizeof(long));
+		g->indeg = (long *)calloc((size_t)(n + 1), sizeof(long));
+	}
+	if (na) {
+		g->adj = (adjlist_t *)malloc((size_t)(n + 1) * sizeof(adjlist_t));
+		for (q = 0; q <= n; q++) adj_init(&g->adj[q]);
+	}
+	if (nd) {
+		g->outadj = (adjlist_t *)malloc((size_t)(n + 1) * sizeof(adjlist_t));
+		g->inadj = (adjlist_t *)malloc((size_t)(n + 1) * sizeof(adjlist_t));
+		for (q = 0; q <= n; q++) { adj_init(&g->outadj[q]); adj_init(&g->inadj[q]); }
+	}
+}
+static void graph_unmake(graph_t *g) {
+	long q;
+	free(g->deg); free(g->outdeg); free(g->indeg);
+	ht_free(&g->ht);
+	free(g->elist_i); free(g->elist_j);
+	if (g->adj) { for (q = 0; q <= g->n; q++) free(g->adj[q].nb); free(g->adj); }
+	if (g->outadj) { for (q = 0; q <= g->n; q++) free(g->outadj[q].nb); free(g->outadj); }
+	if (g->inadj) { for (q = 0; q <= g->n; q++) free(g->inadj[q].nb); free(g->inadj); }
+	memset(g, 0, sizeof(*g));
+}
+static void ops_free(void) {
+	int q;
+	for (q = 0; q < g_nctx; q++) {
+		graph_unmake(&g_ctx[q].g);
+		free(g_ctx[q].map); free(g_ctx[q].rank); free(g_ctx[q].tbi); free(g_ctx[q].tbj);
+	}
+	free(g_ctx); g_ctx = NULL; g_nctx = 0;
+	free(g_con); g_con = NULL; g_ncon = 0;
+	g_main = NULL; g_attrp = NULL; g_covp = NULL;
+}
+
 #include "ergm_mcmc_e6.h"
 
 STDLL stata_call(int argc, char *argv[]) {
@@ -2731,51 +3036,7 @@ STDLL stata_call(int argc, char *argv[]) {
 		p1[i] = next_double();
 		p2[i] = next_double();
 		covidx[i] = (int)next_long();
-		if (termcodes[i] >= 1000 && termcodes[i] < 2000) { need_adj = 1; need_outin = 1; need_dirsp = 1; }
-		switch (termcodes[i]) {
-			case TERMCODE_GWESP: case TERMCODE_GWDSP: case TERMCODE_GWNSP:
-			case TERMCODE_ESP: case TERMCODE_DSP: case TERMCODE_TRIANGLE:
-			case TERMCODE_NSP: case TERMCODE_B1NODEMATCH: case TERMCODE_B2NODEMATCH:
-				need_adj = 1;
-		}
-		if (termcodes[i] >= 3000 && termcodes[i] < 4000) {
-			int bk = termcodes[i] - 3000;
-			if (bk != 1 && bk != 6 && bk != 9) need_adj = 1;
-		}
-		switch (termcodes[i]) {
-			case TERMCODE_GWODEGREE: case TERMCODE_GWIDEGREE:
-			case TERMCODE_ODEGREE: case TERMCODE_IDEGREE:
-			case TERMCODE_OSTAR: case TERMCODE_ISTAR:
-			case TERMCODE_ODEGRANGE: case TERMCODE_IDEGRANGE:
-				need_outin = 1;
-		}
-		switch (termcodes[i]) {
-			case TERMCODE_GWESP_OTP: case TERMCODE_GWDSP_OTP:
-			case TERMCODE_GWNSP_OTP: case TERMCODE_ESP_OTP:
-			case TERMCODE_DSP_OTP: case TERMCODE_CTRIPLE:
-			case TERMCODE_TRANSITIVETIES: case TERMCODE_CYCLICALTIES:
-			case TERMCODE_GWESP_ITP: case TERMCODE_GWDSP_ITP:
-			case TERMCODE_GWNSP_ITP: case TERMCODE_ESP_ITP:
-			case TERMCODE_DSP_ITP:
-			case TERMCODE_GWESP_OSP: case TERMCODE_GWDSP_OSP:
-			case TERMCODE_GWNSP_OSP: case TERMCODE_ESP_OSP:
-			case TERMCODE_DSP_OSP:
-			case TERMCODE_GWESP_ISP: case TERMCODE_GWDSP_ISP:
-			case TERMCODE_GWNSP_ISP: case TERMCODE_ESP_ISP:
-			case TERMCODE_DSP_ISP:
-			case TERMCODE_GWESP_RTP: case TERMCODE_GWDSP_RTP:
-			case TERMCODE_GWNSP_RTP: case TERMCODE_ESP_RTP:
-			case TERMCODE_DSP_RTP:
-			case TERMCODE_NSP_OTP: case TERMCODE_NSP_ITP:
-			case TERMCODE_NSP_OSP: case TERMCODE_NSP_ISP:
-			case TERMCODE_NSP_RTP:
-				need_dirsp = 1;
-		}
-	}
-	for (i = 0; i < nterms; i++) {
-		if (termcodes[i] >= TERMCODE_NODECOVRANGE && termcodes[i] <= TERMCODE_NODEIFD) {
-			if (directed) need_dirsp = 1; else need_adj = 1;
-		}
+		term_needs(termcodes[i], directed, &need_adj, &need_outin, &need_dirsp);
 	}
 	for (i = 0; i < nterms; i++) theta[i] = next_double();
 	for (i = 0; i < nterms; i++) obs[i] = next_double();
@@ -2826,6 +3087,45 @@ STDLL stata_call(int argc, char *argv[]) {
 		/* the constraint proposals need neighbour lists and in/out degrees */
 		if (directed) { need_dirsp = 1; need_outin = 1; }
 		else need_adj = 1;
+	}
+	/* operator block (composite columns and derived-network contexts), see the comment above TERMCODE_COMP:
+	   ncon, then per constituent: slot comb code attr cov ctx p1 p2 w raw;
+	   nctx, then per context: id parent kind n v1..v8 */
+	ops_free();
+	{
+		long q, r;
+		g_ncon = next_long();
+		if (g_ncon < 0 || g_ncon > 1000000) g_ncon = 0;
+		g_con = (con_t *)calloc((size_t)(g_ncon + 1), sizeof(con_t));
+		for (q = 0; q < MAXTERMS; q++) { g_cfirst[q] = 0; g_cn[q] = 0; g_ccomb[q] = 0; }
+		for (q = 0; q < g_ncon; q++) {
+			con_t *c = &g_con[q];
+			c->slot = (int)next_long(); c->comb = (int)next_long(); c->code = (int)next_long();
+			c->attr = (int)next_long(); c->cov = (int)next_long(); c->ctx = (int)next_long();
+			c->p1 = next_double(); c->p2 = next_double(); c->w = next_double(); c->raw = next_double();
+			if (c->slot < 0 || c->slot >= MAXTERMS) { SF_error("ergm_mcmc: bad operator block\n"); free(argbuf); ops_free(); return(198); }
+			if (g_cn[c->slot] == 0) g_cfirst[c->slot] = q;
+			g_cn[c->slot]++;
+			g_ccomb[c->slot] = c->comb;
+		}
+		g_nctx = (int)next_long();
+		if (g_nctx < 0 || g_nctx > MAXCTX) g_nctx = 0;
+		g_ctx = (ctx_t *)calloc((size_t)(g_nctx + 1), sizeof(ctx_t));
+		for (q = 0; q < g_nctx; q++) {
+			ctx_t *c = &g_ctx[q];
+			double v[8];
+			c->id = (int)next_long(); c->parent = (int)next_long(); c->kind = (int)next_long(); c->n = next_long();
+			for (r = 0; r < 8; r++) v[r] = next_double();
+			if (c->id != (int)q + 1 || c->parent >= c->id) { SF_error("ergm_mcmc: bad operator block\n"); free(argbuf); ops_free(); return(198); }
+			c->fcode = (int)v[0]; c->fattr = (int)v[1]; c->fcov = (int)v[2]; c->fp1 = v[3]; c->fp2 = v[4]; c->fcmp = (int)v[5]; c->fval = v[6];
+			c->rule = (int)v[0]; c->pmode = (int)v[0];
+			c->mapattr = (int)v[0];
+		}
+		for (q = 0; q < g_ncon; q++) if (g_con[q].ctx == 0) term_needs(g_con[q].code, directed, &need_adj, &need_outin, &need_dirsp);
+		for (q = 0; q < g_nctx; q++) if (g_ctx[q].parent == 0) {
+			if (g_ctx[q].kind == 4) need_adj = 1;
+			if (g_ctx[q].kind == 1) term_needs(g_ctx[q].fcode, directed, &need_adj, &need_outin, &need_dirsp);
+		}
 	}
 	free(argbuf);
 
@@ -3010,6 +3310,44 @@ STDLL stata_call(int argc, char *argv[]) {
 			}
 		}
 	}
+	g_main = &g; g_attrp = attrs; g_covp = covmats;
+	{
+		int q, r;
+		long t;
+		for (q = 0; q < g_nctx; q++) {
+			ctx_t *c = &g_ctx[q];
+			graph_t *pg = c->parent ? &g_ctx[c->parent - 1].g : &g;
+			int na = 0, no = 0, nd = 0, cdir, cbip;
+			cdir = (c->kind == 2 || c->kind == 4) ? 0 : pg->directed;
+			cbip = (c->kind == 1) ? pg->bipartite : 0;
+			if (c->kind == 1 || c->kind == 2) c->n = pg->n;
+			if (c->kind == 4 && !pg->bipartite) { SF_error("ergm_mcmc: Project needs a bipartite network\n"); ops_free(); return(198); }
+			if (c->kind == 2 && !pg->directed) { SF_error("ergm_mcmc: Symmetrize needs a directed network\n"); ops_free(); return(198); }
+			for (t = 0; t < g_ncon; t++) if (g_con[t].ctx == c->id) term_needs(g_con[t].code, cdir, &na, &no, &nd);
+			for (r = 0; r < g_nctx; r++) if (g_ctx[r].parent == c->id) {
+				if (g_ctx[r].kind == 4) na = 1;
+				if (g_ctx[r].kind == 1) term_needs(g_ctx[r].fcode, cdir, &na, &no, &nd);
+			}
+			if (c->kind == 3) {
+				long i2;
+				c->map = (long *)calloc((size_t)(pg->n + 1), sizeof(long));
+				for (i2 = 1; i2 <= pg->n; i2++) c->map[i2] = (c->mapattr > 0) ? (long)attrs[c->mapattr - 1][i2] : 0;
+			}
+			if (c->kind == 4) {
+				long i2, cnt = 0;
+				c->rank = (long *)calloc((size_t)(pg->n + 1), sizeof(long));
+				for (i2 = 1; i2 <= pg->n; i2++) if (pg->mode[i2] == c->pmode) c->rank[i2] = ++cnt;
+				c->n = cnt;
+			}
+			graph_make(&c->g, c->n, cdir, cbip, pg, na, no, nd);
+			c->depth = (c->parent ? g_ctx[c->parent - 1].depth : 0) + 1;
+			for (r = 0; r < c->depth - 1; r++) c->path[r] = g_ctx[c->parent - 1].path[r];
+			c->path[c->depth - 1] = c->id;
+			c->tcap = pg->n + 2;
+			c->tbi = (long *)calloc((size_t)c->tcap, sizeof(long));
+			c->tbj = (long *)calloc((size_t)c->tcap, sizeof(long));
+		}
+	}
 	for (i = 1; i <= nties_in; i++) {
 		ST_double vi, vj;
 		SF_vdata(1, i, &vi);
@@ -3089,6 +3427,7 @@ STDLL stata_call(int argc, char *argv[]) {
 			for (i = 0; i <= n; i++) free(g.inadj[i].nb);
 			free(g.inadj);
 		}
+		ops_free();
 		return(0);
 	}
 
@@ -3125,6 +3464,7 @@ STDLL stata_call(int argc, char *argv[]) {
 		if (g.adj) { for (i = 0; i <= n; i++) free(g.adj[i].nb); free(g.adj); }
 		if (g.outadj) { for (i = 0; i <= n; i++) free(g.outadj[i].nb); free(g.outadj); }
 		if (g.inadj) { for (i = 0; i <= n; i++) free(g.inadj[i].nb); free(g.inadj); }
+		ops_free();
 		return(0);
 	}
 
@@ -3216,6 +3556,7 @@ STDLL stata_call(int argc, char *argv[]) {
 			for (i = 0; i <= n; i++) free(g.inadj[i].nb);
 			free(g.inadj);
 		}
+		ops_free();
 		return(0);
 	}
 
@@ -3292,6 +3633,7 @@ STDLL stata_call(int argc, char *argv[]) {
 		if (cutoff >= 0.0 || log(rng_unif(&rng)) < cutoff) {
 			toggle(&g, pi, pj);
 			for (k = 0; k < nterms; k++) { cur[k] += chg[k]; g_raw[k] += g_rawchg[k]; }
+			comp_accept();
 		}
 	}
 
@@ -3354,6 +3696,7 @@ STDLL stata_call(int argc, char *argv[]) {
 			if (cutoff >= 0.0 || log(rng_unif(&rng)) < cutoff) {
 				toggle(&g, pi, pj);
 				for (k = 0; k < nterms; k++) { cur[k] += chg[k]; g_raw[k] += g_rawchg[k]; }
+			comp_accept();
 				naccept++;
 			}
 		}
@@ -3396,5 +3739,6 @@ STDLL stata_call(int argc, char *argv[]) {
 		free(g.inadj);
 	}
 
+	ops_free();
 	return(0);
 }
