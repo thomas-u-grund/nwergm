@@ -49,7 +49,7 @@ program _nwergm_gof, rclass
 		exit 498
 	}
 	local dir = ("`edirected'" == "true")
-	mata: st_local("n1", strofreal(__nwergm_last_G.bipartite ? sum(__nwergm_last_G.mode2nodes :== 0) : 0))
+	mata: st_local("n1", strofreal(__nwergm_last_G.bipartite ? rows(__nwergm_last_G.mode1nodes) : 0))
 	local bip = ("`n1'" != "0")
 
 	// ---- which statistics (R: GOF = ~ degree + espartners + ... ; "-model" drops the model statistics)

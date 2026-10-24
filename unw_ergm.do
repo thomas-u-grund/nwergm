@@ -12146,7 +12146,10 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 			}
 			Fstat_prev = Fstat
 			if (stall_count > boost_threshold & samplesize < samplesize_cap) {
-				samplesize_boost = min((Fstat/Fcrit, confidence_boost))
+				// a boost is never a shrink: Fstat/Fcrit is below 1 when the test would pass, which happens here
+				// whenever the termination is not the confidence test (mcmletermination(none)); unclamped it cut the
+				// sample to a single draw and the variance step then failed with 'subscript invalid'
+				samplesize_boost = max((1, min((Fstat/Fcrit, confidence_boost))))
 				samplesize = min((ceil(samplesize * samplesize_boost), samplesize_cap, floor(total_draws_cap/interval)))
 				stall_count = 0
 			}
@@ -12543,7 +12546,15 @@ void _ergm_con_apply(string scalar nm, real scalar sgn, string scalar args)
 		exit(error(198))
 	}
 	if (nm == "observed") {
-		_ergm_con_dyadic(sgn, (__ncon_y :>= .))
+		// free dyads = the missing dyads (R: free_dyads = as.rlebdm(as.edgelist(is.na(nw)))). With no missing dyad
+		// R's constraint is empty and the model is fitted without it (checked: simulate/ergm give the unconstrained
+		// result), so nothing is applied here and the caller prints a note.
+		if (sum((__ncon_y :>= .) :* (1 :- I(rows(__ncon_y)))) == 0) {
+			st_local("__con_observed", "none")
+			return
+		}
+		st_local("__con_observed", "miss")
+		_ergm_con_dyadic(sgn, (__ncon_y :>= .) :* (1 :- I(rows(__ncon_y))))
 		return
 	}
 	if (nm == "fixallbut") {

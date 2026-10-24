@@ -3,6 +3,14 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+- `estat gof, gof(b1degree)` and `gof(b2degree)` after a two-mode fit treated the fit as one-mode and stopped with "needs a two-mode network" (the two-mode test counted the mode-2 nodes that equal 0, which is always none); the number of first-mode nodes is now read from the network. The observed distributions equal those of R's `gof(fit, GOF = ~ b1degree + b2degree)`. Test `test_nwergm_gofbip`.
+- `obsconstraints(b1degrees)` and `obsconstraints(b2degrees)` on a two-mode network crashed Stata (exit 139): the graph that carries the observation constraints was not marked two-mode, so the plugin received a two-mode model without a mode table and read outside its arrays. Test `test_nwergm_obsbdeg` (checks the coefficients against R's `obs.constraints`).
+- `obsconstraints(observed)` stopped with a conformability error (r(3200)) on a network with missing dyads (the missing-dyad filter of the pseudolikelihood start ran after the dyad mask had been reset). `constraints(observed)` gave "no observations"; as in R it frees only the missing dyads, which R cannot fit as a main constraint (it stops with an internal error), so nwergm now stops with a plain message and points to `obsconstraints(observed)`. On a network without missing dyads R drops the empty constraint and fits without it; nwergm does the same and prints a note. Test `test_nwergm_observed`.
+- `mcmletermination(none)` failed with "subscript invalid" (r(3301)) for about one seed in six: the sample-size boost used `Fstat/Fcrit`, which is below 1 when the test would pass (without a convergence test this is reached), and cut the sample to one draw. The boost is never smaller than 1 now. Test `test_nwergm_termnone` (seeds 1 to 30).
+
 ## [1.1.0] - 2026-10-24
 
 ### Added

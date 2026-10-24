@@ -18,6 +18,7 @@ program _nwergm_constr
 	else {
 		mata: _ergm_con_init(`nodes', `dir', `bip', J(`nodes',1,1), *(`matobj'->get_matrix_mod(0,`dir')))
 	}
+	local __con_observed ""
 	mata: _ergm_con_split(`"`spec'"')
 	forvalues t = 1/`__cn' {
 		local sg  `__cs`t''
@@ -45,7 +46,7 @@ program _nwergm_constr
 		di as err `"`__con_err'"'
 		error 198
 	}
-	foreach v in code dind implies maxonly hasdyad hasbd {
+	foreach v in code dind implies maxonly hasdyad hasbd observed {
 		c_local `prefix'con_`v' `"`__con_`v''"'
 	}
 end
