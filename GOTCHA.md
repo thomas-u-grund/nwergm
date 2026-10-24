@@ -159,3 +159,16 @@ Also: `template` is a reserved word in Mata, and `mata:` blocks cannot be nested
 
 `native/ergm_mcmc.c` now evaluates composite columns and derived networks (`TERMCODE_COMP`, contexts 1-4). The macOS plugin in `lib/plugins/macos` was rebuilt here;
 `lib/plugins/unix` and `lib/plugins/windows` have to be rebuilt on a Linux and a Windows host (`make -C native unix`; Windows: see native/Makefile) before a release.
+
+## `seed()` did not reproduce a fit across sessions: the neighbor order of the core is not stable (fixed 2026-10-24)
+
+`nwergm ..., seed(1)` draws the plugin's RNG seed from Mata's `runiform()` right after `set seed`, so the
+stream was always deterministic. The fit still differed between do-files (`edges` -3.375 vs -3.325 on Lazega
+with the same data and seed) because the starting network is built with `G.toggle()` in the order of
+`netobj->neighbors(i)`, and the core returns the neighbors of a node in a different order once another
+network has been loaded in the session. The MCMC proposal picks "the k-th edge" of that edge list, so the
+chain changed. The bridge functions (`ergm_bridge_from_netobj`, the copy in `nwergm_estat.ado`,
+`ergm_bridge_obs`, `ergm_netobj_to_graph`) now sort the neighbors. Found by printing the plugin argument
+string (identical seed and theta) and a checksum of the edge list (different). **Lesson:** when a seeded
+stochastic fit differs, compare the inputs of the sampler (edge order), not only the seed. Test:
+`test_nwergm_seedrepro`.

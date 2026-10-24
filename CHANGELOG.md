@@ -17,6 +17,8 @@ project uses [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 - Maximum likelihood with a curved degree term (`bgwdegreefree1/2()`, `gwdegreefree()`, `gwodegreefree()`, `gwidegreefree()`) counted the nodes only up to the maximum degree of the observed network plus one, so a sampled network with a larger degree changed the model and the fit could run away; the counts now run over all possible degrees for `method(mcmle)` (the pseudolikelihood keeps the shorter range).
+- `seed()` did not reproduce a fit across sessions: the edge order of the starting network, which steers the MCMC, followed the order in which the core returns the neighbors of a node, and that differs once another network has been loaded (`edges` -3.375 in one script, -3.325 in another with the same data and seed). The neighbors are now read in sorted order, so the same call with the same `seed()` gives identical coefficients; the help of `seed()` states what is reproducible. Test `test_nwergm_seedrepro`.
+- The help gave 20 as the default of `mcmleiterations()`; it is 60 as in R. Test `test_nwergm_maxit` checks that MCMLE stops at `mcmleiterations()` with a warning and `e(converged)` = 0. (A fit of a degenerate model can still take long: once the Monte Carlo sample does not mix, the thinning interval grows to 20000 and every iteration costs about a minute, so 60 iterations take about 20 minutes; lower `mcmleiterations()` for such a model.)
 - The display names of the curved two-mode terms are `gwb1degree_weight`, `gwb1degree_decay` and so on (they were labelled as gwesp).
 
 ## [1.0.1] - 2026-10-24

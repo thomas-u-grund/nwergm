@@ -5688,7 +5688,7 @@ void ergm_bridge_obs(pointer(class nw_def scalar) scalar netobj, class ErgmGraph
 	real matrix nb
 
 	for (i=1; i<=G.n; i++) {
-		nb = netobj->neighbors(i)
+		nb = sort(netobj->neighbors(i), 1)
 		for (k=1; k<=rows(nb); k++) {
 			if (!directed & nb[k] <= i) continue
 			G.toggle(i, nb[k])
@@ -13366,7 +13366,7 @@ void ergm_netobj_to_graph(pointer(class nw_def scalar) scalar netobj, class Ergm
 	real scalar i, k
 	real matrix nb
 	for (i=1; i<=G.n; i++) {
-		nb = netobj->neighbors(i)
+		nb = sort(netobj->neighbors(i), 1)
 		for (k=1; k<=rows(nb); k++) {
 			if (!directed & nb[k] <= i) continue
 			G.toggle(i, nb[k])

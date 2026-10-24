@@ -284,7 +284,9 @@ void nwergm_estat_bridge_from_netobj(pointer(class nw_def scalar) scalar netobj,
 	real matrix nb
 
 	for (i=1; i<=G.n; i++) {
-		nb = netobj->neighbors(i)
+		// sorted: the order in which the core returns the neighbors is not reproducible between sessions,
+		// and the edge order of the starting network steers the MCMC (seed() would not reproduce a fit)
+		nb = sort(netobj->neighbors(i), 1)
 		for (k=1; k<=rows(nb); k++) {
 			if (!directed & nb[k] <= i) continue
 			G.toggle(i, nb[k])
