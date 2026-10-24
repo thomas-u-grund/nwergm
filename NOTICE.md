@@ -15,9 +15,9 @@ nwergm is Copyright (C) 2026 Thomas U. Grund and is distributed under the GNU Ge
 
 Estimates, standard errors, log-likelihoods, simulated statistics, goodness-of-fit tables and MCMC diagnostics were compared with `ergm` 4.12.0 (and the 4.13 development version for the Firth penalised MPLE) on the statnet example networks and on simulated networks; the R scripts and data are in `dev/` and the regression tests in `cscripts/test_nwergm_*.do`. `docs/VALIDATED_AGAINST_R.md` lists what is validated and how; `docs/ERGM_COMPARISON.md` and `docs/ERGM_TERMS_INVENTORY.csv` document the term-by-term comparison with R, including what is not implemented.
 
-## AI assistance (PLACEHOLDER: the owner confirms or rewrites this paragraph)
+## AI assistance
 
-Parts of the code, tests, documentation and build tooling of this package were written with the help of an AI assistant (Claude, Anthropic) working under the direction of the author, who reviewed and is responsible for the result. [Wording to be confirmed by the author before release.]
+The software was developed with Claude Code (Anthropic), an AI coding assistant, working under the author's direction. It helped port algorithms from ergm into Stata, Mata and C and helped write the tests. The author specified the scope, reviewed the code, and is responsible for the package. Its correctness rests on validation, not on the assistant: the results are compared numerically with ergm, and the test suite reruns these comparisons.
 
 ## How to cite
 
