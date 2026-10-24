@@ -1,0 +1,25 @@
+. nwergm clubs, edges nodemix(kind)
+
+Exponential-family random graph model
+
+Network:               =  clubs
+Nodes:                 =  42
+Ties:                  =  71
+Directed:              =  No
+Estimation:            =  MPLE
+
+----------------------------------------------------------------------------------
+           clubs | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+-----------------+----------------------------------------------------------------
+           edges |  -.7563261   .1787266    -4.23   0.000    -1.106624   -.4060283
+nodemix_kind_2_1 |  -1.512357   .3931267    -3.85   0.000    -2.282872   -.7418434
+nodemix_kind_1_2 |  -2.379168   .6162542    -3.86   0.000    -3.587004   -1.171332
+nodemix_kind_2_2 |  -.2340726   .3707259    -0.63   0.528    -.9606821    .4925369
+----------------------------------------------------------------------------------
+
+Maximum pseudolikelihood estimate (not full ERGM maximum likelihood unless the model is dyad-independent).
+
+             Null Deviance:     499.1  on 360 degrees of freedom
+         Residual Deviance:     321.2  on 356 degrees of freedom
+
+Log-likelihood:  -160.5841 (df = 4)   AIC:     329.2   BIC:     344.7   (MC std. err. =       0)

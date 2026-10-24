@@ -1,0 +1,7 @@
+. lrtest m2 m1
+
+Likelihood-ratio test
+Assumption: m1 nested within m2
+
+ LR chi2(1) =  62.63
+Prob > chi2 = 0.0000

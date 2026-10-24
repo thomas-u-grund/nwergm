@@ -1,0 +1,27 @@
+. nwergm lazega_fr, edges mutual nodematch(prac) constraints(odegrees) seed(1)
+Note: the specified model's sample space constraint holds statistic(s) edges constant. They will be ignored.
+
+Exponential-family random graph model
+
+Network:               =  lazega_fr
+Nodes:                 =  71
+Ties:                  =  575
+Directed:              =  Yes
+Estimation:            =  MCMLE
+MCMC sample size:      =  3000
+
+--------------------------------------------------------------------------------
+     lazega_fr | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+         edges |          0  (omitted)
+        mutual |    1.00105    .151359     6.61   0.000     .7043917    1.297708
+nodematch_prac |   .9681862   .0977141     9.91   0.000     .7766701    1.159702
+--------------------------------------------------------------------------------
+
+MCMLE converged after 1 iteration(s).
+Evaluating log-likelihood at the estimate (bridge sampling with 16 bridges) ...
+
+             Null Deviance:    6889.9  on 4970 degrees of freedom
+         Residual Deviance:    4792.2  on 4968 degrees of freedom
+
+Log-likelihood: -2396.1239 (df = 2)   AIC:    4796.2   BIC:    4809.3   (MC std. err. =  .12561)

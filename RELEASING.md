@@ -6,10 +6,12 @@ version, line 2 the release date in Stata format, e.g. `24oct2026`).
 
 1. Edit `VERSION`, or run `python3 tools/set_version.py X.Y.Z [date]` (this writes `VERSION` and updates every display: the
    first line of every .ado, the .sthlp headers and the version line at the bottom of every help file, `nwergm.pkg`, `stata.toc`, README, NOTICE,
-   CITATION.cff, the `e(version)`/`nwergm version` literals).
+   CITATION.cff, `\pkgversion` and `\pkgdate` in `manual/*.tex`, the `e(version)`/`nwergm version` literals).
 2. Add a section `## [X.Y.Z] - YYYY-MM-DD` to `CHANGELOG.md` (Added / Changed / Fixed / Removed).
 3. Run `python3 tools/check_version.py` (also the first step of `cscripts/run_tests.sh` and of CI) and the tests
    (`NWCORE=/path/to/nwcommands cscripts/run_tests.sh`).
+3a. Rebuild the manual (`make -C manual pdf`, then `make -C manual check`), and commit the new PDF with `git add -f manual/nwergm_manual.pdf`. If the output of the examples
+   changed, rerun them first (`NWCORE=/path/to/nwcommands make -C manual examples`).
 4. Commit: `git commit -am "Release X.Y.Z"`.
 5. Tag: `git tag -a vX.Y.Z -m "nwergm X.Y.Z"`.
 6. Push: `git push origin main --tags` (let the "Build native plugins" workflow finish and `git pull --rebase` before the next push, if the package has one).

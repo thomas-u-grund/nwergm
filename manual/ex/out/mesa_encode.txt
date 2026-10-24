@@ -1,0 +1,16 @@
+. encode race, generate(race_n)
+
+. encode sex, generate(sex_n)
+
+. label list race_n
+race_n:
+           1 Black
+           2 Hisp
+           3 NatAm
+           4 Other
+           5 White
+
+. label list sex_n
+sex_n:
+           1 F
+           2 M

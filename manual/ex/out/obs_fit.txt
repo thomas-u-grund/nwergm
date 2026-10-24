@@ -1,0 +1,26 @@
+. nwergm flo0, edges nodecov(wealth) gwesp(0.5) obsconstraints(fixallbut(unobs)) seed(1)
+
+Exponential-family random graph model
+
+Network:               =  flo0
+Nodes:                 =  16
+Ties:                  =  19
+Directed:              =  No
+Estimation:            =  MCMLE
+MCMC sample size:      =  3000
+
+--------------------------------------------------------------------------------
+          flo0 | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+         edges |  -2.720796   .5792042    -4.70   0.000    -3.856016   -1.585577
+nodecov_wealth |   .0108986    .005324     2.05   0.041     .0004638    .0213334
+     gwesp_0.5 |   .0445013   .2839009     0.16   0.875    -.5119343    .6009368
+--------------------------------------------------------------------------------
+
+MCMLE converged after 2 iteration(s).
+Evaluating log-likelihood at the estimate (bridge sampling with 16 bridges) ...
+
+             Null Deviance:     162.2  on 117 degrees of freedom
+         Residual Deviance:      98.3  on 114 degrees of freedom
+
+Log-likelihood:   -49.1444 (df = 3)   AIC:     104.3   BIC:     112.6   (MC std. err. =  .00263)

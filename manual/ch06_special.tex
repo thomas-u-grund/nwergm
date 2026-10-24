@@ -1,0 +1,103 @@
+\chapter{Structural terms, operators, constraints and simulation}\label{ch:special}
+
+This chapter describes the parts of \nwergm{} that go beyond the plain options of the terms: the terms written like R's terms inside \opt{structural()}, the operators of \ergm{} inside \opt{operators()}, fixed coefficients, constraints and observation processes, and simulation. Examples with output are in Chapter~\ref{ch:examples}.
+
+\section{Structural terms: \texttt{structural()}}\label{sec:structural}
+
+\begin{lstlisting}
+nwergm [netname], edges structural(termlist) [other options]
+nwergm simulate nodes, edges structural(termlist) theta() [other options]
+\end{lstlisting}
+\emph{termlist} is a list of terms written like R's terms, separated by blanks: \emph{term} or \emph{term}\texttt{(}\emph{arguments}\texttt{)}. Arguments have R's names and defaults (\emph{name}\texttt{=}\emph{value}); values are numbers, variable names, network names, or lists of numbers separated by blanks (R's \texttt{c(1,2,3)} is written \texttt{d=1 2 3}), and R's logical arguments are written as bare words (\texttt{diff}, \texttt{fixed}, \texttt{semi}, \texttt{homophily}) or \emph{name}\texttt{=TRUE}. The first argument may be given without its name, as in R. For example,
+\begin{lstlisting}
+. nwergm mynet, edges structural(twopath triangle(attr=sex diff) cycle(k=3 4) altkstar(lambda=0.8 fixed))
+\end{lstlisting}
+A node attribute is a numeric variable of the current dataset, one row per node. The coefficients are named after R's coefficient names with \texttt{\_} for the period, for example \texttt{triangle\_sex\_1}, \texttt{cycle3}, \texttt{odeg1\_sex\_2}, \texttt{threetrail\_RRR}. Terms that depend on more than the covariates of a dyad make the model dyad-dependent, so that Monte Carlo maximum likelihood is the default. \texttt{density} and \texttt{meandeg} are collinear with \opt{edges}; \opt{edges} may be left out when one of them is used instead. \opt{structural()} runs in the native plugin and has no slower fallback.
+
+The terms (their definition is that of \ergm{}):
+\begin{description}[style=nextline,nosep]
+  \item[Undirected networks only] \texttt{isolatededges}, \texttt{degree1.5}, \texttt{degcrossprod}, \texttt{degcor}, \texttt{concurrentties}[\texttt{(by=}\emph{attr}\texttt{)}], \texttt{concurrent}[\texttt{(by=}\emph{attr}\texttt{)}], \texttt{altkstar(lambda=}\emph{\#}\texttt{ fixed)}, \texttt{tripercent}[\texttt{(attr=}\allowbreak\emph{attr}\allowbreak[\texttt{ diff}]\texttt{)}], \texttt{opentriad}, \texttt{degree(d=}\emph{numlist}[\texttt{ by=}\emph{attr}][\texttt{ homophily}]\texttt{)}, \texttt{degrange(from=}\emph{numlist}[\texttt{ to=}\emph{numlist}][\texttt{ by=}\emph{attr}][\texttt{ homophily}]\texttt{)}, \texttt{kstar(k=}\emph{numlist}[\texttt{ attr=}\emph{attr}]\texttt{)}.
+  \item[Directed networks only] \texttt{m2star}, \texttt{odegree1.5}, \texttt{idegree1.5}, \texttt{asymmetric}[\texttt{(attr=}\allowbreak\emph{attr}\allowbreak[\texttt{ diff}]\texttt{)}], \texttt{mutual}[\texttt{(same=}\allowbreak\emph{attr}\allowbreak[\texttt{ diff}]\texttt{)}], \texttt{mutual(by=}\emph{attr}\texttt{)}, \texttt{transitive}, \texttt{intransitive}, \texttt{ttriple}[\texttt{(attr=}\allowbreak\emph{attr}\allowbreak[\texttt{ diff}]\texttt{)}], \texttt{ctriple}\allowbreak[\texttt{(attr=}\allowbreak\emph{attr}\allowbreak[\texttt{ diff}]\texttt{)}], \texttt{nearsimmelian}, \texttt{simmelian}, \texttt{simmelianties}, \texttt{odegree(d=}\ldots\texttt{)}, \texttt{idegree(}\ldots\texttt{)}, \texttt{odegrange(}\ldots\texttt{)}, \texttt{idegrange(}\ldots\texttt{)}, \texttt{ostar(k=}\emph{numlist}[\texttt{ attr=}\emph{attr}]\texttt{)}, \texttt{istar(}\ldots\texttt{)}.
+  \item[Both kinds of network] \texttt{density}, \texttt{meandeg}, \texttt{twopath}, \texttt{isolates}, \texttt{cycle(k=}\emph{numlist}[\texttt{ semi}]\texttt{)} (semicycles for directed networks), \texttt{triangle}[\texttt{(attr=}\allowbreak\emph{attr}\allowbreak[\texttt{ diff}]\texttt{)}], \texttt{threetrail}[\texttt{(keep=}\emph{numlist}\texttt{)}] (the four types RRR, RRL, LRR, LRL for directed networks), \texttt{balance} (balanced triads: of type 102 or 300 in a directed network, with an odd number of ties in an undirected one), \texttt{triadcensus}[\texttt{(levels=}\emph{numlist or labels}\texttt{)}], \texttt{localtriangle(x=}\emph{netname}\texttt{)} (a binary network with the same nodes), \texttt{nsp(d=}\emph{numlist}[\texttt{ type=}\emph{OTP|ITP|OSP|ISP|RTP}]\texttt{)}.
+\end{description}
+
+\paragraph{Where the result is not simply R's.} (1) \texttt{opentriad}: in \ergm{}~\ergmver{} the change statistic for removing a tie overflows an unsigned integer, so that R's \emph{estimation} with this term is wrong (its observed statistic is right); \nwergm{} computes the correct change statistic, so that its estimates differ from R's for this term. (2) \texttt{degcor} and \texttt{degcrossprod} are scaled by quantities of the observed network, as in R, and are therefore not available in \texttt{nwergm simulate}. (3) \texttt{altkstar} without \texttt{fixed} is R's default, the curved form with an estimated $\lambda$. It is estimated by the pseudolikelihood with starting values given by \opt{init(\emph{edges weight lambda})}, as R needs them to fit this term, and has the coefficients \texttt{altkstar} and \texttt{altkstar\_lambda}; \texttt{altkstar(lambda=\emph{\#} fixed)} is the fixed form. (4) The \texttt{levels=} argument of the attribute terms is not available: all levels of the attribute are used.
+
+\section{Operators: \texttt{operators()}}\label{sec:operators}
+
+\begin{lstlisting}
+nwergm [netname], edges operators(oplist) [other options]
+\end{lstlisting}
+\emph{oplist} is a list of operator calls separated by blanks, written like R's operator terms: \emph{Name}\texttt{(}\emph{terms}[\texttt{,} \emph{suboptions}]\texttt{)}; the names are not case sensitive. The \emph{terms} inside an operator are written as options of \nwergm{}, for example \texttt{triangle nodematch(sex) gwesp(0.5) kstar(2)} or \texttt{structural(twopath)}; they give the statistics of the operator in the order in which they are written, as in an R formula. An operator can be used inside another operator, for example \texttt{Sum(F(triangle, filter(nodematch(sex))) | S(triangle, attrs(age>30)), label(a))}. The coefficient names are those of R (\texttt{Sum\~{}a}, \texttt{S(age>30)\~{}triangle}, \texttt{Symmetrize(strong)\~{}triangle}, \texttt{Proj1\~{}edges}) with the period written as an underscore. An operator makes the model dyad-dependent unless its terms are dyad-independent and the operator itself introduces no dependence; Monte Carlo maximum likelihood is then the default. All operators run in the native plugin; there is no slower fallback.
+
+\footnotesize
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{4.5cm}>{\raggedright\arraybackslash}p{11.2cm}@{}}
+\toprule
+Operator & What it does\\
+\midrule\endhead
+\texttt{Sum(}$f_1$ [\texttt{|} $f_2$ \ldots]\texttt{, label())} & Sum of the statistics of one or more formulas, element by element. A formula can start with its weights and a colon: a number (\texttt{2: triangle}), one weight per statistic, \texttt{matrix(\emph{name}):}, or \texttt{sum:} / \texttt{mean:}, which combine all statistics of the formula into one. \opt{label()} is required: one name, to which the index is appended, or one name per resulting statistic.\\
+\texttt{Prod(}$f_1$ [\texttt{|} $f_2$ \ldots]\texttt{, label())} & Product of the statistics of the formulas; weights are exponents; the presets are \texttt{prod:} and \texttt{geomean:}. The statistics must not be negative. Formulas inside \texttt{Prod()} cannot contain \texttt{Sum()} or \texttt{Prod()}.\\
+\texttt{S(}\emph{terms}\texttt{, attrs(}\emph{expr}\texttt{))} & Terms evaluated on the subgraph induced by the nodes for which \emph{expr} (a variable, or a condition such as \texttt{age>30}) is true (R's one-sided \texttt{attrs}; the two-sided form that selects different node sets for tails and heads is not available). One-mode networks only.\\
+\texttt{F(}\emph{terms}\texttt{, filter(}\emph{term}\texttt{))} & Terms evaluated on the network from which the ties are removed for which the filter term is zero. The filter is one dyad-independent term with one statistic; \texttt{!} in front of it, or a comparison after it (\texttt{absdist(age) > 3}, with \texttt{== != > < >= <=}), selects the ties kept.\\
+\texttt{NodematchFilter(}\emph{terms}\texttt{, attrname(}\emph{varlist}\texttt{))} & Terms evaluated on the network without the ties between nodes that differ in one of the attributes.\\
+\texttt{Symmetrize(}\emph{terms}\texttt{, rule(}\emph{rule}\texttt{))} & Terms evaluated on the undirected network obtained from a directed one; \emph{rule} is \texttt{weak} (default, or \texttt{max}), \texttt{strong} (\texttt{min}), \texttt{upper} or \texttt{lower}. Directed networks only.\\
+\texttt{Project(}\emph{terms}\texttt{, mode(}\emph{\#}\texttt{))} & Terms evaluated on the one-mode network of the nodes of mode \emph{\#} (1 or 2), in which two nodes are tied if they have a partner in common; the terms see this network of ties and non-ties (R: \texttt{Proj1(\textasciitilde B(}\emph{terms}\texttt{, "nonzero"))}), not the counts of common partners. \texttt{Proj1()} and \texttt{Proj2()} are short forms. Two-mode networks only.\\
+\texttt{I(}\emph{terms}\texttt{)} & The terms themselves; useful to paste a list of terms kept in a local macro.\\
+\texttt{For(}\emph{name}\texttt{=}\emph{values}[\texttt{,} \ldots]\texttt{,} \emph{terms}\texttt{)} & The terms repeated for each value; \texttt{\{}\emph{name}\texttt{\}} in the terms is replaced by the value. With several loops the first is the outermost. Example: \texttt{For(v = sex region, nodematch(\{v\}))}.\\
+\texttt{Label(}\emph{terms}\texttt{, label() [pos()])} & The terms with other coefficient names; \emph{pos} is \texttt{paren} (default: \texttt{label(coefficient)}), \texttt{prepend}, \texttt{append} or \texttt{replace}.\\
+\texttt{Log(}\emph{terms}[\texttt{, log0(}\emph{\#}\texttt{)}]\texttt{)} & Natural logarithm of the statistics; \opt{log0()} (default $-1/\sqrt{\epsilon}$) stands in for the logarithm of zero.\\
+\texttt{Exp(}\emph{terms}\texttt{)} & Exponential function of the statistics.\\
+\texttt{Curve(}\emph{terms}\texttt{, params(}\emph{names}\texttt{) map(}\emph{map}\texttt{))} & The coefficients of the terms are a linear function of the parameters, $\eta=L\theta$, where \emph{map} is \texttt{rep} (recycle the parameters over the coefficients) or \texttt{matrix(\emph{name})} (a matrix $L$ with one row per coefficient and one column per parameter). The model is estimated for the parameters, which carry the names given in \opt{params()}. \texttt{Parametrise()} and \texttt{Parametrize()} are the same operator. Map functions, \opt{gradient()}, \opt{minpar()}, \opt{maxpar()} and \opt{cov()} of R are not available.\\
+\texttt{Offset(}\emph{terms}[\texttt{, coef(}\emph{numlist}\texttt{) which(}\emph{selection}\texttt{)}]\texttt{)} & Coefficients held at fixed values (default 0) instead of being estimated; \opt{which()} selects them by position or coefficient name, default all. The fixed coefficients are reported with standard error 0.\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\paragraph{Remarks.} The operators work with the pseudolikelihood, with Monte Carlo maximum likelihood, with \texttt{nwergm simulate} from a fit and with \texttt{estat gof}. They cannot be combined with \opt{constraints()}, \opt{obsconstraints()}, \opt{freedyads()}, \opt{blockdiag()} or \opt{fixdensity}, and a curved term cannot be used inside an operator. Dyadic covariates (\opt{edgecov()}, \opt{dyadcov()}, \ldots) cannot be used inside \texttt{S()} or \texttt{Project()}, which change the set of nodes. For \texttt{Symmetrize()} with \texttt{rule(weak)} on a network with reciprocated ties, the pseudolikelihood is formed from the exact change statistics of the symmetrized network, which is not what \ergm{}~\ergmver{} does (Section~\ref{sec:quirks}).
+
+\section{Offsets: fixed coefficients}\label{sec:offset}
+
+\opt{offset(\emph{coefname} \# [\emph{coefname} \# \ldots])} holds one or more named coefficients at known values instead of estimating them. It is useful for imposing a theoretically motivated effect size, for reproducing a published model exactly, or for holding a nuisance term constant. The \emph{coefname} must be a coefficient that the model would otherwise report; the term still has to be requested by its option (\opt{nodecov(wealth)}), and \opt{offset(nodecov\_wealth 0.01)} then fixes its coefficient: \opt{offset()} names an existing coefficient, it does not add a second copy of the term. Several coefficients may be fixed, \opt{offset(mutual 2 gwesp\_0.5 0.5)}. Both estimators accept offsets (Section~\ref{sec:estimators}); at least one coefficient must remain free; offsets are not supported for the weight and decay of a curved term. The fixed coefficient is reported at exactly the given value with standard error 0 and a zero row and column in \texttt{e(V)}. The operator \texttt{Offset()} (Section~\ref{sec:operators}) does the same for the terms inside it. Section~\ref{sec:flo_methods} has an example.
+
+\section{Constraints and observation processes}\label{sec:conslist}
+
+The formula of \opt{constraints()} is a list of the following constraint terms joined by \texttt{+} or \texttt{-} (Section~\ref{sec:constraints}). Arguments are written as in R, by position or as \emph{name}\texttt{=}\emph{value}; node attributes are variables of the current dataset, and networks are names of networks in memory. The constraints refer to the network being fitted (for \texttt{nwergm simulate}, to \opt{basis()}). The constraints need the native plugin.
+
+\footnotesize
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{5.0cm}>{\raggedright\arraybackslash}p{10.7cm}@{}}
+\toprule
+Constraint & Effect\\
+\midrule\endhead
+\texttt{edges} & Keep the number of ties.\\
+\texttt{degrees} (\texttt{nodedegrees}) & Keep each node's degree (undirected) or in- and out-degree (directed).\\
+\texttt{odegrees}, \texttt{idegrees} & Keep out-degrees, in-degrees (directed networks).\\
+\texttt{b1degrees}, \texttt{b2degrees} & Keep the degrees of mode-1, mode-2 nodes (two-mode networks).\\
+\texttt{degreedist}, \texttt{idegreedist} & Keep the degree distribution, the in-degree distribution.\\
+\texttt{bd(}\emph{attribs, maxout, maxin, minout, minin}\texttt{)} & Bound degrees. \emph{attribs} is a list of 0/1 node variables defining the alter groups that are counted (default: all nodes); each bound is a number or node variable(s); defaults are 0 (minimum) and the number of nodes minus one (maximum).\\
+\texttt{blocks(}\emph{attr, b1levels, b2levels, levels, levels2}\texttt{)} & Fix blocks of dyads defined by the mixing of a categorical node variable. \emph{levels2} chooses the fixed mixing types: \texttt{TRUE} (all), \texttt{FALSE} (none, the default), or their positions \texttt{c(1,2)}, \texttt{-c(1,2)} in R's ordering.\\
+\texttt{blockdiag(}\emph{attr, noncontig}\texttt{)} & Only dyads within the same value of \emph{attr} may vary; \emph{noncontig} is \texttt{merge} (default; the values must form runs, as in R) or \texttt{split}.\\
+\texttt{fixedas(}\emph{fixed.dyads, present, absent}\texttt{)} & Fix the dyads that are ties in the given networks; the present and absent dyads must match the network being fitted.\\
+\texttt{fixallbut(}\emph{free.dyads}\texttt{)} & Only the dyads that are ties in the given network may vary.\\
+\texttt{observed} & Only the missing dyads may vary. With no missing dyad the constraint is empty and the model is fitted without it, as in R. In \opt{constraints()} R itself fails on a network with missing dyads; use \opt{obsconstraints(observed)} there.\\
+\texttt{egocentric(}\emph{attr, direction}\texttt{)} & Fix the dyads of nodes for which the 0/1 node variable \emph{attr} is nonzero; \emph{direction} is \texttt{both} (default), \texttt{out} or \texttt{in}.\\
+\texttt{dyadnoise(}\emph{p01, p10}\texttt{)} & Soft constraint: the sampled network is an observation of the given one with independent dyad errors of those probabilities.\\
+\bottomrule
+\end{longtable}
+\normalsize
+The constraint \texttt{hamming} stops with the same message as R's current release (it is broken there). \texttt{ChangeStats()}, \texttt{Dyads()} and \texttt{I()} are not available. \texttt{odegreedist} and the degree-distribution constraints on two-mode networks are refused, because R's released proposals for them fail.
+
+\paragraph{Examples of the formula.}
+\begin{lstlisting}
+constraints(edges)
+constraints(odegrees)
+constraints(blockdiag(g) + bd(maxout=5))
+constraints(blocks(g, levels2=TRUE) - blockdiag(g))
+obsconstraints(fixallbut(unobserved))
+\end{lstlisting}
+The examples of Sections~\ref{sec:conex} and~\ref{sec:obsex} run some of them.
+
+\section{Simulation}\label{sec:simulate}
+
+\texttt{nwergm simulate} draws networks from a model, in two ways (syntax in Chapter~\ref{ch:options}). From \emph{given coefficients}, \texttt{nwergm simulate} \emph{nodes}\texttt{, edges} \ldots\ \opt{theta()}, it needs no network in memory and covers the whole term library; covariates are read from the dataset in memory, which must have \emph{nodes} observations, and the simulated networks are new networks (\opt{generate()}\texttt{\_1}, \ldots) without the covariates. From the \emph{last fit}, \texttt{nwergm simulate}\texttt{, nsim()} \ldots, it starts from the last network of the fit (or \opt{basis()}) and uses the fitted coefficients (or \opt{coef()}), the proposal and the constraints of the fit; with \opt{output(stats)} it returns only the statistics of the draws, in \texttt{r(stats)}. This is R's \texttt{simulate.ergm()}. A check against R: for the Lazega model of Section~\ref{sec:lazega}, 4000 draws at the fitted coefficients reproduce the means and standard deviations of the statistics of R's \texttt{simulate()} at the same coefficients (Chapter~\ref{ch:validation}). Examples are in Sections~\ref{sec:lazega} and~\ref{sec:twomode}.
+
+The draws of the last fit form one chain: a burn-in once, then \opt{interval()} proposals between draws, so that successive draws are autocorrelated; use \opt{nosequential} for draws that restart from the starting network, or increase \opt{interval()}. The simulated statistics of two draws from one chain are not independent replicates.

@@ -1,0 +1,25 @@
+. nwergm flomarriage, edges nodecov(wealth) gwesp(0.5) estimate(cd) seed(1)
+
+Exponential-family random graph model
+
+Network:               =  flomarriage
+Nodes:                 =  16
+Ties:                  =  20
+Directed:              =  No
+Estimation:            =  Contrastive divergence
+
+--------------------------------------------------------------------------------
+   flomarriage | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+         edges |   -2.62966   .9936225    -2.65   0.008    -4.577124   -.6821957
+nodecov_wealth |   .0120663   .0102898     1.17   0.241    -.0081013    .0322339
+     gwesp_0.5 |  -.0737422   .3694516    -0.20   0.842     -.797854    .6503697
+--------------------------------------------------------------------------------
+
+Contrastive divergence estimate (5 iteration(s)); standard errors come from the covariance of the short-run CD sample.
+Evaluating log-likelihood at the estimate (bridge sampling with 16 bridges) ...
+
+             Null Deviance:     166.4  on 120 degrees of freedom
+         Residual Deviance:     103.2  on 117 degrees of freedom
+
+Log-likelihood:   -51.5976 (df = 3)   AIC:     109.2   BIC:     117.6   (MC std. err. =  .01101)

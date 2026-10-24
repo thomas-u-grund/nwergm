@@ -7,6 +7,10 @@
 Part of the nwcommands family of Stata packages for network analysis. nwergm is a separate package with its
 own repository; it needs the core package nwcommands but no other model package.
 
+## Manual
+
+The user manual is `manual/nwergm_manual.pdf` (about 100 pages; LaTeX source, the do-files of all examples and the scripts that generate the term tables are in `manual/`). It describes the model and the estimators, every option, every term of ergm 4.12.0 with its status and validation, diagnostics and goodness of fit, worked examples with output, the comparison with R's ergm, the limits of the package, and a translation table from ergm to nwergm. Build it with `make -C manual pdf`.
+
 ## Install
 
 1. Install the core package first (Stata): `net install nwcommands, from(<URL of the nwcommands distribution>)`

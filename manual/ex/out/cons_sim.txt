@@ -1,0 +1,9 @@
+. nwergm simulate, nsim(3) output(stats) seed(1)
+
+. matrix list r(stats)
+
+r(stats)[3,3]
+           edges        mutual  nodematch_~c
+r1           575            75           418
+r2           575            70           416
+r3           575            70           420

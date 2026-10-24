@@ -1,0 +1,25 @@
+. nwergm flomarriage, edges nodecov(wealth) gwesp(0.5) mainmethod(sa) seed(1)
+
+Exponential-family random graph model
+
+Network:               =  flomarriage
+Nodes:                 =  16
+Ties:                  =  20
+Directed:              =  No
+Estimation:            =  Stochastic approximation
+
+--------------------------------------------------------------------------------
+   flomarriage | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+         edges |  -2.604347   .5449703    -4.78   0.000    -3.672469   -1.536225
+nodecov_wealth |   .0106439   .0051484     2.07   0.039     .0005531    .0207347
+     gwesp_0.5 |  -.0042248   .2651422    -0.02   0.987    -.5238939    .5154443
+--------------------------------------------------------------------------------
+
+Stochastic approximation estimate (469 phase-2 iteration(s)).
+Evaluating log-likelihood at the estimate (bridge sampling with 16 bridges) ...
+
+             Null Deviance:     166.4  on 120 degrees of freedom
+         Residual Deviance:     103.1  on 117 degrees of freedom
+
+Log-likelihood:   -51.5540 (df = 3)   AIC:     109.1   BIC:     117.5   (MC std. err. =  .00014)

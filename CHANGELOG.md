@@ -3,6 +3,11 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+- Manual: `manual/nwergm_manual.pdf` (LaTeX source in `manual/`): the model and the estimators, the complete syntax, the reference of the terms (generated from the term inventory by `manual/build_terms.py`), diagnostics and goodness of fit, worked examples with real output, the validation against ergm 4.12.0, the limits, and a translation table from R's ergm. The do-files that produce every listing are in `manual/ex`; `manual/run_examples.sh` reruns them.
+
 ## [1.1.1] - 2026-10-25
 
 ### Fixed

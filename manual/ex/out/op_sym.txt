@@ -1,0 +1,31 @@
+. nwwebuse lazega, nwclear
+
+. encode practice, generate(prac)
+
+. nwergm lazega_fr, edges mutual nodematch(prac) operators(Symmetrize(triangle, rule(strong))) seed(1)
+
+Exponential-family random graph model
+
+Network:               =  lazega_fr
+Nodes:                 =  71
+Ties:                  =  575
+Directed:              =  Yes
+Estimation:            =  MCMLE
+MCMC sample size:      =  3000
+
+---------------------------------------------------------------------------------------------
+                  lazega_fr | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+----------------------------+----------------------------------------------------------------
+                      edges |  -2.743006   .0895143   -30.64   0.000     -2.91845   -2.567561
+                     mutual |   .9319081   .1676218     5.56   0.000     .6033754    1.260441
+             nodematch_prac |   .8902746   .1008828     8.82   0.000      .692548    1.088001
+Symmetrize(strong)~triangle |   .6277172   .5134438     1.22   0.221    -.3786142    1.634049
+---------------------------------------------------------------------------------------------
+
+MCMLE converged after 1 iteration(s).
+Evaluating log-likelihood at the estimate (bridge sampling with 16 bridges) ...
+
+             Null Deviance:    6889.9  on 4970 degrees of freedom
+         Residual Deviance:    3401.3  on 4966 degrees of freedom
+
+Log-likelihood: -1700.6430 (df = 4)   AIC:    3409.3   BIC:    3435.3   (MC std. err. =  .02262)

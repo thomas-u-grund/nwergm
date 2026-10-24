@@ -1,0 +1,38 @@
+. quietly nwergm flomarriage, edges nodecov(wealth)
+
+. ereturn list
+
+scalars:
+                  e(N) =  120
+              e(nodes) =  16
+               e(ties) =  20
+           e(nmissing) =  0
+             e(curved) =  0
+             e(native) =  1
+                 e(ll) =  -51.55428619540994
+               e(ll_0) =  -83.17766166719343
+              e(ll_se) =  0
+               e(df_m) =  2
+               e(rank) =  2
+           e(df_resid) =  118
+           e(deviance) =  103.1085723908199
+         e(deviance_0) =  166.3553233343869
+                e(aic) =  107.1085723908199
+                e(bic) =  112.683555876384
+
+macros:
+            e(predict) : "nwergm_p"
+          e(ll_method) : "exact"
+          e(estat_cmd) : "nwergm_estat"
+           e(directed) : "false"
+             e(method) : "mple"
+             e(depvar) : "flomarriage"
+              e(title) : "Exponential-family random graph model (MPLE)"
+            e(version) : "1.1.1"
+                e(cmd) : "nwergm"
+         e(properties) : "b V"
+
+matrices:
+                  e(b) :  1 x 2
+                  e(V) :  2 x 2
+          e(obs_stats) :  1 x 2

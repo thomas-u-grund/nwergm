@@ -1,0 +1,29 @@
+. quietly nwergm flomarriage, edges nodecov(wealth) gwesp(0.5) seed(7)
+
+. matrix b1 = e(b)
+
+. quietly nwergm flomarriage, edges nodecov(wealth) gwesp(0.5) seed(7)
+
+. matrix b2 = e(b)
+
+. quietly nwergm flomarriage, edges nodecov(wealth) gwesp(0.5) seed(8)
+
+. matrix b3 = e(b)
+
+. matrix list b1, format(%10.6f)
+
+b1[1,3]
+           edges  nodecov_we~h     gwesp_0.5
+y1     -2.584847      0.010502     -0.009547
+
+. matrix list b2, format(%10.6f)
+
+b2[1,3]
+           edges  nodecov_we~h     gwesp_0.5
+y1     -2.584847      0.010502     -0.009547
+
+. matrix list b3, format(%10.6f)
+
+b3[1,3]
+           edges  nodecov_we~h     gwesp_0.5
+y1     -2.593949      0.010681     -0.015316

@@ -1,0 +1,56 @@
+. nwwebuse florentine, nwclear
+
+. nwergm flomarriage, edges nodecov(wealth) gwesp(0.5) seed(1)
+
+Exponential-family random graph model
+
+Network:               =  flomarriage
+Nodes:                 =  16
+Ties:                  =  20
+Directed:              =  No
+Estimation:            =  MCMLE
+MCMC sample size:      =  3000
+
+--------------------------------------------------------------------------------
+   flomarriage | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+         edges |  -2.605989   .5516758    -4.72   0.000    -3.687253   -1.524724
+nodecov_wealth |   .0106207   .0049005     2.17   0.030     .0010159    .0202256
+     gwesp_0.5 |  -.0110212   .2695755    -0.04   0.967    -.5393795    .5173372
+--------------------------------------------------------------------------------
+
+MCMLE converged after 1 iteration(s).
+Evaluating log-likelihood at the estimate (bridge sampling with 16 bridges) ...
+
+             Null Deviance:     166.4  on 120 degrees of freedom
+         Residual Deviance:     103.1  on 117 degrees of freedom
+
+Log-likelihood:   -51.5556 (df = 3)   AIC:     109.1   BIC:     117.5   (MC std. err. =  .00137)
+
+. nwergm flomarriage, edges nodecov(wealth) gwesp(0.5) constraints(edges) seed(1)
+Note: the specified model's sample space constraint holds statistic(s) edges constant. They will be ignored.
+
+Exponential-family random graph model
+
+Network:               =  flomarriage
+Nodes:                 =  16
+Ties:                  =  20
+Directed:              =  No
+Estimation:            =  MCMLE
+MCMC sample size:      =  3000
+
+--------------------------------------------------------------------------------
+   flomarriage | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+         edges |          0  (omitted)
+nodecov_wealth |   .0101067   .0049302     2.05   0.040     .0004436    .0197698
+     gwesp_0.5 |   .0416532    .269677     0.15   0.877     -.486904    .5702104
+--------------------------------------------------------------------------------
+
+MCMLE converged after 1 iteration(s).
+Evaluating log-likelihood at the estimate (bridge sampling with 16 bridges) ...
+
+             Null Deviance:     166.4  on 120 degrees of freedom
+         Residual Deviance:     110.6  on 118 degrees of freedom
+
+Log-likelihood:   -55.3094 (df = 2)   AIC:     114.6   BIC:     120.2   (MC std. err. =  .03135)

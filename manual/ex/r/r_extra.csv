@@ -1,0 +1,37 @@
+"fit","kind","term","value","se"
+"attrcov(prac; mat(AM))","coef","edges",-2.21127353203989,0.0785687514014854
+"attrcov(prac; mat(AM))","coef","attrcov.prac",0.166214442758262,0.0587458180562433
+"attrcov(prac; mat(AM))","obs","edges",575,NA
+"attrcov(prac; mat(AM))","obs","attrcov.prac",641,NA
+"dyadcov(lazega_cow)","coef","edges",-2.56826427762352,0.0622326622857177
+"dyadcov(lazega_cow)","coef","dyadcov.C.mutual",3.22608311576402,0.197031475149194
+"dyadcov(lazega_cow)","coef","dyadcov.C.utri",1.54941695742428,0.124497382435463
+"dyadcov(lazega_cow)","coef","dyadcov.C.ltri",1.68917889979944,0.120653226860036
+"dyadcov(lazega_cow)","obs","edges",575,NA
+"dyadcov(lazega_cow)","obs","dyadcov.C.mutual",41,NA
+"dyadcov(lazega_cow)","obs","dyadcov.C.utri",100,NA
+"dyadcov(lazega_cow)","obs","dyadcov.C.ltri",115,NA
+"mm(prac)","coef","edges",-1.56058152090612,0.0895172449328209
+"mm(prac)","coef","mm[prac=litigation,prac=corporate]",-1.17378598850997,0.149038371463737
+"mm(prac)","coef","mm[prac=corporate,prac=litigation]",-1.0026180548313,0.142311703842301
+"mm(prac)","coef","mm[prac=litigation,prac=litigation]",-0.104011949564485,0.112115645323659
+"mm(prac)","obs","edges",575,NA
+"mm(prac)","obs","mm[prac=litigation,prac=corporate]",75,NA
+"mm(prac)","obs","mm[prac=corporate,prac=litigation]",88,NA
+"mm(prac)","obs","mm[prac=litigation,prac=litigation]",261,NA
+"nodeicovrange(seniority)","coef","edges",-1.90690697208156,0.047896943589517
+"nodeicovrange(seniority)","coef","nodeicovrange.seniority",-0.0458533028467293,0.00858316332253578
+"nodeicovrange(seniority)","obs","edges",575,NA
+"nodeicovrange(seniority)","obs","nodeicovrange.seniority",3443,NA
+"nodeofactordistinct(off)","coef","edges",-1.8705121315711,0.046357945631783
+"nodeofactordistinct(off)","coef","nodeofactordistinct.off",-1.30424680253634,0.171942633761471
+"nodeofactordistinct(off)","obs","edges",575,NA
+"nodeofactordistinct(off)","obs","nodeofactordistinct.off",130,NA
+"nodeocovrange(age)","coef","edges",-1.88620900968724,0.0478524825950207
+"nodeocovrange(age)","coef","nodeocovrange.age",-0.0861018459896719,0.014472810407345
+"nodeocovrange(age)","obs","edges",575,NA
+"nodeocovrange(age)","obs","nodeocovrange.age",1638,NA
+"nodefactordistinct(off)","coef","edges",-1.88491666843522,0.0461780857326032
+"nodefactordistinct(off)","coef","nodefactordistinct.off",-1.24419644874662,0.173400426090337
+"nodefactordistinct(off)","obs","edges",575,NA
+"nodefactordistinct(off)","obs","nodefactordistinct.off",162,NA
