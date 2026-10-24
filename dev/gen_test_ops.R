@@ -95,7 +95,7 @@ to_nw <- function(z) {
 
 # ---------------------------------------------------------------- cases: R formula and nwergm operators() text
 cases <- list()
-add <- function(net, id, r, s, mcmle=FALSE, brute=FALSE) cases[[length(cases)+1]] <<- list(net=net, id=id, r=r, s=s, mcmle=mcmle, brute=brute)
+add <- function(net, id, r, s, mcmle=FALSE, brute=FALSE, fixed=NULL) cases[[length(cases)+1]] <<- list(net=net, id=id, r=r, s=s, mcmle=mcmle, brute=brute, fixed=fixed)
 for (nm in c("ru", "flo", "mesa")) {
   z <- nets[[nm]]; c1 <- z$c1; c2 <- z$c2; ct <- z$cont; th <- z$thr
   q <- function(a) sprintf('"%s"', a)
@@ -141,6 +141,12 @@ for (nm in c("ru", "flo", "mesa")) {
   add(nm, "Label append",
       'Label(~triangle+kstar(2), "z", "append")',
       'Label(triangle kstar(2), label(z), pos(append))')
+  add(nm, "Log",
+      'Log(~kstar(2)+triangle)', 'Log(kstar(2) triangle)')
+  add(nm, "Exp",
+      'Exp(~triangle)', 'Exp(triangle)')
+  add(nm, "Offset",
+      'Offset(~triangle+kstar(2), coef=0.1, which=1)', 'Offset(triangle kstar(2), coef(0.1) which(1))', fixed=list(pos=2, val=0.1))
   add(nm, "Sum of F and S",
       sprintf('Sum(list(~F(~triangle+kstar(2), ~nodematch(%s)), ~S(~triangle+kstar(2), ~%s>%g)), label=c("a","b"))', q(c2), ct, th),
       sprintf('Sum(F(triangle kstar(2), filter(nodematch(%s))) | S(triangle kstar(2), attrs(%s>%g)), label(a b))', c2, ct, th))
@@ -336,7 +342,42 @@ w("			continue")
 w("		}")
 w("		local d1 = abs(`b'[1,`j'] - `e')")
 w("		local d2 = abs(sqrt(`V'[`j',`j']) - `s')")
-w("		if `d1' > 1e-4 | `d2' > 1e-4 {")
+w("		if `d1' > 1e-4 * max(1, abs(`e')) | `d2' > 1e-4 * max(1, `s') {")
+w("			di as err \"FAIL MPLE `net' `id': coefficient `j' is \" `b'[1,`j'] \" (R `e'), se \" sqrt(`V'[`j',`j']) \" (R `s')\"")
+w("			exit 9")
+w("		}")
+w("		local dmax = max(`dmax', `d1', `d2')")
+w("	}")
+w("	di \"PASS `net' `id': statistics exact, MPLE max difference \" %%9.2e `dmax'")
+w("end")
+w("")
+w("capture program drop ops_check_off")
+w("program ops_check_off")
+w("	// as ops_check, for a model with one fixed coefficient: R reports only the free coefficients")
+w("	args net id ops stats coefs ses fpos fval")
+w("	qui nwergm `net', edges operators(`ops') method(mple)")
+w("	mata: st_matrix(\"__ops_S\", __nwergm_last_M.full_statistic(__nwergm_last_G))")
+w("	local p : word count `stats'")
+w("	forvalues j = 1/`p' {")
+w("		local e : word `j' of `stats'")
+w("		assert abs(__ops_S[1,`j'] - `e') <= 1e-8 * max(1, abs(`e'))")
+w("	}")
+w("	tempname b V")
+w("	matrix `b' = e(b)")
+w("	matrix `V' = e(V)")
+w("	local k = 0")
+w("	local dmax 0")
+w("	forvalues j = 1/`p' {")
+w("		if `j' == `fpos' {")
+w("			assert abs(`b'[1,`j'] - `fval') < 1e-12")
+w("			continue")
+w("		}")
+w("		local ++k")
+w("		local e : word `k' of `coefs'")
+w("		local s : word `k' of `ses'")
+w("		local d1 = abs(`b'[1,`j'] - `e')")
+w("		local d2 = abs(sqrt(`V'[`j',`j']) - `s')")
+w("		if `d1' > 1e-4 * max(1, abs(`e')) | `d2' > 1e-4 * max(1, `s') {")
 w("			di as err \"FAIL MPLE `net' `id': coefficient `j' is \" `b'[1,`j'] \" (R `e'), se \" sqrt(`V'[`j',`j']) \" (R `s')\"")
 w("			exit 9")
 w("		}")
@@ -393,6 +434,7 @@ for (nm in names(nets)) {
   for (r in cs) {
     if (is.na(r$s)) next
     if (r$mcmle) w("ops_mcmle %s `\"%s\"' `\"%s\"' `\"%s\"' `\"%s\"'", nm, r$id, r$s, fmt(r$coef), fmt(r$se))
+    else if (!is.null(r$fixed)) w("ops_check_off %s `\"%s\"' `\"%s\"' `\"%s\"' `\"%s\"' `\"%s\"' %d %s", nm, r$id, r$s, fmt(r$stat), fmt(r$coef), fmt(r$se), r$fixed$pos, format(r$fixed$val))
     else w("ops_check %s `\"%s\"' `\"%s\"' `\"%s\"' `\"%s\"' `\"%s\"' %s", nm, r$id, r$s, fmt(r$stat), fmt(r$coef), fmt(r$se), if (grepl("^Prod", r$id)) "1e-6" else "")
   }
   w("")

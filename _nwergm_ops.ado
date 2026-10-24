@@ -29,12 +29,12 @@ program _nwergm_ops, rclass
 		else if inlist("`opname'", "s", "f", "nodematchfilter", "symmetrize", "project", "proj1", "proj2") {
 			_nwergm_ops_derived `netname', args(`"`opargs'"') nodes(`nodes') directed(`directed') twomode(`twomode') nebase(`ne') type(`type') kind(`opname')
 		}
-		else if inlist("`opname'", "i", "for", "label") {
+		else if inlist("`opname'", "i", "for", "label", "log", "exp", "offset") {
 			_nwergm_ops_inline `netname', args(`"`opargs'"') nodes(`nodes') directed(`directed') twomode(`twomode') nebase(`ne') type(`type') kind(`opname')
 		}
 		else {
 			mata: mata drop __ops_calls`d'
-			di "{err}operators(): unknown operator {bf:`opname'}; the operators are Sum, Prod, S, F, NodematchFilter, Symmetrize, Project, Proj1, Proj2, I, For and Label."
+			di "{err}operators(): unknown operator {bf:`opname'}; the operators are Sum, Prod, S, F, NodematchFilter, Symmetrize, Project, Proj1, Proj2, I, For, Label, Log, Exp and Offset."
 			error 198
 		}
 		local ne = r(nebase)
@@ -380,6 +380,14 @@ program _nwergm_ops_derived, rclass
 		local prefix "Proj`mode'~"
 		local dep 1
 	}
+	if inlist("`kind'", "s", "project", "proj1", "proj2") {
+		foreach dc in edgecov hamming dyadcov attrcov {
+			if strpos(lower(`"`first'"'), "`dc'(") > 0 {
+				di "{err}`=upper(substr("`kind'", 1, 1))'`=substr("`kind'", 2, .)'(): the dyadic covariate term {bf:`dc'()} cannot be used where the set of nodes changes."
+				error 198
+			}
+		}
+	}
 	// the derived network and the model on it
 	local gname "__nwergm_opG`ne'"
 	capture mata: mata drop `gname'
@@ -413,13 +421,18 @@ program _nwergm_ops_derived, rclass
 	return scalar nebase = `ne'
 end
 
-* I(terms), For(...), Label(terms, label(), pos()): the terms of the formula are added to the model themselves
+* I(terms), For(...), Label(terms, label(), pos()), Log(terms [, log0()]), Exp(terms), Offset(terms [, coef() which()]):
+* the terms of the formula are added to the model themselves
 capture program drop _nwergm_ops_inline
 program _nwergm_ops_inline, rclass
 	version 14
 	syntax anything(name=netname), KIND(string) ARGS(string) NODES(integer) DIRECTED(string) TWOMODE(string) NEBASE(integer) [TYPE(string)]
 	local ne = `nebase'
+	local Kind = proper("`kind'")
 	local names ""
+	local log0 = -1/sqrt(c(epsdouble))
+	local coef 0
+	local which ""
 	if "`kind'" == "i" {
 		local terms `"`args'"'
 	}
@@ -430,35 +443,64 @@ program _nwergm_ops_inline, rclass
 		mata: __a = ergm_ops_split1(st_local("args"))
 		mata: st_local("terms", __a[1])
 		mata: st_local("opts", __a[2])
-			mata: st_local("bad", ergm_ops_badopts(st_local("opts"), "label pos"))
-		mata: __ok = 0
-		mata: __lb = ergm_ops_getopt(st_local("opts"), "label", __ok)
-		mata: st_local("label", __lb)
-		mata: st_local("haslab", strofreal(__ok))
-		mata: __ok = 0
-		mata: __ps = ergm_ops_getopt(st_local("opts"), "pos", __ok)
-		mata: st_local("pos", __ps)
-		if "`bad'" != "" | !`haslab' {
-			di "{err}Label(): the syntax is Label(terms, label(string) [pos(prepend|replace|append|paren)]."
+		local allowed "label pos"
+		if "`kind'" == "log" local allowed "log0"
+		if "`kind'" == "exp" local allowed ""
+		if "`kind'" == "offset" local allowed "coef which"
+		mata: st_local("bad", ergm_ops_badopts(st_local("opts"), st_local("allowed")))
+		if "`bad'" != "" {
+			di "{err}`Kind'(): unknown suboption {bf:`bad'}."
 			error 198
 		}
-		if "`pos'" == "" local pos "paren"
-		if !inlist("`pos'", "prepend", "replace", "append", "paren") {
-			di "{err}Label(): pos() is one of prepend, replace, append, paren."
-			error 198
+		mata: __ok = 0
+		mata: st_local("label", ergm_ops_getopt(st_local("opts"), "label", __ok))
+		mata: st_local("haslab", strofreal(__ok))
+		mata: __ok = 0
+		mata: st_local("pos", ergm_ops_getopt(st_local("opts"), "pos", __ok))
+		mata: __ok = 0
+		mata: st_local("o2", ergm_ops_getopt(st_local("opts"), "log0", __ok))
+		if "`o2'" != "" local log0 "`o2'"
+		mata: __ok = 0
+		mata: st_local("o3", ergm_ops_getopt(st_local("opts"), "coef", __ok))
+		if "`o3'" != "" local coef "`o3'"
+		mata: __ok = 0
+		mata: st_local("o4", ergm_ops_getopt(st_local("opts"), "which", __ok))
+		if "`o4'" != "" local which "`o4'"
+		if "`kind'" == "label" {
+			if !`haslab' {
+				di "{err}Label(): the syntax is Label(terms, label(string) [pos(prepend|replace|append|paren)])."
+				error 198
+			}
+			if "`pos'" == "" local pos "paren"
+			if !inlist("`pos'", "prepend", "replace", "append", "paren") {
+				di "{err}Label(): pos() is one of prepend, replace, append, paren."
+				error 198
+			}
 		}
 	}
 	_nwergm_opsub `netname', terms(`terms') nodes(.) directed(.) twomode(.) nebase(`ne') type(`type')
 	local sname "`r(name)'"
+	local np = r(np)
 	local dep = !r(dind)
 	local cn "`r(cn)'"
+	local names "`cn'"
 	if "`kind'" == "label" {
 		mata: st_local("names", invtokens(ergm_ops_label(ergm_ops_words(st_local("cn")), st_local("label"), st_local("pos"))))
 	}
-	else {
-		local names "`cn'"
+	if inlist("`kind'", "log", "exp") {
+		local names ""
+		foreach c of local cn {
+			local names "`names' `Kind'~`c'"
+		}
 	}
+	if "`kind'" == "offset" {
+		mata: ergm_ops_setoffset(`sname', st_local("coef"), st_local("which"))
+	}
+	mata: st_local("first", strofreal(__nwergm_last_M.nparam() + 1))
 	mata: ergm_ops_mergemodel(__nwergm_last_M, `sname', ergm_ops_words(st_local("names")))
+	if inlist("`kind'", "log", "exp") {
+		mata: ergm_ops_setkind(__nwergm_last_M, `first', `first' + `np' - 1, `=cond("`kind'" == "log", 1, 2)', `log0')
+	}
 	return local temps ""
 	return scalar dep = `dep'
 	return scalar nebase = `ne'

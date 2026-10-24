@@ -140,6 +140,10 @@ program nwergm, eclass
 	// node attributes are read by row position; see _nwrowalign.ado
 	if !`__sub' | "`3'" == "." _nwrowalign `netname'
 	_nwsyntax `netname', max(1)
+	if `"`operators'"' != "" & (`"`constraints'`obsconstraints'"' != "" | "`freedyads'`blockdiag'`fixdensity'" != "") {
+		di "{err}operators() cannot be combined with constraints(), obsconstraints(), freedyads(), blockdiag() or fixdensity."
+		error 198
+	}
 	if `__sub' {
 		if "`3'" != "." local nodes = `3'
 		if "`4'" != "." local directed "`4'"
@@ -1800,6 +1804,7 @@ program nwergm, eclass
 	// gwnspfree() unconditionally forced method(mple) regardless of
 	// this check's own result, a forcing that no longer happens.
 	local __ergm_dind = (`"`mutual'"'=="" & `__ns_dep' == 0 & `"`gwesp'"'=="" & `"`gwdsp'"'=="" & `"`gwnsp'"'=="" & `"`gwdegree'"'=="" & `"`gwodegree'"'=="" & `"`gwidegree'"'=="" & `"`degree'"'=="" & `"`odegree'"'=="" & `"`idegree'"'=="" & `"`concurrent'"'=="" & `"`triangle'"'=="" & `"`ctriple'"'=="" & `"`kstar'"'=="" & `"`ostar'"'=="" & `"`istar'"'=="" & `"`degrange'"'=="" & `"`odegrange'"'=="" & `"`idegrange'"'=="" & `"`esp'"'=="" & `"`dsp'"'=="" & "`transitiveties'"=="" & "`cyclicalties'"=="" & "`gwespfree'"=="" & "`gwdegreefree'"=="" & "`gwdspfree'"=="" & "`gwodegreefree'"=="" & "`gwidegreefree'"=="" & "`gwnspfree'"=="" & "`bdegree1'"=="" & "`bdegree2'"=="" & "`bstar1'"=="" & "`bstar2'"=="" & "`bnodematch1'"=="" & "`bnodematch2'"=="" & "`bgwdegree1'"=="" & "`bgwdegree2'"=="" & !`__ergm_bipdep' & "`nodecovrange'`nodeocovrange'`nodeicovrange'`nodefactordistinct'`nodeofactordistinct'`nodeifactordistinct'"=="")
+	if `"`operators'"' != "" mata: ergm_ops_finalize(__nwergm_last_M)
 	if `__sub' {
 		capture mata: mata drop `__sub_name'
 		mata: `__sub_name' = ErgmModel()

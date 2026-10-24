@@ -8036,6 +8036,52 @@ string scalar ergm_ops_wrapop(string scalar w)
 	return(w)
 }
 
+// R's Offset(): fixes the coefficients of the selected columns of the sub-model S (which: column numbers or names, default all)
+void ergm_ops_setoffset(class ErgmModel scalar S, string scalar coefs, string scalar which)
+{
+	real rowvector cv, sel
+	string rowvector wk
+	real scalar k, p
+	cv = strtoreal(tokens(coefs))
+	if (cols(cv) == 0 | any(cv :>= .)) {
+		errprintf("Offset(): coef() takes numbers\n")
+		_error(198)
+	}
+	wk = tokens(which)
+	if (cols(wk) == 0) sel = 1..S.nparam()
+	else {
+		sel = J(1, cols(wk), 0)
+		for (k=1; k<=cols(wk); k++) {
+			if (strtoreal(wk[k]) < .) sel[k] = strtoreal(wk[k])
+			else sel[k] = S.findcoef(wk[k])
+			if (sel[k] < 1 | sel[k] > S.nparam()) {
+				errprintf("Offset(): which() does not select a coefficient of the formula\n")
+				_error(198)
+			}
+		}
+	}
+	for (k=1; k<=cols(sel); k++) S.mark_fixed(sel[k], cv[mod(k-1, cols(cv)) + 1])
+}
+
+// R's Log() and Exp(): marks columns first..last of M as log (kind 1, value param at zero) or exp (kind 2) of the statistic
+void ergm_ops_setkind(class ErgmModel scalar M, real scalar first, real scalar last, real scalar kind, real scalar param)
+{
+	_ergm_op_init(M)
+	M.opkind[first..last] = J(1, last - first + 1, kind)
+	M.opparam[first..last] = J(1, last - first + 1, param)
+}
+
+// called when all terms are registered: the transform arrays must have one entry per coefficient
+void ergm_ops_finalize(class ErgmModel scalar M)
+{
+	real scalar p
+	p = M.nparam()
+	if (cols(M.opkind) > 0 & cols(M.opkind) < p) {
+		M.opkind = (M.opkind, J(1, p - cols(M.opkind), 0))
+		M.opparam = (M.opparam, J(1, p - cols(M.opparam), 0))
+	}
+}
+
 // the suboptions in opts that are not in the list allowed
 string scalar ergm_ops_badopts(string scalar opts, string scalar allowed)
 {

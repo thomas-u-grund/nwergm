@@ -46,6 +46,7 @@ Estimation methods (MPLE variants, contrastive divergence, stochastic approximat
 {p2col:{it:{help nwergm##triad_effects_directed:triad_effects_directed}}}directed triad-closure existence-indicator terms{p_end}
 {p2col:{it:{help nwergm##nodelevel_effects:nodelevel_effects}}}dyadic-covariate and per-node fixed-effect terms{p_end}
 {p2col:{opt structural(termlist)}}further structural terms of R's ergm ({opt twopath}, {opt transitive}, {opt cycle()}, {opt altkstar()}, {opt degree()} with {opt by()} ...), see {help nwergm_structural}{p_end}
+{p2col:{opt operators(oplist)}}operator terms of R's ergm ({opt Sum}, {opt Prod}, {opt S}, {opt F}, {opt NodematchFilter}, {opt Symmetrize}, {opt Project}, {opt I}, {opt For}, {opt Label}, {opt Log}, {opt Exp}, {opt Offset}), see {help nwergm_operators}{p_end}
 {p2col:{it:{help nwergm##estimation_control:estimation_control}}}estimation method, MCMC tuning, constraints, and output control{p_end}
 
 {synoptset 25 tabbed}{...}
