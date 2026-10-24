@@ -51,7 +51,7 @@ program nwergm, eclass
 		METHOD(string) MCMCBURNIN(integer 3000) MCMCINTERVAL(integer 50) ///
 		MCMCSAMPLESIZE(integer 3000) MCMLEITERATIONS(integer 60) ///
 		PROPOSAL(string) SEED(integer -1) VERBOSE SPCACHE NOMCMCSAMPLE NONATIVE ///
-		OFFSET(string) COEFLABEL(string) LOGSTAT(string) EXPSTAT(string) STRUCTURAL(string asis) NOLOGLIK BRIDGESTEPS(integer 16) BRIDGESAMPLESIZE(integer 0) BRIDGEINTERVAL(integer 0) ///
+		OFFSET(string) COEFLABEL(string) LOGSTAT(string) EXPSTAT(string) STRUCTURAL(string asis) OPERATORS(string asis) SUBMODEL(string) NOLOGLIK BRIDGESTEPS(integer 16) BRIDGESAMPLESIZE(integer 0) BRIDGEINTERVAL(integer 0) ///
 		INIT(string) MPLETYPE(string) MPLECHECK(string) MPLECOVariance(string) ESTimate(string) MAINMETHOD(string) ///
 		MCMLETERMination(string) MCMLECONFidence(real 0.99) MCMLESTEPLength(real 1) MCMLESTEPMargin(real 0.05) ///
 		MCMLEEFFectivesize(real -1) CDNSteps(integer 8) CDSAMPLEsize(integer 0) SABURNin(integer 16384) SAINTERval(integer 1024) SAPHASE3(integer 1000) SAGAIN(real 0.1) SANSUB(integer 4) ///
@@ -74,7 +74,15 @@ program nwergm, eclass
 	}
 
 	// edges may be left out only when density or meandeg (collinear with it) stands in for it
+	local __sub = (`"`submodel'"' != "")
+	if `__sub' {
+		// a model of an operator term (built by _nwergm_ops): name, term-name base, nodes, directed, twomode ("." = as the network)
+		tokenize `submodel'
+		local __sub_name "`1'"
+		local __ne_n = `2'
+	}
 	local __ns_noedges = ("`edges'" == "" & (strpos(" " + subinstr(`"`structural'"', "(", " (", .) + " ", " density ") > 0 | strpos(" " + subinstr(`"`structural'"', "(", " (", .) + " ", " meandeg ") > 0))
+	if `__sub' & "`edges'" == "" local __ns_noedges 1
 	if "`edges'" == "" & !`__ns_noedges' {
 		di "{err}option {bf:edges} is required - every v1 nwergm model includes an edges term."
 		error 198
@@ -130,8 +138,17 @@ program nwergm, eclass
 
 	_nwsyntax `netname', max(1)
 	// node attributes are read by row position; see _nwrowalign.ado
-	_nwrowalign `netname'
+	if !`__sub' | "`3'" == "." _nwrowalign `netname'
 	_nwsyntax `netname', max(1)
+	if `__sub' {
+		if "`3'" != "." local nodes = `3'
+		if "`4'" != "." local directed "`4'"
+		if "`5'" != "." local is2mode "`5'"
+		if "`freedyads'`blockdiag'`fixdensity'" != "" | `"`constraints'`obsconstraints'"' != "" {
+			di "{err}constraints cannot be used inside an operator term."
+			error 198
+		}
+	}
 
 	// --- network-type validation (Part IV/XXII/XXIII/XXIV): reject,
 	// never silently reinterpret.
@@ -587,10 +604,12 @@ program nwergm, eclass
 	// call's singleton, guarded exactly like ergm_bridge_from_netobj()'s
 	// own redefinition guard below - this is a single, well-managed
 	// object, not the unmanaged per-call accumulation unit 73 fixed.
-	capture mata: mata drop __nwergm_last_G
-	mata: __nwergm_last_G = ErgmGraph()
-	mata: __nwergm_last_G.init(`nodes', ("`directed'"=="true"))
-	mata: ergm_bridge_from_netobj(`netobj', __nwergm_last_G, ("`directed'"=="true"))
+	if !`__sub' {
+		capture mata: mata drop __nwergm_last_G
+		mata: __nwergm_last_G = ErgmGraph()
+		mata: __nwergm_last_G.init(`nodes', ("`directed'"=="true"))
+		mata: ergm_bridge_from_netobj(`netobj', __nwergm_last_G, ("`directed'"=="true"))
+	}
 	// harmonisation unit 155 (bipartite Stage 1): set_bipartite() is
 	// called AFTER ergm_bridge_from_netobj() (order does not matter for
 	// correctness - set_bipartite() only touches the new mode fields,
@@ -602,7 +621,7 @@ program nwergm, eclass
 	// no reordering is needed or performed (this package's own
 	// deliberate no-reordering convention - see the approved plan's own
 	// "Key architecture decision" section).
-	if "`is2mode'" == "true" {
+	if "`is2mode'" == "true" & !`__sub' {
 		mata: __nwergm_last_G.set_bipartite(strtoreal(`netobj'->get_modes())')
 	}
 	// freedyads(netname) (constraints, first piece - see
@@ -723,8 +742,11 @@ program nwergm, eclass
 	// didn't match the true network by hand-inspection.
 	mata: st_local("__ergm_obsties", strofreal(__nwergm_last_G.nties))
 	// missing dyads (NA ties): excluded from the pseudolikelihood, imputed for the MCMC start (as R ergm)
-	_nwergm_miss detect, netobj(`netobj') directed(`directed') twomode(`is2mode') nodes(`nodes') netname(`netname')
-	local __ergm_nmiss = r(nmiss)
+	if !`__sub' {
+		_nwergm_miss detect, netobj(`netobj') directed(`directed') twomode(`is2mode') nodes(`nodes') netname(`netname')
+		local __ergm_nmiss = r(nmiss)
+	}
+	else local __ergm_nmiss 0
 	if `__ergm_nmiss' > 0 & ("`freedyads'" != "" | "`blockdiag'" != "" | "`fixdensity'" != "") {
 		di "{err}missing dyads cannot currently be combined with freedyads(), blockdiag() or fixdensity."
 		error 198
@@ -1355,6 +1377,13 @@ program nwergm, eclass
 		local __ergm_matatemps "`__ergm_matatemps' `r(temps)'"
 		local __ns_dep = r(dep)
 	}
+	// operators() option: Sum, Prod, S, F, NodematchFilter, Symmetrize, Project, I, For, Label (see _nwergm_ops.ado)
+	if `"`operators'"' != "" {
+		_nwergm_ops `netname', spec(`operators') nodes(`nodes') directed(`directed') twomode(`is2mode') nebase(`__ne_n') type(`=cond(`__ergm_type_explicit', "`type'", "")')
+		local __ergm_matatemps "`__ergm_matatemps' `r(temps)'"
+		local __ns_dep = max(`__ns_dep', r(dep))
+		local __ne_n = r(nebase)
+	}
 
 	// --- term-expansion wave 7 (harmonisation unit 91 continuation):
 	// sender()/receiver() (per-node out-/in-degree fixed effects, base=1
@@ -1771,6 +1800,14 @@ program nwergm, eclass
 	// gwnspfree() unconditionally forced method(mple) regardless of
 	// this check's own result, a forcing that no longer happens.
 	local __ergm_dind = (`"`mutual'"'=="" & `__ns_dep' == 0 & `"`gwesp'"'=="" & `"`gwdsp'"'=="" & `"`gwnsp'"'=="" & `"`gwdegree'"'=="" & `"`gwodegree'"'=="" & `"`gwidegree'"'=="" & `"`degree'"'=="" & `"`odegree'"'=="" & `"`idegree'"'=="" & `"`concurrent'"'=="" & `"`triangle'"'=="" & `"`ctriple'"'=="" & `"`kstar'"'=="" & `"`ostar'"'=="" & `"`istar'"'=="" & `"`degrange'"'=="" & `"`odegrange'"'=="" & `"`idegrange'"'=="" & `"`esp'"'=="" & `"`dsp'"'=="" & "`transitiveties'"=="" & "`cyclicalties'"=="" & "`gwespfree'"=="" & "`gwdegreefree'"=="" & "`gwdspfree'"=="" & "`gwodegreefree'"=="" & "`gwidegreefree'"=="" & "`gwnspfree'"=="" & "`bdegree1'"=="" & "`bdegree2'"=="" & "`bstar1'"=="" & "`bstar2'"=="" & "`bnodematch1'"=="" & "`bnodematch2'"=="" & "`bgwdegree1'"=="" & "`bgwdegree2'"=="" & !`__ergm_bipdep' & "`nodecovrange'`nodeocovrange'`nodeicovrange'`nodefactordistinct'`nodeofactordistinct'`nodeifactordistinct'"=="")
+	if `__sub' {
+		capture mata: mata drop `__sub_name'
+		mata: `__sub_name' = ErgmModel()
+		mata: ergm_ops_copyM(`__sub_name', __nwergm_last_M)
+		global NWERGM_SUBDIND = `__ergm_dind' & !`__ergm_ncurved'
+		global NWERGM_SUBCURVED = `__ergm_ncurved'
+		exit
+	}
 	if `__con_active' {
 		if `con_dind' == 0 local __ergm_dind 0
 	}

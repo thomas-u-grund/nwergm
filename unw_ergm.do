@@ -7873,6 +7873,393 @@ string scalar _ergm_native_comp(class ErgmModel scalar M, class ErgmGraph scalar
 	return(out)
 }
 
+/* ===================================================================
+   Parsing helpers of the operators() option (see _nwergm_ops.ado).
+   =================================================================== */
+// position of the ")" that matches the "(" at position p of s (0 if there is none)
+real scalar ergm_ops_match(string scalar s, real scalar p)
+{
+	real scalar i, d, q
+	string scalar c
+	d = 0
+	q = 0
+	for (i=p; i<=strlen(s); i++) {
+		c = substr(s, i, 1)
+		if (c == char(34)) q = !q
+		if (q) continue
+		if (c == "(") d++
+		else if (c == ")") {
+			d--
+			if (d == 0) return(i)
+		}
+	}
+	return(0)
+}
+
+// splits s at the characters sep that are outside parentheses and quotes
+string rowvector ergm_ops_split(string scalar s, string scalar sep)
+{
+	real scalar i, d, q, start
+	string scalar c
+	string rowvector out
+	d = 0
+	q = 0
+	start = 1
+	out = J(1, 0, "")
+	for (i=1; i<=strlen(s); i++) {
+		c = substr(s, i, 1)
+		if (c == char(34)) q = !q
+		if (q) continue
+		if (c == "(") d++
+		else if (c == ")") d--
+		else if (d == 0 & c == sep) {
+			out = (out, strtrim(substr(s, start, i - start)))
+			start = i + 1
+		}
+	}
+	out = (out, strtrim(substr(s, start, .)))
+	return(out)
+}
+
+// "Name(args) Name2(args2)" -> one row per call: (name, args)
+string matrix ergm_ops_calls(string scalar spec)
+{
+	string matrix out
+	string scalar s, nm
+	real scalar p, e
+	s = strtrim(spec)
+	out = J(0, 2, "")
+	while (strlen(s) > 0) {
+		p = strpos(s, "(")
+		if (p == 0) {
+			errprintf("operators(): %s: an operator is written Name(...)\n", s)
+			_error(198)
+		}
+		nm = strtrim(substr(s, 1, p - 1))
+		e = ergm_ops_match(s, p)
+		if (e == 0) {
+			errprintf("operators(): unbalanced parenthesis after %s\n", nm)
+			_error(198)
+		}
+		out = out \ (nm, strtrim(substr(s, p + 1, e - p - 1)))
+		s = strtrim(substr(s, e + 1, .))
+	}
+	return(out)
+}
+
+// splits "terms , options" at the first top-level comma
+string rowvector ergm_ops_split1(string scalar s)
+{
+	string rowvector parts
+	string scalar rest
+	real scalar k
+	parts = ergm_ops_split(s, ",")
+	if (cols(parts) == 1) return((parts[1], ""))
+	rest = parts[2]
+	for (k=3; k<=cols(parts); k++) rest = rest + ", " + parts[k]
+	return((parts[1], rest))
+}
+
+// the content of the suboption name(...) in opts ("" if absent); ok is set to 1 when it is present
+string scalar ergm_ops_getopt(string scalar opts, string scalar name, real scalar ok)
+{
+	real scalar p, e, k
+	string scalar s, c
+	s = opts
+	ok = 0
+	p = 1
+	while (1) {
+		k = strpos(strlower(substr(s, p, .)), strlower(name) + "(")
+		if (k == 0) return("")
+		k = k + p - 1
+		if (k > 1) {
+			c = substr(s, k - 1, 1)
+			if (regexm(c, "[A-Za-z0-9_]")) {
+				p = k + 1
+				continue
+			}
+		}
+		e = ergm_ops_match(s, k + strlen(name))
+		if (e == 0) return("")
+		ok = 1
+		return(strtrim(substr(s, k + strlen(name) + 1, e - k - strlen(name) - 1)))
+	}
+}
+
+// the suboption names present in opts (outside parentheses)
+string rowvector ergm_ops_optnames(string scalar opts)
+{
+	string rowvector out
+	string scalar s, nm
+	real scalar p, e
+	s = strtrim(opts)
+	out = J(1, 0, "")
+	while (strlen(s) > 0) {
+		while (substr(s, 1, 1) == ",") s = strtrim(substr(s, 2, .))
+		if (strlen(s) == 0) break
+		p = strpos(s, "(")
+		if (p == 0) {
+			out = (out, strlower(s))
+			break
+		}
+		nm = strlower(strtrim(substr(s, 1, p - 1)))
+		out = (out, nm)
+		e = ergm_ops_match(s, p)
+		if (e == 0) break
+		s = strtrim(substr(s, e + 1, .))
+	}
+	return(out)
+}
+
+// copies of models and graphs (a class instance cannot be assigned from the command line)
+void ergm_ops_copyM(class ErgmModel scalar to, class ErgmModel scalar from)
+{
+	to = from
+}
+void ergm_ops_copyG(class ErgmGraph scalar to, class ErgmGraph scalar from)
+{
+	to = from
+}
+void ergm_ops_derive_into(class ErgmGraph scalar G, class ErgmTermData scalar td, class ErgmGraph scalar H)
+{
+	H = ergm_op_derive(G, td)
+}
+
+// an operator written among the terms of an operator is passed on as operators(...)
+string scalar ergm_ops_wrapop(string scalar w)
+{
+	string scalar nm
+	if (regexm(w, "^([A-Za-z0-9_]+)[(]")) {
+		nm = strlower(regexs(1))
+		if (any(nm :== ("sum", "prod", "s", "f", "nodematchfilter", "symmetrize", "project", "proj1", "proj2", "i", "for", "label"))) return("operators(" + w + ")")
+	}
+	return(w)
+}
+
+// the suboptions in opts that are not in the list allowed
+string scalar ergm_ops_badopts(string scalar opts, string scalar allowed)
+{
+	string rowvector have, ok
+	string scalar out
+	real scalar k
+	have = ergm_ops_optnames(opts)
+	ok = tokens(allowed)
+	out = ""
+	for (k=1; k<=cols(have); k++) {
+		if (have[k] != "" & !any(ok :== have[k])) out = out + " " + have[k]
+	}
+	return(strtrim(out))
+}
+
+// weights of a formula of Sum/Prod from its left-hand side text
+real matrix ergm_ops_weights(string scalar lhs, real scalar nstat, string scalar kind)
+{
+	string scalar l
+	real rowvector v
+	real matrix W
+	string rowvector tk
+	l = strlower(strtrim(lhs))
+	if (l == "") return(I(nstat))
+	if (kind == "sum" & l == "sum") return(J(1, nstat, 1))
+	if (kind == "sum" & l == "mean") return(J(1, nstat, 1/nstat))
+	if (kind == "prod" & l == "prod") return(J(1, nstat, 1))
+	if (kind == "prod" & l == "geomean") return(J(1, nstat, 1/nstat))
+	if (substr(l, 1, 7) == "matrix(") {
+		W = st_matrix(strtrim(substr(l, 8, strlen(l) - 8)))
+		if (cols(W) != nstat) {
+			errprintf("operators(): the weight matrix has %g columns, the formula has %g statistics\n", cols(W), nstat)
+			_error(198)
+		}
+		return(W)
+	}
+	tk = tokens(l)
+	v = J(1, cols(tk), .)
+	if (cols(tk) == 0) _error(198)
+	v = strtoreal(tk)
+	if (any(v :>= .)) {
+		errprintf("operators(): %s: the weights of a formula are a number, numbers, matrix(name), or %s\n", lhs, (kind == "sum" ? "sum or mean" : "prod or geomean"))
+		_error(198)
+	}
+	if (cols(v) == 1) return(v[1] * I(nstat))
+	if (cols(v) != nstat) {
+		errprintf("operators(): %g weights for a formula with %g statistics\n", cols(v), nstat)
+		_error(198)
+	}
+	return(diag(v))
+}
+
+// R's For(): replaces {var} in the template by each value; loops are nested, the first is the outermost
+string scalar ergm_ops_for(string scalar args)
+{
+	string rowvector parts, vals, cur
+	string scalar tmpl, nm, out, t
+	string matrix loops
+	real scalar k, j, m, nl, idx
+	real rowvector sz, ix
+	parts = ergm_ops_split(args, ",")
+	nl = 0
+	loops = J(0, 2, "")
+	tmpl = ""
+	for (k=1; k<=cols(parts); k++) {
+		if (regexm(parts[k], "^([A-Za-z_][A-Za-z0-9_]*)[ ]*=[ ]*(.*)$")) {
+			nm = regexs(1)
+			t = regexs(2)
+			if (regexm(t, "^[-0-9. ]+/[-0-9. ]+$")) {
+				stata("numlist " + char(34) + t + char(34))
+				t = st_global("r(numlist)")
+			}
+			loops = loops \ (nm, t)
+			nl++
+		}
+		else tmpl = (tmpl == "" ? parts[k] : tmpl + ", " + parts[k])
+	}
+	if (nl == 0 | tmpl == "") {
+		errprintf("operators(): For() needs one or more loops (name = values) and the terms to repeat\n")
+		_error(198)
+	}
+	sz = J(1, nl, 0)
+	for (k=1; k<=nl; k++) sz[k] = cols(tokens(loops[k,2]))
+	ix = J(1, nl, 1)
+	out = ""
+	while (1) {
+		t = tmpl
+		for (k=1; k<=nl; k++) t = subinstr(t, "{" + loops[k,1] + "}", tokens(loops[k,2])[ix[k]])
+		out = out + " " + t
+		k = nl
+		while (k >= 1) {
+			ix[k] = ix[k] + 1
+			if (ix[k] <= sz[k]) break
+			ix[k] = 1
+			k--
+		}
+		if (k < 1) break
+	}
+	return(strtrim(out))
+}
+
+// adds the term instances of the model S to M (the terms keep their statistics; names given)
+void ergm_ops_mergemodel(class ErgmModel scalar M, class ErgmModel scalar S, string rowvector cn)
+{
+	real scalar t
+	M.nterms = M.nterms + S.nterms
+	M.names = (M.names, S.names)
+	M.npar = (M.npar, S.npar)
+	M.statfn = (M.statfn, S.statfn)
+	M.chgfn = (M.chgfn, S.chgfn)
+	M.td = (M.td, S.td)
+	M.coefnames = (M.coefnames, cn)
+	M.curved = (M.curved, S.curved)
+	M.isfixed = (M.isfixed, S.isfixed)
+	M.fixedvalue = (M.fixedvalue, S.fixedvalue)
+	if (cols(M.opkind) > 0 | cols(S.opkind) > 0) {
+		if (cols(M.opkind) == 0) {
+			M.opkind = J(1, cols(M.coefnames) - cols(cn), 0)
+			M.opparam = M.opkind
+		}
+		M.opkind = (M.opkind, (cols(S.opkind) > 0 ? S.opkind : J(1, cols(cn), 0)))
+		M.opparam = (M.opparam, (cols(S.opparam) > 0 ? S.opparam : J(1, cols(cn), 0)))
+	}
+}
+
+// R's Label(): new coefficient names (pos is prepend, replace, append or paren, R's "(")
+string rowvector ergm_ops_label(string rowvector cn, string scalar lab, string scalar pos)
+{
+	string rowvector labs, out
+	real scalar k
+	labs = tokens(lab)
+	out = cn
+	if (pos == "replace") {
+		if (cols(labs) != cols(cn)) {
+			if (cols(labs) == 1) labs = J(1, cols(cn), labs[1]) :+ strofreal(1..cols(cn))
+			else {
+				errprintf("operators(): Label() has %g labels for %g statistics\n", cols(labs), cols(cn))
+				_error(198)
+			}
+		}
+		return(labs)
+	}
+	if (cols(labs) != 1) {
+		errprintf("operators(): Label() with pos(%s) takes one label\n", pos)
+		_error(198)
+	}
+	for (k=1; k<=cols(cn); k++) {
+		if (pos == "prepend") out[k] = lab + cn[k]
+		else if (pos == "append") out[k] = cn[k] + lab
+		else out[k] = lab + "(" + cn[k] + ")"
+	}
+	return(out)
+}
+
+// split on blanks outside parentheses, dropping empty pieces
+string rowvector ergm_ops_words(string scalar s)
+{
+	string rowvector w
+	w = ergm_ops_split(s, " ")
+	if (cols(w) == 0) return(w)
+	w = select(w, w :!= "")
+	return(w)
+}
+
+void ergm_ops_setW(class ErgmTermData scalar td, string rowvector lhs, string scalar kind)
+{
+	real scalar f, P, nf
+	real matrix W, Wf
+	nf = cols(td.opdims)
+	W = J(0, 0, .)
+	P = .
+	for (f=1; f<=nf; f++) {
+		Wf = ergm_ops_weights(lhs[f], td.opdims[f], kind)
+		if (P >= .) P = rows(Wf)
+		else if (rows(Wf) != P) {
+			errprintf("operators(): the formulas give different numbers of statistics after their weights are applied\n")
+			_error(198)
+		}
+		if (f == 1) W = Wf
+		else W = (W, Wf)
+	}
+	td.opW = W
+}
+
+string rowvector ergm_ops_names(string scalar label, real scalar P, string scalar Kind)
+{
+	string rowvector l, out
+	l = ergm_ops_words(label)
+	if (cols(l) == 1 & P > 1) l = l[1] :+ strofreal(1..P)
+	if (cols(l) != P) {
+		errprintf("operators(): label() has %g elements, the operator gives %g statistics\n", cols(l), P)
+		_error(198)
+	}
+	out = (Kind + "~") :+ l
+	return(subinstr(out, ".", "_"))
+}
+
+real colvector ergm_ops_blockcode(real matrix X)
+{
+	real matrix U
+	real colvector code
+	real scalar i, k
+	U = uniqrows(X)
+	code = J(rows(X), 1, 0)
+	for (i=1; i<=rows(X); i++) {
+		for (k=1; k<=rows(U); k++) {
+			if (all(X[i,.] :== U[k,.])) {
+				code[i] = k
+				break
+			}
+		}
+	}
+	return(code)
+}
+
+real rowvector ergm_ops_emptystat(class ErgmModel scalar M, class ErgmGraph scalar G)
+{
+	class ErgmGraph scalar E
+	E = ErgmGraph()
+	E.init(G.n, G.directed)
+	if (G.bipartite) E.set_bipartite(G.mode)
+	return(M.full_statistic(E))
+}
+
 real scalar ErgmNativeSPCode(string scalar sptype, real scalar utp, real scalar otp, real scalar itp, real scalar osp, real scalar isp, real scalar rtp){
 	if (sptype == "OTP") return(otp)
 	if (sptype == "ITP") return(itp)
