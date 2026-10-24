@@ -35,12 +35,14 @@ All operators run in the native plugin that ships with the package; there is no 
 	or {cmd:sum:} / {cmd:mean:}, which combine all statistics of the formula into one. {opt label()} is required: one name, to which the index is appended, or one name per resulting statistic{p_end}
 {synopt:{cmd:Prod(}{it:f1} [{cmd:|} {it:f2} ...]{cmd:, label(}{it:names}{cmd:))}}Product of the statistics of the formulas; weights are exponents; the presets are {cmd:prod:} and {cmd:geomean:}. The statistics must not be negative. Formulas inside {cmd:Prod()} cannot contain {cmd:Sum()}
 	or {cmd:Prod()}{p_end}
-{synopt:{cmd:S(}{it:terms}{cmd:, attrs(}{it:expr}{cmd:))}}Terms evaluated on the subgraph induced by the nodes for which {it:expr} (a variable, or a condition such as {cmd:age>30}) is true. One-mode networks only{p_end}
+{synopt:{cmd:S(}{it:terms}{cmd:, attrs(}{it:expr}{cmd:))}}Terms evaluated on the subgraph induced by the nodes for which {it:expr} (a variable, or a condition such as {cmd:age>30}) is true (R's one-sided {opt attrs} formula; the two-sided form that selects different node sets for tails
+	and heads is not available). One-mode networks only{p_end}
 {synopt:{cmd:F(}{it:terms}{cmd:, filter(}{it:term}{cmd:))}}Terms evaluated on the network from which the ties are removed for which the filter term is zero. The filter is one dyad-independent term with one statistic; {cmd:!} in front of it, or a comparison after it
 	({cmd:absdist(age) > 3}, with {cmd:==  !=  >  <  >=  <=}), selects the ties kept{p_end}
 {synopt:{cmd:NodematchFilter(}{it:terms}{cmd:, attrname(}{it:varlist}{cmd:))}}Terms evaluated on the network without the ties between nodes that differ in one of the attributes{p_end}
 {synopt:{cmd:Symmetrize(}{it:terms}{cmd:, rule(}{it:rule}{cmd:))}}Terms evaluated on the undirected network obtained from a directed one; {it:rule} is {cmd:weak} (default, or {cmd:max}), {cmd:strong} ({cmd:min}), {cmd:upper} or {cmd:lower}. Directed networks only{p_end}
-{synopt:{cmd:Project(}{it:terms}{cmd:, mode(}{it:#}{cmd:))}}Terms evaluated on the one-mode network of the nodes of mode {it:#} (1 or 2), in which two nodes are tied if they have a partner in common. {cmd:Proj1(}{it:terms}{cmd:)} and {cmd:Proj2(}{it:terms}{cmd:)} are the short forms.
+{synopt:{cmd:Project(}{it:terms}{cmd:, mode(}{it:#}{cmd:))}}Terms evaluated on the one-mode network of the nodes of mode {it:#} (1 or 2), in which two nodes are tied if they have a partner in common; the terms see this network of ties and non-ties (in R,
+	{cmd:Proj1(~B(}{it:terms}{cmd:, "nonzero"))}), not the counts of common partners. {cmd:Proj1(}{it:terms}{cmd:)} and {cmd:Proj2(}{it:terms}{cmd:)} are the short forms.
 	Two-mode networks only{p_end}
 {synopt:{cmd:I(}{it:terms}{cmd:)}}The terms themselves; useful to paste a list of terms kept in a local macro{p_end}
 {synopt:{cmd:For(}{it:name}{cmd:=}{it:values}[{cmd:,} {it:name2}{cmd:=}{it:values2}]{cmd:,} {it:terms}{cmd:)}}The terms repeated for each value; {cmd:{c -(}}{it:name}{cmd:{c )-}} in the terms is replaced by the value. With several loops, the first one is the outermost. Example:
@@ -48,7 +50,8 @@ All operators run in the native plugin that ships with the package; there is no 
 {synopt:{cmd:Label(}{it:terms}{cmd:, label(}{it:names}{cmd:)} [{cmd:pos(}{it:pos}{cmd:)}]{cmd:)}}The terms with other coefficient names; {it:pos} is {cmd:paren} (default: {cmd:label(coefficient)}), {cmd:prepend}, {cmd:append} or {cmd:replace}{p_end}
 {synopt:{cmd:Log(}{it:terms}[{cmd:, log0(}{it:#}{cmd:)}]{cmd:)}}Natural logarithm of the statistics; {opt log0()} (default -1/sqrt(epsdouble)) stands in for the logarithm of zero{p_end}
 {synopt:{cmd:Exp(}{it:terms}{cmd:)}}Exponential function of the statistics{p_end}
-{synopt:{cmd:Curve(}{it:terms}{cmd:, params(}{it:names}{cmd:) map(}{it:map}{cmd:))}}The coefficients of the terms are a linear function of the parameters: eta = L * theta, where {it:map} is {cmd:rep} or {cmd:matrix(}{it:name}{cmd:)}. {cmd:map(rep)} recycles the parameters over the terms' coefficients,
+{synopt:{cmd:Curve(}{it:terms}{cmd:, params(}{it:names}{cmd:) map(}{it:map}{cmd:))}}The coefficients of the terms are a linear function of the parameters: eta = L * theta, where {it:map} is {cmd:rep} or {cmd:matrix(}{it:name}{cmd:)}. {cmd:map(rep)} recycles the parameters over the terms'
+	coefficients,
 	{cmd:map(matrix(L))} takes the matrix L (one row per coefficient, one column per parameter). The model is estimated for the parameters, which carry the names given in {opt params()}. {cmd:Parametrise()} and {cmd:Parametrize()} are the same operator. Map functions, {opt gradient()},
 	{opt minpar()}, {opt maxpar()} and {opt cov()} of R are not available{p_end}
 {synopt:{cmd:Offset(}{it:terms}[{cmd:, coef(}{it:numlist}{cmd:) which(}{it:selection}{cmd:)}]{cmd:)}}Coefficients held at fixed values (default 0) instead of being estimated; {opt which()} selects them by position or coefficient name, default all. The fixed coefficients are reported with
