@@ -244,7 +244,7 @@ static double s_tripercent(graph_t *g, long tail, long head, int tied, double *a
 	int matching = (attr != NULL);
 	int diff = (p2 != 0.0);
 	float ratiowith, ratiowithout;
-	if (!tied) toggle(g, tail, head);
+	if (!tied) toggle_core(g, tail, head);
 	for (n1 = 1; n1 <= g->n; n1++) {
 		long degwith = 0, degwithout = 0;
 		if (!(matching && diff) || attr[n1] == p1) {
@@ -279,7 +279,7 @@ static double s_tripercent(graph_t *g, long tail, long head, int tied, double *a
 	twostarwithout -= 3 * triwithout;
 	ratiowith = triwith == 0 ? 0.0f : ((float)triwith) / (float)(triwith + twostarwith);
 	ratiowithout = triwith == 0 ? 0.0f : ((float)triwithout) / (float)(triwithout + twostarwithout);
-	if (!tied) toggle(g, tail, head);
+	if (!tied) toggle_core(g, tail, head);
 	return (double)(ratiowith - ratiowithout) * (tied ? -100.0 : 100.0);
 }
 
