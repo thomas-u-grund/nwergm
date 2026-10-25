@@ -11219,7 +11219,7 @@ struct ErgmMCMLEFit scalar ErgmCD(class ErgmModel scalar M, class ErgmGraph scal
 		X = samp[., freeidx]
 		if (all(diagonal(variance(X)) :< 1e-20) & any(X :!= 0)) {
 			errprintf("Unconstrained CD sampling did not mix at all. Optimization cannot continue.\n")
-			_error(498)
+			exit(498)
 		}
 		pval = ergm_hotel_indep(X)
 		if (verbose) printf("CD iter %g: convergence test p-value %9.3g\n", iter, pval)
@@ -11233,7 +11233,7 @@ struct ErgmMCMLEFit scalar ErgmCD(class ErgmModel scalar M, class ErgmGraph scal
 		if (cols(steps) > 2) {
 			if (steps[cols(steps)] + steps[cols(steps)-1] < 2 * 0.0001) {
 				errprintf("CD-MCMLE estimation stuck. There may be excessive correlation between model terms, suggesting a poor model for the observed data.\n")
-				_error(498)
+				exit(498)
 			}
 		}
 		Xs = X :- (1 - steplen) * mean(X)
@@ -11701,7 +11701,7 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 		pvarying = ptest_const - sum(nonvarying)
 		if (pvarying == 0 & any(Dtestbar :!= 0)) {
 			errprintf("Unconstrained MCMC sampling did not mix at all. Optimization cannot continue.\n")
-			_error(498)
+			exit(498)
 		}
 		if (pvarying > 1) {
 			varyidx = J(1, 0, 0)

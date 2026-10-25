@@ -3,6 +3,11 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+- When the MCMLE sampler does not mix, `nwergm` now stops with the message "Unconstrained MCMC sampling did not mix at all" and r(498) only. Before, the message was followed by a Mata traceback (`ErgmMCMLE(): 498 Stata returned error`). The Mata library `lib/lnwergm.mlib` is rebuilt for this change.
+
 ## [1.1.3] - 2026-10-25
 
 ### Fixed
