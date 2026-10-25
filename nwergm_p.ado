@@ -8,6 +8,7 @@
 capture program drop nwergm_p
 program nwergm_p
 	version 14
+	_nwergm_libcheck
 	syntax [anything] [if] [in] [, PR XB MATrix(name) FRame(name)]
 	capture confirm number 0
 	if "`matrix'" == "" & "`frame'" == "" {

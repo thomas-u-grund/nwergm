@@ -19,3 +19,14 @@ version, line 2 the release date in Stata format, e.g. `24oct2026`).
 
 Users install the latest release with `net install nwergm, from(https://raw.githubusercontent.com/thomas-u-grund/nwergm/main/) replace`
 and a specific one with `.../nwergm/vX.Y.Z/`.
+
+## Lockstep check with the core Mata library
+
+The Mata libraries of this package are compiled against the core's `lib/lnwcommands.mlib`. After every build of the libraries
+(`lib/build.do`) record which core library they were built against:
+
+    NWCORE=/path/to/nwcommands python3 tools/record_core_lib.py      # writes lib/core_mlib.sha256 (sha256 of the core library)
+
+`tools/check_version.py` compares `lib/core_mlib.sha256` with `$NWCORE/lib/lnwcommands.mlib` when `NWCORE` is set and fails with
+"the core Mata library changed since this package's libraries were built: run lib/build.do and release in step" when they differ.
+Run `NWCORE=/path/to/nwcommands python3 tools/check_version.py` before every release (it is the first step of the tests when NWCORE is set).

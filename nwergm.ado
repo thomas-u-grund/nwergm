@@ -15,6 +15,7 @@ program nwergm, eclass
 		nwergm_version
 		exit
 	}
+	_nwergm_libcheck
 	if `"`__ergm_t1'"' == "simulate" {
 		gettoken __ergm_sub 0 : 0, parse(" ,")
 		gettoken __ergm_first : 0, parse(" ,")
@@ -57,7 +58,6 @@ program nwergm, eclass
 		MCMLEEFFectivesize(real -1) CDNSteps(integer 8) CDSAMPLEsize(integer 0) SABURNin(integer 16384) SAINTERval(integer 1024) SAPHASE3(integer 1000) SAGAIN(real 0.1) SANSUB(integer 4) ///
 		CONSTRAINTS(string asis) OBSCONSTRAINTS(string asis) MCMCMAXEDGES(integer 0) MCMCPROP(string asis) ]
 	set more off
-	_nwergm_libcheck
 	_nwergm_est opts, estimate(`estimate') method(`method') mainmethod(`mainmethod') mpletype(`mpletype') ///
 		mplecovariance(`mplecovariance') mcmletermination(`mcmletermination') mplecheck(`mplecheck')
 	local method "`s(method)'"
@@ -3792,6 +3792,9 @@ end
 	redefining a Mata function on every single nwergm call would error
 	on the second call within the same session ("already exists").
 */
+// The Mata block below is compiled when this file is loaded and uses classes of the Mata library of the package, so the
+// library must be visible by then (Stata indexes the .mlib files once per session): index it first if needed.
+capture quietly _nwergm_libcheck
 capture mata: mata drop ergm_bridge_from_netobj()
 mata:
 void ergm_bridge_from_netobj(pointer(class nw_def scalar) scalar netobj,

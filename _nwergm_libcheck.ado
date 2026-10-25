@@ -11,6 +11,12 @@
 * (or r(3260)) at the first call. This program makes that first call and replaces the raw Mata error by a plain message.
 capture program drop _nwergm_libcheck
 program _nwergm_libcheck
+	// Stata indexes the Mata libraries once, early in a session; a library installed by net install can be missing from that
+	// index (r(3499) "not found", "class ErgmGraph undefined"). Index once when the library function is not visible.
+	capture mata: mata which ergm_libcheck()
+	if _rc {
+		capture mata: mata mlib index
+	}
 	capture mata: ergm_libcheck()
 	local rc = _rc
 	if inlist(`rc', 3021, 3260) {

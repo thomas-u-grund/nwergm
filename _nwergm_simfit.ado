@@ -8,13 +8,13 @@
 capture program drop _nwergm_simfit
 program _nwergm_simfit, rclass
 	version 14
+	_nwergm_libcheck
 	syntax [, NSIM(integer 1) SEED(integer -1) OUTput(string) BASIS(string) NOSEQuential ///
 		BURNin(integer -1) INTERval(integer -1) GENerate(string) COEF(string) CLEAR]
 	if `"`e(cmd)'"' != "nwergm" {
 		di as err "last nwergm estimates not found"
 		exit 301
 	}
-	_nwergm_libcheck
 	capture mata: __nwergm_last_G.n
 	if _rc {
 		di as err "no fitted nwergm model available for simulation - re-run nwergm first."
