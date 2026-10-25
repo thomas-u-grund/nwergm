@@ -3,7 +3,10 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.2.0] - 2026-10-25
+
+### Results that change (read before you re-run old fits)
+- The default MCMC settings are those of R's `ergm`: `mcmcinterval()` 1024 (was 50) and `mcmcburnin()` 16384 (was 3000). A fit that used the defaults gives different numbers than in 1.1.x (same seed, different chain, better mixing); fits that gave both options explicitly are unchanged.
 
 ### Changed (results change!)
 - The default MCMC settings are now those of R's `ergm` 4.12.0. `mcmcinterval()` defaults to 1024 (was 50; R: `MCMLE.interval`) and `mcmcburnin()` to 16 times the interval, 16384 (was 3000; R: `MCMLE.burnin = MCMLE.interval * 16`), at every MCMLE iteration. An `mcmcinterval()` given without `mcmcburnin()` now also sets the burn-in to 16 times its value, as in R; before, the burn-in stayed at 3000. The same new defaults apply to `nwergm simulate` (R: `control.simulate`: interval 1024, burn-in 16 times the interval). Explicit `mcmcburnin()` and `mcmcinterval()` are used as given.
