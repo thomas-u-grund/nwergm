@@ -3,7 +3,7 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.1.2] - 2026-10-25
 
 ### Fixed
 - `estat gof` after a two-mode fit showed the observed value 0 for the mode-specific terms (for example `nodemix()`, `bdegree1()`, `bgwdegree2()`) in the model-statistics block: the graph that holds the observed network was not marked two-mode. The same fix applies to the R-style sample diagnostics (`estat mcmcdiag`). Test `test_nwergm_gofmodelbip`.

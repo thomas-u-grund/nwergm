@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.1.1  25oct2026 author: Thomas Grund}{...}
+{* *! version 1.1.2  25oct2026 author: Thomas Grund}{...}
 {marker topic}
 {helpb nwtopical##analysis_statmodels:[NW-2.6.6] Statistical Estimation of Networks}
 
@@ -628,4 +628,4 @@ matching {cmd:nwergm}'s own control conventions rather than continuing one long 
 	{help nwqap}, {help nwrandom}, {help nwcug}, {help nwintro##limits:feasible network sizes}
 
 {hline}
-{pstd}{it:nwergm version 1.1.1, 25 October 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.1.2, 25 October 2026}{p_end}{* nwversion}
