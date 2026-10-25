@@ -23,7 +23,7 @@ program _nwergm_bip_curved
 			}
 			if "`o'" == "bgwdegreefree" mata: st_local("__maxd", strofreal(_bx_maxdeg(__nwergm_last_G, `m')))
 			else mata: st_local("__maxd", strofreal(_bx_maxsp(__nwergm_last_G, `m')))
-			mata: st_local("__other", strofreal(rows(_bx_nodes(__nwergm_last_G, 3 - `m'))))
+			mata: st_local("__other", strofreal(rows(_bx_nodes(__nwergm_last_G, 3 - `m')), "%18.0g"))
 			// maximum likelihood samples networks in which a node can have more partners than in the observed one:
 			// the degree counts then run over every possible value (the pseudolikelihood needs only the values up to the
 			// observed maximum + 1); the shared-partner counts keep the shorter range (a count per column of the sampler)

@@ -141,7 +141,7 @@ program _nwergm_struct, rclass
 			_nwergm_struct_need und `dir' `tname' `netname'
 			_nwergm_struct_noargs `tname', pos(`POSV') attr(`ATTR')
 			local __ns_ne2 ""
-			capture mata: st_local("__ns_ne2", strofreal(2 * __nwergm_last_G.nties))
+			capture mata: st_local("__ns_ne2", strofreal(2 * __nwergm_last_G.nties, "%18.0g"))
 			if "`__ns_ne2'" == "" {
 				di "{err}degcrossprod needs an observed network (it is scaled by the observed number of ties); it is not available in nwergm simulate."
 				error 198

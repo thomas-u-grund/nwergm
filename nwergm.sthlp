@@ -213,11 +213,12 @@ likelihood estimation, backed by an effect library covering the full node-covari
 dyadic covariates, the geometrically weighted family (including directed shared-partner support
 and curved/free-decay estimation under both {opt method(mple)} and {opt method(mcmle)}), fixed
 shared-partner counts, the complete degree-distribution family, and directed triad-closure terms
-- see {help nwergm##limitations:Limitations} below for the complete current list, plus a narrow
-term family for two-mode (bipartite) networks. What still sets {cmd:nwergm} apart from full
-parity is scope, not term count: a wider bipartite term family and constraints beyond the free
-binary dyad space are each a genuine architectural addition rather than another term to add, and
-are not yet supported.
+- see {help nwergm##limitations:Limitations} below for the complete current list, plus a
+two-mode (bipartite) term family ({help nwergm_bipartite:two-mode terms}) and the sample-space
+constraints of R's {cmd:constraints=} and {cmd:obs.constraints=} ({help nwergm_constraints:constraints}).
+What still sets {cmd:nwergm} apart from full parity is scope: valued, signed and temporal networks
+and directed two-mode networks are not supported, and R's less common terms are added as they are
+certified against R.
 
 {pstd}
 {opt method()} selects the estimation method. If every requested term is dyad-independent
@@ -274,20 +275,12 @@ Binary: yes (only) - MPLE/MCMLE estimation here is for a binary tie-formation mo
 {cmd:nwergm} estimates {bf:binary, static} ERGMs only:
 
 {p2colset 9 13 15 2}{...}
-{p2col: o}Two-mode (bipartite) networks are supported for a narrow term family:
-{opt edges}; the dyad-independent {opt bcov1()}/{opt bcov2()}/{opt bfactor1()}/{opt bfactor2()}
-family (R ergm's own {cmd:b1cov()}/{cmd:b2cov()}/{cmd:b1factor()}/{cmd:b2factor()} terms); the
-dyad-dependent {opt bdegree1()}/{opt bdegree2()}/{opt bstar1()}/{opt bstar2()} family (R's own
-{cmd:b1degree()}/{cmd:b2degree()}/{cmd:b1star()}/{cmd:b2star()} terms, needs {opt method(mcmle)});
-and the also dyad-dependent {opt bnodematch1()}/{opt bnodematch2()} (R's own {cmd:b1nodematch()}/
-{cmd:b2nodematch()}, default-parameter scope only) and {opt bgwdegree1()}/{opt bgwdegree2()} (R's
-own {cmd:gwb1degree()}/{cmd:gwb2degree()}, fixed decay only) families. All twelve are renamed as
-Stata OPTIONS only, because Stata's {cmd:syntax} command rejects an
-option name with a digit followed by a letter; the reported coefficient names keep R's own
-{cmd:b1cov_}{it:var}/{cmd:b1degree_}{it:d} spelling. Directed two-mode networks and every
-one-mode-only term ({opt mutual}, {opt triangle}, {opt gwesp()}, {opt nodecov()}, {opt degree()},
-etc.) are rejected with an explicit error on a two-mode network - never silently projected to one
-mode or silently applied to a dyad space a term's change statistic was never derived for.{p_end}
+{p2col: o}Two-mode (bipartite) networks are supported with the terms listed in
+{help nwergm_bipartite:nwergm (two-mode)} (the mode-specific terms of R, whose option names carry the mode
+digit at the end, such as {opt bdegree1()} for {cmd:b1degree()}, and the undirected one-mode terms that R
+accepts on a two-mode network). The reported coefficient names keep R's spelling. Directed two-mode
+networks are rejected with an explicit error, as are the terms R does not allow on a two-mode network
+({opt mutual}, {opt gwdegree()} and others) - never silently projected to one mode.{p_end}
 {p2col: o}Temporal networks (snapshot/interval/event metadata) are rejected with an explicit
 error - never silently collapsed to a single static slice.{p_end}
 {p2col: o}Valued/weighted or signed networks are rejected with an explicit error - never
@@ -297,7 +290,8 @@ extension.{p_end}
 {p2col: o}{opt freedyads()} and {opt blockdiag()} restrict which dyads the MCMC proposal may ever
 toggle - every other dyad is held fixed at its observed value for the rest of the fit (matching
 R ergm's own {cmd:constraints=~fixallbut()} and {cmd:constraints=~blockdiag()} respectively).
-Degree and egocentric constraints are still roadmap items, not yet supported. Both
+Degree and egocentric constraints (and the other terms of R's {cmd:constraints=}) are available
+through {opt constraints()}, see {help nwergm_constraints}. Both
 {opt proposal(uniform)} and {opt proposal(tnt)} have a masked variant (masked
 TNT restricts every population count - total dyads, current tie count, the "pick a random
 existing tie" draw - to the free-dyad subspace only; a fully-free mask is statistically identical
@@ -357,11 +351,11 @@ uniformly to every one of these five terms present in the same model:
 
 {pstd}
 All five directed shared-partner definitions R ergm itself offers are implemented. Two-mode/
-bipartite support currently covers a narrow term family only (see {help nwergm##limitations:Supported network types} above); {cmd:balance}/signed-network terms are blocked (signed networks are not a
+bipartite networks are supported with their own term family (see {help nwergm_bipartite:nwergm (two-mode)}); {cmd:balance}/signed-network terms are blocked (signed networks are not a
 supported data type at all). {opt freedyads()}, {opt blockdiag()}, and {opt fixdensity} cover the
-dyad-space and tie-count constraints implemented so far; degree constraints and egocentric
-constraints are not yet implemented (fixed-coefficient/{opt offset()} support IS implemented -
-see the {cmd:Syntax} block above). Basic MCMC diagnostics ({help nwergm_estat:estat mcmcdiag})
+dyad-space and tie-count constraints; the degree, degree-distribution, bounded-degree, egocentric
+and the other constraints of R are given with {opt constraints()} (see {help nwergm_constraints}), and
+fixed coefficients with {opt offset()} (see the {cmd:Syntax} block above). Basic MCMC diagnostics ({help nwergm_estat:estat mcmcdiag})
 and basic goodness of fit ({help nwergm_estat:estat gof}) are both available; see
 {help nwergm_estat}.
 
@@ -384,6 +378,17 @@ design matrix for {opt method(mple)} (deterministic given a fixed graph, so nati
 agree exactly, not merely statistically). {opt nonative} forces the Mata backend deliberately
 even on an otherwise native-eligible model, for testing or direct comparison; ordinary use never
 needs it, since eligibility is otherwise detected and used automatically.
+
+{pstd}
+{bf:Warning: the Mata fallback is very slow.} The Mata backend is meant for testing and comparison, not for
+production use. It is typically hundreds of times slower than the compiled plugin (the Lazega model of the
+manual takes 31 seconds against 0.6 seconds, a fit with {opt bgwdsp1()} had not finished after 29 minutes, and
+a fit with {cmd:constraints(bd(maxout=30))} takes 165 seconds against 0.16 seconds). When a Monte Carlo fit
+({opt method(mcmle)}), {cmd:estat gof} or {cmd:nwergm simulate} runs without the plugin, {cmd:nwergm} prints one
+warning line before the computation starts, giving the reason: option {opt nonative}, the plugin file for the
+platform not found (reinstall the package with {cmd:net install nwergm, replace}; the file
+{cmd:ergm_mcmc_macos.plugin}, {cmd:ergm_mcmc_unix.plugin} or {cmd:ergm_mcmc_windows.plugin} must be on the
+{cmd:adopath}), or a model outside the capacity of the plugin. No warning is printed when the plugin is used.
 
 {pstd}
 The native backend requires a compiled plugin for the current platform (macOS is built and

@@ -25,7 +25,7 @@ observed density, as R does;{p_end}
 {phang2}- reports the number of missing dyads in {cmd:e(nmissing)}. Statistics of the observed network ({cmd:e(ties)}) count observed ties only.{p_end}
 
 {pstd}
-Missing dyads cannot yet be combined with {opt freedyads()}, {opt blockdiag()} or {opt fixdensity}.
+Missing dyads cannot be combined with {opt freedyads()}, {opt blockdiag()} or {opt fixdensity}.
 
 {pstd}
 {bf:Missing covariates.} As in R, a nodal attribute with a missing value in a term ({opt nodecov()}, {opt nodematch()}, {opt nodefactor()} ...)

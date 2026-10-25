@@ -3,6 +3,17 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+- `estat gof` after a two-mode fit showed the observed value 0 for the mode-specific terms (for example `nodemix()`, `bdegree1()`, `bgwdegree2()`) in the model-statistics block: the graph that holds the observed network was not marked two-mode. The same fix applies to the R-style sample diagnostics (`estat mcmcdiag`). Test `test_nwergm_gofmodelbip`.
+- A fit with a shared-partner term on a network of 5000 nodes (12.5 million dyads) stopped with r(198) "observation number out of range": the number of rows of the pseudolikelihood data was passed to a Stata macro with `strofreal()`, which writes large numbers in scientific notation (`1.12e+07`). All counts and sizes passed to macros are now formatted as integers. Tested with 2,000 and 5,000 nodes (`test_nwergm_bigdyads`).
+- `nwergm simulate` from a two-mode fit with `output(network)` created one-mode undirected networks; it now creates two-mode networks, as R's `simulate()` does. Test `test_nwergm_simbip`.
+- Help files: removed the outdated statements that degree and egocentric constraints are not supported (they are available through `constraints()`), brought the description of the two-mode terms up to date, and corrected the affiliation of the author to RWTH Aachen University in all files. Test `test_nwergm_helptext`.
+
+### Changed
+- A run that uses the Mata fallback instead of the compiled plugin (plugin missing for the platform, option `nonative`, or a model outside the capacity of the plugin) now prints one warning line before a Monte Carlo fit, `estat gof` and `nwergm simulate` from a fit, saying that it is much slower and what to do; the help file explains this. No warning is printed when the plugin is used. Test `test_nwergm_slowwarn`.
+
 ## [1.1.1] - 2026-10-25
 
 ### Fixed
