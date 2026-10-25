@@ -3,6 +3,14 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [1.2.1] - 2026-10-25
+
+### Fixed
+- The Mata library was built with Stata 18 and could not be used in Stata 17; it is now built with Stata 17 (works in Stata 17 and 18). Needs nwcommands 3.5.1 or later.
+
+### Changed
+- Requirements stated plainly: Stata 17 or later; tested with Stata 17 and Stata 18.
+
 ## [1.2.0] - 2026-10-25
 
 ### Results that change (read before you re-run old fits)

@@ -20,6 +20,13 @@ version, line 2 the release date in Stata format, e.g. `24oct2026`).
 Users install the latest release with `net install nwergm, from(https://raw.githubusercontent.com/thomas-u-grund/nwergm/main/) replace`
 and a specific one with `.../nwergm/vX.Y.Z/`.
 
+## Build the Mata libraries with the oldest supported Stata
+
+Build every Mata library of this package with Stata 17, the OLDEST supported Stata, never with a newer one: a library built by a newer
+Stata is ignored by older Stata versions (all functions "not found", r(3499)). `lib/build.do` stops when `c(stata_version)` is higher
+than 17 (`NW_ALLOW_NEWER_STATA=1` overrides, for experiments only). The full rule is in the RELEASING.md of the core repository
+(nwcommands).
+
 ## Lockstep check with the core Mata library
 
 The Mata libraries of this package are compiled against the core's `lib/lnwcommands.mlib`. After every build of the libraries
