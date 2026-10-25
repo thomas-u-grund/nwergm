@@ -1,32 +1,42 @@
 # Releasing nwergm
 
-Versions follow semantic versioning, MAJOR.MINOR.PATCH: MAJOR for incompatible changes of syntax or results, MINOR for new
-features that keep old do-files working, PATCH for bug fixes. The single source of truth is the file `VERSION` (line 1 the
-version, line 2 the release date in Stata format, e.g. `24oct2026`).
+## Master procedure: https://github.com/thomas-u-grund/nwcommands/blob/main/RELEASING.md
 
-1. Edit `VERSION`, or run `python3 tools/set_version.py X.Y.Z [date]` (this writes `VERSION` and updates every display: the
-   first line of every .ado, the .sthlp headers and the version line at the bottom of every help file, `nwergm.pkg`, `stata.toc`, README, NOTICE,
-   CITATION.cff, the `e(version)`/`nwergm version` literals).
-2. Add a section `## [X.Y.Z] - YYYY-MM-DD` to `CHANGELOG.md` (Added / Changed / Fixed / Removed).
-3. Run `python3 tools/check_version.py` (also the first step of `cscripts/run_tests.sh` and of CI) and the tests
-   (`NWCORE=/path/to/nwcommands cscripts/run_tests.sh`).
-4. Commit: `git commit -am "Release X.Y.Z"`.
-5. Tag: `git tag -a vX.Y.Z -m "nwergm X.Y.Z"`.
-6. Push: `git push origin main --tags` (let the "Build native plugins" workflow finish and `git pull --rebase` before the next push, if the package has one).
-7. Release: `gh release create vX.Y.Z --title "nwergm X.Y.Z" --notes-file <excerpt of CHANGELOG>`.
+All release procedures and policies of the five packages (steps, order, test launch, tags, GitHub release, website update, Zenodo, lockstep with the core
+Mata library, building libraries with Stata 17, known traps) are in the master document above. Follow it; this file only holds what is specific to nwergm.
+Two rules from there that are easy to miss: push the release tag by name (`git push origin vX.Y.Z`), never `git push origin main --tags`
+(old local tags of this clone never existed on GitHub); and build `lib/*.mlib` with Stata 17, not 18.
 
-**Lockstep with the core.** The library `lib/lnwergm.mlib` contains the class definitions of the core (`nw_def`) from the moment it was built. Whenever the core library (`lnwcommands.mlib`) changes, rebuild this package's library (`NWCORE=/path/to/nwcommands StataBE -e do lib/build.do`, run from the repository root), run the tests and release a new nwergm in lockstep with the core release. Name the required core version in `nwergm.pkg` and `README.md`.
+## Version files and checks
 
-Users install the latest release with `net install nwergm, from(https://raw.githubusercontent.com/thomas-u-grund/nwergm/main/) replace`
-and a specific one with `.../nwergm/vX.Y.Z/`.
+- Single source of truth: `VERSION` (line 1 the version, line 2 the release date in Stata format, e.g. `25oct2026`). Semantic versioning (master B.4, C4).
+- `python3 tools/set_version.py X.Y.Z [date]` writes it into every display (first line of every `.ado`, help headers and the footer of every help file, `nwergm.pkg`, `stata.toc`,
+  `README.md`, `NOTICE.md`, `CITATION.cff`, the `e(version)` / `nwergm version` literals); `--check` changes nothing.
+- Add `## [X.Y.Z] - YYYY-MM-DD` to `CHANGELOG.md` (Added / Changed / Fixed / Removed); its text is the GitHub release notes.
+- `NWCORE=/path/to/nwcommands python3 tools/check_version.py` = version check plus the core-library hash check (below).
+- Install lines: latest `net install nwergm, from(https://raw.githubusercontent.com/thomas-u-grund/nwergm/main/) replace`; a given release `.../nwergm/vX.Y.Z/`.
+  `nwergm.pkg` states `Requires nwcommands (core), version A.B.C or later`; raise it (and `README.md`) only when this release needs a newer core.
 
-## Lockstep check with the core Mata library
+## Library and lockstep with the core
 
-The Mata libraries of this package are compiled against the core's `lib/lnwcommands.mlib`. After every build of the libraries
-(`lib/build.do`) record which core library they were built against:
+`lib/build.do` builds `lib/lnwergm.mlib` from `unw_ergm.do` against the core's finished `lib/lnwcommands.mlib` (class `nw_def`): run it from the repository root with the Stata 17 binary,
+`NWCORE=/path/to/nwcommands "/Applications/Stata 17.0/StataBE.app/Contents/MacOS/StataBE" -e do lib/build.do`, then `NWCORE=/path/to/nwcommands python3 tools/record_core_lib.py`
+(writes `lib/core_mlib.sha256`). Whenever the core library changes, rebuild, record, test and release this package in the same batch as the core (master B.5, C3), core first.
+Without that, a fresh install fails with r(3021) "class compiled at different times".
 
-    NWCORE=/path/to/nwcommands python3 tools/record_core_lib.py      # writes lib/core_mlib.sha256 (sha256 of the core library)
+## Tests
 
-`tools/check_version.py` compares `lib/core_mlib.sha256` with `$NWCORE/lib/lnwcommands.mlib` when `NWCORE` is set and fails with
-"the core Mata library changed since this package's libraries were built: run lib/build.do and release in step" when they differ.
-Run `NWCORE=/path/to/nwcommands python3 tools/check_version.py` before every release (it is the first step of the tests when NWCORE is set).
+`NWCORE=/path/to/nwcommands cscripts/run_tests.sh [jobs]` (first step: `tools/check_version.py`; each test runs in its own `-e` Stata process; set `STATA` to the Stata 17 binary, then repeat with 18).
+Most tests print no PASS marker: failure is an `r()` error and a missing log is NOT RUN (master C0).
+
+## Plugin
+
+`native/ergm_mcmc.c` builds `ergm_mcmc` (macOS, Windows, Linux; CI commits the binaries to `lib/plugins/` on `main`; wait for the bot commit, `pull --rebase`, tag after it). The operator terms run in the plugin only, so a changed plugin must be rebuilt for every platform before the release.
+Do not copy a rebuilt plugin over a loaded one (`rm` first); test through a scratch `adopath`.
+
+## R reference, manual, Zenodo
+
+- The reference is R `ergm` 4.12.0 (the development 4.13 differs in places, GOTCHA.md); keep `docs/VALIDATED_AGAINST_R.md` and `docs/ERGM_TERMS_INVENTORY.csv` current when terms change. Follow R as closely as possible (master B.8).
+- The nwergm manual (97 pages) is NOT on `main`: it is on the local branches `manual`, `manual2`, `manual3` of the clone. It waits for its own Zenodo record (the owner creates it and tells the DOI; then `\manualdoi` is filled, the manual merged and the website "Manual" entry added).
+  Per master B.10 a new Zenodo version is for minor/major releases that change documented behaviour (nwergm 1.2.0 with R's MCMC defaults was one), never for patches.
+- Many old local tags (81, never on GitHub, e.g. `v1.2.1`, `v1.6.3`, `v2.0.0`) exist in the clone: check `git tag -l vX.Y.Z` before tagging, and never push with `--tags`.
