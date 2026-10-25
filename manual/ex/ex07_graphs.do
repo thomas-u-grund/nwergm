@@ -1,7 +1,7 @@
 do setup.doh
 nwwebuse lazega, nwclear
 encode practice, generate(prac)
-quietly nwergm lazega_fr, edges mutual nodematch(prac) nodeicov(seniority) gwesp(0.5) seed(1) mcmcinterval(1000) mcmcburnin(20000)
+quietly nwergm lazega_fr, edges mutual nodematch(prac) nodeicov(seniority) gwesp(0.5) seed(1)
 *# gr_mcmc
 estat mcmcdiag, plot name(mcmcdiag)
 graph display mcmcdiag, xsize(6.5) ysize(7.5)

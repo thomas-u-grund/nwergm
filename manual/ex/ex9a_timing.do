@@ -15,10 +15,10 @@ forvalues s = 1/5 {
 forvalues s = 1/5 {
 	timer clear 1
 	timer on 1
-	quietly nwergm lazega_fr, edges mutual nodematch(prac) nodeicov(seniority) gwesp(0.5) seed(`s') mcmcinterval(1000) mcmcburnin(20000)
+	quietly nwergm lazega_fr, edges mutual nodematch(prac) nodeicov(seniority) gwesp(0.5) seed(`s') mcmcburnin(3000) mcmcinterval(50)
 	timer off 1
 	quietly timer list 1
-	file write fh "long,`s'," %9.2f (r(t1)) "," (e(mcmle_iterations)) _n
+	file write fh "old,`s'," %9.2f (r(t1)) "," (e(mcmle_iterations)) _n
 }
 timer clear 1
 timer on 1

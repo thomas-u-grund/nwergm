@@ -32,22 +32,22 @@ fit and term & & nwergm & ergm & $|\Delta|$ & SE nwergm & SE ergm\\\midrule
 & \opt{b2degree\_6} & 2.75054 & 2.75054 & 6.1e-10 & 0.62388 & 0.62387\\
 & \opt{b1star\_2} & -0.13954 & -0.13954 & 1.7e-11 & 0.13553 & 0.13553\\
 \bottomrule\end{tabular}\end{table}
-\begin{table}[ht]\centering\small\caption{Monte Carlo maximum likelihood, Lazega friendship network, five seeds each: mean and (in parentheses) standard deviation over the seeds of the coefficients, and mean standard error. nwergm with its default settings, nwergm with \texttt{mcmcinterval(1000) mcmcburnin(20000)}, and ergm with its default settings.}\label{tab:cmpmcmle}
+\begin{table}[ht]\centering\small\caption{Monte Carlo maximum likelihood, Lazega friendship network, five seeds each: mean and (in parentheses) standard deviation over the seeds of the coefficients, and mean standard error. nwergm with its default settings, nwergm with the settings of version 1.1 (\texttt{mcmcburnin(3000) mcmcinterval(50)}), and ergm with its default settings.}\label{tab:cmpmcmle}
 \begin{tabular}{@{}lrrrrrr@{}}\toprule
- & \multicolumn{2}{c}{nwergm, default} & \multicolumn{2}{c}{nwergm, long chain} & \multicolumn{2}{c}{ergm}\\\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+ & \multicolumn{2}{c}{nwergm, default} & \multicolumn{2}{c}{nwergm, old settings} & \multicolumn{2}{c}{ergm}\\\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
 term & mean (sd) & SE & mean (sd) & SE & mean (sd) & SE\\\midrule
-\opt{edges} & -3.332 (0.009) & 0.138 & -3.326 (0.006) & 0.130 & -3.315 (0.003) & 0.136\\
-\opt{mutual} & 0.817 (0.033) & 0.174 & 0.807 (0.002) & 0.162 & 0.804 (0.006) & 0.161\\
-\opt{nodematch\_prac} & 0.714 (0.029) & 0.087 & 0.711 (0.007) & 0.082 & 0.715 (0.004) & 0.081\\
-\opt{nodeicov\_seniority} & -0.004 (0.001) & 0.002 & -0.004 (0.000) & 0.002 & -0.005 (0.000) & 0.002\\
-\opt{gwesp\_0.5} & 0.495 (0.009) & 0.064 & 0.493 (0.001) & 0.063 & 0.488 (0.002) & 0.065\\
+\opt{edges} & -3.325 (0.003) & 0.132 & -3.332 (0.009) & 0.138 & -3.315 (0.003) & 0.136\\
+\opt{mutual} & 0.807 (0.005) & 0.161 & 0.817 (0.033) & 0.174 & 0.804 (0.006) & 0.161\\
+\opt{nodematch\_prac} & 0.712 (0.006) & 0.082 & 0.714 (0.029) & 0.087 & 0.715 (0.004) & 0.081\\
+\opt{nodeicov\_seniority} & -0.005 (0.000) & 0.002 & -0.004 (0.001) & 0.002 & -0.005 (0.000) & 0.002\\
+\opt{gwesp\_0.5} & 0.492 (0.001) & 0.063 & 0.495 (0.009) & 0.064 & 0.488 (0.002) & 0.065\\
 \bottomrule\end{tabular}\end{table}
 \begin{table}[ht]\centering\small\caption{Simulation at given coefficients (the coefficients of the Lazega fit): mean and standard deviation of the model statistics over three chains of 4000 draws, nwergm (\texttt{nwergm simulate} at the fitted coefficients with \texttt{burnin(20000) interval(1000)}) and ergm (\texttt{simulate()} with its default burn-in 16384 and interval 1024).}\label{tab:cmpsim}
 \begin{tabular}{@{}lrrrr@{}}\toprule
 term & mean nwergm & mean ergm & sd nwergm & sd ergm\\\midrule
-\opt{edges} & 574.7 & 573.7 & 40.5 & 40.5\\
-\opt{mutual} & 73.9 & 73.8 & 10.7 & 10.8\\
-\opt{nodematch\_prac} & 406.9 & 406.2 & 31.0 & 31.0\\
-\opt{nodeicov\_seniority} & 19374.0 & 19328.1 & 1502.0 & 1503.9\\
-\opt{gwesp\_0.5} & 557.8 & 555.5 & 76.3 & 76.6\\
+\opt{edges} & 574.5 & 574.3 & 40.7 & 39.7\\
+\opt{mutual} & 74.3 & 74.1 & 10.6 & 10.5\\
+\opt{nodematch\_prac} & 410.9 & 410.8 & 31.1 & 30.9\\
+\opt{nodeicov\_seniority} & 19412.3 & 19387.0 & 1485.9 & 1477.9\\
+\opt{gwesp\_0.5} & 556.4 & 555.7 & 76.6 & 75.1\\
 \bottomrule\end{tabular}\end{table}

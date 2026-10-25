@@ -12,17 +12,17 @@ MCMC sample size:      =  3000
 ----------------------------------------------------------------------------------
            clubs | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
 -----------------+----------------------------------------------------------------
-           edges |  -.7193805   .1700763    -4.23   0.000    -1.052724   -.3860371
-nodemix_kind_2_1 |  -1.508956   .3994583    -3.78   0.000     -2.29188   -.7260322
-nodemix_kind_1_2 |  -2.281624   .6240499    -3.66   0.000    -3.504739   -1.058508
-nodemix_kind_2_2 |  -.0955488   .3818886    -0.25   0.802    -.8440367    .6529391
-  bgwdegree2_0.5 |  -1.780811   1.446186    -1.23   0.218    -4.615284    1.053662
+           edges |  -.7311237   .1727851    -4.23   0.000    -1.069776   -.3924711
+nodemix_kind_2_1 |  -1.503362   .3983645    -3.77   0.000    -2.284142   -.7225817
+nodemix_kind_1_2 |  -2.243641   .6135545    -3.66   0.000    -3.446186   -1.041096
+nodemix_kind_2_2 |  -.0679029   .3766518    -0.18   0.857    -.8061268    .6703211
+  bgwdegree2_0.5 |  -1.788379    1.47199    -1.21   0.224    -4.673427    1.096668
 ----------------------------------------------------------------------------------
 
 MCMLE converged after 1 iteration(s).
 Evaluating log-likelihood at the estimate (bridge sampling with 16 bridges) ...
 
              Null Deviance:     499.1  on 360 degrees of freedom
-         Residual Deviance:     320.7  on 355 degrees of freedom
+         Residual Deviance:     320.5  on 355 degrees of freedom
 
-Log-likelihood:  -160.3273 (df = 5)   AIC:     330.7   BIC:     350.1   (MC std. err. =  .02951)
+Log-likelihood:  -160.2587 (df = 5)   AIC:     330.5   BIC:     349.9   (MC std. err. =  .08311)

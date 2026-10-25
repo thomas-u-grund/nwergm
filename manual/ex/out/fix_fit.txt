@@ -14,14 +14,14 @@ MCMC sample size:      =  3000
      lazega_fr | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
 ---------------+----------------------------------------------------------------
          edges |          0  (omitted)
-        mutual |    1.00105    .151359     6.61   0.000     .7043917    1.297708
-nodematch_prac |   .9681862   .0977141     9.91   0.000     .7766701    1.159702
+        mutual |   1.005496   .1539712     6.53   0.000     .7037182    1.307274
+nodematch_prac |   .9540131    .098874     9.65   0.000     .7602237    1.147802
 --------------------------------------------------------------------------------
 
 MCMLE converged after 1 iteration(s).
 Evaluating log-likelihood at the estimate (bridge sampling with 16 bridges) ...
 
              Null Deviance:    6889.9  on 4970 degrees of freedom
-         Residual Deviance:    4792.2  on 4968 degrees of freedom
+         Residual Deviance:    4794.0  on 4968 degrees of freedom
 
-Log-likelihood: -2396.1239 (df = 2)   AIC:    4796.2   BIC:    4809.3   (MC std. err. =  .12561)
+Log-likelihood: -2396.9982 (df = 2)   AIC:    4798.0   BIC:    4811.0   (MC std. err. =  .12726)

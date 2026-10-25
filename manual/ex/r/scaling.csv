@@ -1,10 +1,10 @@
 n,model,seconds,converged,iterations,native
-200,MPLE edges nodematch nodecov,     0.35,.,.,1
-500,MPLE edges nodematch nodecov,     0.34,.,.,1
-1000,MPLE edges nodematch nodecov,     1.38,.,.,1
-2000,MPLE edges nodematch nodecov,     6.86,.,.,1
-4000,MPLE edges nodematch nodecov,    23.46,.,.,1
-200,MCMLE edges nodematch nodecov gwesp,     0.89,1,1,1
-500,MCMLE edges nodematch nodecov gwesp,     1.44,1,1,1
-1000,MCMLE edges nodematch nodecov gwesp,     4.08,1,1,1
-2000,MCMLE edges nodematch nodecov gwesp,    14.22,1,1,1
+200,MPLE edges nodematch nodecov,     0.21,.,.,1
+500,MPLE edges nodematch nodecov,     0.25,.,.,1
+1000,MPLE edges nodematch nodecov,     1.01,.,.,1
+2000,MPLE edges nodematch nodecov,     4.31,.,.,1
+4000,MPLE edges nodematch nodecov,    19.22,.,.,1
+200,MCMLE edges nodematch nodecov gwesp,     2.80,1,1,1
+500,MCMLE edges nodematch nodecov gwesp,     3.47,1,1,1
+1000,MCMLE edges nodematch nodecov gwesp,     6.44,1,1,1
+2000,MCMLE edges nodematch nodecov gwesp,    16.82,1,1,1

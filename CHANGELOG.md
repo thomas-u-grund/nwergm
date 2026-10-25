@@ -7,6 +7,7 @@ project uses [Semantic Versioning](https://semver.org/).
 
 ### Added
 - Manual: `manual/nwergm_manual.pdf` (LaTeX source in `manual/`): the model and the estimators, the complete syntax, the reference of the terms (generated from the term inventory by `manual/build_terms.py`), diagnostics and goodness of fit, worked examples with real output, the validation against ergm 4.12.0, the limits, and a translation table from R's ergm. The do-files that produce every listing are in `manual/ex`; `manual/run_examples.sh` reruns them.
+- Manual for version 1.2.0: every listing, comparison table and run-time table was regenerated with nwergm 1.2.0 and nwcommands 3.5.0 (ergm 4.12.0 for the comparisons); the options chapter states that the defaults of the Markov chain follow R's `control.ergm` and lists the differences that remain; the chapter on limits gives the new run times and the way to the old fast settings.
 
 ## [1.2.0] - 2026-10-25
 

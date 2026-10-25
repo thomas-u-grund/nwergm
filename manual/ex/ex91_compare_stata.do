@@ -31,8 +31,8 @@ forvalues s = 1/5 {
 	savefit fh laz_mcmle_`s'
 }
 forvalues s = 1/5 {
-	quietly nwergm lazega_fr, edges mutual nodematch(prac) nodeicov(seniority) gwesp(0.5) seed(`s') mcmcinterval(1000) mcmcburnin(20000)
-	savefit fh laz_mcmleL_`s'
+	quietly nwergm lazega_fr, edges mutual nodematch(prac) nodeicov(seniority) gwesp(0.5) seed(`s') mcmcburnin(3000) mcmcinterval(50)
+	savefit fh laz_mcmleO_`s'
 }
 * observed statistics of the model (first row of the model block of estat gof)
 quietly nwergm lazega_fr, edges mutual nodematch(prac) nodeicov(seniority) gwesp(0.5) seed(1)

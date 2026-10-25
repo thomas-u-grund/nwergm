@@ -12,9 +12,11 @@ nwergm lazega_fr, edges mutual nodematch(prac) nodeicov(seniority) gwesp(0.5) se
 *# lz_diag
 estat mcmcdiag
 *# lz_fit2
-nwergm lazega_fr, edges mutual nodematch(prac) nodeicov(seniority) gwesp(0.5) seed(1) mcmcinterval(1000) mcmcburnin(20000)
+nwergm lazega_fr, edges mutual nodematch(prac) nodeicov(seniority) gwesp(0.5) seed(1) mcmcburnin(3000) mcmcinterval(50)
 *# lz_diag2
 estat mcmcdiag
+* back to the default settings for the goodness of fit
+quietly nwergm lazega_fr, edges mutual nodematch(prac) nodeicov(seniority) gwesp(0.5) seed(1)
 *# lz_gof
 estat gof, nsim(100) seed(2)
 *# lz_gof2

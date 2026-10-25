@@ -12,9 +12,9 @@ MCMC sample size:      =  3000
 --------------------------------------------------------------------------------
    flomarriage | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
 ---------------+----------------------------------------------------------------
-         edges |  -2.550356    .382011    -6.68   0.000    -3.299084   -1.801628
+         edges |  -2.533042   .3768647    -6.72   0.000    -3.271684   -1.794401
 nodecov_wealth |        .01          .        .       .            .           .
-     gwesp_0.5 |   .0003337   .2552611     0.00   0.999    -.4999687    .5006362
+     gwesp_0.5 |  -.0004213   .2541342    -0.00   0.999    -.4985152    .4976725
 --------------------------------------------------------------------------------
 
 MCMLE converged after 1 iteration(s).
@@ -23,4 +23,4 @@ Evaluating log-likelihood at the estimate (bridge sampling with 16 bridges) ...
              Null Deviance:     166.4  on 120 degrees of freedom
          Residual Deviance:     103.1  on 118 degrees of freedom
 
-Log-likelihood:   -51.5612 (df = 2)   AIC:     107.1   BIC:     112.7   (MC std. err. =  .00083)
+Log-likelihood:   -51.5613 (df = 2)   AIC:     107.1   BIC:     112.7   (MC std. err. =  .00015)

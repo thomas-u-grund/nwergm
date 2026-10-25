@@ -1,8 +1,8 @@
 . nwergm version
-nwergm version 1.1.3, 25oct2026
+nwergm version 1.2.0, 25oct2026
   core package nwcommands : installed (development copy, no distribution date)
-  native plugin           : /Users/tgrund/FILES_NEW/SOFTWARE/nwergm_manual/lib/plugins/macos/ergm_mcmc_macos.plugin (ship
-> s with the package, no separate version number)
+  native plugin           : /Users/tgrund/FILES_NEW/SOFTWARE/nwergm/lib/plugins/macos/ergm_mcmc_macos.plugin (ships with 
+> the package, no separate version number)
   compared with           : R ergm 4.12.0
   license                 : GNU GPL-3
 
@@ -11,7 +11,7 @@ nwergm version 1.1.3, 25oct2026
 macros:
             r(license) : "GPL-3"
           r(reference) : "ergm 4.12.0"
-             r(plugin) : "/Users/tgrund/FILES_NEW/SOFTWARE/nwergm_manual/lib/plugins/macos/ergm_mcmc_macos.plugin (sh.."
+             r(plugin) : "/Users/tgrund/FILES_NEW/SOFTWARE/nwergm/lib/plugins/macos/ergm_mcmc_macos.plugin (ships wit.."
                r(core) : "installed (development copy, no distribution date)"
                r(date) : "25oct2026"
-            r(version) : "1.1.3"
+            r(version) : "1.2.0"

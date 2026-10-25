@@ -6,10 +6,10 @@
 
 The version and the date of the release that the manual describes are two macros in `nwergm_manual.tex`:
 
-    \newcommand{\pkgversion}{1.1.3}
+    \newcommand{\pkgversion}{1.2.0}
     \newcommand{\pkgdate}{25 October 2026}
 
-Change these two lines for a later release, rebuild (`make -C manual pdf`) and check the pages that the build output of the examples shows (version strings come from `make examples`, see below). The tag in the installation example of `ch01_intro.tex` (`nwergm/v1.1.3/`, inside a listing, so it cannot use the macro) is the only other place with the number.
+Change these two lines for a later release, rebuild (`make -C manual pdf`) and check the pages that the build output of the examples shows (version strings come from `make examples`, see below). The tag in the installation example of `ch01_intro.tex` (`nwergm/v1.2.0/`, inside a listing, so it cannot use the macro) is the only other place with the number.
 
 ## The DOI
 

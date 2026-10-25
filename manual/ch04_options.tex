@@ -198,9 +198,9 @@ Option & Description (default; R argument)\\
 \toprule
 Option & Description (default)\\
 \midrule\endhead
-\opt{mcmcburnin(\#)} & Burn-in proposals per simulation (3000; \texttt{MCMC.burnin}).\\
-\opt{mcmcinterval(\#)} & Proposals between recorded draws (50; \texttt{MCMC.interval}). May grow in the course of the fit (Section~\ref{sec:mcmle}).\\
-\opt{mcmcsamplesize(\#)} & Recorded draws per simulation (3000; \texttt{MCMC.samplesize}).\\
+\opt{mcmcburnin(\#)} & Burn-in proposals per simulation (16 times the interval, 16384; \texttt{MCMLE.burnin}). Given \opt{mcmcinterval()} without \opt{mcmcburnin()}, the burn-in is 16 times the interval.\\
+\opt{mcmcinterval(\#)} & Proposals between recorded draws (1024; \texttt{MCMLE.interval}). May grow in the course of the fit (Section~\ref{sec:mcmle}).\\
+\opt{mcmcsamplesize(\#)} & Recorded draws per simulation (3000; \texttt{MCMC.samplesize}, but see Section~\ref{sec:mcmcopts}: \ergm{} adapts the number).\\
 \opt{proposal(uniform|random|tnt)} & Proposal (\texttt{tnt}; \texttt{MCMC.prop.weights}). \texttt{random} is a synonym of \texttt{uniform}. Masked variants are used when dyads are constrained.\\
 \opt{seed(\#)} & Seed of the sampler; without it the current Stata seed is used (Section~\ref{sec:seed}).\\
 \opt{mcmcprop(hints)} & R's \texttt{MCMC.prop} hint formula, for example \texttt{sparse}.\\
@@ -212,6 +212,8 @@ Option & Description (default)\\
 \bottomrule
 \end{longtable}
 \normalsize
+
+\paragraph{The defaults follow R.}\label{sec:mcmcopts} Since version 1.2.0 the defaults of the Markov chain are those of \ergm{}'s \texttt{control.ergm()} (version 4.12.0): an interval of 1024 proposals between draws (\texttt{MCMLE.interval}), a burn-in of 16 times the interval, 16384 (\texttt{MCMLE.burnin}), at every iteration of the Monte Carlo maximum likelihood fit; \texttt{nwergm simulate} uses the same numbers, as \ergm{}'s \texttt{control.simulate()} does. In versions 1.1.x the defaults were an interval of 50 and a burn-in of 3000. A fit with default settings therefore gives different numbers than in 1.1.x (the same seed gives another chain), takes longer (Section~\ref{sec:runtimes}), and mixes better (Section~\ref{sec:lazega}); a fit that sets both options is unchanged. The old, fast settings are \opt{mcmcburnin(3000) mcmcinterval(50)}. The differences from \ergm{} that remain are two. First, \ergm{} adapts the number of recorded draws to an effective sample size of 64 (at least 256 draws), whereas \nwergm{} records a fixed \opt{mcmcsamplesize()} of 3000 draws. Second, the interval and the sample size grow adaptively when the effective sample size of the final sample is below a floor; that floor is the larger of 200 and 64 times the number of coefficients (\opt{mcmleeffectivesize()}), which is stricter than \ergm{}'s 64. The random-number streams differ in any case.
 
 \subsection{Log-likelihood by bridge sampling}
 \footnotesize
@@ -259,7 +261,7 @@ Option & Description (default)\\
 \opt{bipartite(\#)} & Number of first-mode nodes of a two-mode network.\\
 \opt{nsim(\#)} & Number of networks (1), each with a fresh burn-in. Named \opt{generate()}\texttt{\_1}, \opt{generate()}\texttt{\_2}, \ldots\ for $\#>1$.\\
 \opt{generate(stub)} & Name of the networks (\texttt{ergmsim}).\\
-\opt{mcmcburnin(\#)}, \opt{mcmcinterval(\#)} & Burn-in and interval (3000, 50).\\
+\opt{mcmcburnin(\#)}, \opt{mcmcinterval(\#)} & Burn-in and interval (16384 and 1024, as in R's \texttt{control.simulate}; the burn-in is 16 times an interval given alone).\\
 \opt{proposal(uniform|tnt)} & Proposal (\texttt{tnt}).\\
 \opt{seed(\#)} & Seed.\\
 \opt{basis(netname)}, \opt{constraints(formula)} & Starting network and sample-space constraints (one chain from the basis; needs the plugin).\\
@@ -283,7 +285,7 @@ Command and option & Description (default)\\
 \midrule\endhead
 \texttt{estat gof} \opt{gof(statistics)} & Statistics to compare: \texttt{degree idegree odegree b1degree b2degree espartners dspartners distance triadcensus model}; a minus sign drops \texttt{model}. The default is that of R for the type of network.\\
 \opt{nsim(\#)}, \opt{seed(\#)} & Number of simulated networks (100) and seed.\\
-\opt{gofburnin(\#)}, \opt{gofinterval(\#)} & Burn-in and interval; default those of the fit (\texttt{e(mcmc\_burnin)}, \texttt{e(mcmc\_interval\_final)}; 3000 and 50 after a pseudolikelihood fit).\\
+\opt{gofburnin(\#)}, \opt{gofinterval(\#)} & Burn-in and interval; default those of the fit (\texttt{e(mcmc\_burnin)}, \texttt{e(mcmc\_interval\_final)}; 16384 and 1024 after a pseudolikelihood fit).\\
 \opt{plot}, \opt{maxdeg(\#)}, \opt{maxdist(\#)}, \opt{name(string)} & Graph of the degree and geodesic distributions (maximum degree 15, maximum distance 6, name \texttt{gof}).\\
 \texttt{estat mcmcdiag} \opt{plot}, \opt{name(string)} & Trace and density plots (name \texttt{mcmcdiag}).\\
 \opt{pvalue(\#)}, \opt{eps(\#)} & Level of the Heidelberger--Welch test (one of 0.10, 0.05, 0.025, 0.01; default 0.05) and the relative half-width (0.1).\\

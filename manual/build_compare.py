@@ -42,9 +42,9 @@ out.append("\\bottomrule\\end{tabular}\\end{table}")
 # ---- MCMLE
 def seeds(P, prefix):
     return [P[k] for k in P if k.startswith(prefix)]
-nw, nl, rr = seeds(S, "laz_mcmle_"), seeds(S, "laz_mcmleL_"), seeds(R, "laz_mcmle_")
-out.append("\\begin{table}[ht]\\centering\\small\\caption{Monte Carlo maximum likelihood, Lazega friendship network, five seeds each: mean and (in parentheses) standard deviation over the seeds of the coefficients, and mean standard error. nwergm with its default settings, nwergm with \\texttt{mcmcinterval(1000) mcmcburnin(20000)}, and ergm with its default settings.}\\label{tab:cmpmcmle}")
-out.append("\\begin{tabular}{@{}lrrrrrr@{}}\\toprule\n & \\multicolumn{2}{c}{nwergm, default} & \\multicolumn{2}{c}{nwergm, long chain} & \\multicolumn{2}{c}{ergm}\\\\\\cmidrule(lr){2-3}\\cmidrule(lr){4-5}\\cmidrule(lr){6-7}\nterm & mean (sd) & SE & mean (sd) & SE & mean (sd) & SE\\\\\\midrule")
+nw, nl, rr = seeds(S, "laz_mcmle_"), seeds(S, "laz_mcmleO_"), seeds(R, "laz_mcmle_")
+out.append("\\begin{table}[ht]\\centering\\small\\caption{Monte Carlo maximum likelihood, Lazega friendship network, five seeds each: mean and (in parentheses) standard deviation over the seeds of the coefficients, and mean standard error. nwergm with its default settings, nwergm with the settings of version 1.1 (\\texttt{mcmcburnin(3000) mcmcinterval(50)}), and ergm with its default settings.}\\label{tab:cmpmcmle}")
+out.append("\\begin{tabular}{@{}lrrrrrr@{}}\\toprule\n & \\multicolumn{2}{c}{nwergm, default} & \\multicolumn{2}{c}{nwergm, old settings} & \\multicolumn{2}{c}{ergm}\\\\\\cmidrule(lr){2-3}\\cmidrule(lr){4-5}\\cmidrule(lr){6-7}\nterm & mean (sd) & SE & mean (sd) & SE & mean (sd) & SE\\\\\\midrule")
 maxdiffsd = 0
 for j, (n1, _, _) in enumerate(nw[0]):
     cells = []
@@ -53,7 +53,7 @@ for j, (n1, _, _) in enumerate(nw[0]):
         cells.append((statistics.mean(e), statistics.stdev(e), statistics.mean(s)))
     out.append("%s & %.3f (%.3f) & %.3f & %.3f (%.3f) & %.3f & %.3f (%.3f) & %.3f\\\\" % (
         tt(n1), cells[0][0], cells[0][1], cells[0][2], cells[1][0], cells[1][1], cells[1][2], cells[2][0], cells[2][1], cells[2][2]))
-    maxdiffsd = max(maxdiffsd, abs(cells[1][0] - cells[2][0]) / cells[2][2])
+    maxdiffsd = max(maxdiffsd, abs(cells[0][0] - cells[2][0]) / cells[2][2])
 out.append("\\bottomrule\\end{tabular}\\end{table}")
 # ---- simulation at given coefficients (three chains of 4000 draws each, nwergm seeds 21-23, R seeds 21-23)
 import glob
@@ -83,7 +83,7 @@ print("stat max diff %.2e, mple max coef diff %.2e, max rel SE diff %.2e, max mc
 # ---- run times of the Lazega model (ex9a_timing.do, r/timing.R)
 tm, rt = rd("timing.csv"), rd("r_timing.csv")
 lines = ["\\begin{tabular}{@{}lrrrr@{}}\\toprule\nsetting & runs & median & range & iterations\\\\\\midrule"]
-for lab, k, src in (("nwergm, default settings", "default", tm), ("nwergm, \\texttt{mcmcinterval(1000) mcmcburnin(20000)}", "long", tm),
+for lab, k, src in (("nwergm, default settings", "default", tm), ("nwergm, burn-in 3000, interval 50 (as in 1.1)", "old", tm),
                     ("nwergm, Mata sampler (\\texttt{nonative}, default settings)", "default nonative", tm), ("R \\texttt{ergm()}, default settings", "ergm default", rt)):
     v = [float(r["seconds"]) for r in src if r["setting"] == k]
     it = [float(r["iterations"]) for r in src if r["setting"] == k]
