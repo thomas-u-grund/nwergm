@@ -1,6 +1,6 @@
 # NOTICE
 
-<!--version-->**Version 1.2.1** (released 25 October 2026)<!--/version-->
+<!--version-->**Version 1.2.2** (released 26 October 2026)<!--/version-->
 
 nwergm is Copyright (C) 2026 Thomas U. Grund and is distributed under the GNU General Public License, version 3 (file `LICENSE`).
 
@@ -21,5 +21,5 @@ The software was developed with Claude Code (Anthropic), an AI coding assistant,
 
 ## How to cite
 
-Grund, T. U. (2026). nwergm: a Stata package (version 1.2.1). GitHub. https://github.com/thomas-u-grund/nwergm
+Grund, T. U. (2026). nwergm: a Stata package (version 1.2.2). GitHub. https://github.com/thomas-u-grund/nwergm
 Please also cite the core package (Grund, T. U., nwcommands) and the work this package is derived from (see above).
