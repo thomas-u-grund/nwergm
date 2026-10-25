@@ -1,6 +1,6 @@
 # nwergm
 
-<!--version-->**Version 1.1.3** (released 25 October 2026)<!--/version-->
+<!--version-->**Version 1.2.0** (released 25 October 2026)<!--/version-->
 
 `nwergm` fits exponential-family random graph models (ERGM) to a network declared with `nwset`: maximum pseudolikelihood and Monte Carlo maximum likelihood estimation (with a native MCMC plugin), dyad-independent and dyad-dependent terms (structural, nodal and dyadic covariate, curved, bipartite terms, and the operator terms of ergm such as `Sum`, `S`, `F`, `Symmetrize` and `Project`), sampling constraints, missing data, simulation from a fit, goodness of fit and MCMC diagnostics (`estat gof`, `estat mcmcdiag`). A comparison with the R package `ergm` is in `docs/ERGM_COMPARISON.md`.
 
@@ -14,7 +14,7 @@ The user manual is `manual/nwergm_manual.pdf` (about 100 pages; LaTeX source, th
 ## Install
 
 1. Install the core package first (Stata): `net install nwcommands, from(<URL of the nwcommands distribution>)`
-   then run `nwinstall`. Required: nwcommands (core), version 3.3.0 or later.
+   then run `nwinstall`. Required: nwcommands (core), version 3.4.0 or later.
 2. Install this package:
 
        net install nwergm, from(https://raw.githubusercontent.com/thomas-u-grund/nwergm/main/) replace
@@ -22,11 +22,19 @@ The user manual is `manual/nwergm_manual.pdf` (about 100 pages; LaTeX source, th
 `net install nwergm` installs the latest release (the state of the main branch). To install a specific version, point `from()` at the
 release tag (GitHub serves every tag under its own raw URL), for example version 1.0.0:
 
-       net install nwergm, from(https://raw.githubusercontent.com/thomas-u-grund/nwergm/v1.1.3/) replace
+       net install nwergm, from(https://raw.githubusercontent.com/thomas-u-grund/nwergm/v1.2.0/) replace
 
 `net describe nwergm` shows the version and distribution date, `nwergm version` the package, core and plugin versions, and `e(version)`
 holds the package version in the stored results. Release history: `CHANGELOG.md`; how releases are made: `RELEASING.md`.
 
+
+## MCMC defaults
+
+The Monte Carlo defaults follow R's `ergm` (4.12.0): an interval of 1,024 proposals between recorded draws
+(`MCMLE.interval`) and a burn-in of 16 times the interval, 16,384 (`MCMLE.burnin`), at every MCMLE iteration; `nwergm
+simulate` uses the same values (R's `simulate()`). An `mcmcinterval()` given alone also sets the burn-in to 16 times
+its value, as in R. Versions before 1.2.0 used an interval of 50 and a burn-in of 3,000; these much faster, much less
+reliable settings are still available: `mcmcburnin(3000) mcmcinterval(50)`.
 
 ## Requirements
 

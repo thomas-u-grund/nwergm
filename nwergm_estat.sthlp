@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.1.3  25oct2026 author: Thomas Grund}{...}
+{* *! version 1.2.0  25oct2026 author: Thomas Grund}{...}
 
 {title:Title}
 
@@ -91,7 +91,7 @@ distance ({helpb nwgeodesic}), and the full MAN triad census ({helpb nwtriads}).
 (for {opt method(mple)}, which never runs MCMC during estimation), recording one snapshot every
 {opt gofinterval()} steps. As in R's {cmd:gof()}, the defaults are 100 draws and the MCMC
 settings of the fit: {opt gofburnin()} defaults to {cmd:e(mcmc_burnin)} and {opt gofinterval()} to
-{cmd:e(mcmc_interval_final)} (for {opt method(mple)} fits, 3000 and 50).
+{cmd:e(mcmc_interval_final)} (for {opt method(mple)} fits, 16,384 and 1,024 before that rescaling).
 
 {pstd}
 {bf:Triad census.} The summary table's own "Complete triads" row is joined by a full breakdown,
@@ -191,4 +191,4 @@ goodness of fit:
 	{help nwergm}
 
 {hline}
-{pstd}{it:nwergm version 1.1.3, 25 October 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.2.0, 25 October 2026}{p_end}{* nwversion}

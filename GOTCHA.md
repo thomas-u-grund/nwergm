@@ -187,3 +187,12 @@ by hand "fixes" it for that session only, which hid the bug in every manual test
 - Reproduce: `SMOKE_STALE=1 tools/smoke_fresh_install.sh <core> <models>` in the core repo builds exactly this state (the session's Mata
   index is made while only the core library is visible). Without `SMOKE_STALE` a plain new session usually finds all libraries,
   which is why a simple "install, restart, run" test passes.
+
+## The default of `mcmcburnin()` is derived from `mcmcinterval()` (R: `MCMLE.burnin = MCMLE.interval * 16`)
+
+In `nwergm.ado` the syntax line declares `MCMCBURNIN(integer -1)`: -1 means "not given", and the program then sets
+`mcmcburnin = 16 * mcmcinterval` (same in `nwergm simulate`). So the burn-in default is 16384 only while the interval is
+1024; `mcmcinterval(100)` alone gives a burn-in of 1600. Do not put a literal number back into the syntax line, and do
+not read `mcmcburnin` before the derivation line right after `set more off`. The dialog hints, `nwergm.sthlp` and
+`cscripts/test_nwergm_rdefaults.do` state the defaults; change all four together. The old (pre-1.2.0) fast settings are
+`mcmcburnin(3000) mcmcinterval(50)`; tests that need a small, quick chain name their MCMC options explicitly.

@@ -2,9 +2,9 @@ v 3
 d nwergm. Exponential random graph models (ERGM; MPLE, MCMLE, simulation, GOF) for networks declared with nwset
 d Thomas U. Grund, RWTH Aachen University, www.grund.co.uk
 d email: thomas.u.grund@gmail.com
-d GPL-3. Requires the core package nwcommands 3.3.0 or later.
-d Requires nwcommands (core), version 3.3.0 or later
-d Version: 1.1.3
+d GPL-3. Requires the core package nwcommands 3.4.0 or later.
+d Requires nwcommands (core), version 3.4.0 or later
+d Version: 1.2.0
 d Distribution-Date: 25oct2026
 f _nwergm_bip.ado
 f _nwergm_bip_curved.ado

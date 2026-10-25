@@ -1,4 +1,4 @@
-*! version 1.1.3  25oct2026 _nwergm_fitstats: log-likelihood, deviance, AIC/BIC of an nwergm fit (R: logLik.ergm, summary.ergm)
+*! version 1.2.0  25oct2026 _nwergm_fitstats: log-likelihood, deviance, AIC/BIC of an nwergm fit (R: logLik.ergm, summary.ergm)
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -10,7 +10,7 @@ program _nwergm_fitstats, eclass
 	version 14
 	capture confirm number 0
 	syntax , DMAT(string) METHOD(string) [PROPFN(string) NOLOGLIK BRIDGESTEPS(integer 16) BRIDGESAMPLESIZE(integer 0) ///
-		BRIDGEINTERVAL(integer 0) MCMCBURNIN(integer 3000) MCMCINTERVAL(integer 50) MCMCSAMPLESIZE(integer 3000) ///
+		BRIDGEINTERVAL(integer 0) MCMCBURNIN(integer 16384) MCMCINTERVAL(integer 1024) MCMCSAMPLESIZE(integer 3000) ///
 		INTERVALFINAL(integer 0) CURVED(integer 0) DIND(integer 1) QUIET]
 	tempname b ll se
 	matrix `b' = e(b)
