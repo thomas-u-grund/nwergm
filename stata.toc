@@ -1,5 +1,5 @@
 v 3
 d nwergm: exponential random graph models for Stata
 
-p nwergm Exponential random graph models v1.1.2
+p nwergm Exponential random graph models v1.1.3
 d nwergm. Exponential random graph models (ERGM; MPLE, MCMLE, simulation, GOF) for networks declared with nwset
