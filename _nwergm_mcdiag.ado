@@ -1,4 +1,4 @@
-*! version 1.1.1  25oct2026 _nwergm_mcdiag.ado -- the report of R's mcmc.diagnostics() for the final MCMC sample of an nwergm fit
+*! version 1.1.3  25oct2026 _nwergm_mcdiag.ado -- the report of R's mcmc.diagnostics() for the final MCMC sample of an nwergm fit
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -28,6 +28,8 @@ program _nwergm_mcdiag, rclass
 	tempname obsG obsstat C
 	mata: `obsG' = ErgmGraph()
 	mata: `obsG'.init(`nodes', `dir')
+	mata: st_local("__isbip", strofreal(__nwergm_last_G.bipartite))
+	if `__isbip' mata: `obsG'.set_bipartite(__nwergm_last_G.mode)
 	mata: ergm_bridge_obs(`netobj', `obsG', `dir')
 	mata: `obsstat' = __nwergm_last_M.full_statistic(`obsG')
 	mata: mata drop `obsG'
@@ -37,8 +39,8 @@ program _nwergm_mcdiag, rclass
 	mata: st_local("keepnames", invtokens(tokens("`names'")[selectindex(__nwergm_last_M.isfixed :== 0)]))
 	local thin = e(mcmc_interval)
 	if "`e(mcmc_interval_final)'" != "" local thin = e(mcmc_interval_final)
-	mata: st_local("n", strofreal(rows(`C')))
-	mata: st_local("p", strofreal(cols(`C')))
+	mata: st_local("n", strofreal(rows(`C'), "%18.0g"))
+	mata: st_local("p", strofreal(cols(`C'), "%18.0g"))
 	if `p' == 0 {
 		mata: mata drop `obsstat' `C'
 		exit

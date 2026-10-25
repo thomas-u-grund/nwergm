@@ -1,4 +1,4 @@
-*! version 1.1.1  25oct2026 nwergm
+*! version 1.1.3  25oct2026 nwergm
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -15,6 +15,7 @@ program nwergm, eclass
 		nwergm_version
 		exit
 	}
+	_nwergm_libcheck
 	if `"`__ergm_t1'"' == "simulate" {
 		gettoken __ergm_sub 0 : 0, parse(" ,")
 		gettoken __ergm_first : 0, parse(" ,")
@@ -350,7 +351,7 @@ program nwergm, eclass
 			error 198
 		}
 		if "`directed'" == "true" {
-			di "{err}option {bf:gwdegreefree()} (v1 scope) is undirected only; {bf:`netname'} is directed. Use {bf:gwodegree()}/{bf:gwidegree()} for a directed fixed-decay model - curved directed models are not yet supported."
+			di "{err}option {bf:gwdegreefree()} (v1 scope) is undirected only; {bf:`netname'} is directed. Use {bf:gwodegreefree()}/{bf:gwidegreefree()} for a directed curved model, or {bf:gwodegree()}/{bf:gwidegree()} for a fixed decay."
 			error 198
 		}
 		if `nodes' < 2 {
@@ -760,7 +761,7 @@ program nwergm, eclass
 	// below), caught only once `estat gof` (Part XX) needed a genuinely
 	// correct observed density and its own reported "Observed" column
 	// didn't match the true network by hand-inspection.
-	mata: st_local("__ergm_obsties", strofreal(__nwergm_last_G.nties))
+	mata: st_local("__ergm_obsties", strofreal(__nwergm_last_G.nties, "%18.0g"))
 	// missing dyads (NA ties): excluded from the pseudolikelihood, imputed for the MCMC start (as R ergm)
 	if !`__sub' {
 		_nwergm_miss detect, netobj(`netobj') directed(`directed') twomode(`is2mode') nodes(`nodes') netname(`netname')
@@ -2051,8 +2052,8 @@ program nwergm, eclass
 		}
 	}
 	local __ergm_matatemps "`__ergm_matatemps' `__nw_D'"
-	mata: st_local("__ergm_nrows", strofreal(rows(`__nw_D')))
-	mata: st_local("__ergm_p", strofreal(cols(`__nw_D')-1))
+	mata: st_local("__ergm_nrows", strofreal(rows(`__nw_D'), "%18.0g"))
+	mata: st_local("__ergm_p", strofreal(cols(`__nw_D')-1, "%18.0g"))
 
 	tempname __ergm_coefnames
 	mata: st_local("__ergm_coefnames", invtokens(__nwergm_last_M.coefnames))
@@ -2223,7 +2224,7 @@ program nwergm, eclass
 		}
 		ereturn post `__b_mple' `__V_mple', depname(`netname') obs(`__ergm_nrows')
 		ereturn local cmd "nwergm"
-		ereturn local version "1.1.1"
+		ereturn local version "1.1.3"
 		ereturn local title "Exponential-family random graph model (MPLE)"
 		ereturn local depvar "`netname'"
 		ereturn local method "mple"
@@ -2412,6 +2413,7 @@ program nwergm, eclass
 		// whole time. For an unmasked model the two fields are always
 		// equal, so this is a no-op change there.
 		mata: st_local("__ergm_native_used", strofreal(__nwergm_last_M.native_enabled_sample))
+		if !`__ergm_native_used' _nwergm_slowwarn "this fit" "`nonative'"
 		if `__ergm_nmiss' > 0 {
 			// missing dyads: second, constrained chain (only the missing dyads free), as R ergm
 			capture mata: mata drop __nwergm_last_Gobs
@@ -2575,7 +2577,7 @@ program nwergm, eclass
 
 		ereturn post `__b_mcmle' `__V_mcmle', depname(`netname') obs(`__ergm_nrows')
 		ereturn local cmd "nwergm"
-		ereturn local version "1.1.1"
+		ereturn local version "1.1.3"
 		ereturn local title "Exponential-family random graph model (MCMLE)"
 		ereturn local depvar "`netname'"
 		ereturn local method "mcmle"
@@ -2728,6 +2730,7 @@ end
 capture program drop nwergm_simulate
 program nwergm_simulate
 	version 14
+	_nwergm_libcheck
 	local __nes_n = 0
 	syntax anything(name=nodes) , edges [mutual ///
 		NODEMATCH(string) NODEMATCHDIFF(string) NODECOV(string) NODEICOV(string) NODEOCOV(string) ///
@@ -3789,6 +3792,9 @@ end
 	redefining a Mata function on every single nwergm call would error
 	on the second call within the same session ("already exists").
 */
+// The Mata block below is compiled when this file is loaded and uses classes of the Mata library of the package, so the
+// library must be visible by then (Stata indexes the .mlib files once per session): index it first if needed.
+capture quietly _nwergm_libcheck
 capture mata: mata drop ergm_bridge_from_netobj()
 mata:
 void ergm_bridge_from_netobj(pointer(class nw_def scalar) scalar netobj,
@@ -3824,7 +3830,7 @@ program _nwergm_numvar
 		error 109
 	}
 	local __nn = _N
-	capture mata: st_local("__nn", strofreal(__nwergm_last_G.n))
+	capture mata: st_local("__nn", strofreal(__nwergm_last_G.n, "%18.0g"))
 	qui count if missing(`v') in 1/`__nn'
 	local __nna = r(N)
 	if `__nna' > 0 & inlist("`term'", "bcov1", "bfactor1", "bnodematch1", "bcov2", "bfactor2", "bnodematch2") {

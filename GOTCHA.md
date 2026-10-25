@@ -172,3 +172,18 @@ chain changed. The bridge functions (`ergm_bridge_from_netobj`, the copy in `nwe
 string (identical seed and theta) and a checksum of the edge list (different). **Lesson:** when a seeded
 stochastic fit differs, compare the inputs of the sampler (edge order), not only the seed. Test:
 `test_nwergm_seedrepro`.
+
+## `mata mlib index` does not persist: a library installed by net install can be missing from a session's Mata library list
+
+Stata builds its list of Mata libraries (.mlib) once, early in a session; `mata mlib index` rebuilds it for the running session only
+and nothing is saved. A library that `net install` put into PLUS/l/ can be absent from the list (`mata mlib query` shows `lnwcommands`
+but not `lnwergm`). The first Mata call then stops with r(3499) "<function>() not found", and a Mata block that mentions a class of
+the library stops the whole ado file with r(3000) "class ... undefined (error occurred while loading ...)". Running `mata mlib index`
+by hand "fixes" it for that session only, which hid the bug in every manual test.
+- Every entry program starts with `_nwergm_libcheck` (which runs `mata mlib index` once when a library function is not visible); do not
+  call Mata before it.
+- A **file-scope** `mata:` block in an .ado file is compiled when the file is auto-loaded, i.e. before any program of the file runs:
+  `_nwergm_libcheck` is therefore also called at file scope (`capture quietly ...`) in front of such a block.
+- Reproduce: `SMOKE_STALE=1 tools/smoke_fresh_install.sh <core> <models>` in the core repo builds exactly this state (the session's Mata
+  index is made while only the core library is visible). Without `SMOKE_STALE` a plain new session usually finds all libraries,
+  which is why a simple "install, restart, run" test passes.

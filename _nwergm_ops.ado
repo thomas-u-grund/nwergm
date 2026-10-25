@@ -1,4 +1,4 @@
-*! version 1.1.1  25oct2026 _nwergm_ops: the operator terms of R's ergm (Sum, Prod, S, F, NodematchFilter, Symmetrize, Project, I, For, Label) for nwergm's operators() option
+*! version 1.1.3  25oct2026 _nwergm_ops: the operator terms of R's ergm (Sum, Prod, S, F, NodematchFilter, Symmetrize, Project, I, For, Label) for nwergm's operators() option
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -373,7 +373,7 @@ program _nwergm_ops_derived, rclass
 		}
 		mata: `td'.opkind = "proj"
 		mata: `td'.opnum = (`mode')
-		mata: st_local("subnodes", strofreal(sum(__nwergm_last_G.mode :== `mode')))
+		mata: st_local("subnodes", strofreal(sum(__nwergm_last_G.mode :== `mode'), "%18.0g"))
 		tempvar mvar
 		qui gen byte `mvar' = .
 		mata: st_store(1::`nodes', "`mvar'", __nwergm_last_G.mode)

@@ -8,6 +8,23 @@ project uses [Semantic Versioning](https://semver.org/).
 ### Added
 - Manual: `manual/nwergm_manual.pdf` (LaTeX source in `manual/`): the model and the estimators, the complete syntax, the reference of the terms (generated from the term inventory by `manual/build_terms.py`), diagnostics and goodness of fit, worked examples with real output, the validation against ergm 4.12.0, the limits, and a translation table from R's ergm. The do-files that produce every listing are in `manual/ex`; `manual/run_examples.sh` reruns them.
 
+## [1.1.3] - 2026-10-25
+
+### Fixed
+- Works right after a fresh install: the Mata library is indexed automatically. Before, the first call in a new Stata session could stop with r(3499) "... not found" (or, for nwergm, "class ErgmGraph undefined") until `mata mlib index` was run by hand.
+
+## [1.1.2] - 2026-10-25
+
+### Fixed
+- `estat gof` after a two-mode fit showed the observed value 0 for the mode-specific terms (for example `nodemix()`, `bdegree1()`, `bgwdegree2()`) in the model-statistics block: the graph that holds the observed network was not marked two-mode. The same fix applies to the R-style sample diagnostics (`estat mcmcdiag`). Test `test_nwergm_gofmodelbip`.
+- A fit with a shared-partner term on a network of 5000 nodes (12.5 million dyads) stopped with r(198) "observation number out of range": the number of rows of the pseudolikelihood data was passed to a Stata macro with `strofreal()`, which writes large numbers in scientific notation (`1.12e+07`). All counts and sizes passed to macros are now formatted as integers. Tested with 2,000 and 5,000 nodes (`test_nwergm_bigdyads`).
+- `nwergm simulate` from a two-mode fit with `output(network)` created one-mode undirected networks; it now creates two-mode networks, as R's `simulate()` does. Test `test_nwergm_simbip`.
+- Help files: removed the outdated statements that degree and egocentric constraints are not supported (they are available through `constraints()`), brought the description of the two-mode terms up to date, and corrected the affiliation of the author to RWTH Aachen University in all files. Test `test_nwergm_helptext`.
+
+### Changed
+- Rebuilt for nwcommands 3.3.0; nwergm now requires core 3.3.0 or later; a clear message if the core and nwergm libraries do not match: the Mata library of nwergm contains the core class definitions it was compiled against, so a core of a different build made Mata stop with r(3021) "class compiled at different times". nwergm now checks this at the start of `nwergm`, `nwergm simulate` and prints how to reinstall (test `test_nwergm_libcheck`).
+- A run that uses the Mata fallback instead of the compiled plugin (plugin missing for the platform, option `nonative`, or a model outside the capacity of the plugin) now prints one warning line before a Monte Carlo fit, `estat gof` and `nwergm simulate` from a fit, saying that it is much slower and what to do; the help file explains this. No warning is printed when the plugin is used. Test `test_nwergm_slowwarn`.
+
 ## [1.1.1] - 2026-10-25
 
 ### Fixed

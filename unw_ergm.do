@@ -7111,6 +7111,14 @@ real scalar _ergm_count_free_bipartite(class ErgmGraph scalar G){
 	return(cnt)
 }
 
+/* Called by _nwergm_libcheck.ado: touches the core class nw_def, so a library built against a different core
+   fails here (r(3021)) where the ado can catch it and print a plain message. */
+void ergm_libcheck()
+{
+	class nw_def scalar d
+	d = nw_def()
+}
+
 end
 
 mata:

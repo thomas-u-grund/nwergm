@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.1.1  25oct2026 nwergm_fit.sthlp}{...}
+{* *! version 1.1.3  25oct2026 nwergm_fit.sthlp}{...}
 {vieweralsosee "nwergm" "help nwergm"}{...}
 {viewerjumpto "Missing" "nwergm_fit##missing"}{...}
 {viewerjumpto "Fit" "nwergm_fit##fit"}{...}
@@ -25,7 +25,7 @@ observed density, as R does;{p_end}
 {phang2}- reports the number of missing dyads in {cmd:e(nmissing)}. Statistics of the observed network ({cmd:e(ties)}) count observed ties only.{p_end}
 
 {pstd}
-Missing dyads cannot yet be combined with {opt freedyads()}, {opt blockdiag()} or {opt fixdensity}.
+Missing dyads cannot be combined with {opt freedyads()}, {opt blockdiag()} or {opt fixdensity}.
 
 {pstd}
 {bf:Missing covariates.} As in R, a nodal attribute with a missing value in a term ({opt nodecov()}, {opt nodematch()}, {opt nodefactor()} ...)
@@ -67,4 +67,4 @@ set to missing. The prediction is available for the most recent {cmd:nwergm} fit
 {phang}Handcock, M. S. and Gile, K. J. 2010. Modeling social networks from sampled data. {it:Annals of Applied Statistics} 4: 5-25.{p_end}
 
 {hline}
-{pstd}{it:nwergm version 1.1.1, 25 October 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.1.3, 25 October 2026}{p_end}{* nwversion}

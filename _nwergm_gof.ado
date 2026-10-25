@@ -1,4 +1,4 @@
-*! version 1.1.1  25oct2026 _nwergm_gof.ado -- estat gof after nwergm, following R's gof.ergm(): observed values against simulations from the fitted model
+*! version 1.1.3  25oct2026 _nwergm_gof.ado -- estat gof after nwergm, following R's gof.ergm(): observed values against simulations from the fitted model
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -49,7 +49,7 @@ program _nwergm_gof, rclass
 		exit 498
 	}
 	local dir = ("`edirected'" == "true")
-	mata: st_local("n1", strofreal(__nwergm_last_G.bipartite ? rows(__nwergm_last_G.mode1nodes) : 0))
+	mata: st_local("n1", strofreal(__nwergm_last_G.bipartite ? rows(__nwergm_last_G.mode1nodes) : 0, "%18.0g"))
 	local bip = ("`n1'" != "0")
 
 	// ---- which statistics (R: GOF = ~ degree + espartners + ... ; "-model" drops the model statistics)
@@ -127,6 +127,8 @@ program _nwergm_gof, rclass
 	tempname obsG obsmat obsstat
 	mata: `obsG' = ErgmGraph()
 	mata: `obsG'.init(`nodes', `dir')
+	mata: st_local("__isbip", strofreal(__nwergm_last_G.bipartite))
+	if `__isbip' mata: `obsG'.set_bipartite(__nwergm_last_G.mode)
 	mata: ergm_bridge_obs(`netobj', `obsG', `dir')
 	mata: `obsmat' = `obsG'.to_dense()
 	mata: `obsstat' = __nwergm_last_M.full_statistic(`obsG')
@@ -161,6 +163,8 @@ program _nwergm_gof, rclass
 	else if "`e(proposal)'" == "uniform" local propfn "&ergm_propose_uniform()"
 	else local propfn "&ergm_propose_tnt()"
 
+	mata: st_local("__gnat", strofreal(__nwergm_last_M.native_enabled_sample))
+	if !`__gnat' _nwergm_slowwarn "estat gof" "fit"
 	tempname bmat
 	matrix `bmat' = e(b)
 	mata: __gof_groups = tokens("`simgroups'")

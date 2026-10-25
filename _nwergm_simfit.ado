@@ -1,4 +1,4 @@
-*! version 1.1.1  25oct2026 _nwergm_simfit.ado -- nwergm simulate from the last fit (R: simulate.ergm)
+*! version 1.1.3  25oct2026 _nwergm_simfit.ado -- nwergm simulate from the last fit (R: simulate.ergm)
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -8,6 +8,7 @@
 capture program drop _nwergm_simfit
 program _nwergm_simfit, rclass
 	version 14
+	_nwergm_libcheck
 	syntax [, NSIM(integer 1) SEED(integer -1) OUTput(string) BASIS(string) NOSEQuential ///
 		BURNin(integer -1) INTERval(integer -1) GENerate(string) COEF(string) CLEAR]
 	if `"`e(cmd)'"' != "nwergm" {
@@ -92,6 +93,8 @@ program _nwergm_simfit, rclass
 	if !`seq' & "`basis'" == "" {
 		// R: without sequential, each draw starts again from the basis
 	}
+	mata: st_local("__snat", strofreal(__nwergm_last_M.native_enabled_sample))
+	if !`__snat' _nwergm_slowwarn "the simulation" "fit"
 	tempname nets
 	mata: `nets' = ergm_sim_run(__nwergm_last_M, __nwergm_last_G, `A0', st_matrix("`bmat'"), `nsim', `burnin', `interval', `propfn', `seq', `want', "__simE7")
 	tempname S
@@ -101,15 +104,20 @@ program _nwergm_simfit, rclass
 	matrix colnames `S' = `cn'
 	return matrix stats = `S'
 	if "`output'" == "network" {
+		// a two-mode fit simulates two-mode networks (R: simulate() returns a bipartite network): nwset wants the
+		// rectangular mode-2 x mode-1 incidence matrix (its columns are the first mode), not the n x n adjacency
+		mata: st_local("__sbip", strofreal(__nwergm_last_G.bipartite))
 		forvalues s = 1/`nsim' {
 			tempname M1
-			mata: st_matrix("`M1'", asarray(`nets', `s'))
+			if `__sbip' mata: st_matrix("`M1'", asarray(`nets', `s')[__nwergm_last_G.mode2nodes, __nwergm_last_G.mode1nodes])
+			else mata: st_matrix("`M1'", asarray(`nets', `s'))
 			local nm = cond(`nsim' == 1, "`generate'", "`generate'_`s'")
 			capture nwdrop `nm'
 			preserve
 			qui drop _all
 			qui set obs `nodes'
-			nwset, mat(`M1') `=cond(`dir',"directed","undirected")' name(`nm') nooutput
+			if `__sbip' nwset, mat(`M1') bipartite name(`nm') nooutput
+			else nwset, mat(`M1') `=cond(`dir',"directed","undirected")' name(`nm') nooutput
 			restore
 		}
 		di as txt "(`nsim' simulated network(s) created: `generate'" cond(`nsim' > 1, "_1 ... `generate'_`nsim'", "") ")"

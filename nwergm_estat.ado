@@ -1,4 +1,4 @@
-*! version 1.1.1  25oct2026 nwergm_estat
+*! version 1.1.3  25oct2026 nwergm_estat
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -8,6 +8,7 @@
 
 capture program drop nwergm_estat
 program define nwergm_estat, rclass
+	_nwergm_libcheck
 	gettoken subcmd rest : 0, parse(" ,")
 	local subcmd = lower(trim("`subcmd'"))
 	if "`subcmd'" == "mcmcdiag" {
@@ -276,6 +277,9 @@ end
 	nwergm.ado's own copy - this is not a case of unwanted duplication,
 	it is the same established, working pattern applied per-file.
 */
+// The Mata block below is compiled when this file is loaded and uses classes of the Mata library of the package, so the
+// library must be visible by then (Stata indexes the .mlib files once per session): index it first if needed.
+capture quietly _nwergm_libcheck
 capture mata: mata drop nwergm_estat_bridge_from_netobj()
 mata:
 void nwergm_estat_bridge_from_netobj(pointer(class nw_def scalar) scalar netobj,

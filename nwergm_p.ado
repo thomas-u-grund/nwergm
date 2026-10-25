@@ -1,4 +1,4 @@
-*! version 1.1.1  25oct2026 nwergm_p: predict after nwergm (R: predict.ergm, conditional tie probabilities)
+*! version 1.1.3  25oct2026 nwergm_p: predict after nwergm (R: predict.ergm, conditional tie probabilities)
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -8,6 +8,7 @@
 capture program drop nwergm_p
 program nwergm_p
 	version 14
+	_nwergm_libcheck
 	syntax [anything] [if] [in] [, PR XB MATrix(name) FRame(name)]
 	capture confirm number 0
 	if "`matrix'" == "" & "`frame'" == "" {
@@ -55,7 +56,7 @@ program nwergm_p
 		di as txt "(matrix `matrix' contains the " cond("`pr'" != "", "conditional tie probabilities", "conditional log-odds") "; missing dyads are .)"
 	}
 	if "`frame'" != "" {
-		mata: st_local("nrowsP", strofreal(rows(`P')))
+		mata: st_local("nrowsP", strofreal(rows(`P'), "%18.0g"))
 		capture frame drop `frame'
 		frame create `frame' double(tail head p)
 		frame `frame': qui set obs `nrowsP'

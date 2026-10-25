@@ -17,5 +17,18 @@ version, line 2 the release date in Stata format, e.g. `24oct2026`).
 6. Push: `git push origin main --tags` (let the "Build native plugins" workflow finish and `git pull --rebase` before the next push, if the package has one).
 7. Release: `gh release create vX.Y.Z --title "nwergm X.Y.Z" --notes-file <excerpt of CHANGELOG>`.
 
+**Lockstep with the core.** The library `lib/lnwergm.mlib` contains the class definitions of the core (`nw_def`) from the moment it was built. Whenever the core library (`lnwcommands.mlib`) changes, rebuild this package's library (`NWCORE=/path/to/nwcommands StataBE -e do lib/build.do`, run from the repository root), run the tests and release a new nwergm in lockstep with the core release. Name the required core version in `nwergm.pkg` and `README.md`.
+
 Users install the latest release with `net install nwergm, from(https://raw.githubusercontent.com/thomas-u-grund/nwergm/main/) replace`
 and a specific one with `.../nwergm/vX.Y.Z/`.
+
+## Lockstep check with the core Mata library
+
+The Mata libraries of this package are compiled against the core's `lib/lnwcommands.mlib`. After every build of the libraries
+(`lib/build.do`) record which core library they were built against:
+
+    NWCORE=/path/to/nwcommands python3 tools/record_core_lib.py      # writes lib/core_mlib.sha256 (sha256 of the core library)
+
+`tools/check_version.py` compares `lib/core_mlib.sha256` with `$NWCORE/lib/lnwcommands.mlib` when `NWCORE` is set and fails with
+"the core Mata library changed since this package's libraries were built: run lib/build.do and release in step" when they differ.
+Run `NWCORE=/path/to/nwcommands python3 tools/check_version.py` before every release (it is the first step of the tests when NWCORE is set).

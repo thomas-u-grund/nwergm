@@ -1,4 +1,4 @@
-*! version 1.1.1  25oct2026 _nwergm_bip_curved
+*! version 1.1.3  25oct2026 _nwergm_bip_curved
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -23,7 +23,7 @@ program _nwergm_bip_curved
 			}
 			if "`o'" == "bgwdegreefree" mata: st_local("__maxd", strofreal(_bx_maxdeg(__nwergm_last_G, `m')))
 			else mata: st_local("__maxd", strofreal(_bx_maxsp(__nwergm_last_G, `m')))
-			mata: st_local("__other", strofreal(rows(_bx_nodes(__nwergm_last_G, 3 - `m'))))
+			mata: st_local("__other", strofreal(rows(_bx_nodes(__nwergm_last_G, 3 - `m')), "%18.0g"))
 			// maximum likelihood samples networks in which a node can have more partners than in the observed one:
 			// the degree counts then run over every possible value (the pseudolikelihood needs only the values up to the
 			// observed maximum + 1); the shared-partner counts keep the shorter range (a count per column of the sampler)
