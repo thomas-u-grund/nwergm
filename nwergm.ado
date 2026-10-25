@@ -350,7 +350,7 @@ program nwergm, eclass
 			error 198
 		}
 		if "`directed'" == "true" {
-			di "{err}option {bf:gwdegreefree()} (v1 scope) is undirected only; {bf:`netname'} is directed. Use {bf:gwodegree()}/{bf:gwidegree()} for a directed fixed-decay model - curved directed models are not yet supported."
+			di "{err}option {bf:gwdegreefree()} (v1 scope) is undirected only; {bf:`netname'} is directed. Use {bf:gwodegreefree()}/{bf:gwidegreefree()} for a directed curved model, or {bf:gwodegree()}/{bf:gwidegree()} for a fixed decay."
 			error 198
 		}
 		if `nodes' < 2 {
@@ -760,7 +760,7 @@ program nwergm, eclass
 	// below), caught only once `estat gof` (Part XX) needed a genuinely
 	// correct observed density and its own reported "Observed" column
 	// didn't match the true network by hand-inspection.
-	mata: st_local("__ergm_obsties", strofreal(__nwergm_last_G.nties))
+	mata: st_local("__ergm_obsties", strofreal(__nwergm_last_G.nties, "%18.0g"))
 	// missing dyads (NA ties): excluded from the pseudolikelihood, imputed for the MCMC start (as R ergm)
 	if !`__sub' {
 		_nwergm_miss detect, netobj(`netobj') directed(`directed') twomode(`is2mode') nodes(`nodes') netname(`netname')
@@ -2051,8 +2051,8 @@ program nwergm, eclass
 		}
 	}
 	local __ergm_matatemps "`__ergm_matatemps' `__nw_D'"
-	mata: st_local("__ergm_nrows", strofreal(rows(`__nw_D')))
-	mata: st_local("__ergm_p", strofreal(cols(`__nw_D')-1))
+	mata: st_local("__ergm_nrows", strofreal(rows(`__nw_D'), "%18.0g"))
+	mata: st_local("__ergm_p", strofreal(cols(`__nw_D')-1, "%18.0g"))
 
 	tempname __ergm_coefnames
 	mata: st_local("__ergm_coefnames", invtokens(__nwergm_last_M.coefnames))
@@ -2412,6 +2412,7 @@ program nwergm, eclass
 		// whole time. For an unmasked model the two fields are always
 		// equal, so this is a no-op change there.
 		mata: st_local("__ergm_native_used", strofreal(__nwergm_last_M.native_enabled_sample))
+		if !`__ergm_native_used' _nwergm_slowwarn "this fit" "`nonative'"
 		if `__ergm_nmiss' > 0 {
 			// missing dyads: second, constrained chain (only the missing dyads free), as R ergm
 			capture mata: mata drop __nwergm_last_Gobs
@@ -3824,7 +3825,7 @@ program _nwergm_numvar
 		error 109
 	}
 	local __nn = _N
-	capture mata: st_local("__nn", strofreal(__nwergm_last_G.n))
+	capture mata: st_local("__nn", strofreal(__nwergm_last_G.n, "%18.0g"))
 	qui count if missing(`v') in 1/`__nn'
 	local __nna = r(N)
 	if `__nna' > 0 & inlist("`term'", "bcov1", "bfactor1", "bnodematch1", "bcov2", "bfactor2", "bnodematch2") {

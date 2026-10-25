@@ -95,7 +95,7 @@ simulates under the constraints of the fit.
 
 {title:Author}
 
-{pstd}Thomas Grund, University College Dublin and RWTH Aachen{p_end}
+{pstd}Thomas Grund, RWTH Aachen University{p_end}
 
 {hline}
 {pstd}{it:nwergm version 1.1.1, 25 October 2026}{p_end}{* nwversion}

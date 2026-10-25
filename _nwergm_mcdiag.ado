@@ -28,6 +28,8 @@ program _nwergm_mcdiag, rclass
 	tempname obsG obsstat C
 	mata: `obsG' = ErgmGraph()
 	mata: `obsG'.init(`nodes', `dir')
+	mata: st_local("__isbip", strofreal(__nwergm_last_G.bipartite))
+	if `__isbip' mata: `obsG'.set_bipartite(__nwergm_last_G.mode)
 	mata: ergm_bridge_obs(`netobj', `obsG', `dir')
 	mata: `obsstat' = __nwergm_last_M.full_statistic(`obsG')
 	mata: mata drop `obsG'
@@ -37,8 +39,8 @@ program _nwergm_mcdiag, rclass
 	mata: st_local("keepnames", invtokens(tokens("`names'")[selectindex(__nwergm_last_M.isfixed :== 0)]))
 	local thin = e(mcmc_interval)
 	if "`e(mcmc_interval_final)'" != "" local thin = e(mcmc_interval_final)
-	mata: st_local("n", strofreal(rows(`C')))
-	mata: st_local("p", strofreal(cols(`C')))
+	mata: st_local("n", strofreal(rows(`C'), "%18.0g"))
+	mata: st_local("p", strofreal(cols(`C'), "%18.0g"))
 	if `p' == 0 {
 		mata: mata drop `obsstat' `C'
 		exit

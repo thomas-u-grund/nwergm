@@ -373,7 +373,7 @@ program _nwergm_ops_derived, rclass
 		}
 		mata: `td'.opkind = "proj"
 		mata: `td'.opnum = (`mode')
-		mata: st_local("subnodes", strofreal(sum(__nwergm_last_G.mode :== `mode')))
+		mata: st_local("subnodes", strofreal(sum(__nwergm_last_G.mode :== `mode'), "%18.0g"))
 		tempvar mvar
 		qui gen byte `mvar' = .
 		mata: st_store(1::`nodes', "`mvar'", __nwergm_last_G.mode)

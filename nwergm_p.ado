@@ -55,7 +55,7 @@ program nwergm_p
 		di as txt "(matrix `matrix' contains the " cond("`pr'" != "", "conditional tie probabilities", "conditional log-odds") "; missing dyads are .)"
 	}
 	if "`frame'" != "" {
-		mata: st_local("nrowsP", strofreal(rows(`P')))
+		mata: st_local("nrowsP", strofreal(rows(`P'), "%18.0g"))
 		capture frame drop `frame'
 		frame create `frame' double(tail head p)
 		frame `frame': qui set obs `nrowsP'

@@ -1,0 +1,6 @@
+suppressMessages(library(ergm))
+set.seed(13)
+B <- matrix(rbinom(80,1,0.3),8,10)
+nw <- network(B, bipartite=8, directed=FALSE)
+nw %v% "g" <- rep(c("a","b"), length.out=18)
+print(summary(nw ~ edges + b1degree(1) + b2degree(2) + nodemix("g", levels2=NULL) + gwb1degree(0.5, fixed=TRUE)))
