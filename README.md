@@ -24,6 +24,14 @@ release tag (GitHub serves every tag under its own raw URL), for example version
 holds the package version in the stored results. Release history: `CHANGELOG.md`; how releases are made: `RELEASING.md`.
 
 
+## MCMC defaults
+
+The Monte Carlo defaults follow R's `ergm` (4.12.0): an interval of 1,024 proposals between recorded draws
+(`MCMLE.interval`) and a burn-in of 16 times the interval, 16,384 (`MCMLE.burnin`), at every MCMLE iteration; `nwergm
+simulate` uses the same values (R's `simulate()`). An `mcmcinterval()` given alone also sets the burn-in to 16 times
+its value, as in R. Versions before 1.2.0 used an interval of 50 and a burn-in of 3,000; these much faster, much less
+reliable settings are still available: `mcmcburnin(3000) mcmcinterval(50)`.
+
 ## Requirements
 
 * Stata 14 or later (StataBE is enough).

@@ -1501,10 +1501,10 @@ BEGIN
   TEXT      tx_h115 325 12 660 ., label("Metropolis-Hastings proposal (default tnt)")
   TEXT      tx_mcmcburnin 10 33 200 ., label("mcmcburnin()")
   EDIT      f_mcmcburnin 215 31 80 ., nomem
-  TEXT      tx_h116 305 33 680 ., label("default 3000")
+  TEXT      tx_h116 305 33 680 ., label("default 16 x mcmcinterval (16384)")
   TEXT      tx_mcmcinterval 10 54 200 ., label("mcmcinterval()")
   EDIT      f_mcmcinterval 215 52 80 ., nomem
-  TEXT      tx_h117 305 54 680 ., label("default 50")
+  TEXT      tx_h117 305 54 680 ., label("default 1024 (the old default was 50)")
   TEXT      tx_seed 10 75 200 ., label("seed()")
   EDIT      f_seed 215 73 80 ., nomem
   TEXT      tx_h118 305 75 680 ., label("random-number seed")

@@ -439,8 +439,8 @@ ctl("sansub", "mcmc", "sansub", "edit", "sansub()", width=80, hint="phase-2 sub-
 # --------------------------------------------------------------------------------------
 # MCMC and bridge sampling (also used by nwergm simulate where accepted)
 # --------------------------------------------------------------------------------------
-ctl("mcmcburnin", "mcmc", "mcmcburnin", "edit", "mcmcburnin()", width=80, hint="default 3000", smoke=dict(net="und", use=dict(main="500"), also={"mcmc_small": True, "triangle": True}))
-ctl("mcmcinterval", "mcmc", "mcmcinterval", "edit", "mcmcinterval()", width=80, hint="default 50", smoke=dict(net="und", use=dict(main="20"), also={"mcmc_small": True, "triangle": True}))
+ctl("mcmcburnin", "mcmc", "mcmcburnin", "edit", "mcmcburnin()", width=80, hint="default 16 x mcmcinterval (16384)", smoke=dict(net="und", use=dict(main="500"), also={"mcmc_small": True, "triangle": True}))
+ctl("mcmcinterval", "mcmc", "mcmcinterval", "edit", "mcmcinterval()", width=80, hint="default 1024 (the old default was 50)", smoke=dict(net="und", use=dict(main="20"), also={"mcmc_small": True, "triangle": True}))
 ctl("mcmcsamplesize", "mcmc", "mcmcsamplesize", "edit", "mcmcsamplesize()", width=80, hint="default 3000", smoke=dict(net="und", use=dict(main="300"), also={"mcmc_small": True, "triangle": True}))
 ctl("seed", "mcmc", "seed", "edit", "seed()", width=80, hint="random-number seed", smoke=dict(net="und", use=dict(main="1234"), also={"method": "mple"}))
 ctl("spcache", "mcmc", "spcache", "check", "spcache", hint="shared-partner cache for dense undirected networks", smoke=dict(net="und", also={"method": "mple"}))
