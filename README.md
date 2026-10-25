@@ -34,7 +34,7 @@ reliable settings are still available: `mcmcburnin(3000) mcmcinterval(50)`.
 
 ## Requirements
 
-* Stata 14 or later (StataBE is enough).
+* Stata 17 or later (tested with Stata 17 and 18; StataBE is enough). The Mata libraries are built with Stata 17; older versions are untested.
 * The core nwcommands package (see above), including its Mata library `lnwcommands.mlib`.
 * Platform plugins are shipped for macOS, Linux and Windows.
 
