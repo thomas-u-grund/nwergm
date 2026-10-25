@@ -14,6 +14,7 @@ program _nwergm_simfit, rclass
 		di as err "last nwergm estimates not found"
 		exit 301
 	}
+	_nwergm_libcheck
 	capture mata: __nwergm_last_G.n
 	if _rc {
 		di as err "no fitted nwergm model available for simulation - re-run nwergm first."

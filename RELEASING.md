@@ -15,5 +15,7 @@ version, line 2 the release date in Stata format, e.g. `24oct2026`).
 6. Push: `git push origin main --tags` (let the "Build native plugins" workflow finish and `git pull --rebase` before the next push, if the package has one).
 7. Release: `gh release create vX.Y.Z --title "nwergm X.Y.Z" --notes-file <excerpt of CHANGELOG>`.
 
+**Lockstep with the core.** The library `lib/lnwergm.mlib` contains the class definitions of the core (`nw_def`) from the moment it was built. Whenever the core library (`lnwcommands.mlib`) changes, rebuild this package's library (`NWCORE=/path/to/nwcommands StataBE -e do lib/build.do`, run from the repository root), run the tests and release a new nwergm in lockstep with the core release. Name the required core version in `nwergm.pkg` and `README.md`.
+
 Users install the latest release with `net install nwergm, from(https://raw.githubusercontent.com/thomas-u-grund/nwergm/main/) replace`
 and a specific one with `.../nwergm/vX.Y.Z/`.

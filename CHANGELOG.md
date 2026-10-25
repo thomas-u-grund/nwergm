@@ -12,6 +12,7 @@ project uses [Semantic Versioning](https://semver.org/).
 - Help files: removed the outdated statements that degree and egocentric constraints are not supported (they are available through `constraints()`), brought the description of the two-mode terms up to date, and corrected the affiliation of the author to RWTH Aachen University in all files. Test `test_nwergm_helptext`.
 
 ### Changed
+- Rebuilt for nwcommands 3.3.0; nwergm now requires core 3.3.0 or later; a clear message if the core and nwergm libraries do not match: the Mata library of nwergm contains the core class definitions it was compiled against, so a core of a different build made Mata stop with r(3021) "class compiled at different times". nwergm now checks this at the start of `nwergm`, `nwergm simulate` and prints how to reinstall (test `test_nwergm_libcheck`).
 - A run that uses the Mata fallback instead of the compiled plugin (plugin missing for the platform, option `nonative`, or a model outside the capacity of the plugin) now prints one warning line before a Monte Carlo fit, `estat gof` and `nwergm simulate` from a fit, saying that it is much slower and what to do; the help file explains this. No warning is printed when the plugin is used. Test `test_nwergm_slowwarn`.
 
 ## [1.1.1] - 2026-10-25

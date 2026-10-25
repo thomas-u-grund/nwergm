@@ -57,6 +57,7 @@ program nwergm, eclass
 		MCMLEEFFectivesize(real -1) CDNSteps(integer 8) CDSAMPLEsize(integer 0) SABURNin(integer 16384) SAINTERval(integer 1024) SAPHASE3(integer 1000) SAGAIN(real 0.1) SANSUB(integer 4) ///
 		CONSTRAINTS(string asis) OBSCONSTRAINTS(string asis) MCMCMAXEDGES(integer 0) MCMCPROP(string asis) ]
 	set more off
+	_nwergm_libcheck
 	_nwergm_est opts, estimate(`estimate') method(`method') mainmethod(`mainmethod') mpletype(`mpletype') ///
 		mplecovariance(`mplecovariance') mcmletermination(`mcmletermination') mplecheck(`mplecheck')
 	local method "`s(method)'"
@@ -2729,6 +2730,7 @@ end
 capture program drop nwergm_simulate
 program nwergm_simulate
 	version 14
+	_nwergm_libcheck
 	local __nes_n = 0
 	syntax anything(name=nodes) , edges [mutual ///
 		NODEMATCH(string) NODEMATCHDIFF(string) NODECOV(string) NODEICOV(string) NODEOCOV(string) ///
