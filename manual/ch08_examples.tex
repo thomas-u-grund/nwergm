@@ -14,7 +14,7 @@ Contrastive divergence (\opt{estimate(cd)}) is the cheap estimator for starting 
 \showlog{flo_cd}
 Stochastic approximation (\opt{mainmethod(sa)}) is the alternative to Monte Carlo maximum likelihood (469 phase-2 iterations here):
 \showlog{flo_sa}
-All three agree with the Monte Carlo maximum likelihood fit of Chapter~\ref{ch:start} within what the standard errors allow: the edges coefficient is $-2.61$ (pseudolikelihood), $-2.63$ (contrastive divergence) and $-2.60$ (stochastic approximation) against $-2.61$, and the wealth coefficient is $0.0104$, $0.0121$ and $0.0106$ against $0.0106$. The Firth-penalised pseudolikelihood (\opt{mpletype(penalized)}) shrinks the coefficients slightly; on this network, where the ordinary estimate exists, the difference is small:
+All three agree with the Monte Carlo maximum likelihood fit of Chapter~\ref{ch:start} within what the standard errors allow: the edges coefficient is $-2.61$ (pseudolikelihood), $-2.63$ (contrastive divergence) and $-2.60$ (stochastic approximation) against $-2.61$, and the wealth coefficient is $0.0104$, $0.0121$ and $0.0106$ against $0.0106$. The Firth-penalized pseudolikelihood (\opt{mpletype(penalized)}) shrinks the coefficients slightly; on this network, where the ordinary estimate exists, the difference is small:
 \showlog{flo_pen}
 A coefficient can be fixed with \opt{offset()}; the fixed coefficient is reported at its value with no standard error, and the rest of the model adapts:
 \showlog{flo_offset}
@@ -134,7 +134,7 @@ The average predicted probability, 0.115, is close to the density of the network
 \showlog{cons_deg}
 When a constraint fixes the sample space, \texttt{nwergm simulate} from the fit keeps it: the three simulated networks have exactly 575 ties, the number of ties of the data, and the out-degree of every node is that of the data.
 \showlog{cons_sim}
-A constraint can also confine the model to part of the network. With \opt{constraints(fixallbut(boston))}, where \texttt{boston} is a network that has a tie for every pair of lawyers in the Boston office, only the dyads among the Boston lawyers are modelled and all other dyads are held at their observed values. The network \texttt{boston} is built from the variable \texttt{office} in Mata:
+A constraint can also confine the model to part of the network. With \opt{constraints(fixallbut(boston))}, where \texttt{boston} is a network that has a tie for every pair of lawyers in the Boston office, only the dyads among the Boston lawyers are modeled and all other dyads are held at their observed values. The network \texttt{boston} is built from the variable \texttt{office} in Mata:
 \showlog{cons_prep}
 \showlog{cons_block}
 The number of informative dyads is $48\times47=2256$.
@@ -154,8 +154,8 @@ A model with the density and the mixing of the type of person and club (\opt{nod
 \showlog{two_fit}
 Ties between people and clubs of the same type are more likely than ties between different types: the coefficients of the two cells of different types are $-1.5$ and $-2.4$ relative to the cell in which both are of type 1, against $-0.23$ for the cell in which both are of type 2. A geometrically weighted degree term for the second mode (\opt{bgwdegree2(0.5)}) makes the model dyad-dependent:
 \showlog{two_fit2}
-The goodness of fit of a two-mode model compares the degree distributions of both modes, the dyadwise shared partners and the distances (here with \opt{-model}, because the model-statistics block of a two-mode fit is not reliable in this release; see Chapter~\ref{ch:limits}):
-\showlogpart{two_gof}{1}{31}
+The goodness of fit of a two-mode model compares the statistics of the model, the degree distributions of both modes, the dyadwise shared partners and the distances. The listing shows the first three blocks (the other blocks follow in the same layout):
+\showlogpart{two_gof}{1}{38}
 Operators evaluate terms on a derived network. \texttt{Proj1(edges triangle)} evaluates the number of ties and triangles of the one-mode projection on the first mode (two people are tied if they belong to a common club):
 \showlog{two_ops}
 On the directed Lazega network, \texttt{Symmetrize(triangle, rule(strong))} counts the triangles of the network of reciprocated ties:

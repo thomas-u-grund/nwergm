@@ -9,10 +9,9 @@ set seed 20261024
 nwclear
 mata: g1 = (runiform(30,1) :> 0.5) :+ 1
 mata: g2 = (runiform(12,1) :> 0.5) :+ 1
-mata: P = J(30,12,0.08)
-mata: for (i=1;i<=30;i++) for (j=1;j<=12;j++) if (g1[i]==g2[j]) P[i,j] = 0.30
+mata: P = 0.08 :+ 0.22 :* ((g1 * J(1,12,1)) :== (J(30,1,1) * rowshape(g2,1)))
 mata: B = (runiform(30,12) :< P)
-mata: st_matrix("B", B')
+mata: st_matrix("B", transposeonly(B))
 nwset, mat(B) bipartite name(clubs)
 set obs 42
 generate byte kind = .
@@ -23,7 +22,7 @@ nwergm clubs, edges nodemix(kind)
 *# two_fit2
 nwergm clubs, edges nodemix(kind) bgwdegree2(0.5) seed(1)
 *# two_gof
-estat gof, gof(b1degree b2degree dspartners distance -model) nsim(100) seed(2)
+estat gof, gof(b1degree b2degree dspartners distance model) nsim(100) seed(2)
 *# two_ops
 nwergm clubs, edges nodemix(kind) operators(Proj1(edges triangle)) seed(1)
 *# op_sym

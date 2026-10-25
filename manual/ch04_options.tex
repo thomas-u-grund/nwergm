@@ -43,8 +43,8 @@ Option & Description\\
 \opt{edgecov(netname|matname)} & Dyadic covariate from a network or an $n\times n$ matrix.\\
 \opt{dyadcov(netname|matname)} & Directed: three coefficients (mutual, upper and lower triangle); undirected: as \opt{edgecov()}.\\
 \opt{hamming(netname)} & Number of dyads that differ from a reference network.\\
-\opt{nodecovrange(varlist)}, \opt{nodeocovrange(varlist)}, \opt{nodeicovrange(varlist)} & Sum over nodes of the range of the covariate among the neighbours (out-, in-neighbours). Dyad-dependent.\\
-\opt{nodefactordistinct(varlist)}, \opt{nodeofactordistinct(varlist)}, \opt{nodeifactordistinct(varlist)} & Sum over nodes of the number of distinct levels among the neighbours. Dyad-dependent.\\
+\opt{nodecovrange(varlist)}, \opt{nodeocovrange(varlist)}, \opt{nodeicovrange(varlist)} & Sum over nodes of the range of the covariate among the neighbors (out-, in-neighbors). Dyad-dependent.\\
+\opt{nodefactordistinct(varlist)}, \opt{nodeofactordistinct(varlist)}, \opt{nodeifactordistinct(varlist)} & Sum over nodes of the number of distinct levels among the neighbors. Dyad-dependent.\\
 \opt{sender}, \opt{receiver} & One coefficient per node but the first: out-degree, in-degree of the node. Directed networks.\\
 \bottomrule
 \end{longtable}
@@ -101,7 +101,7 @@ Option & Description (R term)\\
 \opt{bcov1(varlist)}, \opt{bcov2(varlist)} & Covariate main effect for one mode (\texttt{b1cov}, \texttt{b2cov}).\\
 \opt{bfactor1(varlist)}, \opt{bfactor2(varlist)} & One coefficient per level but the first (\texttt{b1factor}, \texttt{b2factor}).\\
 \opt{bdegree1(numlist)}, \opt{bdegree2(numlist)} & Nodes of the mode with the given degree (\texttt{b1degree}). Suboptions \opt{by()}, \opt{levels()}, \opt{homophily}.\\
-\opt{bstar1(numlist)}, \opt{bstar2(numlist)} & $k$-stars centred on a node of the mode (\texttt{b1star}). Suboptions \opt{attr()}, \opt{levels()}.\\
+\opt{bstar1(numlist)}, \opt{bstar2(numlist)} & $k$-stars centered on a node of the mode (\texttt{b1star}). Suboptions \opt{attr()}, \opt{levels()}.\\
 \opt{bnodematch1(var)}, \opt{bnodematch2(var)} & Homophily for one mode (\texttt{b1nodematch}). Suboptions \opt{diff}, \opt{alpha()}, \opt{beta()}, \opt{byattr()}, \opt{keep()}, \opt{levels()}.\\
 \opt{bgwdegree1(\#)}, \opt{bgwdegree2(\#)} & Geometrically weighted degree of the mode, fixed decay (\texttt{gwb1degree}). Suboptions \opt{attr()}, \opt{levels()}.\\
 \opt{bgwdegreefree1(\#)}, \opt{bgwdegreefree2(\#)} & The curved forms.\\
@@ -109,12 +109,12 @@ Option & Description (R term)\\
 \opt{bconcurrent1()}, \opt{bconcurrent2()} & Nodes of the mode with degree 2 or more; \opt{all} or \opt{by(var)} (\texttt{b1concurrent}).\\
 \opt{bmindegree1(numlist)}, \opt{bmindegree2(numlist)} & Nodes with degree of at least $d$ (\texttt{b1mindegree}).\\
 \opt{bdegrange1()}, \opt{bdegrange2()} & Nodes with degree in $[from,to)$ (\texttt{b1degrange}). Suboptions \opt{to()}, \opt{by()}, \opt{levels()}, \opt{homophily}.\\
-\opt{bcovrange1(var)}, \opt{bcovrange2(var)} & Sum over nodes of the range of the neighbours' covariate (\texttt{b1covrange}).\\
-\opt{bfactordistinct1(var)}, \opt{bfactordistinct2(var)} & Sum over nodes of the number of distinct levels among the neighbours (\texttt{b1factordistinct}). Suboption \opt{levels()}.\\
+\opt{bcovrange1(var)}, \opt{bcovrange2(var)} & Sum over nodes of the range of the neighbors' covariate (\texttt{b1covrange}).\\
+\opt{bfactordistinct1(var)}, \opt{bfactordistinct2(var)} & Sum over nodes of the number of distinct levels among the neighbors (\texttt{b1factordistinct}). Suboption \opt{levels()}.\\
 \opt{bsociality1(numlist)}, \opt{bsociality2(numlist)} & Degree of single nodes; negative numbers exclude (\texttt{b1sociality}).\\
 \opt{bstarmix1(k)}, \opt{bstarmix2(k)} & Mixing matrix of $k$-stars (\texttt{b1starmix}). Suboptions \opt{attr()}, \opt{nodiff}, \opt{base()}.\\
 \opt{btwostar1(var)}, \opt{btwostar2(var)} & Two-star census by centre and leaf attributes (\texttt{b1twostar}). Suboptions \opt{attr2()}, \opt{levels1()}, \opt{levels2()}, \opt{levels3()}, \opt{base()}.\\
-\opt{coincidence()} & Number of common mode-1 neighbours for each pair of mode-2 nodes; \opt{all} or \opt{active(\#)}.\\
+\opt{coincidence()} & Number of common mode-1 neighbors for each pair of mode-2 nodes; \opt{all} or \opt{active(\#)}.\\
 \opt{bdsp1(numlist)}, \opt{bdsp2(numlist)} & Pairs of nodes of the mode with exactly $d$ shared partners (\texttt{b1dsp}).\\
 \bottomrule
 \end{longtable}
@@ -165,7 +165,7 @@ Option & Description\\
 \opt{method(mple|mcmle|cd)} & Older spelling of \opt{estimate()}; contradicting values are refused.\\
 \opt{mainmethod(mcmle|sa)} & R's \texttt{main.method=}: Monte Carlo maximum likelihood (default) or stochastic approximation.\\
 \opt{init(numlist)} & Starting values, one per coefficient, \texttt{.} or \texttt{NA} for a value to be estimated (Section~\ref{sec:estimators}).\\
-\opt{mpletype(glm|penalized)} & \texttt{MPLE.type}: ordinary or Firth-penalised pseudolikelihood.\\
+\opt{mpletype(glm|penalized)} & \texttt{MPLE.type}: ordinary or Firth-penalized pseudolikelihood.\\
 \opt{mplecheck(on|off)} & \texttt{MPLE.check}: test whether the pseudolikelihood estimate exists.\\
 \opt{mplecovariance(invhess|godambe|bootstrap)} & \texttt{MPLE.covariance.method}.\\
 \bottomrule

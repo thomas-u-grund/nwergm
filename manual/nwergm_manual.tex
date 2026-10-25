@@ -31,8 +31,9 @@
 \newcommand{\inc}[1]{\typeout{>>>#1}\input{#1}}
 \input{gen_counts.tex}
 \input{gen_compare_nums.tex}
-\newcommand{\pkgversion}{1.1.1}
+\newcommand{\pkgversion}{1.1.3}
 \newcommand{\pkgdate}{25 October 2026}
+% Version and date of the release that the manual describes: change these two lines (and nothing else) to bump the version.
 % DOI of the archived manual (Zenodo). Empty until the manual is archived; nothing is printed for an empty DOI.
 \newcommand{\manualdoi}{}
 \newcommand{\citedoi}{\ifdefempty{\manualdoi}{}{ Zenodo. \url{https://doi.org/\manualdoi}}}
@@ -46,7 +47,7 @@
 \noindent Please also report the version of the program that produced your results, as printed by \texttt{nwergm version} and stored in \texttt{e(version)}.
 \end{quote}
 \chapter*{Acknowledgments}\addcontentsline{toc}{chapter}{Acknowledgments}
-\nwergm{} follows the statnet project closely and exists because of it. The exponential random graph model and the \ergm{} package are due to Mark S.\ Handcock, David R.\ Hunter, Carter T.\ Butts, Steven M.\ Goodreau, Pavel N.\ Krivitsky, Martina Morris and many contributors~\cite{hunter2008jss,handcock2008}. \ergm{}~\ergmver{} is the reference implementation on which the terms, the estimation algorithms, the defaults and the output of \nwergm{} are modelled. The R source code and the manuals of \ergm{} were the specification against which the Stata code was written and checked. The curved exponential families, the pseudolikelihood and the goodness-of-fit method of the package are those of Hunter and Handcock~\cite{hunter2006} and Hunter, Goodreau and Handcock~\cite{hunter2008jasa}; the treatment of missing dyads is that of Handcock and Gile~\cite{handcock2010}.
+\nwergm{} follows the statnet project closely and exists because of it. The exponential random graph model and the \ergm{} package are due to Mark S.\ Handcock, David R.\ Hunter, Carter T.\ Butts, Steven M.\ Goodreau, Pavel N.\ Krivitsky, Martina Morris and many contributors~\cite{hunter2008jss,handcock2008}. \ergm{}~\ergmver{} is the reference implementation on which the terms, the estimation algorithms, the defaults and the output of \nwergm{} are modeled. The R source code and the manuals of \ergm{} were the specification against which the Stata code was written and checked. The curved exponential families, the pseudolikelihood and the goodness-of-fit method of the package are those of Hunter and Handcock~\cite{hunter2006} and Hunter, Goodreau and Handcock~\cite{hunter2008jasa}; the treatment of missing dyads is that of Handcock and Gile~\cite{handcock2010}.
 
 \nwergm{} is not affiliated with or endorsed by the statnet project, and its errors are the author's. It is meant for researchers who work in Stata or prefer it to R. It is not a replacement for \ergm{}, which remains the reference and the more complete program.
 
@@ -67,23 +68,23 @@
 \inc{app_translation}
 \bibliographystyle{plain}
 \begin{thebibliography}{99}
-\bibitem{hunter2008jss} Hunter, D.R., Handcock, M.S., Butts, C.T., Goodreau, S.M., Morris, M. (2008). ergm: A package to fit, simulate and diagnose exponential-family models for networks. \emph{Journal of Statistical Software} 24(3).
-\bibitem{handcock2008} Handcock, M.S., Hunter, D.R., Butts, C.T., Goodreau, S.M., Morris, M. (2008). statnet: Software tools for the representation, visualization, analysis and simulation of network data. \emph{Journal of Statistical Software} 24(1).
-\bibitem{hunter2006} Hunter, D.R., Handcock, M.S. (2006). Inference in curved exponential family models for networks. \emph{Journal of Computational and Graphical Statistics} 15(3), 565--583.
-\bibitem{hunter2008jasa} Hunter, D.R., Goodreau, S.M., Handcock, M.S. (2008). Goodness of fit of social network models. \emph{Journal of the American Statistical Association} 103, 248--258.
-\bibitem{handcock2010} Handcock, M.S., Gile, K.J. (2010). Modeling social networks from sampled data. \emph{Annals of Applied Statistics} 4(1), 5--25.
-\bibitem{krivitsky2014} Krivitsky, P.N., Handcock, M.S. (2014). A separable model for dynamic networks. \emph{Journal of the Royal Statistical Society, Series B} 76, 29--46.
-\bibitem{snijders2002} Snijders, T.A.B. (2002). Markov chain Monte Carlo estimation of exponential random graph models. \emph{Journal of Social Structure} 3(2).
-\bibitem{robins2007} Robins, G., Pattison, P., Kalish, Y., Lusher, D. (2007). An introduction to exponential random graph ($p^*$) models for social networks. \emph{Social Networks} 29, 173--191.
-\bibitem{wasserman1996} Wasserman, S., Pattison, P. (1996). Logit models and logistic regressions for social networks: I. An introduction to Markov graphs and $p^*$. \emph{Psychometrika} 61, 401--425.
-\bibitem{frank1986} Frank, O., Strauss, D. (1986). Markov graphs. \emph{Journal of the American Statistical Association} 81, 832--842.
-\bibitem{hummel2012} Hummel, R.M., Hunter, D.R., Handcock, M.S. (2012). Improving simulation-based algorithms for fitting ERGMs. \emph{Journal of Computational and Graphical Statistics} 21(4), 920--939.
-\bibitem{geyer1992} Geyer, C.J., Thompson, E.A. (1992). Constrained Monte Carlo maximum likelihood for dependent data. \emph{Journal of the Royal Statistical Society, Series B} 54(3), 657--699.
-\bibitem{hunter2007} Hunter, D.R. (2007). Curved exponential family models for social networks. \emph{Social Networks} 29(2), 216--230.
-\bibitem{morris2008} Morris, M., Handcock, M.S., Hunter, D.R. (2008). Specification of exponential-family random graph models: terms and computational aspects. \emph{Journal of Statistical Software} 24(4).
-\bibitem{krivitsky2012} Krivitsky, P.N. (2012). Exponential-family random graph models for valued networks. \emph{Electronic Journal of Statistics} 6, 1100--1128.
+\bibitem{hunter2008jss} Hunter, D.R., Handcock, M.S., Butts, C.T., Goodreau, S.M., Morris, M. (2008). ergm: A package to fit, simulate and diagnose exponential-family models for networks. \emph{Journal of Statistical Software} 24(3). \url{https://doi.org/10.18637/jss.v024.i03}
+\bibitem{handcock2008} Handcock, M.S., Hunter, D.R., Butts, C.T., Goodreau, S.M., Morris, M. (2008). statnet: Software tools for the representation, visualization, analysis and simulation of network data. \emph{Journal of Statistical Software} 24(1). \url{https://doi.org/10.18637/jss.v024.i01}
+\bibitem{hunter2006} Hunter, D.R., Handcock, M.S. (2006). Inference in curved exponential family models for networks. \emph{Journal of Computational and Graphical Statistics} 15(3), 565--583. \url{https://doi.org/10.1198/106186006X133069}
+\bibitem{hunter2008jasa} Hunter, D.R., Goodreau, S.M., Handcock, M.S. (2008). Goodness of fit of social network models. \emph{Journal of the American Statistical Association} 103, 248--258. \url{https://doi.org/10.1198/016214507000000446}
+\bibitem{handcock2010} Handcock, M.S., Gile, K.J. (2010). Modeling social networks from sampled data. \emph{Annals of Applied Statistics} 4(1), 5--25. \url{https://doi.org/10.1214/08-AOAS221}
+\bibitem{krivitsky2014} Krivitsky, P.N., Handcock, M.S. (2014). A separable model for dynamic networks. \emph{Journal of the Royal Statistical Society, Series B} 76, 29--46. \url{https://doi.org/10.1111/rssb.12014}
+\bibitem{snijders2002} Snijders, T.A.B. (2002). Markov chain Monte Carlo estimation of exponential random graph models. \emph{Journal of Social Structure} 3(2), 1--40.
+\bibitem{robins2007} Robins, G., Pattison, P., Kalish, Y., Lusher, D. (2007). An introduction to exponential random graph ($p^*$) models for social networks. \emph{Social Networks} 29, 173--191. \url{https://doi.org/10.1016/j.socnet.2006.08.002}
+\bibitem{wasserman1996} Wasserman, S., Pattison, P. (1996). Logit models and logistic regressions for social networks: I. An introduction to Markov graphs and $p^*$. \emph{Psychometrika} 61, 401--425. \url{https://doi.org/10.1007/BF02294547}
+\bibitem{frank1986} Frank, O., Strauss, D. (1986). Markov graphs. \emph{Journal of the American Statistical Association} 81, 832--842. \url{https://doi.org/10.1080/01621459.1986.10478342}
+\bibitem{hummel2012} Hummel, R.M., Hunter, D.R., Handcock, M.S. (2012). Improving simulation-based algorithms for fitting ERGMs. \emph{Journal of Computational and Graphical Statistics} 21(4), 920--939. \url{https://doi.org/10.1080/10618600.2012.679224}
+\bibitem{geyer1992} Geyer, C.J., Thompson, E.A. (1992). Constrained Monte Carlo maximum likelihood for dependent data. \emph{Journal of the Royal Statistical Society, Series B} 54(3), 657--683. \url{https://doi.org/10.1111/j.2517-6161.1992.tb01443.x}
+\bibitem{hunter2007} Hunter, D.R. (2007). Curved exponential family models for social networks. \emph{Social Networks} 29(2), 216--230. \url{https://doi.org/10.1016/j.socnet.2006.08.005}
+\bibitem{morris2008} Morris, M., Handcock, M.S., Hunter, D.R. (2008). Specification of exponential-family random graph models: terms and computational aspects. \emph{Journal of Statistical Software} 24(4). \url{https://doi.org/10.18637/jss.v024.i04}
+\bibitem{krivitsky2012} Krivitsky, P.N. (2012). Exponential-family random graph models for valued networks. \emph{Electronic Journal of Statistics} 6, 1100--1128. \url{https://doi.org/10.1214/12-EJS696}
 \bibitem{lazega2001} Lazega, E. (2001). \emph{The Collegial Phenomenon: The Social Mechanisms of Cooperation Among Peers in a Corporate Law Partnership}. Oxford: Oxford University Press.
-\bibitem{padgett1993} Padgett, J.F., Ansell, C.K. (1993). Robust action and the rise of the Medici, 1400--1434. \emph{American Journal of Sociology} 98, 1259--1319.
-\bibitem{kapferer1972} Kapferer, B. (1972). \emph{Strategy and Transaction in an African Factory}. Manchester: Manchester University Press.
+\bibitem{padgett1993} Padgett, J.F., Ansell, C.K. (1993). Robust action and the rise of the Medici, 1400--1434. \emph{American Journal of Sociology} 98, 1259--1319. \url{https://doi.org/10.1086/230190}
+\bibitem{kapferer1972} Kapferer, B. (1972). \emph{Strategy and Transaction in an African Factory: African Workers and Indian Management in a Zambian Town}. Manchester: Manchester University Press.
 \end{thebibliography}
 \end{document}

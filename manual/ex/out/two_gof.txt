@@ -1,4 +1,13 @@
-. estat gof, gof(b1degree b2degree dspartners distance -model) nsim(100) seed(2)
+. estat gof, gof(b1degree b2degree dspartners distance model) nsim(100) seed(2)
+
+Goodness-of-fit for model statistics
+
+                       obs       min      mean       max  MC p-value
+edges                   71        47     70.42        92        1.00
+nodemix_kind_2_1         9         2      8.72        17        1.00
+nodemix_kind_1_2         3         0      3.01         8        1.00
+nodemix_kind_2_2        13         4     12.32        24        0.88
+bgwdegree2_0.5   18.780531 16.067198     18.58  19.68857        0.92
 
 Goodness-of-fit for minimum geodesic distance
 

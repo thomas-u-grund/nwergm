@@ -1,9 +1,9 @@
 "fit","kind","term","value","se"
 "attrcov(prac; mat(AM))","coef","edges",-2.21127353203989,0.0785687514014854
-"attrcov(prac; mat(AM))","coef","attrcov.prac",0.166214442758262,0.0587458180562433
+"attrcov(prac; mat(AM))","coef","attrcov.prac",0.166214442758261,0.0587458180562433
 "attrcov(prac; mat(AM))","obs","edges",575,NA
 "attrcov(prac; mat(AM))","obs","attrcov.prac",641,NA
-"dyadcov(lazega_cow)","coef","edges",-2.56826427762352,0.0622326622857177
+"dyadcov(lazega_cow)","coef","edges",-2.56826427762353,0.0622326622857177
 "dyadcov(lazega_cow)","coef","dyadcov.C.mutual",3.22608311576402,0.197031475149194
 "dyadcov(lazega_cow)","coef","dyadcov.C.utri",1.54941695742428,0.124497382435463
 "dyadcov(lazega_cow)","coef","dyadcov.C.ltri",1.68917889979944,0.120653226860036
@@ -12,7 +12,7 @@
 "dyadcov(lazega_cow)","obs","dyadcov.C.utri",100,NA
 "dyadcov(lazega_cow)","obs","dyadcov.C.ltri",115,NA
 "mm(prac)","coef","edges",-1.56058152090612,0.0895172449328209
-"mm(prac)","coef","mm[prac=litigation,prac=corporate]",-1.17378598850997,0.149038371463737
+"mm(prac)","coef","mm[prac=litigation,prac=corporate]",-1.17378598850996,0.149038371463737
 "mm(prac)","coef","mm[prac=corporate,prac=litigation]",-1.0026180548313,0.142311703842301
 "mm(prac)","coef","mm[prac=litigation,prac=litigation]",-0.104011949564485,0.112115645323659
 "mm(prac)","obs","edges",575,NA
