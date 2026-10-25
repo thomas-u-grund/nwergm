@@ -2604,10 +2604,10 @@ BEGIN
   TEXT      tx_h192 305 192 680 ., label("phase-2 sub-phases; default 4")
   TEXT      tx_mcmcburnin 10 213 200 ., label("mcmcburnin()")
   EDIT      f_mcmcburnin 215 211 80 ., nomem
-  TEXT      tx_h193 305 213 680 ., label("default 3000")
+  TEXT      tx_h193 305 213 680 ., label("default 16 x mcmcinterval (16384)")
   TEXT      tx_mcmcinterval 10 234 200 ., label("mcmcinterval()")
   EDIT      f_mcmcinterval 215 232 80 ., nomem
-  TEXT      tx_h194 305 234 680 ., label("default 50")
+  TEXT      tx_h194 305 234 680 ., label("default 1024 (the old default was 50)")
   TEXT      tx_mcmcsamplesize 10 255 200 ., label("mcmcsamplesize()")
   EDIT      f_mcmcsamplesize 215 253 80 ., nomem
   TEXT      tx_h195 305 255 680 ., label("default 3000")

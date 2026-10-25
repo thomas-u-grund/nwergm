@@ -153,9 +153,9 @@ Estimation methods (MPLE variants, contrastive divergence, stochastic approximat
 {synopt:{opt bridgesteps(#)}}Number of bridges for the log-likelihood evaluation; default 16 (R: {cmd:bridge.nsteps}){p_end}
 {synopt:{opt bridgesamplesize(#)}}Draws per bridge; default {opt mcmcsamplesize()}{p_end}
 {synopt:{opt bridgeinterval(#)}}MCMC thinning within the bridges; default the final MCMLE interval divided by the number of bridges{p_end}
-{synopt:{opt mcmcburnin(int)}}MCMC burn-in steps per simulation; default 3,000{p_end}
-{synopt:{opt mcmcinterval(int)}}MCMC steps between recorded draws; default 50{p_end}
-{synopt:{opt mcmcsamplesize(int)}}Number of recorded MCMC draws per simulation; default 3,000{p_end}
+{synopt:{opt mcmcburnin(int)}}MCMC burn-in steps before the recorded draws of each MCMLE iteration (R's {cmd:MCMLE.burnin}); default 16 times {opt mcmcinterval()}, that is 16,384. Versions before 1.2.0 used 3,000{p_end}
+{synopt:{opt mcmcinterval(int)}}MCMC steps between recorded draws (R's {cmd:MCMLE.interval}); default 1,024. Versions before 1.2.0 used 50. The earlier, faster but much less reliable settings are {cmd:mcmcburnin(3000) mcmcinterval(50)}{p_end}
+{synopt:{opt mcmcsamplesize(int)}}Number of recorded MCMC draws per MCMLE iteration; default 3,000. R draws a number that adapts to an effective size of 64 (at least 256 draws); {cmd:nwergm} records a fixed number and enlarges the interval or the sample when the effective size stays below max(200, 64 times the number of parameters){p_end}
 {synopt:{opt mcmleiterations(int)}}Maximum MCMLE outer iterations (R's {cmd:MCMLE.maxit}); default 60. When the limit is reached without convergence the fit is reported with a warning and {cmd:e(converged)} = 0{p_end}
 {synopt:{opt proposal(uniform|random|tnt)}}Metropolis-Hastings proposal weights (R's {cmd:MCMC.prop.weights}); default {it:tnt}. Both have a masked variant when {opt freedyads()} or {opt blockdiag()} is given{p_end}
 {synopt:{opt constraints(formula)}}Sample-space constraints written as in R's {cmd:constraints=} (edges, degrees, odegrees, idegrees, bd, blocks, blockdiag, fixedas, fixallbut, ...), several at once; see {help nwergm_constraints}{p_end}
@@ -622,6 +622,11 @@ needs it alongside the simulated network.
 matching {cmd:nwergm}'s own control conventions rather than continuing one long chain), named
 {opt generate()}{cmd:_1}, {opt generate()}{cmd:_2}, ... when {opt nsim()}{cmd: > 1} (default stub
 {cmd:ergmsim}), or plain {opt generate()} (default {cmd:ergmsim}) when {opt nsim(1)}.
+
+{pstd}
+As in R's {cmd:simulate()}, {opt mcmcinterval()} defaults to 1,024 and {opt mcmcburnin()} to 16 times
+the interval (16,384). Versions before 1.2.0 used 50 and 3,000; {cmd:mcmcburnin(3000) mcmcinterval(50)}
+restores them.
 
 {title:See also}
 

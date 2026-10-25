@@ -49,7 +49,7 @@ program nwergm, eclass
 		BDSP1(string) BDSP2(string) BGWDSP1(string) BGWDSP2(string) ///
 		BGWDEGREEFREE1(string) BGWDEGREEFREE2(string) BGWDSPFREE1(string) BGWDSPFREE2(string) ///
 		TYPE(string) FREEDYADS(string) BLOCKDIAG(string) FIXDENSITY ///
-		METHOD(string) MCMCBURNIN(integer 3000) MCMCINTERVAL(integer 50) ///
+		METHOD(string) MCMCBURNIN(integer -1) MCMCINTERVAL(integer 1024) ///
 		MCMCSAMPLESIZE(integer 3000) MCMLEITERATIONS(integer 60) ///
 		PROPOSAL(string) SEED(integer -1) VERBOSE SPCACHE NOMCMCSAMPLE NONATIVE ///
 		OFFSET(string) COEFLABEL(string) LOGSTAT(string) EXPSTAT(string) STRUCTURAL(string asis) OPERATORS(string asis) SUBMODEL(string) NOLOGLIK BRIDGESTEPS(integer 16) BRIDGESAMPLESIZE(integer 0) BRIDGEINTERVAL(integer 0) ///
@@ -58,6 +58,8 @@ program nwergm, eclass
 		MCMLEEFFectivesize(real -1) CDNSteps(integer 8) CDSAMPLEsize(integer 0) SABURNin(integer 16384) SAINTERval(integer 1024) SAPHASE3(integer 1000) SAGAIN(real 0.1) SANSUB(integer 4) ///
 		CONSTRAINTS(string asis) OBSCONSTRAINTS(string asis) MCMCMAXEDGES(integer 0) MCMCPROP(string asis) ]
 	set more off
+	// R: MCMLE.burnin = MCMLE.interval * 16 - an unset burn-in follows the interval
+	if `mcmcburnin' < 0 local mcmcburnin = 16 * `mcmcinterval'
 	_nwergm_est opts, estimate(`estimate') method(`method') mainmethod(`mainmethod') mpletype(`mpletype') ///
 		mplecovariance(`mplecovariance') mcmletermination(`mcmletermination') mplecheck(`mplecheck')
 	local method "`s(method)'"
@@ -2752,8 +2754,8 @@ program nwergm_simulate
 		BSTARMIX1(string) BSTARMIX2(string) BTWOSTAR1(string) BTWOSTAR2(string) COINCIDENCE(string) ///
 		BDSP1(string) BDSP2(string) BGWDSP1(string) BGWDSP2(string) ///
 		BIPARTITE(integer 0) ///
-		THETA(numlist) directed NSIM(integer 1) MCMCBURNIN(integer 3000) ///
-		MCMCINTERVAL(integer 50) PROPOSAL(string) SEED(integer -1) GENERATE(string) SPCACHE ///
+		THETA(numlist) directed NSIM(integer 1) MCMCBURNIN(integer -1) ///
+		MCMCINTERVAL(integer 1024) PROPOSAL(string) SEED(integer -1) GENERATE(string) SPCACHE ///
 		BASIS(string) CONSTRAINTS(string asis) ]
 
 	foreach __ergm_o in degree odegree idegree kstar ostar istar degrange degrangeto odegrange odegrangeto idegrange idegrangeto esp dsp bdegree1 bdegree2 bstar1 bstar2 {
@@ -2762,6 +2764,8 @@ program nwergm_simulate
 			if !_rc local `__ergm_o' `r(numlist)'
 		}
 	}
+	// R: MCMC.burnin = MCMC.interval * 16 - an unset burn-in follows the interval
+	if `mcmcburnin' < 0 local mcmcburnin = 16 * `mcmcinterval'
 	confirm integer number `nodes'
 	if `nodes' < 2 {
 		di "{err}nwergm simulate needs at least 2 nodes."

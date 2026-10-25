@@ -5,6 +5,13 @@ project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed (results change!)
+- The default MCMC settings are now those of R's `ergm` 4.12.0. `mcmcinterval()` defaults to 1024 (was 50; R: `MCMLE.interval`) and `mcmcburnin()` to 16 times the interval, 16384 (was 3000; R: `MCMLE.burnin = MCMLE.interval * 16`), at every MCMLE iteration. An `mcmcinterval()` given without `mcmcburnin()` now also sets the burn-in to 16 times its value, as in R; before, the burn-in stayed at 3000. The same new defaults apply to `nwergm simulate` (R: `control.simulate`: interval 1024, burn-in 16 times the interval). Explicit `mcmcburnin()` and `mcmcinterval()` are used as given.
+- Why: with an interval of 50 the chain of a dyad-dependent fit was strongly autocorrelated. On the Lazega advice model with `mutual` the effective sample size of the final sample was 21 to 29 out of 3000 draws (R: 246 to 308); with the new defaults it is 340 to 410. On the Mesa model with `gwesp(.25)` it rose from 10 to 20 to 321 to 367 (R: 158 to 184). Coefficients now agree with R within Monte Carlo error; with the old defaults single fits were off by up to two thirds of a standard error (Mesa race match 0.21 against R 0.29, se 0.12). The price is run time: a fit takes about 2 to 30 times longer than before (Lazega with `gwesp(.5)` 6 s to 20 s, Mesa 0.4 s to 13 s; R: 17 s and 4 s). The old settings are reachable with `mcmcburnin(3000) mcmcinterval(50)`.
+- Fits that used the defaults give different numbers than in 1.1.x (same seed, different chain). Fits that gave both options explicitly are unchanged. Results printed in the manual, the help examples and the book for default-setting fits must be regenerated.
+- Help file, dialogs (the hints next to `mcmcburnin()` and `mcmcinterval()`) and README state the new defaults; the help of `estat gof` quotes the right values for fits by pseudolikelihood. Test `test_nwergm_rdefaults` checks that the documented defaults are what runs.
+- Not changed, on purpose: `mcmcsamplesize()` stays 3000 recorded draws (R adapts the number of draws to an effective size of 64, with at least 256 draws), and the adaptive interval and sample growth keep their floor of max(200, 64 times the number of parameters) effective draws, which is stricter than R's 64.
+
 ## [1.1.4] - 2026-10-25
 
 ### Changed
