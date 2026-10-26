@@ -9306,7 +9306,9 @@ real matrix ErgmNativeSampleCore(class ErgmModel scalar M, class ErgmGraph scala
 	}
 
 	nties_out = st_numscalar("__ergm_native_nties_out")
-	if (nties_out > nobs_frame & st_numscalar("__ergm_native_gen") >= 2) {
+	gen = st_numscalar("__ergm_native_gen")
+	if (rows(gen) * cols(gen) != 1) gen = .
+	if (nties_out > nobs_frame & gen < . & gen >= 2) {
 		// the final network did not fit the frame: enlarge it and repeat the call (nothing was written; same seed)
 		st_addobs(nties_out - nobs_frame + 16)
 		nobs_frame = nties_out + 16

@@ -3,6 +3,21 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Results that change (read before you re-run old analyses)
+- **The MCMLE sample size is adaptive, as in R's `ergm`.** Each MCMLE iteration now draws a base sample of max(256, 32 times the number of parameters) and keeps sampling until the effective sample size of the estimating equations reaches 64 (`mcmleeffectivesize()`, R's `MCMLE.effectiveSize`), discarding a burn-in estimated from the sample itself and thinning the chain by two whenever the sample has doubled; the next iteration starts from half the interval that was needed (R: `MCMLE.effectiveSize.interval_drop`). Before, every iteration recorded exactly 3,000 draws at the full interval and the interval was enlarged when the effective size was below max(200, 64 p). The coefficients of a fit are therefore different draws from the same distribution: they agree with R's within 0.2 standard errors on the benchmark models (10 seeds), and they scatter between seeds like R's (the effective sample size of the final sample is about 64 or more, not several hundred). `e(mcmc_samplesize)` is the number of draws actually kept. The old behaviour is `mcmleeffectivesize(0)` (fixed 3,000 draws, `mcmcsamplesize()` to change it); the sample size given in `mcmcsamplesize()` is the base size of the adaptive sample.
+- The covariance matrix of a converged fit is computed from the sample of the last MCMLE iteration, as in R, instead of from one further sample at the final point (a further sample is drawn only when the iterations ran out before convergence).
+- The log-likelihood by bridge sampling uses, as in R, the sample size, the interval and the burn-in of the fit's own last iteration (16 bridges, about 300 draws each) instead of 3,000 draws per bridge; its Monte Carlo standard error `e(ll_se)` is somewhat larger.
+- The starting values of large models (more than 20,000 dyads) differ in the ninth digit or later: the pseudolikelihood is maximized by the built-in iteration instead of falling back to Stata's `logit` (the likelihood-decrease check was an absolute 1e-9, which rounding errors exceed when the log-likelihood is in the tens of thousands).
+
+### Changed
+- Speed. On the eight benchmark models of the article (median of five fits, same networks and defaults) `nwergm` is now faster than R's `ergm` 4.12.0 on all eight (see the table in the article inputs). The main reason was the sample size policy above; in addition the C kernels are faster per proposal than before (adjacency bit matrix instead of hash lookups, tabulated GW kernel, constant-time uniform dyad draw), the frame handed to the plugin is sized to the network (not to the number of dyads), consecutive native runs hand the network on as a tie list (Mata rebuilds its graph once per fit, not after every run), the full statistics are carried from run to run, and the MPLE and dyad-independent likelihoods of large models are computed on the distinct rows of the design matrix.
+- New option `mcmleeffectivesize(#)` (default 64; `0` = fixed-size samples) is now documented and drives the adaptive sample.
+
+### Fixed
+- Nothing in the estimates changes when `mcmleeffectivesize(0)` is given with explicit sample sizes: the statistics, the estimates and the log-likelihood of such a fit are identical to 1.2.3 (up to the starting values of large models noted above).
+
 ## [1.2.3] - 2026-10-26
 
 Patch release. Works with nwcommands 3.6.0 and later; no change of the Mata library.

@@ -2225,17 +2225,17 @@ static void propose_uniform(graph_t *g, rng_t *rng, long *pi, long *pj, double *
 	else {
 		/* row i holds the dyads (i,i+1..n); first dyad of row i has index C(i)+1 with C(i) = (i-1)n - (i-1)i/2.
 		   Closed form for the row (then exact integer correction); same mapping as the former row-by-row loop. */
-		long nn = g->n, m, fm;
-		double disc = (2.0 * nn - 1.0) * (2.0 * nn - 1.0) - 8.0 * (double)(pick - 1);
+		long long nn = g->n, m, fm, pk = pick;   /* 64-bit: long is 32 bits on Windows */
+		double disc = (2.0 * (double)nn - 1.0) * (2.0 * (double)nn - 1.0) - 8.0 * (double)(pk - 1);
 		if (disc < 0.0) disc = 0.0;
-		m = (long)(((2.0 * nn - 1.0) - sqrt(disc)) / 2.0);
+		m = (long long)(((2.0 * (double)nn - 1.0) - sqrt(disc)) / 2.0);
 		if (m < 0) m = 0;
 		if (m > nn - 2) m = nn - 2;
-		while (m < nn - 2 && (m + 1) * (2 * nn - m - 2) / 2 <= pick - 1) m++;
-		while (m > 0 && m * (2 * nn - m - 1) / 2 > pick - 1) m--;
+		while (m < nn - 2 && (m + 1) * (2 * nn - m - 2) / 2 <= pk - 1) m++;
+		while (m > 0 && m * (2 * nn - m - 1) / 2 > pk - 1) m--;
 		fm = m * (2 * nn - m - 1) / 2;
-		i = m + 1;
-		j = i + (pick - fm);
+		i = (long)(m + 1);
+		j = (long)((long long)i + (pk - fm));
 	}
 	*pi = i; *pj = j; *logratio = 0.0;
 }
