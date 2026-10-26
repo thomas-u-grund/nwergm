@@ -554,6 +554,7 @@ static double gwk_last_decay = 0.0;
 static double *gwk_last_tab = NULL;
 static long gwk_last_len = 0;
 
+/* the tables of one plugin call are released by the next call's gwk_reset() (ops_free() runs in the middle of the setup too) */
 static void gwk_reset(long nmax) {
 	int q;
 	for (q = 0; q < gwk_cnt; q++) free(gwk_tab[q]);
@@ -3014,7 +3015,6 @@ static void graph_unmake(graph_t *g) {
 }
 static void ops_free(void) {
 	int q;
-	gwk_reset(0);
 	for (q = 0; q < g_nctx; q++) {
 		graph_unmake(&g_ctx[q].g);
 		free(g_ctx[q].map); free(g_ctx[q].rank); free(g_ctx[q].tbi); free(g_ctx[q].tbj);
