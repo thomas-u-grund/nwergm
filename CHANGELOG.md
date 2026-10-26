@@ -87,7 +87,7 @@ project uses [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Fixed
-- With nwcommands 3.6.0 a 0/1 network made with a value variable (every value 1) is declared valued and was refused. A valued network is now accepted when every tie value is 1 (no information is lost); a valued network with other values is still refused. A network not declared valued is read as binary, as R's ergm does without response=.
+- With nwcommands 3.6.0 a 0/1 network made with a value variable (every value 1) is declared valued and was refused. A valued network is now fitted as the binary graph (a tie is present when its value is not zero), as R's ergm does without response=; one note says that the tie values are ignored, none when every value is 1. Before, every valued network was refused.
 - `edgecov()` with a two-mode covariate network on a two-mode model stopped with "has missing dyads" (the node-by-node matrix of a two-mode network is missing between nodes of the same mode); only the cells between the modes are read.
 
 ## [1.0.1] - 2026-10-24

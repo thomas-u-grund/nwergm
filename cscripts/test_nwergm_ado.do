@@ -103,8 +103,9 @@ assert _rc != 0
 
 nwclear
 nwset, mat((0,2,0\2,0,3\0,3,0)) name(wnet)
-capture noisily nwergm wnet, edges
-assert _rc != 0
+* a valued network is fitted as the binary graph (R: ergm without response=): 2 ties of 3 dyads
+nwergm wnet, edges
+assert abs(el(e(b),1,1) - ln(2/1)) < 1e-6
 
 nwclear
 nwset, mat((0,1\1,0)) undirected name(unet)

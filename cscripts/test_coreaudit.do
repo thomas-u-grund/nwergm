@@ -44,12 +44,16 @@ _nwsyntax none, max(1)
 assert "`valued'" == "true"
 nwergm none, edges method(mple)
 assert abs(el(e(b),1,1) - `expb') < 1e-6
-* valued with other values: refused
-capture nwergm nval, edges method(mple)
-assert _rc == 198
-capture nwergm nsh, edges method(mple)
-assert _rc == 198
-* not declared valued but holding values: read as binary (R: ergm without response=)
+* valued with other values (shares, 1-4, negative): fitted as the binary graph (R: ergm without response=), same coefficients
+nwergm n, edges mutual method(mple)
+matrix B0 = e(b)
+nwergm nval, edges mutual method(mple)
+assert mreldif(B0, e(b)) < 1e-10
+nwergm nsh, edges mutual method(mple)
+assert mreldif(B0, e(b)) < 1e-10
+nwergm nsh, edges method(mple)
+assert abs(el(e(b),1,1) - `expb') < 1e-6
+* not declared valued but holding values: read as binary as well
 nwduplicate nsh, name(f)
 nwname f, newvalued(false)
 nwergm f, edges method(mple)
