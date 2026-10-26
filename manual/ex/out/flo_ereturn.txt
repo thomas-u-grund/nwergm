@@ -5,7 +5,7 @@ scalars:
               e(nodes) =  16
           e(converged) =  1
    e(mcmle_iterations) =  1
-    e(mcmc_acceptrate) =  .757056
+    e(mcmc_acceptrate) =  .7581253
         e(mcmc_burnin) =  16384
       e(mcmc_interval) =  1024
   e(mcmc_interval_fin
@@ -13,19 +13,19 @@ scalars:
              e(native) =  1
             e(spcache) =  0
              e(curved) =  0
-    e(mcmc_samplesize) =  3000
+    e(mcmc_samplesize) =  243
                e(ties) =  20
            e(nmissing) =  0
-                 e(ll) =  -51.55348701959392
+                 e(ll) =  -51.55277365788413
                e(ll_0) =  -83.17766166719343
-              e(ll_se) =  .0003077057988438
+              e(ll_se) =  .0014925395364133
                e(df_m) =  3
                e(rank) =  3
            e(df_resid) =  117
-                e(bic) =  117.469449267534
-                e(aic) =  109.1069740391878
+                e(bic) =  117.4680225441144
+                e(aic) =  109.1055473157683
          e(deviance_0) =  166.3553233343869
-           e(deviance) =  103.1069740391878
+           e(deviance) =  103.1055473157683
 
 macros:
             e(predict) : "nwergm_p"
@@ -37,11 +37,11 @@ macros:
              e(method) : "mcmle"
              e(depvar) : "flomarriage"
               e(title) : "Exponential-family random graph model (MCMLE)"
-            e(version) : "1.2.3"
+            e(version) : "1.3.0"
                 e(cmd) : "nwergm"
          e(properties) : "b V"
 
 matrices:
                   e(b) :  1 x 3
                   e(V) :  3 x 3
-         e(mcmcsample) :  3000 x 3
+         e(mcmcsample) :  243 x 3

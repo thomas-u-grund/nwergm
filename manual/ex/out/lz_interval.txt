@@ -1,0 +1,3 @@
+. display "requested interval " e(mcmc_interval) ", interval of the last sample " e(mcmc_interval_final) ", draws kept " 
+> e(mcmc_samplesize)
+requested interval 1024, interval of the last sample 2048, draws kept 486

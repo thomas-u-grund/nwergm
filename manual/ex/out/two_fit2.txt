@@ -7,22 +7,22 @@ Nodes:                 =  42
 Ties:                  =  71
 Directed:              =  No
 Estimation:            =  MCMLE
-MCMC sample size:      =  3000
+MCMC sample size:      =  243
 
 ----------------------------------------------------------------------------------
            clubs | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
 -----------------+----------------------------------------------------------------
-           edges |  -.7311237   .1727851    -4.23   0.000    -1.069776   -.3924711
-nodemix_kind_2_1 |  -1.503362   .3983645    -3.77   0.000    -2.284142   -.7225817
-nodemix_kind_1_2 |  -2.243641   .6135545    -3.66   0.000    -3.446186   -1.041096
-nodemix_kind_2_2 |  -.0679029   .3766518    -0.18   0.857    -.8061268    .6703211
-  bgwdegree2_0.5 |  -1.788379    1.47199    -1.21   0.224    -4.673427    1.096668
+           edges |  -.7414179   .1930383    -3.84   0.000    -1.119766   -.3630697
+nodemix_kind_2_1 |  -1.506756   .4068944    -3.70   0.000    -2.304254   -.7092575
+nodemix_kind_1_2 |  -2.212356   .5936993    -3.73   0.000    -3.375985   -1.048727
+nodemix_kind_2_2 |  -.0559743   .4063925    -0.14   0.890    -.8524889    .7405403
+  bgwdegree2_0.5 |  -1.690794   1.394711    -1.21   0.225    -4.424378     1.04279
 ----------------------------------------------------------------------------------
 
-MCMLE converged after 1 iteration(s).
+MCMLE converged after 2 iteration(s).
 Evaluating log-likelihood at the estimate (bridge sampling with 16 bridges) ...
 
              Null Deviance:     499.1  on 360 degrees of freedom
-         Residual Deviance:     320.5  on 355 degrees of freedom
+         Residual Deviance:     320.2  on 355 degrees of freedom
 
-Log-likelihood:  -160.2587 (df = 5)   AIC:     330.5   BIC:     349.9   (MC std. err. =  .08311)
+Log-likelihood:  -160.1196 (df = 5)   AIC:     330.2   BIC:     349.7   (MC std. err. =   .0943)

@@ -4,13 +4,13 @@
 
 ## Bumping the version (one-line change)
 
-The manual is labelled by the minor series, "Manual for version 1.2" (`\manualseries`, valid for 1.2.x). The exact version and date of the release that produced the listings are two more macros in `nwergm_manual.tex` (written by `tools/set_version.py`):
+The manual is labelled by the minor series, "Manual for version 1.3" (`\manualseries`, valid for 1.3.x). The exact version and date of the release that produced the listings are two more macros in `nwergm_manual.tex` (written by `tools/set_version.py`):
 
-    \newcommand{\manualseries}{1.2}
-    \newcommand{\pkgversion}{1.2.3}
+    \newcommand{\manualseries}{1.3}
+    \newcommand{\pkgversion}{1.3.0}
     \newcommand{\pkgdate}{26 October 2026}
 
-Change `\manualseries` only for a new minor or major release whose documented behaviour changed. For a patch release change the last two lines, rebuild (`make -C manual pdf`) and check the pages that the build output of the examples shows (version strings come from `make examples`, see below). The tag in the installation example of `ch01_intro.tex` (`nwergm/v1.2.3/`, inside a listing, so it cannot use the macro) is the only other place with the number.
+Change `\manualseries` only for a new minor or major release whose documented behaviour changed. For a patch release change the last two lines, rebuild (`make -C manual pdf`) and check the pages that the build output of the examples shows (version strings come from `make examples`, see below). The tag in the installation example of `ch01_intro.tex` (`nwergm/v1.3.0/`, inside a listing, so it cannot use the macro) is the only other place with the number.
 
 ## The DOI
 

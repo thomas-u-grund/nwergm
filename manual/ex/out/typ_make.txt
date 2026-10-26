@@ -25,4 +25,4 @@ Duplicates in terms of a b
 . tempfile edges
 
 . save `edges'
-file /var/folders/hx/2zp2k5ps2y7d_6hx015fcr1h0000gn/T//S_76999.000001 saved as .dta format
+file /var/folders/hx/2zp2k5ps2y7d_6hx015fcr1h0000gn/T//S_18975.000001 saved as .dta format

@@ -2,13 +2,13 @@
 converged: 1   iterations: 1   native: 1
 
 . display "sample size: " e(mcmc_samplesize) "   burn-in: " e(mcmc_burnin) "   interval: " e(mcmc_interval_final)
-sample size: 3000   burn-in: 16384   interval: 1024
+sample size: 243   burn-in: 16384   interval: 1024
 
 . display "version: " e(version)
-version: 1.2.3
+version: 1.3.0
 
 . matrix list e(b)
 
 e(b)[1,3]
            edges  nodecov_we~h     gwesp_0.5
-y1    -2.6017309     .01074699    -.01551115
+y1    -2.5997724     .01079529    -.01706384

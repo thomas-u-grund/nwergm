@@ -9,12 +9,20 @@ tabulate practice
 encode practice, generate(prac)
 *# lz_fit
 nwergm lazega_fr, edges mutual nodematch(prac) nodeicov(seniority) gwesp(0.5) seed(1)
+*# lz_interval
+display "requested interval " e(mcmc_interval) ", interval of the last sample " e(mcmc_interval_final) ", draws kept " e(mcmc_samplesize)
 *# lz_diag
 estat mcmcdiag
 *# lz_fit2
-nwergm lazega_fr, edges mutual nodematch(prac) nodeicov(seniority) gwesp(0.5) seed(1) mcmcburnin(3000) mcmcinterval(50)
+nwergm lazega_fr, edges mutual nodematch(prac) nodeicov(seniority) gwesp(0.5) seed(1) mcmleeffectivesize(0) mcmcburnin(3000) mcmcinterval(50)
 *# lz_diag2
 estat mcmcdiag
+*# lz_adaptold
+quietly nwergm lazega_fr, edges mutual nodematch(prac) nodeicov(seniority) gwesp(0.5) seed(1) mcmcburnin(3000) mcmcinterval(50)
+quietly estat mcmcdiag
+display "adaptive sample, starting interval 50: " e(mcmle_iterations) " iterations, " e(mcmc_samplesize) " draws, interval of the last sample " e(mcmc_interval_final)
+matrix list r(ess), format(%9.1f)
+*# lz_back
 * back to the default settings for the goodness of fit
 quietly nwergm lazega_fr, edges mutual nodematch(prac) nodeicov(seniority) gwesp(0.5) seed(1)
 *# lz_gof

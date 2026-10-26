@@ -7,4 +7,4 @@ Akaike's information criterion and Bayesian information criterion
 -------------+---------------------------------------------------------------
  flomarriage |      120      -83.178      -51.553     3    109.11    117.47
 -----------------------------------------------------------------------------
-Note: BIC uses N = number of informative dyads; MC std. err. of the log-likelihood =  .00031
+Note: BIC uses N = number of informative dyads; MC std. err. of the log-likelihood =  .00149

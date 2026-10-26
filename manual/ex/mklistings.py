@@ -29,6 +29,7 @@ if os.path.exists(fv):
     t = open(fv).read()
     t = re.sub(r"/private/tmp/[^\n]*\n> [^ ]*/lib/plugins/macos/", "/Users/tgrund/FILES_NEW/SOFTWARE/nwergm/lib/plugins/macos/", t)
     t = t.replace("(ships with the package, no separate version number)", "(ships with \n> the package, no separate version number)")
+    t = t.replace("(ships with the package, no separate version n\n> umber)", "(ships with \n> the package, no separate version number)")
     t = re.sub(r'r\(plugin\) : "/private/tmp/[^"]*"', 'r(plugin) : "/Users/tgrund/FILES_NEW/SOFTWARE/nwergm/lib/plugins/macos/ergm_mcmc_macos.plugin (ships wit.."', t)
     open(fv, "w").write(t)
 print("listings written:", n)

@@ -183,7 +183,7 @@ Option & Description (default; R argument)\\
 \opt{mcmleconfidence(\#)} & Confidence level of the \texttt{confidence} rule (0.99; \texttt{MCMLE.confidence}).\\
 \opt{mcmlesteplength(\#)} & Maximum step length (1; \texttt{MCMLE.steplength}).\\
 \opt{mcmlestepmargin(\#)} & Margin of the Hummel step length (0.05; \texttt{MCMLE.steplength.margin}); \texttt{.} switches the Hummel step length off.\\
-\opt{mcmleeffectivesize(\#)} & Floor of the effective sample size that triggers a longer interval (automatic: the larger of 200 and 64 times the number of coefficients; \texttt{MCMLE.effectiveSize}).\\
+\opt{mcmleeffectivesize(\#)} & Target effective sample size of the adaptive sample of each iteration (64; \texttt{MCMLE.effectiveSize}). The fit samples until the effective sample size of the estimating equations reaches it. \texttt{0} switches the adaptive sample off: fixed-size samples of \opt{mcmcsamplesize()} draws, as in the series 1.2 (\texttt{MCMLE.effectiveSize=NULL}). No effect on contrastive divergence, stochastic approximation and \opt{obsconstraints()}, which use fixed-size samples (Section~\ref{sec:adaptive}).\\
 \opt{cdnsteps(\#)} & Proposals per draw of contrastive divergence (8; \texttt{CD.nsteps}).\\
 \opt{cdsamplesize(\#)} & Draws per coefficient vector (automatic: 128 times the number of free coefficients; \texttt{CD.samplesize.per\_theta}).\\
 \opt{saburnin(\#)}, \opt{sainterval(\#)} & Burn-in and interval of stochastic approximation (16384, 1024; \texttt{SA.burnin}, \texttt{SA.interval}).\\
@@ -198,9 +198,9 @@ Option & Description (default; R argument)\\
 \toprule
 Option & Description (default)\\
 \midrule\endhead
-\opt{mcmcburnin(\#)} & Burn-in proposals per simulation (16 times the interval, 16384; \texttt{MCMLE.burnin}). Given \opt{mcmcinterval()} without \opt{mcmcburnin()}, the burn-in is 16 times the interval.\\
-\opt{mcmcinterval(\#)} & Proposals between recorded draws (1024; \texttt{MCMLE.interval}). May grow in the course of the fit (Section~\ref{sec:mcmle}).\\
-\opt{mcmcsamplesize(\#)} & Recorded draws per simulation (3000; \texttt{MCMC.samplesize}, but see Section~\ref{sec:mcmcopts}: \ergm{} adapts the number).\\
+\opt{mcmcburnin(\#)} & Burn-in proposals per simulation (16 times the interval, 16384; \texttt{MCMLE.burnin}). Given \opt{mcmcinterval()} without \opt{mcmcburnin()}, the burn-in is 16 times the interval. In the adaptive sample the burn-in is estimated from the sample and discarded, and only one interval is run explicitly before each run; the option is the burn-in of fixed-size samples (\opt{mcmleeffectivesize(0)}) and of simulation.\\
+\opt{mcmcinterval(\#)} & Proposals between recorded draws (1024; \texttt{MCMLE.interval}). The interval of the first iteration. Each later iteration starts from half the interval of the previous sample; thinning by two doubles it when the sample has doubled (Section~\ref{sec:adaptive}). In a fixed-size fit it grows when the effective sample size stays low.\\
+\opt{mcmcsamplesize(\#)} & Base size of the sample of each iteration (the larger of 256 and 32 times the number of coefficients; \texttt{MCMLE.samplesize}); the adaptive sample is extended beyond it until the target effective size is reached, and the number of draws kept is \texttt{e(mcmc\_samplesize)}. With \opt{mcmleeffectivesize(0)}, the exact number of draws per iteration (3000 by default; \texttt{MCMC.samplesize}).\\
 \opt{proposal(uniform|random|tnt)} & Proposal (\texttt{tnt}; \texttt{MCMC.prop.weights}). \texttt{random} is a synonym of \texttt{uniform}. Masked variants are used when dyads are constrained.\\
 \opt{seed(\#)} & Seed of the sampler; without it the current Stata seed is used (Section~\ref{sec:seed}).\\
 \opt{mcmcprop(hints)} & R's \texttt{MCMC.prop} hint formula, for example \texttt{sparse}.\\
@@ -213,7 +213,7 @@ Option & Description (default)\\
 \end{longtable}
 \normalsize
 
-\paragraph{The defaults follow R.}\label{sec:mcmcopts} Since version 1.2.0 the defaults of the Markov chain are those of \ergm{}'s \texttt{control.ergm()} (version 4.12.0): an interval of 1024 proposals between draws (\texttt{MCMLE.interval}), a burn-in of 16 times the interval, 16384 (\texttt{MCMLE.burnin}), at every iteration of the Monte Carlo maximum likelihood fit; \texttt{nwergm simulate} uses the same numbers, as \ergm{}'s \texttt{control.simulate()} does. In versions 1.1.x the defaults were an interval of 50 and a burn-in of 3000. A fit with default settings therefore gives different numbers than in 1.1.x (the same seed gives another chain), takes longer (Section~\ref{sec:runtimes}), and mixes better (Section~\ref{sec:lazega}); a fit that sets both options is unchanged. The old, fast settings are \opt{mcmcburnin(3000) mcmcinterval(50)}. The differences from \ergm{} that remain are two. First, \ergm{} adapts the number of recorded draws to an effective sample size of 64 (at least 256 draws), whereas \nwergm{} records a fixed \opt{mcmcsamplesize()} of 3000 draws. Second, the interval and the sample size grow adaptively when the effective sample size of the final sample is below a floor; that floor is the larger of 200 and 64 times the number of coefficients (\opt{mcmleeffectivesize()}), which is stricter than \ergm{}'s 64. The random-number streams differ in any case.
+\paragraph{The defaults follow R.}\label{sec:mcmcopts} The defaults of the Markov chain are those of \ergm{}'s \texttt{control.ergm()} (version 4.12.0). Since version 1.2.0 these are an interval of 1024 proposals between draws (\texttt{MCMLE.interval}) and a burn-in of 16 times the interval, 16384 (\texttt{MCMLE.burnin}); \texttt{nwergm simulate} uses the same numbers, as \ergm{}'s \texttt{control.simulate()} does. Since version 1.3.0 the sample size is adaptive, as in \ergm{}: a base sample of the larger of 256 and 32 times the number of coefficients (\texttt{MCMLE.samplesize}) is extended until the effective sample size of the estimating equations reaches 64 (\texttt{MCMLE.effectiveSize}), the interval halves from one iteration to the next, the convergence test is \ergm{}'s test with a tolerance region, and the covariance and the log-likelihood reuse the sample of the fit (Chapter~\ref{ch:model}). A fit with default settings therefore draws a few hundred networks per iteration (\texttt{e(mcmc\_samplesize)}) and gives other numbers than in the series 1.2 (the same seed gives another chain), which are statistically equivalent: Chapter~\ref{ch:validation} compares them with \ergm{}'s. Fits are several times faster than with the fixed 3000 draws (Section~\ref{sec:runtimes}). The algorithm of the series 1.2 is \opt{mcmleeffectivesize(0)}, and with it the old fixed-size results are reproduced; the still older settings of 1.1.x are \opt{mcmleeffectivesize(0) mcmcburnin(3000) mcmcinterval(50)}. The differences from \ergm{} that remain are that the effective sample size is inflated by the geometric mean of univariate autoregressive spectral estimates of the whitened estimating equations, where \ergm{} uses the determinant of the multivariate autoregressive spectral density, that the burn-in test pools the first 10\% and the last 50\% of the draws with one autocorrelation correction, and that the target and the base size are capped at 32 times their starting values. The random-number streams differ in any case.
 
 \subsection{Log-likelihood by bridge sampling}
 \footnotesize
@@ -223,8 +223,8 @@ Option & Description (default)\\
 \midrule\endhead
 \opt{nologlik} & Does not evaluate the log-likelihood of a Monte Carlo fit (\texttt{eval.loglik=FALSE}); log-likelihood, AIC and BIC are then missing.\\
 \opt{bridgesteps(\#)} & Number of bridges (16; \texttt{bridge.nsteps}).\\
-\opt{bridgesamplesize(\#)} & Draws per bridge (the value of \opt{mcmcsamplesize()}).\\
-\opt{bridgeinterval(\#)} & Thinning interval within the bridges (the final interval divided by the number of bridges).\\
+\opt{bridgesamplesize(\#)} & Draws per bridge (the number of draws of the fit's last iteration, as in \ergm{}; with \opt{mcmleeffectivesize(0)}, the value of \opt{mcmcsamplesize()}).\\
+\opt{bridgeinterval(\#)} & Thinning interval within the bridges (the interval of the fit's own sample, divided by the number of bridges).\\
 \bottomrule
 \end{longtable}
 \normalsize

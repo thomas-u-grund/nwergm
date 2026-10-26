@@ -3,6 +3,11 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+- Manual brought to the 1.3 series ("Manual for version 1.3", `manual/nwergm_manual.pdf`, 104 pages): it now describes the sampling of 1.3.0 (adaptive sample size, `mcmleeffectivesize()` and its interplay with `mcmcsamplesize()`, `mcmcburnin()` and `mcmcinterval()`, R's convergence test, covariance and bridge from the fit's own sample), the speed comparison with R (eight benchmark models), and the new correspondences in the translation table. Every listing, comparison table and run-time table was regenerated with nwergm 1.3.0 and nwcommands 3.10.0 (ergm 4.12.0 for the comparisons); `manual/ZENODO.md` carries the metadata of the Zenodo record for the series 1.3.
+
 ## [1.3.0] - 2026-10-26
 
 ### Results that change (read before you re-run old analyses)

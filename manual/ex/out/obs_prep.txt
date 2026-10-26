@@ -17,7 +17,7 @@
 . tempfile nodes
 
 . save `nodes'
-file /var/folders/hx/2zp2k5ps2y7d_6hx015fcr1h0000gn/T//S_74887.000002 saved as .dta format
+file /var/folders/hx/2zp2k5ps2y7d_6hx015fcr1h0000gn/T//S_18934.000002 saved as .dta format
 
 . nwset, mat(A0) undirected name(flo0)
 

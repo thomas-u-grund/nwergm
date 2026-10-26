@@ -1,30 +1,30 @@
 . estat mcmcdiag, plot name(mcmcdiag)
 
 MCMC diagnostics for the final simulation (nwergm, method(mcmle))
-Sample size:         =    3000
+Sample size:         =     486
 Burn-in:             =   16384
 Thinning interval:   =    1024
-Acceptance rate:     =  0.6663
+Acceptance rate:     =  0.6692
 
 ------------------------------------------------------------
 Statistic       |      Mean         SD    Autocorr      ESS
 ----------------+-------------------------------------------
-edges           |  573.8307    40.4049      0.8128    291.1
-mutual          |   74.3583    10.8945      0.7358    371.5
-nodematch_prac  |  410.6330    30.1378      0.8106    290.6
-nodeicov_seniority|19341.2700  1493.9550      0.7790    345.1
-gwesp_0.5       |  555.4591    76.1739      0.8096    298.3
+edges           |  571.1543    39.0767      0.6726     95.6
+mutual          |   73.6770    10.4820      0.5538    120.0
+nodematch_prac  |  406.3889    30.0663      0.6635     98.8
+nodeicov_seniority|19282.2500  1453.6430      0.6317     73.9
+gwesp_0.5       |  546.8287    74.5329      0.6491    103.9
 ------------------------------------------------------------
 
 Geweke diagnostic (first 10% vs. last 50% of the retained sample):
 ---------------------------------------
 Statistic       |         z   p-value
 ----------------+----------------------
-edges           |    -1.275    0.2025
-mutual          |    -1.171    0.2417
-nodematch_prac  |    -1.306    0.1915
-nodeicov_seniority|    -1.432    0.1523
-gwesp_0.5       |    -1.252    0.2104
+edges           |    -1.610    0.1073
+mutual          |    -1.972    0.0486  *
+nodematch_prac  |    -1.128    0.2594
+nodeicov_seniority|    -1.297    0.1947
+gwesp_0.5       |    -1.501    0.1335
 ---------------------------------------
 Note: |z| > 1.96 (flagged *) rejects convergence of that parameter's own chain at the 5% level (Geweke 1992) - a large sy
 > stematic difference between the retained sample's own early and late portions, not proof either way for a borderline z.
@@ -33,11 +33,11 @@ Heidelberger-Welch stationarity + halfwidth test (pvalue=.05, eps=.1):
 --------------------------------------------------------------
 Statistic       | Stationary    Start  Halfwidth   HW test
 ----------------+---------------------------------------------
-edges           |     passed        1     4.6419    passed
-mutual          |     passed        1     1.1079    passed
-nodematch_prac  |     passed        1     3.4651    passed
-nodeicov_seniority|     passed        1   157.6333    passed
-gwesp_0.5       |     passed        1     8.6440    passed
+edges           |     passed        1     7.8316    passed
+mutual          |     passed        1     1.8753    passed
+nodematch_prac  |     passed        1     5.9273    passed
+nodeicov_seniority|     passed        1   331.4554    passed
+gwesp_0.5       |     passed        1    14.3329    passed
 --------------------------------------------------------------
 Note: Stationary = passed a Cramer-von-Mises test on the chain's own cumulative-sum path (Heidelberger & Welch 1983), dis
 > carding an increasing initial fraction (up to 50%) until it does - Start is the first retained iteration once it passes
@@ -45,7 +45,7 @@ Note: Stationary = passed a Cramer-von-Mises test on the chain's own cumulative-
 > CI halfwidth to be within eps() (default 10%) of its own mean - a separate, stricter precision check, only meaningful o
 > nce stationarity itself has passed.
 
-MCMLE's own convergence test was satisfied after   1 iteration(s).
+MCMLE's own convergence test was satisfied after   2 iteration(s).
 Note: a satisfied convergence test is a necessary check, not proof of a converged fit - inspect the autocorrelation/ESS a
 > bove, and consider increasing mcmcsamplesize()/mcmleiterations() if acceptance rate or ESS looks poor.
 (plot saved as mcmcdiag; each row is one model statistic's MCMC trace and density from the final simulation)
@@ -56,46 +56,46 @@ Sample statistics summary (centered at the observed statistics):
    plus standard error of the mean:
 
                         Mean          SD    Naive SE  Time-series SE
-edges                -1.1693      40.405      .73769          2.3695
-mutual                .35833      10.894       .1989          .56572
-nodematch_prac        -1.367      30.138      .55024          1.7688
-nodeicov_senio~y     -37.731        1494      27.276          80.465
-gwesp_0.5            -.16008      76.174      1.3907          4.4124
+edges                -3.8457      39.077      1.7726           4.004
+mutual               -.32305      10.482      .47547          .95976
+nodematch_prac       -5.6111      30.066      1.3638          3.0304
+nodeicov_senio~y     -96.751      1453.6      65.939          169.99
+gwesp_0.5            -8.7904      74.533      3.3809          7.3278
 
 2. Quantiles for each variable:
 
                         2.5%         25%         50%         75%       97.5%
-edges                    -81         -28          -2          27          79
-mutual                   -20          -7           0           7      22.025
-nodematch_prac       -61.025         -22           0          19          56
-nodeicov_senio~y     -2924.2     -1053.3         -49       988.5      2916.2
-gwesp_0.5            -146.73     -49.977      -2.127      50.766      153.07
+edges                 -74.75         -31        -4.5          23          73
+mutual               -19.875          -8          -1           7          22
+nodematch_prac           -63         -27        -6.5          15          51
+nodeicov_senio~y     -2849.9       -1102       -83.5       961.5      2683.9
+gwesp_0.5            -144.69     -61.393     -9.6405       40.06      147.53
 
 Are sample statistics significantly different from observed?
 
                          edges          mutual  nodematch_prac  nodeicov_sen~y       gwesp_0.5          (Omni)
-diff.                  -1.1693          .35833          -1.367         -37.731         -.16008              NA
-test stat.              -.4935          .63341         -.77285         -.46891         -.03628          28.955
-P-val.                  .62166          .52647          .43961          .63913          .97106       .00003225
+diff.                  -3.8457         -.32305         -5.6111         -96.751         -8.7904              NA
+test stat.             -.96047         -.33659         -1.8516         -.56917         -1.1996          20.115
+P-val.                  .33682          .73643         .064078          .56924          .23029        .0019311
 
 Sample statistics cross-correlations:
 
                            edges          mutual  nodematch_prac  nodeicov_sen~y       gwesp_0.5
-edges                  1.0000000       0.7898253       0.9016529       0.9172874       0.9737387
-mutual                 0.7898253       1.0000000       0.7784048       0.7182602       0.8166876
-nodematch_prac         0.9016529       0.7784048       1.0000000       0.8349149       0.9040240
-nodeicov_senio~y       0.9172874       0.7182602       0.8349149       1.0000000       0.8843780
-gwesp_0.5              0.9737387       0.8166876       0.9040240       0.8843780       1.0000000
+edges                  1.0000000       0.7530858       0.8939733       0.9175342       0.9702475
+mutual                 0.7530858       1.0000000       0.7393374       0.6798716       0.7810688
+nodematch_prac         0.8939733       0.7393374       1.0000000       0.8465985       0.8966733
+nodeicov_senio~y       0.9175342       0.6798716       0.8465985       1.0000000       0.8750858
+gwesp_0.5              0.9702475       0.7810688       0.8966733       0.8750858       1.0000000
 
 Sample statistics auto-correlation:
 Chain 1
                            edges          mutual  nodematch_prac  nodeicov_sen~y       gwesp_0.5
 Lag 0                  1.0000000       1.0000000       1.0000000       1.0000000       1.0000000
-Lag 1024               0.8121020       0.7354995       0.8085730       0.7781685       0.8088376
-Lag 2048               0.6708766       0.5795791       0.6691756       0.6216250       0.6647922
-Lag 3072               0.5460384       0.4749859       0.5476987       0.4918625       0.5423797
-Lag 4096               0.4535862       0.3702081       0.4576541       0.3984905       0.4511065
-Lag 5120               0.3769439       0.2997888       0.3796083       0.3243155       0.3693628
+Lag 2048               0.6716965       0.5535584       0.6625514       0.6307216       0.6483841
+Lag 4096               0.4637820       0.3595955       0.4536637       0.4201381       0.4494919
+Lag 6144               0.3403473       0.2263601       0.3195065       0.3090722       0.3114812
+Lag 8192               0.2762225       0.1376349       0.1992015       0.2888740       0.2483208
+Lag 10240              0.1956788       0.0805804       0.1292762       0.2237654       0.1643815
 
 Sample statistics burn-in diagnostic (Geweke):
 Chain 1
@@ -104,12 +104,12 @@ Fraction in 1st window = 0.1
 Fraction in 2nd window = 0.5
 
                          z-score    Individual P-value
-edges                 -1.2529710             0.2102163
-mutual                -1.1468354             0.2514497
-nodematch_prac        -1.2926697             0.1961253
-nodeicov_senio~y      -1.4160319             0.1567662
-gwesp_0.5             -1.2309119             0.2183558
-Joint P-value (lower = worse):  0.7021237
+edges                 -1.2303640             0.2185608
+mutual                -1.9098929             0.0561470
+nodematch_prac        -1.1016837             0.2705992
+nodeicov_senio~y      -1.1809769             0.2376119
+gwesp_0.5             -1.4362798             0.1509227
+Joint P-value (lower = worse):  0.7788128
 
 Note: MCMC diagnostics shown here are from the last round of simulation, prior to computation of final parameter estimate
 > s. Because the final estimates are refinements of those used for this simulation run, these diagnostics may understate 
@@ -120,4 +120,4 @@ Note: MCMC diagnostics shown here are from the last round of simulation, prior t
 . graph export "../fig/mcmcdiag.pdf", name(mcmcdiag) replace
 file
     /private/tmp/claude-501/-Users-tgrund-FILES-NEW-SOFTWARE-nwcommands/f80eded9-2ca1-45e7-9a6b-23ada6a895b2/scratchpad
-    > /m4/manual/ex/../fig/mcmcdiag.pdf saved as PDF format
+    > /manual13/manual/ex/../fig/mcmcdiag.pdf saved as PDF format

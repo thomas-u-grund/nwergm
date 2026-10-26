@@ -7,23 +7,23 @@ Nodes:                 =  42
 Ties:                  =  71
 Directed:              =  No
 Estimation:            =  MCMLE
-MCMC sample size:      =  3000
+MCMC sample size:      =  503
 
 ----------------------------------------------------------------------------------
            clubs | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
 -----------------+----------------------------------------------------------------
-           edges |  -1.115536   .3680386    -3.03   0.002    -1.836878   -.3941935
-nodemix_kind_2_1 |  -1.719906   .5034645    -3.42   0.001    -2.706678   -.7331337
-nodemix_kind_1_2 |  -2.339619   .6306518    -3.71   0.000    -3.575674   -1.103565
-nodemix_kind_2_2 |  -.2481904   .4301325    -0.58   0.564    -1.091235    .5948538
-     Proj1~edges |   .1732472   .1869192     0.93   0.354    -.1931076    .5396021
-  Proj1~triangle |   -.011537    .025884    -0.45   0.656    -.0622688    .0391948
+           edges |  -1.103858   .3445076    -3.20   0.001     -1.77908   -.4286353
+nodemix_kind_2_1 |  -1.775325   .5405127    -3.28   0.001    -2.834711   -.7159399
+nodemix_kind_1_2 |  -2.355423   .6577301    -3.58   0.000     -3.64455   -1.066296
+nodemix_kind_2_2 |  -.3295673   .4577906    -0.72   0.472     -1.22682    .5676857
+     Proj1~edges |   .1847007    .198093     0.93   0.351    -.2035545    .5729559
+  Proj1~triangle |   -.012532   .0275408    -0.46   0.649    -.0665108    .0414469
 ----------------------------------------------------------------------------------
 
-MCMLE converged after 1 iteration(s).
+MCMLE converged after 3 iteration(s).
 Evaluating log-likelihood at the estimate (bridge sampling with 16 bridges) ...
 
              Null Deviance:     499.1  on 360 degrees of freedom
-         Residual Deviance:     319.8  on 354 degrees of freedom
+         Residual Deviance:     317.8  on 354 degrees of freedom
 
-Log-likelihood:  -159.8953 (df = 6)   AIC:     331.8   BIC:     355.1   (MC std. err. =  .03188)
+Log-likelihood:  -158.9038 (df = 6)   AIC:     329.8   BIC:     353.1   (MC std. err. =  .09301)

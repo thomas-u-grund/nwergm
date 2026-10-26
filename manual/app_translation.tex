@@ -23,9 +23,11 @@ R (\texttt{ergm}, \texttt{statnet}) & \texttt{nwergm}\\
 \texttt{ergm(\ldots, estimate="MPLE")} & \texttt{estimate(mple)}\\
 \texttt{ergm(\ldots, estimate="CD")} & \texttt{estimate(cd)}\\
 \texttt{ergm(\ldots, main.method=}\allowbreak\texttt{"Stochastic-Approximation")} & \texttt{mainmethod(sa)}\\
-\texttt{control.ergm(MCMC.burnin=, MCMC.interval=, MCMC.samplesize=)} & \texttt{mcmcburnin()}, \texttt{mcmcinterval()}, \texttt{mcmcsamplesize()}\\
+\texttt{control.ergm(MCMLE.burnin=, MCMLE.interval=)} & \texttt{mcmcburnin()}, \texttt{mcmcinterval()}\\
+\texttt{control.ergm(MCMLE.samplesize.min=, MCMLE.samplesize.per\_theta=)} (base size of the adaptive sample, \texttt{MCMLE.samplesize=NULL}) & \texttt{mcmcsamplesize()} (default the larger of 256 and 32 times the number of coefficients)\\
 \texttt{control.ergm(MCMLE.maxit=, MCMLE.termination=, MCMLE.confidence=)} & \texttt{mcmleiterations()}, \texttt{mcmletermination()}, \texttt{mcmleconfidence()}\\
-\texttt{control.ergm(MCMLE.steplength=, MCMLE.steplength.margin=, MCMLE.effectiveSize=)} & \texttt{mcmlesteplength()}, \texttt{mcmlestepmargin()}, \texttt{mcmleeffectivesize()}\\
+\texttt{control.ergm(MCMLE.steplength=, MCMLE.steplength.margin=)} & \texttt{mcmlesteplength()}, \texttt{mcmlestepmargin()}\\
+\texttt{control.ergm(MCMLE.effectiveSize=64)}, \texttt{MCMLE.samplesize=3000} with \texttt{MCMLE.effectiveSize=NULL} (fixed-size samples) & \texttt{mcmleeffectivesize(64)}, \texttt{mcmleeffectivesize(0) mcmcsamplesize(3000)}\\
 \texttt{control.ergm(MPLE.type=, MPLE.check=, MPLE.covariance.method=)} & \texttt{mpletype()}, \texttt{mplecheck()}, \texttt{mplecovariance()}\\
 \texttt{control.ergm(init=)} & \texttt{init(numlist)}\\
 \texttt{control.ergm(CD.nsteps=)}, \texttt{SA.burnin} \ldots & \texttt{cdnsteps()}, \texttt{saburnin()}, \texttt{sainterval()}, \texttt{saphase3()}, \texttt{sagain()}, \texttt{sansub()}\\
@@ -57,7 +59,7 @@ R (\texttt{ergm}, \texttt{statnet}) & \texttt{nwergm}\\
 
 \begin{itemize}[nosep]
   \item The default of \texttt{gwesp()} (and of the other geometrically weighted terms) in \ergm{} is the curved form (\texttt{fixed=FALSE}); in \nwergm{} the option with a number has a fixed decay and the curved form is the option ending in \texttt{free}.
-  \item The sampler defaults differ (Section~\ref{sec:mcmle}); \ergm{} chooses its sample sizes and intervals adaptively from the model.
+  \item The sampler defaults are \ergm{}'s (Section~\ref{sec:mcmle}); both programs choose the sample sizes and intervals adaptively (Section~\ref{sec:adaptive}); the differences that remain are listed in Section~\ref{sec:mcmcopts}.
   \item A term with a digit followed by a letter in its name has the digit moved to the end (\texttt{b1degree} $\to$ \texttt{bdegree1}, \texttt{gwb1dsp} $\to$ \texttt{bgwdsp1}).
   \item \nwergm{} writes the period of R's coefficient names as an underscore (\texttt{nodecov.wealth} $\to$ \texttt{nodecov\_wealth}).
   \item The order of the coefficients follows \nwergm{}'s processing of the options, not the order of the formula.

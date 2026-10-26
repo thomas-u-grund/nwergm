@@ -19,8 +19,8 @@
    Two-mode: false
    Nodes: 71
    Selfloop: false
-   Arcs: 484
+   Arcs: 532
    Minimum value:  0
    Maximum value:  1
-   Density:  .0974
+   Density:  .107
    Temporal: false

@@ -1,7 +1,8 @@
-\begin{tabular}{@{}lrrrr@{}}\toprule
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{7.4cm}rrrr@{}}\toprule
 setting & runs & median & range & iterations\\\midrule
-nwergm, default settings & 5 & 11.4 & 11.1--12.7 & 1--1\\
-nwergm, burn-in 3000, interval 50 (as in 1.1) & 5 & 1.1 & 1.1--1.1 & 1--1\\
-nwergm, Mata sampler (\texttt{nonative}, default settings) & 1 & 973.4 & 973.4--973.4 & 1--1\\
-R \texttt{ergm()}, default settings & 5 & 11.1 & 5.8--17.0 & 3--8\\
+nwergm 1.3, default settings & 5 & 1.2 & 0.9--1.8 & 2--7\\
+nwergm, fixed 3000 draws (\texttt{mcmleeffectivesize(0)}, as in 1.2) & 5 & 2.3 & 2.3--2.4 & 1--1\\
+nwergm, fixed 3000 draws, burn-in 3000, interval 50 (as in 1.1) & 5 & 0.4 & 0.4--0.4 & 1--1\\
+nwergm, Mata sampler (\texttt{nonative}, default settings) & 1 & 262.4 & 262.4--262.4 & 4--4\\
+R \texttt{ergm()}, default settings & 5 & 10.8 & 5.6--16.5 & 3--8\\
 \bottomrule\end{tabular}
