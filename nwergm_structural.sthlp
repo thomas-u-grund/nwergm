@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.2.2  26oct2026 author: Thomas Grund}{...}
+{* *! version 1.2.3  26oct2026 author: Thomas Grund}{...}
 {title:Title}
 
 {p2colset 9 33 34 2}{...}
@@ -63,4 +63,4 @@ to fit this term, and has the coefficients {cmd:altkstar} and {cmd:altkstar_lamb
 {helpb nwergm}, {helpb nwergm_estat}
 
 {hline}
-{pstd}{it:nwergm version 1.2.2, 26 October 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.2.3, 26 October 2026}{p_end}{* nwversion}
