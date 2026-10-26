@@ -1,0 +1,10 @@
+. estat ic
+
+Akaike's information criterion and Bayesian information criterion
+
+-----------------------------------------------------------------------------
+       Model |        N     ll(null)    ll(model)    df       AIC       BIC
+-------------+---------------------------------------------------------------
+ flomarriage |      120      -83.178      -51.553     3    109.11    117.47
+-----------------------------------------------------------------------------
+Note: BIC uses N = number of informative dyads; MC std. err. of the log-likelihood =  .00031

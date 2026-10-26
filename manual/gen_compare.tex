@@ -1,0 +1,53 @@
+\begin{table}[ht]\centering\small\caption{Observed statistics of the Lazega friendship network: nwergm (the first row of the model block of \texttt{estat gof}) and \texttt{summary()} of ergm.}\label{tab:cmpstat}
+\begin{tabular}{@{}lrrr@{}}\toprule
+term & nwergm & ergm & difference\\\midrule
+\opt{edges} & 575 & 575 & 0.0e+00\\
+\opt{mutual} & 74 & 74 & 0.0e+00\\
+\opt{nodematch\_prac} & 412 & 412 & 0.0e+00\\
+\opt{nodeicov\_seniority} & 19379 & 19379 & 0.0e+00\\
+\opt{gwesp\_0.5} & 555.6191 & 555.6191 & 1.5e-08\\
+\bottomrule\end{tabular}\end{table}
+\begin{table}[ht]\centering\small\caption{Pseudolikelihood estimates: nwergm (\texttt{estimate(mple)}) and ergm (\texttt{estimate="MPLE"}) on the same data.}\label{tab:cmpmple}
+\begin{tabular}{@{}llrrrrr@{}}\toprule
+fit and term & & nwergm & ergm & $|\Delta|$ & SE nwergm & SE ergm\\\midrule
+\multicolumn{7}{@{}l}{\emph{Florentine marriages}}\\
+& \opt{edges} & -2.59493 & -2.59493 & 2.1e-10 & 0.53606 & 0.53606\\
+& \opt{nodecov\_wealth} & 0.01055 & 0.01055 & 3.8e-12 & 0.00467 & 0.00467\\
+\multicolumn{7}{@{}l}{\emph{Lazega friendship}}\\
+& \opt{edges} & -2.50763 & -2.50763 & 4.1e-08 & 0.11080 & 0.11079\\
+& \opt{mutual} & 0.99645 & 0.99645 & 2.2e-08 & 0.11050 & 0.11050\\
+& \opt{nodematch\_prac} & 0.91390 & 0.91390 & 1.1e-08 & 0.09903 & 0.09902\\
+& \opt{nodeicov\_seniority} & -0.00691 & -0.00691 & 2.6e-10 & 0.00224 & 0.00224\\
+\multicolumn{7}{@{}l}{\emph{simulated two-mode network, model 1}}\\
+& \opt{edges} & -0.75633 & -0.75633 & 1.9e-11 & 0.17873 & 0.17873\\
+& \opt{nodemix\_kind\_2\_1} & -1.51236 & -1.51236 & 2.8e-09 & 0.39313 & 0.39312\\
+& \opt{nodemix\_kind\_1\_2} & -2.37917 & -2.37917 & 2.4e-08 & 0.61625 & 0.61620\\
+& \opt{nodemix\_kind\_2\_2} & -0.23407 & -0.23407 & 4.6e-11 & 0.37073 & 0.37073\\
+\multicolumn{7}{@{}l}{\emph{simulated two-mode network, model 2}}\\
+& \opt{edges} & -0.25048 & -0.25048 & 4.1e-11 & 0.37254 & 0.37254\\
+& \opt{nodemix\_kind\_2\_1} & -1.60452 & -1.60452 & 9.9e-11 & 0.42091 & 0.42091\\
+& \opt{nodemix\_kind\_1\_2} & -4.02396 & -4.02396 & 1.1e-09 & 0.76838 & 0.76837\\
+& \opt{nodemix\_kind\_2\_2} & -1.68223 & -1.68223 & 7.4e-10 & 0.52610 & 0.52610\\
+& \opt{b2degree\_5} & 2.64228 & 2.64228 & 2.4e-10 & 0.51729 & 0.51728\\
+& \opt{b2degree\_6} & 2.75054 & 2.75054 & 6.1e-10 & 0.62388 & 0.62387\\
+& \opt{b1star\_2} & -0.13954 & -0.13954 & 1.7e-11 & 0.13553 & 0.13553\\
+\bottomrule\end{tabular}\end{table}
+\begin{table}[ht]\centering\small\caption{Monte Carlo maximum likelihood, Lazega friendship network, five seeds each: mean and (in parentheses) standard deviation over the seeds of the coefficients, and mean standard error. nwergm with its default settings, nwergm with the settings of version 1.1 (\texttt{mcmcburnin(3000) mcmcinterval(50)}), and ergm with its default settings.}\label{tab:cmpmcmle}
+\begin{tabular}{@{}lrrrrrr@{}}\toprule
+ & \multicolumn{2}{c}{nwergm, default} & \multicolumn{2}{c}{nwergm, old settings} & \multicolumn{2}{c}{ergm}\\\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+term & mean (sd) & SE & mean (sd) & SE & mean (sd) & SE\\\midrule
+\opt{edges} & -3.325 (0.003) & 0.132 & -3.332 (0.009) & 0.138 & -3.315 (0.003) & 0.136\\
+\opt{mutual} & 0.807 (0.005) & 0.161 & 0.817 (0.033) & 0.174 & 0.804 (0.006) & 0.161\\
+\opt{nodematch\_prac} & 0.712 (0.006) & 0.082 & 0.714 (0.029) & 0.087 & 0.715 (0.004) & 0.081\\
+\opt{nodeicov\_seniority} & -0.005 (0.000) & 0.002 & -0.004 (0.001) & 0.002 & -0.005 (0.000) & 0.002\\
+\opt{gwesp\_0.5} & 0.492 (0.001) & 0.063 & 0.495 (0.009) & 0.064 & 0.488 (0.002) & 0.065\\
+\bottomrule\end{tabular}\end{table}
+\begin{table}[ht]\centering\small\caption{Simulation at given coefficients (the coefficients of the Lazega fit): mean and standard deviation of the model statistics over three chains of 4000 draws, nwergm (\texttt{nwergm simulate} at the fitted coefficients with \texttt{burnin(20000) interval(1000)}) and ergm (\texttt{simulate()} with its default burn-in 16384 and interval 1024).}\label{tab:cmpsim}
+\begin{tabular}{@{}lrrrr@{}}\toprule
+term & mean nwergm & mean ergm & sd nwergm & sd ergm\\\midrule
+\opt{edges} & 574.5 & 574.3 & 40.7 & 39.7\\
+\opt{mutual} & 74.3 & 74.1 & 10.6 & 10.5\\
+\opt{nodematch\_prac} & 410.9 & 410.8 & 31.1 & 30.9\\
+\opt{nodeicov\_seniority} & 19412.3 & 19387.0 & 1485.9 & 1477.9\\
+\opt{gwesp\_0.5} & 556.4 & 555.7 & 76.6 & 75.1\\
+\bottomrule\end{tabular}\end{table}

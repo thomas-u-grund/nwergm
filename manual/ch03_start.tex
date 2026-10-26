@@ -1,0 +1,40 @@
+\chapter{Getting started}\label{ch:start}
+
+This chapter takes you from data to a first fitted model, shows how to read the output and explains how the coefficients are named. All commands were run with \nwergm{}~\pkgversion{} on the Florentine families network of the statnet project.
+
+\section{The data}
+
+\paragraph{Networks are \texttt{nwset} objects.} \nwergm{} does not read the network from variables. It takes the \emph{name} of a network that exists in the current \texttt{nwcommands} session, \texttt{nwergm} \emph{netname}\texttt{,} \emph{options}. If the name is left out, the currently set network is used. A network is declared from an adjacency matrix with \texttt{nwset, mat()}, from an edge list with \texttt{nwfromedge}, or loaded with \texttt{nwuse} or \texttt{nwwebuse}; see \texttt{help nwset}. One command fits one network.
+
+\paragraph{Binary ties.} The ties must be binary, and the network must be static. Valued networks and networks with temporal metadata are rejected with an error; they are never silently dichotomized or collapsed to one time slice. Only the dyads between different nodes are part of the model. Directed, undirected and two-mode (bipartite, undirected) networks are supported. Two-mode networks are described by their incidence matrix: the \emph{first mode} is formed by the \emph{columns} of the matrix given to \texttt{nwset, mat(\emph{M}) bipartite}, so that to have the $n_1$ rows of an $n_1\times n_2$ matrix as the first mode, the transpose has to be passed (Section~\ref{sec:twomode}). Terms with a mode in their name, \opt{bdegree1()} for example, refer to these modes.
+
+\paragraph{Node attributes.} The attributes of the nodes are ordinary variables of the current dataset, one row per node in the node order of the network, and they must be \emph{numeric}: a string variable is refused with an error and the advice to \texttt{encode} it. Categorical attributes (\opt{nodematch()}, \opt{nodefactor()}, \opt{nodemix()}) use the distinct values of the variable as levels; the levels are the values sorted ascending, and the \emph{position} in this sorted list is what \opt{levels()} and \opt{base()} refer to. Missing values in an attribute that a term uses stop the command with return code 416, as in \ergm{}. A Stata expression is allowed in the covariate terms that take a variable, for example \opt{nodecov(ln(wealth))}.
+
+\paragraph{Dyadic covariates.} A dyadic covariate is another network in memory, or an $n\times n$ Stata matrix, named in \opt{edgecov()}, \opt{dyadcov()} or \opt{hamming()}. It must have the same number of nodes.
+
+\paragraph{The term \texttt{edges}.} Every model includes the term \opt{edges} (the density; the intercept). It is required, except that \opt{structural(density)} or \opt{structural(meandeg)}, which are collinear with it, can stand in for it.
+
+\subsection*{The Florentine families}
+
+The data of this chapter are the marriage ties and the business ties among 16 Renaissance Florentine families, with the wealth of each family in thousands of lira (Padgett and Ansell~\cite{padgett1993}); the network is distributed with \ergm{} as \texttt{flomarriage}. It is loaded by \texttt{nwwebuse}:
+\showlogpart{flo_data}{1}{20}
+
+\section{A first model: a dyad-independent model}\label{sec:firstmodel}
+
+The simplest model has two terms: the density (\opt{edges}) and a main effect of the wealth of the two families (\opt{nodecov(wealth)}, the sum over the ties of the wealth of both endpoints). Both terms depend only on the attributes of the two nodes of a dyad, so the model is dyad-independent. \nwergm{} detects this and fits it by pseudolikelihood, which is then the maximum likelihood estimate; no random numbers are involved.
+\showlog{flo_mple}
+The header names the network, its numbers of nodes and ties, whether it is directed, and the estimation method. The table lists each coefficient with its standard error, $z$ statistic, $p$-value and confidence interval. The note under the table says what the estimate is. The deviances are those of the logistic regression: the null deviance is that of the model with all coefficients zero (every dyad has probability one half), and the residual deviance is $-2$ times the log-likelihood; their degrees of freedom are the number of informative dyads minus the number of estimated coefficients. The last line gives the log-likelihood, the degrees of freedom of the model, AIC and BIC, and the Monte Carlo standard error of the log-likelihood (zero when it is exact). The interpretation is that of a logistic regression: the change statistic of the term for a pair of families is the sum of their wealth, so that if one family is 10 units richer, the odds of a marriage tie between it and any given other family are multiplied by $\exp(0.0105\times10)\approx1.11$.
+
+\section{A dyad-dependent model}\label{sec:secondmodel}
+
+Adding \opt{gwesp(0.5)}, the geometrically weighted edgewise shared partners with a decay of 0.5, makes the model dyad-dependent: whether a tie closes triangles now enters the probability of the tie. \nwergm{} switches to Monte Carlo maximum likelihood without being asked. The option \opt{seed()} makes the random numbers reproducible.
+\showlog{flo_mcmle}
+The header now reports the Monte Carlo estimator and the sample size. The line below the table reports that the convergence test of the Monte Carlo iteration was satisfied after one iteration (\texttt{e(converged)}, \texttt{e(mcmle\_iterations)}), and that the log-likelihood was then evaluated at the estimate by bridge sampling with 16 bridges; the number in parentheses at the end of the last line is the Monte Carlo standard error of that log-likelihood. The coefficient of the shared-partner term is close to zero here: on this small network the wealth effect and the density explain the data about as well. The pseudolikelihood fit of the same model is available with \opt{estimate(mple)} (Section~\ref{sec:flo_methods}).
+
+\paragraph{Is the fit trustworthy?} A satisfied convergence test is a necessary check, not a proof that the Markov chain explored the space of networks well. Chapter~\ref{ch:postest} shows the diagnostics, and Section~\ref{sec:lazega} an example in which the default chain mixes poorly although the convergence test is satisfied.
+
+\section{How coefficients are named}
+
+The names of the coefficients are those of \ergm{} with a period written as an underscore, because Stata reads a period in a matrix column name as a time-series operator. A node attribute is appended to the term name (\texttt{nodecov\_wealth}), a level of a categorical attribute to the attribute (\texttt{nodefactor\_race\_n\_2}, \texttt{nodemix\_sex\_n\_1\_2}), a decay or other parameter to the term (\texttt{gwesp\_0.5}, \texttt{kstar\_2}, \texttt{degree\_1}; the name of a term is not always formed in the same way, for example \texttt{esp1}, so read the names off the table). The curved form of a term reports two coefficients, \texttt{gwesp\_weight} and \texttt{gwesp\_decay}. The terms of \opt{structural()} have the names of \ergm{} (\texttt{twopath}, \texttt{cycle3}, \texttt{threetrail\_RRR}), and operator terms are named as in R, \texttt{Symmetrize(strong)\~{}triangle}. \opt{coeflabel(\emph{old new} \ldots)} renames coefficients (R's \texttt{Label()} operator). The display is truncated for long names; the full name is in \texttt{e(b)}.
+
+\paragraph{The order of the terms.} The order of the coefficients is that in which \nwergm{} processes the options, not the order in which you typed them: \opt{edges}, \opt{mutual}, the node-covariate family, the structural family, \opt{sender} and \opt{receiver}, the dyadic covariates, the geometrically weighted family, and so on. This matters for \opt{init()} and \opt{offset()}, which refer to the order or the names of the coefficient table, and for \texttt{nwergm simulate}, whose \opt{theta()} lists one value per coefficient in the same order. Run the model once and read the order off the table.

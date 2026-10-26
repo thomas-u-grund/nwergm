@@ -1,0 +1,4 @@
+n,model,seconds,converged,iterations,native
+8000,MPLE edges nodematch nodecov,    86.25,.,.,1
+5000,MCMLE edges nodematch nodecov gwesp,    98.52,1,1,1
+10000,MCMLE edges nodematch nodecov gwesp,   286.00,1,1,1

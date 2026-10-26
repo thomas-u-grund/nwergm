@@ -1,0 +1,26 @@
+. nwergm simulate, nsim(2) output(network) generate(lzsim) seed(3)
+(2 simulated network(s) created: lzsim_1 ... lzsim_2)
+
+. nwset
+(5 networks)
+--------------------
+      lazega_adv
+      lazega_cow
+      lazega_fr
+      lzsim_1
+      lzsim_2
+
+. nwsummarize lzsim_1
+--------------------------------------------------
+   Network name:  lzsim_1
+   Network id:  4
+   Directed: true
+   Valued: false
+   Two-mode: false
+   Nodes: 71
+   Selfloop: false
+   Arcs: 484
+   Minimum value:  0
+   Maximum value:  1
+   Density:  .0974
+   Temporal: false

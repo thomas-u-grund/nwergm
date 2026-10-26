@@ -3,6 +3,11 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+- Manual brought to the 1.2 series ("Manual for version 1.2", `manual/nwergm_manual.pdf`, LaTeX source in `manual/`): the model and the estimators, the complete syntax, the reference of the terms (generated from the term inventory by `manual/build_terms.py`), diagnostics and goodness of fit, worked examples with real output, the validation against ergm 4.12.0, the limits, and a translation table from R's ergm. Every listing, comparison table and run-time table was regenerated with nwergm 1.2.3 and nwcommands 3.9.1 (ergm 4.12.0 for the comparisons). The do-files that produce every listing are in `manual/ex`; `manual/run_examples.sh` reruns them. The manual states the 1.2.x behaviour: the defaults of the Markov chain follow R's `control.ergm`, a valued network is fitted as the binary graph, `edgecov()` with a two-mode network, the installation with `nwinstall`.
+
 ## [1.2.3] - 2026-10-26
 
 Patch release. Works with nwcommands 3.6.0 and later; no change of the Mata library.

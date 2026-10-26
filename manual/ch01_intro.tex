@@ -1,0 +1,93 @@
+\chapter{Introduction}\label{ch:intro}
+
+\section{What \texorpdfstring{\nwergm}{nwergm} is}
+
+\nwergm{} estimates exponential random graph models (ERGMs) in Stata. An ERGM is a statistical model for a single observed network: it describes the probability of the whole network as a function of a handful of network statistics, such as the number of ties, the number of reciprocated pairs, the number of triangles, or the number of ties between nodes of the same group. The coefficients of these statistics are estimated from the observed network, and the fitted model can be used to test hypotheses about the processes that shaped the network, to simulate new networks, and to check how well it reproduces features of the data that were not part of the model. Chapter~\ref{ch:model} summarizes the model for readers who have not met it before; Robins et al.~\cite{robins2007} give a standard introduction, and Frank and Strauss~\cite{frank1986} and Wasserman and Pattison~\cite{wasserman1996} are the papers from which the model grew.
+
+\nwergm{} is a Stata package of its own that builds on the \texttt{nwcommands} package. It works on networks that were declared with \texttt{nwset} (or created by one of the other \texttt{nw} commands), reads the node attributes from the ordinary Stata dataset, and returns its results in \texttt{e()} like any other Stata estimation command, so that \texttt{estimates store}, \texttt{lrtest}, \texttt{test}, \texttt{lincom} and \texttt{predict} work as usual. The sampling that a dyad-dependent model needs runs in a compiled C plugin that is called from Mata. No R installation or other external statistical software is used when you fit a model.
+
+\section{Relation to \texorpdfstring{\ergm}{ergm}}
+
+The reference implementation of ERGMs is the R package \ergm{}~\cite{hunter2008jss}, part of the statnet suite~\cite{handcock2008}. \nwergm{} follows \ergm{} closely in its model, in the names and definitions of its terms, in its estimation algorithms and in the conventions that matter for the numbers, so that the documentation of \ergm{} and the published literature on ERGMs apply to \nwergm{} as well. Coefficient names are those of \ergm{} with a period written as an underscore.
+
+\nwergm{} is nevertheless an \emph{independent reimplementation}. It was written in Stata, Mata and C, using the published manuals of \ergm{} and, where the manuals were not specific enough, the open-source code of \ergm{} as the methodological reference. During development \ergm{}~\ergmver{} was used to certify the results: for the terms that were validated, the observed statistics are identical to those of \ergm{}, the pseudolikelihood estimates agree to many digits, and the Monte Carlo estimates agree within simulation noise. Chapter~\ref{ch:validation} documents what was compared and how. \nwergm{} is not affiliated with, endorsed by or supported by the statnet project.
+
+\nwergm{} is meant for researchers who work in Stata, or who prefer it to R, and who want to fit the models that \ergm{} fits. It is \emph{not} a replacement for \ergm{}. \ergm{} remains the reference and the more complete program: it has more estimation controls, more constraints and proposals, parallel chains, the valued, temporal and multi-network extensions, and a much larger community and literature. When a result matters and you can use R, run it in \ergm{} as well.
+
+Where the two programs differ in a way that matters to a user, this manual says so. The most important differences are these.
+\begin{itemize}[nosep]
+  \item Terms are chosen by Stata options (for example \opt{nodematch(sex)}, \opt{gwesp(0.5)}), not by a model formula. The option name is R's term name; where R's name has a digit followed by a letter, the digit moves to the end (\texttt{b1degree} is \opt{bdegree1()}), because Stata does not allow the other spelling in an option name.
+  \item Node attributes must be \emph{numeric} variables of the current dataset (encode strings first), and networks that serve as dyadic covariates are networks in memory.
+  \item \opt{gwesp(\#)} and the other geometrically weighted terms with a number in the option have a \emph{fixed} decay; the curved form with an estimated decay is a separate option (\opt{gwespfree(\#)}). In \ergm{} the default of \texttt{gwesp()} is the curved form.
+  \item The defaults of the Monte Carlo sampler are those of \ergm{}'s \texttt{control.ergm()} (interval 1024, burn-in 16 times the interval, 16384; this changed in version 1.2.0, before it was 50 and 3000), except that \nwergm{} records a fixed 3000 draws where \ergm{} adapts the number of draws (Section~\ref{sec:mcmcopts}). The random-number streams differ, so Monte Carlo results match \ergm{} within simulation noise, not to the last digit.
+\end{itemize}
+
+\section{What is covered}
+
+\begin{itemize}[nosep]
+  \item \textbf{Binary networks} that are undirected, directed or two-mode (bipartite, undirected).
+  \item \textbf{Terms.} Of the \nErgm{} terms of the package \ergm{} (version~\ergmver{}), \nCovered{} are implemented, \nImpl{} completely and \nPartial{} in part; this is $\pctCovered\%$ of the terms, and \nCovered{} of the \nBinary{} terms that can be used on a binary network at all. The terms cover structural, degree, triad and shared-partner statistics, node and dyadic covariates, curved (geometrically weighted) terms, the terms of two-mode networks, and the operator terms (\texttt{Sum}, \texttt{S}, \texttt{F}, \texttt{Symmetrize}, \texttt{Project}, \ldots). Chapter~\ref{ch:terms} lists every term.
+  \item \textbf{Estimation.} Maximum pseudolikelihood (MPLE) with its variants, Monte Carlo maximum likelihood (MCMLE) with the Hummel step length and the Hotelling convergence test, contrastive divergence, and stochastic approximation (Chapter~\ref{ch:model}).
+  \item \textbf{Likelihood.} The log-likelihood, AIC and BIC as \texttt{logLik()} reports them, by bridge sampling for a dyad-dependent model.
+  \item \textbf{Constraints.} The sample-space constraints of \ergm{} (\opt{constraints()}) and the observation-process constraints (\opt{obsconstraints()}), and the matching Metropolis--Hastings proposals.
+  \item \textbf{Missing data.} Missing dyads are handled as in \ergm{}, by the method of Handcock and Gile~\cite{handcock2010}.
+  \item \textbf{Postestimation.} Goodness of fit (\texttt{estat gof}), Markov chain diagnostics (\texttt{estat mcmcdiag}), information criteria (\texttt{estat ic}), likelihood-ratio tests, conditional tie probabilities (\texttt{predict}) and simulation from a fit or from given coefficients (\texttt{nwergm simulate}).
+  \item \textbf{Dialog boxes} for the model, for simulation and for the postestimation commands.
+\end{itemize}
+
+\paragraph{What \ergm{} has that \nwergm{} does not.} \nwergm{} models \emph{binary, static} networks. Not implemented are the \nValued{} terms of \ergm{} for valued networks and the operator \texttt{B}, which exist only for the valued-network framework of Krivitsky~\cite{krivitsky2012}; the packages built on \ergm{} for dynamic networks (\texttt{tergm}~\cite{krivitsky2014}), for count data (\texttt{ergm.count}) and for several networks (\texttt{ergm.multi}); the Curve operator beyond linear maps; the curved \texttt{altkstar} by Monte Carlo maximum likelihood; some constraints; parallel computation; and several controls of \texttt{control.ergm()}. Chapter~\ref{ch:limits} lists the differences in full. Valued and temporal networks are rejected with an error and are never silently dichotomized or collapsed.
+
+\section{Installation and requirements}
+
+\nwergm{} needs the \texttt{nwcommands} core package, which provides the network objects, \texttt{nwset} and the data-handling commands. Install the core first and then \nwergm{}:
+\begin{lstlisting}
+. net install nwcommands, from("https://raw.githubusercontent.com/thomas-u-grund/nwcommands/main/")
+. nwinstall, all
+. net install nwergm, from(https://raw.githubusercontent.com/thomas-u-grund/nwergm/main/) replace
+\end{lstlisting}
+The core must be version 3.4.0 or later; \nwergm{} checks this when it starts, and also whether the Mata libraries of the core and of \nwergm{} were built together, and says how to reinstall if they were not. (Because the Mata library of \nwergm{} contains the class definitions of the core that it was compiled against, a core of a different build would otherwise stop Mata with the error \texttt{class compiled at different times}.) The Mata library is indexed automatically, so that a fresh installation works in a new Stata session without further steps. The command \texttt{nwinstall, models} installs all four model packages (\texttt{nwsaom}, \texttt{nwergm}, \texttt{nwdynam}, \texttt{nwrem}) from their repositories and \texttt{nwinstall, modelpkg(nwergm)} installs only \nwergm{}. Updating the core never replaces \nwergm{}, and updating \nwergm{} never changes the core. Alternatively, add a clone of the \nwergm{} repository to the ado-path with \opt{adopath + "/path/to/nwergm"}; the tests of the repository find the core through the environment variable \texttt{NWCORE}.
+
+\paragraph{Versions.} \texttt{net install nwergm} installs the state of the main branch. A specific release is installed from its tag, for example
+\begin{lstlisting}
+. net install nwergm, from(https://raw.githubusercontent.com/thomas-u-grund/nwergm/v1.2.0/) replace
+\end{lstlisting}
+Use a tagged release when an analysis has to be reproducible. \texttt{net describe nwergm} shows the installed version and distribution date. \texttt{nwergm version} reports the installed release of \nwergm{}, the version of the core, the native plugin in use, the version of \ergm{} that the results were compared with and the license, and stores them in \texttt{r(version)}, \texttt{r(date)}, \texttt{r(core)}, \texttt{r(plugin)}, \texttt{r(reference)} and \texttt{r(license)}. After estimation the release that produced the results is in \texttt{e(version)}; quote it when you report an analysis. \texttt{nwversion} lists the core and all installed model packages.
+
+\paragraph{Software.} Stata 14 or later is required for the ado-files; the examples of this manual were run with Stata/BE~18 on macOS. Stata/BE is enough. The frame output of \texttt{predict} needs Stata~16 or later.
+
+\paragraph{The native plugin.} The sampler is a compiled plugin, \texttt{ergm\_mcmc}. The repository contains builds for macOS (\texttt{ergm\_mcmc\_macos.plugin}), Linux (\texttt{ergm\_mcmc\_unix.plugin}) and Windows (\texttt{ergm\_mcmc\_windows.plugin}). The macOS build is compiled on the development machine; the Linux and Windows builds are produced by continuous integration. The examples and all validation runs of this manual used the macOS build; the Linux and Windows builds were not run for this manual. Most of the terms of the option groups of Chapter~\ref{ch:options} also have a pure Mata sampler, which is the reference implementation and runs when no plugin is available or when \opt{nonative} is given, much more slowly (Chapter~\ref{ch:limits}). The terms of \opt{structural()} and \opt{operators()} and the options \opt{constraints()}, \opt{obsconstraints()} and \opt{mcmcmaxedges()} exist only in the plugin and stop with an error (return code 198) without it. \texttt{e(native)} tells whether a fit used the plugin. A plugin from an older installation in Stata's PLUS directory can shadow the plugin of the repository; test a rebuilt plugin through a scratch ado-path.
+
+\section{Dialog boxes}
+
+Every term and option of \nwergm{} can be set in a dialog box. Three dialogs are installed with the package and appear in the \emph{Network Analysis} menu when the menu is installed with \texttt{nwinstall}:
+\begin{itemize}[nosep]
+  \item \texttt{db nwergm} opens the dialog of the model. It has nine tabs: \emph{Basic}, \emph{Degree}, \emph{Triads}, \emph{Covariate}, \emph{Two-mode}, \emph{Curved}, \emph{Operators}, \emph{Constraint} and \emph{Estimate}. The covariate, dyadic, curved, two-mode, \opt{structural()} and \opt{operators()} terms, the constraints and observation constraints, the missing-data and sample-space settings, the estimation method, the MCMC, stochastic-approximation and bridge-sampling settings, \opt{offset()} and \opt{coeflabel()} are chosen on these tabs; where an area has several sections, a drop-down list on the tab selects the section.
+  \item \texttt{db nwergm\_simulate} opens the dialog of \texttt{nwergm simulate} with given coefficients (nine tabs, \emph{Basic} to \emph{Simulate}).
+  \item \texttt{db nwergm\_estat} opens the dialog of the postestimation commands \texttt{estat gof}, \texttt{estat mcmcdiag}, \texttt{estat ic} and \texttt{nwergm simulate} from the last fit (tabs \emph{Command}, \emph{GOF}, \emph{MCMC}, \emph{IC} and \emph{Simulate}).
+\end{itemize}
+A dialog builds a command line and runs it, so that the command appears in the Results window and in the log; you can copy it into a do-file. The dialogs are generated from one specification, so that they cover the same terms as the command.
+
+\section{License and how to cite}
+
+\nwergm{} is free software under the GNU General Public License, version~3. It is derived from the R package \ergm{} (Handcock, Hunter, Butts, Goodreau, Krivitsky, Morris and others; GPL-3). The source code is public; the notice file of the repository lists the sources and the version of \ergm{} that each part was compared with.
+
+\paragraph{How to cite.} The manual is the citable reference for the package. Please cite it as: Grund, T.~U. (2026). \emph{nwergm: Exponential random graph models in Stata. Manual for version \pkgversion.}\citedoi{} Please also report the version that produced your results, as printed by \texttt{nwergm version}, and, for Monte Carlo fits, the \opt{seed()}. If you use the terms or algorithms, cite \ergm{}~\cite{hunter2008jss} as well.
+
+\section{How to read this manual}
+
+If you know ERGMs from R, read Chapter~\ref{ch:start} for the syntax of a first model, use Chapter~\ref{ch:options} and Appendix~\ref{app:translation} as a dictionary from \ergm{} to \nwergm{}, and look up the terms in Chapter~\ref{ch:terms}. If you are new to ERGMs, read Chapter~\ref{ch:model} first; it is short and uses only the equations that you need to interpret the output.
+
+\begin{description}[style=nextline,nosep]
+  \item[Chapter~\ref{ch:model}] The model and the estimators: pseudolikelihood, Monte Carlo maximum likelihood, bridge sampling, contrastive divergence, stochastic approximation, the proposals, the stopping rules, reproducibility, missing dyads, constraints.
+  \item[Chapter~\ref{ch:start}] How the data must look, a complete first analysis with real output, and the results that \nwergm{} stores.
+  \item[Chapter~\ref{ch:options}] Reference of all options of \texttt{nwergm}, organized by topic.
+  \item[Chapter~\ref{ch:terms}] The terms: every term of \ergm{} with its \nwergm{} syntax, its restrictions and how it was validated.
+  \item[Chapter~\ref{ch:special}] Constraints, observation processes, missing dyads, offsets, structural and operator terms, and simulation, in practice.
+  \item[Chapter~\ref{ch:postest}] Goodness of fit, Markov chain diagnostics, information criteria, prediction, and the complete list of stored results.
+  \item[Chapter~\ref{ch:examples}] Worked examples with real output.
+  \item[Chapter~\ref{ch:validation}] The validation against \ergm{}: how it was done, what it shows, and the quirks of \ergm{} that \nwergm{} reproduces.
+  \item[Chapter~\ref{ch:limits}] Limits: network sizes, the plugin and the platforms, and known issues.
+  \item[Appendix~\ref{app:translation}] A translation table from \ergm{} functions to \nwergm{} commands.
+\end{description}
+
+\paragraph{Typographic conventions.} Stata commands and options are set in \texttt{typewriter}. Output shown in listings was produced by the commands above it with the version of \nwergm{} described in this manual; the random-number seed is always given, so that the output can be reproduced. Simulation-based estimates change in the last digits when the model or the seed changes. The do-files that produced every listing are in the directory \texttt{manual/ex} of the repository.

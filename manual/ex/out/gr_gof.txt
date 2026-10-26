@@ -1,0 +1,68 @@
+. estat gof, gof(idegree espartners distance) nsim(100) seed(2) plot name(gof)
+
+Goodness-of-fit for model statistics
+
+                       obs       min      mean       max  MC p-value
+edges                  575       488    577.31       678        0.98
+mutual                  74        54     73.88       102        0.90
+nodematch_prac         412       356    414.56       496        0.96
+nodeicov_senio~y     19379     16592  19530.41     22686        0.88
+gwesp_0.5        555.61913 402.98489    560.45 747.41944        1.00
+
+Goodness-of-fit for minimum geodesic distance
+
+                       obs       min      mean       max  MC p-value
+1                      575       488    577.31       678        0.98
+2                     2316      2082   2517.28      3047        0.38
+3                     1782      1236   1721.68      2132        0.80
+4                      154        11    126.12       337        0.54
+5                        3         0      2.43        43        0.52
+6                        0         0      0.03         3        1.00
+Inf                    140         0     25.15       208        0.04
+
+Goodness-of-fit for in-degree
+
+                       obs       min      mean       max  MC p-value
+0                        0         0      0.23         2        1.00
+1                        0         0      0.71         4        1.00
+2                        3         0      1.77         5        0.52
+3                        2         0      3.78        10        0.64
+4                        8         0      4.54        10        0.20
+5                        6         0      6.42        13        1.00
+6                        5         2      7.16        12        0.50
+7                        8         2      8.17        15        1.00
+8                        9         1      7.85        16        0.74
+9                        5         1      7.13        13        0.50
+10                       7         1      5.94        15        0.76
+11                       6         1      5.20        11        0.96
+12                       4         0      3.71         7        0.98
+13                       2         0      2.85         7        0.98
+14                       4         0      1.92         6        0.36
+15                       1         0      1.28         5        1.00
+16                       0         0      1.07         6        0.78
+17                       1         0      0.56         4        0.88
+18                       0         0      0.36         2        1.00
+19                       0         0      0.12         2        1.00
+20                       0         0      0.17         2        1.00
+21                       0         0      0.05         1        1.00
+24                       0         0      0.01         1        1.00
+
+Goodness-of-fit for edgewise shared partner
+
+                       obs       min      mean       max  MC p-value
+0                      138        93    131.24       162        0.68
+1                      190       161    202.25       245        0.50
+2                      131        87    140.74       192        0.64
+3                       69        32     67.15       114        0.84
+4                       26         7     24.95        60        0.90
+5                       11         0      8.08        24        0.62
+6                        7         0      2.21         8        0.12
+7                        2         0      0.54         4        0.20
+8                        1         0      0.13         2        0.22
+9                        0         0      0.02         1        1.00
+(plot saved as gof; box and whiskers summarize the simulated draws, the dashed line is the observed network)
+
+. graph export "../fig/gof.pdf", name(gof) replace
+file
+    /private/tmp/claude-501/-Users-tgrund-FILES-NEW-SOFTWARE-nwcommands/f80eded9-2ca1-45e7-9a6b-23ada6a895b2/scratchpad
+    > /m3/manual/ex/../fig/gof.pdf saved as PDF format

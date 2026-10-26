@@ -1,0 +1,7 @@
+. capture noisily nwergm kapferer_t2, edges triangle seed(1) mcmcsamplesize(1000)
+Warning: MCMLE iter 2 - statistic(s) at column(s) 1 2 not varying this iteration - this may indicate an extreme point or 
+> dead-end configuration.
+Unconstrained MCMC sampling did not mix at all. Optimization cannot continue.
+
+. display "return code: " _rc
+return code: 498

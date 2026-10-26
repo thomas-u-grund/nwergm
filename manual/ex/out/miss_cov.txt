@@ -1,0 +1,12 @@
+. preserve
+
+. replace wealth = . in 3
+(1 real change made, 1 to missing)
+
+. capture noisily nwergm flomarriage, edges nodecov(wealth)
+In term nodecov: attribute wealth has missing data, which is not currently supported.
+
+. display "return code: " _rc
+return code: 416
+
+. restore

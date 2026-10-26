@@ -1,0 +1,37 @@
+fit,kind,term,value,se
+attrcov(prac; mat(AM)),coef,edges,      -2.211273562,      .07857624629
+attrcov(prac; mat(AM)),obs,edges,               575,.
+attrcov(prac; mat(AM)),coef,attrcov_prac,       .1662144586,      .05874909744
+attrcov(prac; mat(AM)),obs,attrcov_prac,               641,.
+dyadcov(lazega_cow),coef,edges,      -2.568264278,      .06223269472
+dyadcov(lazega_cow),obs,edges,               575,.
+dyadcov(lazega_cow),coef,dyadcov_lazega_cow_mutual,       3.226083116,       .1970315161
+dyadcov(lazega_cow),obs,dyadcov_lazega_cow_mutual,                41,.
+dyadcov(lazega_cow),coef,dyadcov_lazega_cow_utri,       1.549416957,       .1244973986
+dyadcov(lazega_cow),obs,dyadcov_lazega_cow_utri,               100,.
+dyadcov(lazega_cow),coef,dyadcov_lazega_cow_ltri,         1.6891789,       .1206532436
+dyadcov(lazega_cow),obs,dyadcov_lazega_cow_ltri,               115,.
+mm(prac),coef,edges,      -1.560581521,      .08951724493
+mm(prac),obs,edges,               575,.
+mm(prac),coef,mm_prac_2_1,      -1.173785989,       .1490384895
+mm(prac),obs,mm_prac_2_1,                75,.
+mm(prac),coef,mm_prac_1_2,      -1.002618055,       .1423117362
+mm(prac),obs,mm_prac_1_2,                88,.
+mm(prac),coef,mm_prac_2_2,      -.1040119496,       .1121156453
+mm(prac),obs,mm_prac_2_2,               261,.
+nodeicovrange(seniority),coef,edges,      -1.906906972,      .04789694824
+nodeicovrange(seniority),obs,edges,               575,.
+nodeicovrange(seniority),coef,nodeicovrange_seniority,     -.04585330285,     .008583180065
+nodeicovrange(seniority),obs,nodeicovrange_seniority,              3443,.
+nodeofactordistinct(off),coef,edges,      -1.870512132,      .04635794566
+nodeofactordistinct(off),obs,edges,               575,.
+nodeofactordistinct(off),coef,nodeofactordistinct_off,      -1.304246803,       .1719446382
+nodeofactordistinct(off),obs,nodeofactordistinct_off,               130,.
+nodeocovrange(age),coef,edges,      -1.886209009,      .04785260867
+nodeocovrange(age),obs,edges,               575,.
+nodeocovrange(age),coef,nodeocovrange_age,     -.08610184802,      .01447433673
+nodeocovrange(age),obs,nodeocovrange_age,              1638,.
+nodefactordistinct(off),coef,edges,      -1.884916668,      .04617808588
+nodefactordistinct(off),obs,edges,               575,.
+nodefactordistinct(off),coef,nodefactordistinct_off,      -1.244196449,       .1734006054
+nodefactordistinct(off),obs,nodefactordistinct_off,               162,.

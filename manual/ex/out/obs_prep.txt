@@ -1,0 +1,26 @@
+. nwwebuse florentine, nwclear
+
+. nwtomata flomarriage, mat(A)
+
+. mata: A[1,2] = A[2,1] = 0
+
+. mata: A[3,5] = A[5,3] = 0
+
+. mata: A[4,9] = A[9,4] = 0
+
+. mata: U = J(16, 16, 0)
+
+. mata: U[1,2] = U[2,1] = U[3,5] = U[5,3] = U[4,9] = U[9,4] = 1
+
+. mata: st_matrix("A0", A); st_matrix("U", U)
+
+. tempfile nodes
+
+. save `nodes'
+file /var/folders/hx/2zp2k5ps2y7d_6hx015fcr1h0000gn/T//S_87602.000002 saved as .dta format
+
+. nwset, mat(A0) undirected name(flo0)
+
+. nwset, mat(U) undirected name(unobs)
+
+. use `nodes', clear

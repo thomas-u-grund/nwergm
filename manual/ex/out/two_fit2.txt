@@ -1,0 +1,28 @@
+. nwergm clubs, edges nodemix(kind) bgwdegree2(0.5) seed(1)
+
+Exponential-family random graph model
+
+Network:               =  clubs
+Nodes:                 =  42
+Ties:                  =  71
+Directed:              =  No
+Estimation:            =  MCMLE
+MCMC sample size:      =  3000
+
+----------------------------------------------------------------------------------
+           clubs | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+-----------------+----------------------------------------------------------------
+           edges |  -.7311237   .1727851    -4.23   0.000    -1.069776   -.3924711
+nodemix_kind_2_1 |  -1.503362   .3983645    -3.77   0.000    -2.284142   -.7225817
+nodemix_kind_1_2 |  -2.243641   .6135545    -3.66   0.000    -3.446186   -1.041096
+nodemix_kind_2_2 |  -.0679029   .3766518    -0.18   0.857    -.8061268    .6703211
+  bgwdegree2_0.5 |  -1.788379    1.47199    -1.21   0.224    -4.673427    1.096668
+----------------------------------------------------------------------------------
+
+MCMLE converged after 1 iteration(s).
+Evaluating log-likelihood at the estimate (bridge sampling with 16 bridges) ...
+
+             Null Deviance:     499.1  on 360 degrees of freedom
+         Residual Deviance:     320.5  on 355 degrees of freedom
+
+Log-likelihood:  -160.2587 (df = 5)   AIC:     330.5   BIC:     349.9   (MC std. err. =  .08311)

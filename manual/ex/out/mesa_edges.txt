@@ -1,0 +1,22 @@
+. nwergm mesa, edges
+
+Exponential-family random graph model
+
+Network:               =  mesa
+Nodes:                 =  205
+Ties:                  =  203
+Directed:              =  No
+Estimation:            =  MPLE
+
+------------------------------------------------------------------------------
+        mesa | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+       edges |  -4.625021   .0705294   -65.58   0.000    -4.763256   -4.486786
+------------------------------------------------------------------------------
+
+Maximum pseudolikelihood estimate (not full ERGM maximum likelihood unless the model is dyad-independent).
+
+             Null Deviance:   28987.4  on 20910 degrees of freedom
+         Residual Deviance:    2285.7  on 20909 degrees of freedom
+
+Log-likelihood: -1142.8711 (df = 1)   AIC:    2287.7   BIC:    2295.7   (MC std. err. =       0)

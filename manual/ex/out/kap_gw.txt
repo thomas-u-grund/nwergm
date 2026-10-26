@@ -1,0 +1,25 @@
+. nwergm kapferer_t2, edges gwesp(0.5) seed(1)
+
+Exponential-family random graph model
+
+Network:               =  kapferer_t2
+Nodes:                 =  43
+Ties:                  =  190
+Directed:              =  No
+Estimation:            =  MCMLE
+MCMC sample size:      =  3000
+
+------------------------------------------------------------------------------
+ kapferer_t2 | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+       edges |  -4.294914   .4016951   -10.69   0.000    -5.082222   -3.507606
+   gwesp_0.5 |   1.520809   .2313551     6.57   0.000     1.067362    1.974257
+------------------------------------------------------------------------------
+
+MCMLE converged after 3 iteration(s).
+Evaluating log-likelihood at the estimate (bridge sampling with 16 bridges) ...
+
+             Null Deviance:    1251.8  on 903 degrees of freedom
+         Residual Deviance:     858.6  on 901 degrees of freedom
+
+Log-likelihood:  -429.2887 (df = 2)   AIC:     862.6   BIC:     872.2   (MC std. err. =  .09657)

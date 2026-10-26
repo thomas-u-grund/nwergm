@@ -1,0 +1,251 @@
+\section{Dyad-level and basic terms}\label{sec:terms-dyad}
+Terms of single dyads and of the whole network: density, reciprocity, Hamming distance to another network. (5 terms)
+
+\footnotesize
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{3.3cm}>{\raggedright\arraybackslash}p{5.4cm}>{\raggedright\arraybackslash}p{1.4cm}>{\raggedright\arraybackslash}p{4.0cm}@{}}
+\toprule
+ergm term & nwergm syntax and remarks & Types, class & Validation against ergm \\
+\midrule
+\endfirsthead
+\toprule
+ergm term & nwergm syntax and remarks & Types, class & Validation against ergm \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\opt{density} & \opt{structural(density)} & u d b, DI & statistic equals R's; MPLE to $10^{-8}$\\\addlinespace[3pt]
+\opt{edges} & \opt{edges}\newline Required in every model, unless density or meandeg (collinear with it) stands in for it. & u d b, DI & statistic equals R's; MPLE to $10^{-6}$\\\addlinespace[3pt]
+\opt{hamming} & \opt{hamming(netname)}\newline Reference must be a loaded network; R's cov=/attrname=/defaultweight= not supported. & u d b, DI & MPLE to $10^{-9}$\\\addlinespace[3pt]
+\opt{meandeg} & \opt{structural(meandeg)} & u d b, DI & statistic equals R's; MPLE to $10^{-8}$\\\addlinespace[3pt]
+\opt{mutual} & \opt{mutual}\newline \opt{structural(mutual[(same=attr [diff])]), structural(mutual(by=attr))}\newline Directed networks only. R's keep= and levels= are not available. & d, DD & statistic equals R's; MPLE to $10^{-5}$\\\addlinespace[3pt]
+\end{longtable}
+\normalsize
+
+\section{Degree and star terms}\label{sec:terms-deg}
+Terms of the degree distribution of the nodes and of the stars centred on them. (20 terms)
+
+\footnotesize
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{3.3cm}>{\raggedright\arraybackslash}p{5.4cm}>{\raggedright\arraybackslash}p{1.4cm}>{\raggedright\arraybackslash}p{4.0cm}@{}}
+\toprule
+ergm term & nwergm syntax and remarks & Types, class & Validation against ergm \\
+\midrule
+\endfirsthead
+\toprule
+ergm term & nwergm syntax and remarks & Types, class & Validation against ergm \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\opt{concurrent} & \opt{concurrent}\newline \opt{structural(concurrent[(by=attr)])}\newline Undirected networks only. & u b, DD & statistic equals R's; MPLE to $10^{-9}$\\\addlinespace[3pt]
+\opt{concurrentties} & \opt{structural(concurrentties[(by=attr)])} & u b, DD & statistic equals R's; MPLE to $10^{-6}$\\\addlinespace[3pt]
+\opt{degcor} & \opt{structural(degcor)} & u b, DD & statistic equals R's; MPLE to $10^{-7}$\\\addlinespace[3pt]
+\opt{degcrossprod} & \opt{structural(degcrossprod)} & u b, DD & statistic equals R's; MPLE to $10^{-8}$\\\addlinespace[3pt]
+\opt{degrange} & \opt{degrange(numlist) degrangeto(numlist)}\newline \opt{structural(degrange(from=numlist [to=numlist] [by=attr] [homophily]))}\newline Undirected networks only. & u b, DD & statistic equals R's; MPLE to $10^{-5}$\\\addlinespace[3pt]
+\opt{degree} & \opt{degree(numlist)}\newline \opt{structural(degree(d=numlist [by=attr] [homophily]))}\newline Undirected networks only, as in R. & u b, DD & statistic equals R's; MPLE to $10^{-7}$\\\addlinespace[3pt]
+\opt{degree1.5} & \opt{structural(degree1.5)} & u b, DD & statistic equals R's; MPLE to $10^{-7}$; MCMLE within noise\\\addlinespace[3pt]
+\opt{idegrange} & \opt{idegrange(numlist) idegrangeto(numlist)}\newline \opt{structural(idegrange(...))}\newline Directed only. & d, DD & statistic equals R's; MPLE to $10^{-8}$\\\addlinespace[3pt]
+\opt{idegree} & \opt{idegree(numlist)}\newline \opt{structural(idegree(d=numlist [by=attr] [homophily]))}\newline Directed networks only. A level with no node that R reports as -Inf or NA is reported as 0. & d, DD & statistic equals R's; MPLE to $10^{-7}$\\\addlinespace[3pt]
+\opt{idegree1.5} & \opt{structural(idegree1.5)} & d, DD & statistic equals R's; MPLE to $10^{-7}$\\\addlinespace[3pt]
+\opt{isolatededges} & \opt{structural(isolatededges)} & u b, DD & statistic equals R's; MPLE to $10^{-9}$\\\addlinespace[3pt]
+\opt{isolates} & \opt{structural(isolates)} & u b, DD & statistic equals R's; MPLE to $10^{-5}$\\\addlinespace[3pt]
+\opt{istar} & \opt{istar(numlist)}\newline \opt{structural(istar(k=numlist [attr=attr]))}\newline Directed only. & d, DD & statistic equals R's; MPLE to $10^{-5}$\\\addlinespace[3pt]
+\opt{kstar} & \opt{kstar(numlist)}\newline \opt{structural(kstar(k=numlist [attr=attr]))}\newline Undirected networks only. & u b, DD & statistic equals R's; MPLE to $10^{-6}$\\\addlinespace[3pt]
+\opt{m2star} & \opt{structural(m2star)} & d, DD & statistic equals R's; MPLE to $10^{-8}$; MCMLE within noise\\\addlinespace[3pt]
+\opt{odegrange} & \opt{odegrange(numlist) odegrangeto(numlist)}\newline \opt{structural(odegrange(...))}\newline Directed only. & d, DD & statistic equals R's; MPLE to $10^{-6}$\\\addlinespace[3pt]
+\opt{odegree} & \opt{odegree(numlist)}\newline \opt{structural(odegree(d=numlist [by=attr] [homophily]))}\newline Directed networks only. & d, DD & statistic equals R's; MPLE to $10^{-6}$\\\addlinespace[3pt]
+\opt{odegree1.5} & \opt{structural(odegree1.5)} & d, DD & statistic equals R's; MPLE to $10^{-7}$; MCMLE within noise\\\addlinespace[3pt]
+\opt{ostar} & \opt{ostar(numlist)}\newline \opt{structural(ostar(k=numlist [attr=attr]))}\newline Directed only. & d, DD & statistic equals R's; MPLE to $10^{-6}$\\\addlinespace[3pt]
+\opt{twopath} & \opt{structural(twopath)} & u d b, DD & statistic equals R's; MPLE to $10^{-6}$\\\addlinespace[3pt]
+\end{longtable}
+\normalsize
+
+\section{Triad, cycle, path and shared-partner terms}\label{sec:terms-tri}
+Terms of triangles, cycles, two-paths and shared partners. (21 terms)
+
+\footnotesize
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{3.3cm}>{\raggedright\arraybackslash}p{5.4cm}>{\raggedright\arraybackslash}p{1.4cm}>{\raggedright\arraybackslash}p{4.0cm}@{}}
+\toprule
+ergm term & nwergm syntax and remarks & Types, class & Validation against ergm \\
+\midrule
+\endfirsthead
+\toprule
+ergm term & nwergm syntax and remarks & Types, class & Validation against ergm \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\opt{asymmetric} & \opt{structural(asymmetric[(attr=attr [diff])])} & d, DD & statistic equals R's; MPLE to $10^{-6}$\\\addlinespace[3pt]
+\opt{balance} & \opt{structural(balance)}\newline A triad-count term (types 102 and 300 of the triad census; an odd number of ties in an undirected triad), not a signed-network term. & u d b, DD & statistics, MPLE and MCMLE\\\addlinespace[3pt]
+\opt{ctriple} & \opt{ctriple}\newline \opt{structural(ctriple[(attr=attr [diff])])}\newline Directed networks only. & d, DD & statistic equals R's; MPLE to $10^{-7}$\\\addlinespace[3pt]
+\opt{cycle} & \opt{structural(cycle(k=numlist [semi]))} & d, DD & statistic equals R's; MPLE to $10^{-6}$; MCMLE within noise\\\addlinespace[3pt]
+\opt{cyclicalties} & \opt{cyclicalties}\newline Directed only (R also accepts undirected). & d, DD & MPLE to $10^{-9}$\\\addlinespace[3pt]
+\opt{dsp} & \opt{dsp(numlist) [type()]}\newline R's type= -> type() option (applies to the whole model). An exhaustive d-range is collinear (as in R). & u d b, DD & MPLE to $10^{-8}$\\\addlinespace[3pt]
+\opt{esp} & \opt{esp(numlist) [type()]}\newline R's type= -> type() option (applies to the whole model). & u d b, DD & MPLE to $10^{-8}$\\\addlinespace[3pt]
+\opt{intransitive} & \opt{structural(intransitive)} & d, DD & statistic equals R's; MPLE to $10^{-8}$\\\addlinespace[3pt]
+\opt{localtriangle} & \opt{structural(localtriangle(x=netname))} & u d b, DD & statistic equals R's on two networks\\\addlinespace[3pt]
+\opt{nearsimmelian} & \opt{structural(nearsimmelian)} & d, DD & statistic equals R's; MPLE to $10^{-10}$\\\addlinespace[3pt]
+\opt{nsp} & \opt{structural(nsp(d=numlist [type=OTP|ITP|OSP|ISP|RTP]))} & u d b, DD & statistic equals R's; MPLE to $10^{-5}$\\\addlinespace[3pt]
+\opt{opentriad} & \opt{structural(opentriad)}\newline In ergm 4.12.0 the change statistic for removing a tie overflows an unsigned integer, so R's estimation with this term is wrong although its summary() is right; nwergm uses the correct change statistic. & u b, DD & statistic equals R's; estimation deliberately differs (see remark)\\\addlinespace[3pt]
+\opt{simmelian} & \opt{structural(simmelian)} & d, DD & statistic equals R's; MPLE to $10^{-8}$\\\addlinespace[3pt]
+\opt{simmelianties} & \opt{structural(simmelianties)} & d, DD & statistic equals R's; MPLE to $10^{-8}$\\\addlinespace[3pt]
+\opt{threetrail} & \opt{structural(threetrail[(keep=numlist)])} & u d b, DD & statistic equals R's; MPLE to $10^{-7}$\\\addlinespace[3pt]
+\opt{transitive} & \opt{structural(transitive)} & d, DD & statistic equals R's; MPLE to $10^{-6}$; MCMLE within noise\\\addlinespace[3pt]
+\opt{transitiveties} & \opt{transitiveties}\newline Directed only (R also accepts undirected). & d, DD & MPLE to $10^{-7}$\\\addlinespace[3pt]
+\opt{triadcensus} & \opt{structural(triadcensus[(levels=numlist)])} & u d b, DD & statistic equals R's; MPLE to $10^{-7}$\\\addlinespace[3pt]
+\opt{triangle} & \opt{triangle}\newline \opt{structural(triangle[(attr=attr [diff])])} & u d b, DD & statistic equals R's; MPLE to $10^{-5}$; MCMLE within noise\\\addlinespace[3pt]
+\opt{tripercent} & \opt{structural(tripercent[(attr=attr [diff])])} & u b, DD & statistic equals R's (to $10^{-6}$); MPLE to $10^{-7}$\\\addlinespace[3pt]
+\opt{ttriple} & \opt{structural(ttriple[(attr=attr [diff])])} & d, DD & statistic equals R's; MPLE to $10^{-6}$; MCMLE within noise\\\addlinespace[3pt]
+\end{longtable}
+\normalsize
+
+\section{Curved terms: geometrically weighted and alternating statistics}\label{sec:terms-curved}
+Terms with a decay parameter. The fixed-decay form (decay as a number in the option) is an ordinary term; the form with an estimated decay (option names ending in \texttt{free}) is a curved exponential family and reports a weight and a decay. (7 terms)
+
+\footnotesize
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{3.3cm}>{\raggedright\arraybackslash}p{5.4cm}>{\raggedright\arraybackslash}p{1.4cm}>{\raggedright\arraybackslash}p{4.0cm}@{}}
+\toprule
+ergm term & nwergm syntax and remarks & Types, class & Validation against ergm \\
+\midrule
+\endfirsthead
+\toprule
+ergm term & nwergm syntax and remarks & Types, class & Validation against ergm \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\opt{altkstar} & \opt{structural(altkstar(lambda=\# fixed))}\newline \opt{structural(altkstar) with init()}\newline {\itshape partial.} Estimated lambda (R: fixed = FALSE, the default) is available for method(mple) with init() only: R cannot fit it with its default starting values and its MCMLE does not converge on the test networks, so nothing exists to compare an MCMLE with. & u b, curved & fixed form: statistic and MPLE; curved form: map, gradient and MPLE from given starting values (to $10^{-5}$)\\\addlinespace[3pt]
+\opt{gwdegree} & \opt{gwdegree(\#)}\newline \opt{gwdegreefree(\#)}\newline Fixed decay gwdegree(), curved gwdegreefree() (undirected). nwergm also accepts gwdegree() on a directed network, which R refuses. & u, curved & statistic equals R's; MPLE to $10^{-5}$ except the cases named in the remark\\\addlinespace[3pt]
+\opt{gwdsp} & \opt{gwdsp(\#)}\newline \opt{gwdspfree(\#)}\newline \opt{type()}\newline Fixed decay gwdsp(), curved gwdspfree(). The curved fit on a boundary solution can end elsewhere than R. & u d b, curved & MPLE to $10^{-8}$ except the cases named in the remark\\\addlinespace[3pt]
+\opt{gwesp} & \opt{gwesp(\#)}\newline \opt{gwespfree(\#)}\newline \opt{type(OTP|ITP|OSP|ISP|RTP)}\newline R's default is fixed=FALSE; in nwergm gwesp() has a fixed decay and gwespfree() estimates it. RTP agrees with R 4.12.0 only when R is run with cache.sp=FALSE (a defect of that release). R's cutoff= is not available. The curved fit on a boundary solution (decay near 0) can end elsewhere than R. & u d b, curved & statistic equals R's; MPLE to $10^{-6}$ except the cases named in the remark\\\addlinespace[3pt]
+\opt{gwidegree} & \opt{gwidegree(\#)}\newline \opt{gwidegreefree(\#)}\newline Directed networks only. Fixed decay gwidegree(), curved gwidegreefree(). The curved fit on a boundary solution can end elsewhere than R. & d, curved & statistic equals R's; MPLE to $10^{-9}$ except the cases named in the remark\\\addlinespace[3pt]
+\opt{gwnsp} & \opt{gwnsp(\#)}\newline \opt{gwnspfree(\#)}\newline \opt{type()}\newline Fixed decay gwnsp(), curved gwnspfree(). The curved fit on a boundary solution can end elsewhere than R. & u d b, curved & MPLE to $10^{-7}$ except the cases named in the remark\\\addlinespace[3pt]
+\opt{gwodegree} & \opt{gwodegree(\#)}\newline \opt{gwodegreefree(\#)}\newline Directed networks only. Fixed decay gwodegree(), curved gwodegreefree(). & d, curved & statistic equals R's; MPLE to $10^{-3}$\\\addlinespace[3pt]
+\end{longtable}
+\normalsize
+
+\section{Covariate terms}\label{sec:terms-cov}
+Terms of node attributes and of dyadic covariates. (25 terms)
+
+\footnotesize
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{3.3cm}>{\raggedright\arraybackslash}p{5.4cm}>{\raggedright\arraybackslash}p{1.4cm}>{\raggedright\arraybackslash}p{4.0cm}@{}}
+\toprule
+ergm term & nwergm syntax and remarks & Types, class & Validation against ergm \\
+\midrule
+\endfirsthead
+\toprule
+ergm term & nwergm syntax and remarks & Types, class & Validation against ergm \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\opt{absdiff} & \opt{absdist(varlist [, pow(\#)])}\newline R's name is absdiff; the exponent is pow(). & u d b, DI & MPLE to $10^{-7}$\\\addlinespace[3pt]
+\opt{absdiffcat} & \opt{absdiffcat(varlist [, levels() levelvalues() base()])} & u d b, DI & statistic equals R's; MPLE to $10^{-4}$\\\addlinespace[3pt]
+\opt{attrcov} & \opt{attrcov(varlist, mat(matname))} & u d, DI & statistic equals R's; MPLE to $10^{-7}$ (compared for this manual)\\\addlinespace[3pt]
+\opt{diff} & \opt{diff(varlist [, pow() dir() signaction()])} & u d b, DI & statistic and change statistics equal R's; MPLE to $10^{-4}$\\\addlinespace[3pt]
+\opt{dyadcov} & \opt{dyadcov(netname | matname)} & u d, DI & statistic equals R's; MPLE to $10^{-9}$ (compared for this manual)\\\addlinespace[3pt]
+\opt{edgecov} & \opt{edgecov(netname | matname)}\newline The covariate is a network in memory (possibly valued) or an n by n Stata matrix. & u d, DI & statistic equals R's; MPLE to $10^{-9}$\\\addlinespace[3pt]
+\opt{mm} & \opt{mm(var [, levels() levels2()])} & u d b, DI & statistic equals R's; MPLE to $10^{-9}$ (compared for this manual)\\\addlinespace[3pt]
+\opt{nodecov} & \opt{nodecov(varlist)} & u d b, DI & statistic equals R's; MPLE to $10^{-6}$\\\addlinespace[3pt]
+\opt{nodecovrange} & \opt{nodecovrange(varlist)} & u d b, DD & statistic equals R's; MPLE to $10^{-4}$\\\addlinespace[3pt]
+\opt{nodefactor} & \opt{nodefactor(varlist [, levels() levelvalues() base()])}\newline The lowest level is omitted (R's default base=1). & u d b, DI & MPLE to $10^{-7}$\\\addlinespace[3pt]
+\opt{nodefactordistinct} & \opt{nodefactordistinct(varlist [, levels() levelvalues()])} & u d b, DD & statistic equals R's; MPLE to $10^{-4}$\\\addlinespace[3pt]
+\opt{nodeicov} & \opt{nodeicov(varlist)}\newline Directed only. & d, DI & statistic equals R's; MPLE to $10^{-7}$\\\addlinespace[3pt]
+\opt{nodeicovrange} & \opt{nodeicovrange(varlist)} & d, DD & statistic equals R's; MPLE to $10^{-10}$ (compared for this manual)\\\addlinespace[3pt]
+\opt{nodeifactor} & \opt{nodeifactor(varlist [, levels() levelvalues() base()])}\newline Directed networks only. & d, DI & MPLE to $10^{-7}$\\\addlinespace[3pt]
+\opt{nodeifactordistinct} & \opt{nodeifactordistinct(varlist [, levels() levelvalues()])} & d, DD & statistic equals R's; MPLE to $10^{-4}$\\\addlinespace[3pt]
+\opt{nodematch} & \opt{nodematch(varlist [, diff keep() levels() levelvalues()])}\newline \opt{nodematchdiff(varlist)}\newline Exact match on a numeric variable (encode strings first); one coefficient per variable, or per level with diff. & u d b, DI & statistic equals R's; MPLE to $10^{-7}$\\\addlinespace[3pt]
+\opt{nodemix} & \opt{nodemix(varlist [, levels() levelvalues() levels2() base()])} & u d b, DI & statistic and change statistics equal R's; MPLE to $10^{-4}$\\\addlinespace[3pt]
+\opt{nodeocov} & \opt{nodeocov(varlist)}\newline Directed only. & d, DI & statistic equals R's; MPLE to $10^{-6}$\\\addlinespace[3pt]
+\opt{nodeocovrange} & \opt{nodeocovrange(varlist)} & d, DD & statistic equals R's; MPLE to $10^{-4}$\\\addlinespace[3pt]
+\opt{nodeofactor} & \opt{nodeofactor(varlist [, levels() levelvalues() base()])}\newline Directed networks only. & d, DI & MPLE to $10^{-7}$\\\addlinespace[3pt]
+\opt{nodeofactordistinct} & \opt{nodeofactordistinct(varlist [, levels() levelvalues()])} & d, DD & statistic equals R's; MPLE to $10^{-9}$ (compared for this manual)\\\addlinespace[3pt]
+\opt{receiver} & \opt{receiver}\newline Directed only. & d, DI & MPLE to $10^{-8}$\\\addlinespace[3pt]
+\opt{sender} & \opt{sender}\newline Directed only. First node dropped as in R. (R/nwergm differ on separated nodes: R -Inf, nwergm 0.) & d, DI & MPLE to $10^{-9}$\\\addlinespace[3pt]
+\opt{smalldiff} & \opt{smalldiff(varlist, cutoff(\#))} & u d b, DI & statistic equals R's; MPLE to $10^{-4}$\\\addlinespace[3pt]
+\opt{sociality} & \opt{sociality(varlist [, nodes() levels()])} & u b, DI & statistic equals R's; MPLE to $10^{-4}$\\\addlinespace[3pt]
+\end{longtable}
+\normalsize
+
+\section{Two-mode (bipartite) terms}\label{sec:terms-two}
+Terms for two-mode networks. R's mode digit moves to the end of the option name (\texttt{b1degree} is \texttt{bdegree1()}). (33 terms)
+
+\footnotesize
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{3.3cm}>{\raggedright\arraybackslash}p{5.4cm}>{\raggedright\arraybackslash}p{1.4cm}>{\raggedright\arraybackslash}p{4.0cm}@{}}
+\toprule
+ergm term & nwergm syntax and remarks & Types, class & Validation against ergm \\
+\midrule
+\endfirsthead
+\toprule
+ergm term & nwergm syntax and remarks & Types, class & Validation against ergm \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\opt{b1concurrent} & \opt{bconcurrent1(all) | bconcurrent1(by(var) [levels(numlist)])} & b, DD & statistic and change statistics equal R's; MPLE to $10^{-4}$; MCMLE within noise\\\addlinespace[3pt]
+\opt{b1cov} & \opt{bcov1(varlist)} & b, DI & MPLE to $10^{-6}$\\\addlinespace[3pt]
+\opt{b1covrange} & \opt{bcovrange1(varname)} & b, DD & statistic and change statistics equal R's; MPLE to $10^{-4}$; MCMLE within noise\\\addlinespace[3pt]
+\opt{b1degrange} & \opt{bdegrange1(numlist, to(numlist) [by() levels() homophily])} & b, DD & statistic and change statistics equal R's; MPLE to $10^{-4}$; MCMLE within noise\\\addlinespace[3pt]
+\opt{b1degree} & \opt{bdegree1(numlist [, by() levels() homophily])}\newline R's by=, levels=, homophily= are suboptions. & b, DD & MPLE to $10^{-7}$\\\addlinespace[3pt]
+\opt{b1dsp} & \opt{bdsp1(numlist)} & b, DD & statistic and change statistics equal R's; MPLE to $10^{-4}$; MCMLE within noise\\\addlinespace[3pt]
+\opt{b1factor} & \opt{bfactor1(varlist)} & b, DI & MPLE to $10^{-7}$\\\addlinespace[3pt]
+\opt{b1factordistinct} & \opt{bfactordistinct1(var [, levels()])} & b, DD & statistic and change statistics equal R's; MPLE to $10^{-4}$; MCMLE within noise\\\addlinespace[3pt]
+\opt{b1mindegree} & \opt{bmindegree1(numlist)} & b, DD & statistic and change statistics equal R's; MPLE to $10^{-4}$\\\addlinespace[3pt]
+\opt{b1nodematch} & \opt{bnodematch1(var [, diff alpha(\#) beta(\#) byattr(var) keep() levels()])} & b, DD & statistic and change statistics equal R's; MPLE to $10^{-4}$; MCMLE within noise\\\addlinespace[3pt]
+\opt{b1sociality} & \opt{bsociality1(numlist)} & b, DI & statistic and change statistics equal R's; MPLE to $10^{-4}$; MCMLE within noise\\\addlinespace[3pt]
+\opt{b1star} & \opt{bstar1(numlist [, attr() levels()])}\newline R's attr= and levels= are suboptions. & b, DD & MPLE to $10^{-7}$\\\addlinespace[3pt]
+\opt{b1starmix} & \opt{bstarmix1(k [, attr(var) nodiff base()])} & b, DD & statistic and change statistics equal R's; MPLE to $10^{-4}$; MCMLE within noise\\\addlinespace[3pt]
+\opt{b1twostar} & \opt{btwostar1(var [, attr2(var) levels1() levels2() levels3() base()])} & b, DD & statistic and change statistics equal R's; MPLE to $10^{-4}$; MCMLE within noise\\\addlinespace[3pt]
+\opt{b2concurrent} & \opt{bconcurrent2(all) | bconcurrent2(by(var) [levels(numlist)])} & b, DD & statistic and change statistics equal R's; MPLE to $10^{-4}$; MCMLE within noise\\\addlinespace[3pt]
+\opt{b2cov} & \opt{bcov2(varlist)} & b, DI & MPLE to $10^{-6}$\\\addlinespace[3pt]
+\opt{b2covrange} & \opt{bcovrange2(varname)} & b, DD & statistic and change statistics equal R's; MPLE to $10^{-4}$; MCMLE within noise\\\addlinespace[3pt]
+\opt{b2degrange} & \opt{bdegrange2(numlist, to(numlist) [by() levels() homophily])} & b, DD & statistic and change statistics equal R's; MPLE to $10^{-4}$; MCMLE within noise\\\addlinespace[3pt]
+\opt{b2degree} & \opt{bdegree2(numlist [, by() levels() homophily])}\newline R's by=, levels=, homophily= are suboptions. & b, DD & MPLE to $10^{-7}$\\\addlinespace[3pt]
+\opt{b2dsp} & \opt{bdsp2(numlist)} & b, DD & statistic and change statistics equal R's; MPLE to $10^{-4}$; MCMLE within noise\\\addlinespace[3pt]
+\opt{b2factor} & \opt{bfactor2(varlist)} & b, DI & MPLE to $10^{-7}$\\\addlinespace[3pt]
+\opt{b2factordistinct} & \opt{bfactordistinct2(var [, levels()])} & b, DD & statistic and change statistics equal R's; MPLE to $10^{-4}$; MCMLE within noise\\\addlinespace[3pt]
+\opt{b2mindegree} & \opt{bmindegree2(numlist)} & b, DD & statistic and change statistics equal R's; MPLE to $10^{-4}$\\\addlinespace[3pt]
+\opt{b2nodematch} & \opt{bnodematch2(var [, diff alpha(\#) beta(\#) byattr(var) keep() levels()])} & b, DD & statistic and change statistics equal R's; MPLE to $10^{-4}$; MCMLE within noise\\\addlinespace[3pt]
+\opt{b2sociality} & \opt{bsociality2(numlist)} & b, DI & statistic and change statistics equal R's; MPLE to $10^{-4}$; MCMLE within noise\\\addlinespace[3pt]
+\opt{b2star} & \opt{bstar2(numlist [, attr() levels()])}\newline R's attr= and levels= are suboptions. & b, DD & MPLE to $10^{-7}$\\\addlinespace[3pt]
+\opt{b2starmix} & \opt{bstarmix2(k [, attr(var) nodiff base()])} & b, DD & statistic and change statistics equal R's; MPLE to $10^{-4}$; MCMLE within noise\\\addlinespace[3pt]
+\opt{b2twostar} & \opt{btwostar2(var [, attr2(var) levels1() levels2() levels3() base()])} & b, DD & statistic and change statistics equal R's; MPLE to $10^{-4}$; MCMLE within noise\\\addlinespace[3pt]
+\opt{coincidence} & \opt{coincidence(all) | coincidence(active(\#))} & b, DD & statistic and change statistics equal R's; MPLE to $10^{-4}$\\\addlinespace[3pt]
+\opt{gwb1degree} & \opt{bgwdegree1(\# [, attr() levels()])}\newline \opt{bgwdegreefree1(\#)}\newline Fixed decay bgwdegree1(), curved bgwdegreefree1(). & b, curved & MPLE to $10^{-6}$; MCMLE within noise\\\addlinespace[3pt]
+\opt{gwb1dsp} & \opt{bgwdsp1(\#)}\newline \opt{bgwdspfree1(\#)}\newline Fixed decay bgwdsp1(), curved bgwdspfree1(). & b, DD & MPLE to $10^{-6}$\\\addlinespace[3pt]
+\opt{gwb2degree} & \opt{bgwdegree2(\# [, attr() levels()])}\newline \opt{bgwdegreefree2(\#)}\newline Fixed decay bgwdegree2(), curved bgwdegreefree2(). & b, curved & MPLE to $10^{-6}$; MCMLE within noise\\\addlinespace[3pt]
+\opt{gwb2dsp} & \opt{bgwdsp2(\#)}\newline \opt{bgwdspfree2(\#)}\newline Fixed decay bgwdsp2(), curved bgwdspfree2(). & b, DD & MPLE to $10^{-6}$\\\addlinespace[3pt]
+\end{longtable}
+\normalsize
+
+\section{Operators}\label{sec:terms-ops}
+Operators build a term from other terms or from a derived network; they are written inside \opt{operators()} (Section~\ref{sec:operators}). (14 terms)
+
+\footnotesize
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{3.3cm}>{\raggedright\arraybackslash}p{5.4cm}>{\raggedright\arraybackslash}p{1.4cm}>{\raggedright\arraybackslash}p{4.0cm}@{}}
+\toprule
+ergm term & nwergm syntax and remarks & Types, class & Validation against ergm \\
+\midrule
+\endfirsthead
+\toprule
+ergm term & nwergm syntax and remarks & Types, class & Validation against ergm \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\opt{Curve} & \opt{operators(Curve(terms, params() map(rep | matrix(name))))}\newline {\itshape partial.} Linear maps only (map(rep) and map(matrix(name)), estimated as the statistics L'g(y)); R map functions, gradient, minpar, maxpar and cov are not available. & u d b, op. & statistics, MPLE (to $10^{-9}$), MCMLE\\\addlinespace[3pt]
+\opt{Exp} & \opt{operators(Exp(terms))} & u d b, op. & statistics, MPLE and MCMLE (several models)\\\addlinespace[3pt]
+\opt{F} & \opt{operators(F(terms, filter()))} & u d b, op. & statistics, MPLE and MCMLE (several models)\\\addlinespace[3pt]
+\opt{For} & \opt{operators(For(name=values, terms))} & u d b, op. & statistics, MPLE and MCMLE (several models)\\\addlinespace[3pt]
+\opt{I} & \opt{operators(I(terms))} & u d b, op. & statistics, MPLE and MCMLE (several models)\\\addlinespace[3pt]
+\opt{Label} & \opt{operators(Label(terms, label() pos()))} & u d b, op. & statistics, MPLE and MCMLE (several models)\\\addlinespace[3pt]
+\opt{Log} & \opt{operators(Log(terms, log0()))} & u d b, op. & statistics, MPLE and MCMLE (several models)\\\addlinespace[3pt]
+\opt{NodematchFilter} & \opt{operators(NodematchFilter(terms, attrname()))} & u d b, op. & statistics, MPLE and MCMLE (several models)\\\addlinespace[3pt]
+\opt{Offset} & \opt{operators(Offset(terms, coef() which())) and offset(coefname \#)} & u d b, op. & statistics, MPLE and MCMLE (several models)\\\addlinespace[3pt]
+\opt{Prod} & \opt{operators(Prod(terms | terms, label()))}\newline R computes Prod as Exp(Sum(Log)) with log(0) = -1/sqrt(eps); its statistics are exact to about 1e-8 only. Nested Sum/Prod inside Prod is not available. & u d b, op. & statistics, MPLE and MCMLE (several models)\\\addlinespace[3pt]
+\opt{Project} & \opt{operators(Project(terms, mode()))} & b, op. & statistics, MPLE and MCMLE (several models)\\\addlinespace[3pt]
+\opt{S} & \opt{operators(S(terms, attrs()))} & u d, op. & statistics, MPLE and MCMLE (several models)\\\addlinespace[3pt]
+\opt{Sum} & \opt{operators(Sum(terms | terms, label()))} & u d b, op. & statistics, MPLE and MCMLE (several models)\\\addlinespace[3pt]
+\opt{Symmetrize} & \opt{operators(Symmetrize(terms, rule()))}\newline rule(weak) on a network with reciprocated ties: R 4.12.0 starts from a symmetrized network that lacks the reciprocated pairs, so its estimation differs from its summary(); nwergm uses the exact change statistics. & d, op. & statistics, MPLE and MCMLE (several models)\\\addlinespace[3pt]
+\end{longtable}
+\normalsize
+

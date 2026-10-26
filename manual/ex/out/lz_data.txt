@@ -1,0 +1,32 @@
+. nwwebuse lazega, nwclear
+
+. nwset
+(3 networks)
+--------------------
+      lazega_adv
+      lazega_cow
+      lazega_fr
+
+. describe, short
+
+Contains data from https://raw.githubusercontent.com/thomas-u-grund/nwcommands/main/data/lazega.nwdta
+ Observations:            71                  
+    Variables:            10                  1 Sep 2026 21:38
+Sorted by: 
+     Note: Dataset has changed since last saved.
+
+. summarize seniority age
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+   seniority |         71          36    20.63977          1         71
+         age |         71    41.84507    10.25343         26         67
+
+. tabulate practice
+
+   practice |      Freq.     Percent        Cum.
+------------+-----------------------------------
+  corporate |         30       42.25       42.25
+ litigation |         41       57.75      100.00
+------------+-----------------------------------
+      Total |         71      100.00
