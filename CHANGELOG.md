@@ -3,7 +3,7 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.3.0] - 2026-10-26
 
 ### Results that change (read before you re-run old analyses)
 - **The MCMLE sample size is adaptive, as in R's `ergm`.** Each MCMLE iteration now draws a base sample of max(256, 32 times the number of parameters) and keeps sampling until the effective sample size of the estimating equations reaches 64 (`mcmleeffectivesize()`, R's `MCMLE.effectiveSize`), discarding a burn-in estimated from the sample itself and thinning the chain by two whenever the sample has doubled; the next iteration starts from half the interval that was needed (R: `MCMLE.effectiveSize.interval_drop`). Before, every iteration recorded exactly 3,000 draws at the full interval and the interval was enlarged when the effective size was below max(200, 64 p). The coefficients of a fit are therefore different draws from the same distribution: the mean of 20 fits agrees with the mean of 20 R fits within 0.04 standard errors on five models (Florentine, Lazega, Mesa, and two simulated networks), the reported standard errors agree within 3%, and the estimates scatter between seeds like R's (the effective sample size of the final sample is about 64 or more, not several hundred). `e(mcmc_samplesize)` is the number of draws actually kept. The old behaviour is `mcmleeffectivesize(0)` (fixed 3,000 draws, `mcmcsamplesize()` to change it); the sample size given in `mcmcsamplesize()` is the base size of the adaptive sample.
