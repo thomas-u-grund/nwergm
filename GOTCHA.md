@@ -209,3 +209,53 @@ In `nwergm.ado` the syntax line declares `MCMCBURNIN(integer -1)`: -1 means "not
 not read `mcmcburnin` before the derivation line right after `set more off`. The dialog hints, `nwergm.sthlp` and
 `cscripts/test_nwergm_rdefaults.do` state the defaults; change all four together. The old (pre-1.2.0) fast settings are
 `mcmcburnin(3000) mcmcinterval(50)`; tests that need a small, quick chain name their MCMC options explicitly.
+
+## `nwset ... edgelist` makes a DIRECTED network unless you say `undirected` (benchmarks and loaders)
+
+`nwset ego alter value, edgelist name(x)` with an edge list that holds each undirected edge once (upper triangle) creates a directed network. In the
+timing scripts of the SJ article (`rcheck/bench_nwergm.do`, 2026-10-26) the undirected benchmark networks (100-node `gwesp`, 500-node, 1000-node sparse
+`gwesp+gwnsp`) were therefore fitted as directed networks (`gwesp` then means OTP, the model is a different one), while R fitted the undirected model:
+the "74.5 s" of the sparse model is the directed model; the undirected one takes about 18 s in 1.2.3. Always pass `directed` or `undirected` in a loader
+and check `e(directed)` and `e(ties)` of the first fit against R.
+
+## The native plugin publishes its generation; Mata sizes the frame from it (speed130)
+
+`ergm_mcmc` sets the Stata scalar `__ergm_native_gen` on every call (2 since the speed work). With generation 2 the sampler writes the final network only if it
+fits the frame it was given (`SF_nobs()`) and otherwise just reports `__ergm_native_nties_out`; `ErgmNativeSampleCore()` then enlarges the frame and repeats the
+call (same seed, same result). A plugin of generation 1 (1.2.3 and earlier, or the first call of a session) is given one row per dyad as before, so an old
+binary next to new Mata code is correct, only slower. Traps: `st_numscalar()` of a scalar that does not exist returns an empty matrix, not a missing value
+(`gen < .` then fails with 3200 conformability); a plugin binary is only replaced after `rm` (macOS code-signature kill); the Linux and Windows binaries
+change only after a push (CI), so test with the old binary too (`git show <tag>:lib/plugins/macos/ergm_mcmc_macos.plugin`).
+
+## G is stale while native runs hand the network on as a tie list
+
+In the adaptive MCMLE loop and in the bridge sampling (carry) the network travels between native runs as a plain tie list (`tiesin`/`tiesout` of
+`ErgmNativeSampleCore()`); the Mata `ErgmGraph` (asarray adjacency, about 45 ms to rebuild for 1000 nodes and 6000 ties) is rebuilt once at the end by
+`ergm_graph_load_ties()`. Code inside those loops must not read `G` (full statistics are carried as the last row of the previous sample instead). An error
+in the middle leaves `G` out of date; the next `nwergm` call builds a new graph anyway.
+
+## Plugin: the GW kernel table must survive `ops_free()`
+
+`gw_kernel()` reads a table of the kernel for the counts 0..n+1 (built with the same expression as before, so results are bit-identical). The table is created
+per decay value and released by the next call's `gwk_reset()`. `ops_free()` runs in the middle of the setup of every call; when it also reset the table, the
+kernel silently fell back to `pow()`/`exp()` for every proposal (25% slower, no error). Profile with `sample <pid> 5` while a long run is going: `pow` and `exp`
+near the top of `libsystem_m` mean the table is not in use.
+
+## `ergm_mple_irls()` declined large designs because of an absolute 1e-9 check
+
+The check "the log-likelihood must not decrease" used an absolute 1e-9; for 500,000 or more dyads the rounding noise of the sum is larger than that, the
+function returned 0 and `nwergm` fitted the MPLE with Stata's `logit` on a dataset of all dyads (1.3 s for 1000 nodes). The check is relative now, and a design
+with few distinct rows is compressed (`ergm_mple_compress()`, weighted likelihood; `uniqrows()` takes 0.17 s for 1,000,000 rows).
+
+## Fits with the adaptive sample are as noisy as R's
+
+With the target effective size 64 the coefficients scatter between seeds like those of R (about 0.03-0.05 standard errors at the Monte Carlo level), so a test
+that compares one seed to an R value needs a tolerance of about 0.3 standard errors. Tests of fixed-size behaviour (`test_nwergm_ess`, `_estat`, `_rdefaults`) use
+`mcmleeffectivesize(0)`.
+
+## Mata `symeigensystem()` returns missing values for a matrix whose eigenvalues are all equal
+
+Found while porting R's tolerance-region test (`ergm_ellipsoid_mahalanobis()`): `U^(-1/2) W U^(-1/2)` was a multiple of the identity (the tolerance matrix is a multiple of the
+covariance matrix), and `symeigensystem()` returned all-missing eigenvalues for it even though the input was symmetric and finite (rounding noise in the off-diagonal, about 1e-16).
+`eigenvalues()` (general matrix, complex result) works; take `Re()`. Also: `symeigensystem(A, X, L)` needs `X` and `L` to exist when called from an interactive `mata:` block, and in a
+function `{ stmt; continue }` on one line is a syntax error (use separate lines).

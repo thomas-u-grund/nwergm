@@ -11482,6 +11482,47 @@ real matrix ergm_mple_cov(class ErgmModel scalar M, class ErgmGraph scalar G, re
 	sample with AR-corrected covariances (R: approx.hotelling.diff.test with spectrum0.mvar).
 */
 
+// distance, in the metric W^-1, from y to the boundary of the ellipsoid {x: x' U^-1 x = 1} (y inside); R's .ellipsoid_mahalanobis().
+// Returns a negative code when y is not inside or the matrices are not usable.
+real scalar ergm_ellipsoid_mahalanobis(real colvector y, real matrix W, real matrix U)
+{
+	real matrix Ui, WUi, Ip
+	complex rowvector ev
+	real colvector x, d
+	real scalar p, lmin, lo, hi, l, f, it, em
+	p = rows(y)
+	Ip = I(p)
+	Ui = invsym(U)
+	if (y' * Ui * y >= 1) return(-1)
+	WUi = W * Ui
+	// the largest eigenvalue of W U^-1 (real and positive; the general routine is used because the symmetric one returns
+	// missing values for a matrix whose eigenvalues are all equal)
+	ev = eigenvalues(WUi)
+	em = max(Re(ev))
+	if (em <= 0 | em >= .) return(-3)
+	lmin = -1 / em
+	lo = lmin
+	hi = 0
+	l = 0
+	// root of f(l) = x(l)' U^-1 x(l) - 1 on (lmin, 0), x(l) = (I + l W U^-1)^-1 y: f(0) < 0 and f -> +inf at lmin
+	for (it=1; it<=300; it++) {
+		l = (lo + hi) / 2
+		x = lusolve(Ip + l * WUi, y)
+		if (missing(x) > 0) {
+			hi = l
+			continue
+		}
+		f = x' * Ui * x - 1
+		if (f > 0) lo = l
+		else hi = l
+		if (hi - lo < 1e-15 * abs(lmin)) break
+	}
+	x = lusolve(Ip + l * WUi, y)
+	if (missing(x) > 0) return(-4)
+	d = y - x
+	return(d' * invsym(W) * d)
+}
+
 // geometric-mean AR spectral variance inflation of the whitened columns of X (R: attr(spectrum0.mvar(X), "infl")); >= 1
 real scalar ergm_geomean_infl(real matrix X)
 {
@@ -11741,6 +11782,10 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 	real rowvector curstat
 	real matrix tiesc
 	real scalar lazy
+	real scalar rmode, rconv, rd2, rd2e, rT2, rcrit, rdf, rinfl, rboost, rd2prev, rpv
+	real rowvector estprev, vidx2
+	real colvector d2ni, yw
+	real matrix Vm, Vmi, Wc, Dv
 	external real rowvector ergm_ctl
 
 	// control.ergm()-style settings supplied by nwergm: (termination 1=confidence 2=Hummel 3=Hotelling 4=none,
@@ -11897,6 +11942,12 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 		lazy = (M.native_enabled_sample & !has_obs)
 		tiesc = (lazy ? G.all_ties() : J(0, 0, .))
 	}
+	// R's confidence termination (MCMLE.termination = "confidence"): the estimating equations must lie inside the tolerance
+	// ellipsoid (MCMLE.MCMC.precision = 0.1 of their covariance) with the stated confidence; used for the adaptive sample
+	rmode = (adaptive & term == 1 & !has_obs)
+	d2ni = J(3, 1, 0)
+	estprev = J(1, 0, .)
+	rconv = 0
 
 	// Combined safety bound on `interval * samplesize' (the TOTAL raw
 	// MCMC draws one sample costs): `interval' (autocorrelation
@@ -12306,6 +12357,41 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 		}
 		Fstat = T2 * (neff - ptest_const) / (ptest_const * (neff - 1))
 		Fcrit = invF(ptest_const, neff - ptest_const, confidence)
+		rconv = 0
+		rd2 = .
+		rd2e = .
+		rT2 = .
+		rcrit = .
+		rboost = 0
+		if (rmode) {
+			vidx2 = J(1, 0, 0)
+			for (k=1; k<=ptest_const; k++) if (!nonvarying[k]) vidx2 = vidx2, k
+			rpv = cols(vidx2)
+			if (rpv > 0) {
+				Vm = 0.1 * Vtest[vidx2, vidx2]
+				Vmi = invsym(Vm)
+				rd2 = Dtestbar[vidx2] * Vmi * Dtestbar[vidx2]'
+				if (cols(estprev) == ptest_const) {
+					rd2prev = estprev[vidx2] * Vmi * estprev[vidx2]'
+					d2ni = d2ni[2::3] \ (rd2 >= rd2prev)
+				}
+				estprev = Dtestbar
+				if (rd2 < 2) {
+					rinfl = ergm_geomean_infl(Dtest[., vidx2])
+					rdf = rows(Dtest) / rinfl - 1
+					yw = Dtestbar_w[vidx2]'
+					rd2e = yw' * Vmi * yw
+					if (rd2e < 1 & rdf > rpv) {
+						Wc = Vtest[vidx2, vidx2] * rinfl * ess_factor / rows(Dtest)
+						rT2 = ergm_ellipsoid_mahalanobis(yw, Wc, Vm)
+						if (rT2 >= 0) {
+							rcrit = invF(rpv, rdf - rpv + 1, confidence) * rpv * rdf / (rdf - rpv + 1)
+							if (rT2 > rcrit) rconv = 1
+						}
+					}
+				}
+			}
+		}
 		if (verbose) {
 			printf("MCMLE iter %g: steplen=%5.3f (undamped=%5.3f) theta=", iter, gamma, gamma_undamped)
 			for (k=1; k<=p; k++) printf("%9.5f ", theta[k])
@@ -12313,7 +12399,8 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 				printf(" theta_c=")
 				for (k=1; k<=cols(theta_c); k++) printf("%9.5f ", theta_c[k])
 			}
-			printf(" F=%7.3f (crit %7.3f at %g%% conf, neff=%7.1f/%g) max|Dtestbar_w/se|=%6.3f interval=%g ess=%5.3f n=%g\n", Fstat, Fcrit, confidence*100, neff, min_neff, max(abs(Dtestbar_w :/ se)), interval_used, 1/ess_factor, samplesize)
+			if (rmode) printf(" d2=%6.3f d2e=%6.3f T2=%7.3f (crit %7.3f) conv=%g interval=%g ess=%5.3f n=%g\n", rd2, rd2e, rT2, rcrit, rconv, interval_used, 1/ess_factor, samplesize)
+			else printf(" F=%7.3f (crit %7.3f at %g%% conf, neff=%7.1f/%g) max|Dtestbar_w/se|=%6.3f interval=%g ess=%5.3f n=%g\n", Fstat, Fcrit, confidence*100, neff, min_neff, max(abs(Dtestbar_w :/ se)), interval_used, 1/ess_factor, samplesize)
 		}
 		// Convergence is decided by the statistical test ALONE (plus
 		// `gamma==1', i.e. the outer Newton step itself was undamped -
@@ -12397,7 +12484,13 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 			else theta_c_stable_count = 0
 		}
 		if (term == 1) {
-			if (Fstat!=. & Fcrit!=. & Fstat <= Fcrit & (gamma==1 | (is_curved & theta_c_stable_count>=2))) {
+			if (rmode) {
+				if (rconv) {
+					converged = 1
+					break
+				}
+			}
+			else if (Fstat!=. & Fcrit!=. & Fstat <= Fcrit & (gamma==1 | (is_curved & theta_c_stable_count>=2))) {
 				converged = 1
 				break
 			}
@@ -12439,7 +12532,34 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 			interval = min((interval * growth, interval_cap))
 		}
 		bboost = 0
-		if (adaptive & gamma == 1 & Fstat < . & Fcrit < . & Fstat > Fcrit & term == 1) {
+		if (rmode) {
+			// R: tested but not converged -> raise by min(critical value / T^2, MCMLE.confidence.boost); no test possible -> by the
+			// maximum; outside the tolerance region and no progress in two of the last three iterations -> by the maximum
+			if (rd2 < 2 & rd2e < 1 & rdf > rpv) {
+				if (rT2 < 0) rboost = confidence_boost
+				else rboost = max((1, min((rcrit / rT2, confidence_boost))))
+			}
+			else if (rd2 < 2 & rd2e < .) {
+				// rd2e >= 1: the update leaves the tolerance region (the "else" case of R's d2e > 1)
+				if (sum(d2ni) > boost_threshold) {
+					rboost = confidence_boost
+					d2ni = J(3, 1, 0)
+				}
+			}
+			else if (rd2 >= 2 | rd2 >= .) {
+				if (sum(d2ni) > boost_threshold) {
+					rboost = confidence_boost
+					d2ni = J(3, 1, 0)
+				}
+			}
+			if (rboost > 0) {
+				esstarget = esstarget * rboost
+				ss_base = max((ceil(ss_base * rboost^0.5), ceil(2 * esstarget)))
+			}
+			bboost = 1
+			stall_count = 0
+		}
+		if (adaptive & gamma == 1 & Fstat < . & Fcrit < . & Fstat > Fcrit & term == 1 & !rmode) {
 			// R (confidence termination): the sample failed the test although the step is full: increase the target ESS and the
 			// sample size by the factor needed to reach the critical value (at most MCMLE.confidence.boost = 2); the sample size
 			// grows with the square root of the factor (MCMLE.sampsize.boost.pow = 0.5)
