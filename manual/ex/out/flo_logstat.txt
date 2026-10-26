@@ -1,0 +1,23 @@
+. nwergm flomarriage, edges nodecov(wealth) logstat(nodecov_wealth)
+
+Exponential-family random graph model
+
+Network:               =  flomarriage
+Nodes:                 =  16
+Ties:                  =  20
+Directed:              =  No
+Estimation:            =  MPLE
+
+------------------------------------------------------------------------------------
+       flomarriage | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+-------------------+----------------------------------------------------------------
+             edges |  -2.825678   .5559189    -5.08   0.000    -3.915259   -1.736097
+log_nodecov_wealth |   28.08384   10.41224     2.70   0.007     7.676222    48.49145
+------------------------------------------------------------------------------------
+
+Maximum pseudolikelihood estimate (not full ERGM maximum likelihood unless the model is dyad-independent).
+
+             Null Deviance:     166.4  on 120 degrees of freedom
+         Residual Deviance:     100.8  on 118 degrees of freedom
+
+Log-likelihood:   -50.4011 (df = 2)   AIC:     104.8   BIC:     110.4   (MC std. err. =       0)

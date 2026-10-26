@@ -1,0 +1,23 @@
+. nwergm clubs, edges edgecov(visits)
+
+Exponential-family random graph model
+
+Network:               =  clubs
+Nodes:                 =  42
+Ties:                  =  72
+Directed:              =  No
+Estimation:            =  MPLE
+
+--------------------------------------------------------------------------------
+         clubs | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+         edges |  -1.396876   .1629103    -8.57   0.000    -1.716175   -1.077578
+edgecov_visits |   .0307848   .2770268     0.11   0.912    -.5121777    .5737473
+--------------------------------------------------------------------------------
+
+Maximum pseudolikelihood estimate (not full ERGM maximum likelihood unless the model is dyad-independent).
+
+             Null Deviance:     499.1  on 360 degrees of freedom
+         Residual Deviance:     360.3  on 358 degrees of freedom
+
+Log-likelihood:  -180.1387 (df = 2)   AIC:     364.3   BIC:     372.0   (MC std. err. =       0)

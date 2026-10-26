@@ -1,0 +1,29 @@
+. nwergm flomarriage, edges nodecov(wealth) gwespfree(0.5) estimate(mple)
+Note: method(mple) requested for a dyad-dependent model - reporting pseudolikelihood, NOT full ERGM maximum likelihood.
+
+Exponential-family random graph model
+
+Network:               =  flomarriage
+Nodes:                 =  16
+Ties:                  =  20
+Directed:              =  No
+Estimation:            =  MPLE
+
+--------------------------------------------------------------------------------
+   flomarriage | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+         edges |  -2.621176    .547741    -4.79   0.000    -3.694729   -1.547624
+nodecov_wealth |   .0103079   .0047691     2.16   0.031     .0009605    .0196552
+  gwesp_weight |   .0496566   .2045734     0.24   0.808    -.3512999    .4506131
+   gwesp_decay |   6.46e-10   9.038386     0.00   1.000    -17.71491    17.71491
+--------------------------------------------------------------------------------
+
+Maximum pseudolikelihood estimate (not full ERGM maximum likelihood unless the model is dyad-independent).
+
+      Null Pseudo-deviance:     166.4  on 120 degrees of freedom
+  Residual Pseudo-deviance:     103.0  on 116 degrees of freedom
+
+Log-likelihood:   -51.5184 (df = 4)   AIC:     111.0   BIC:     122.2   (MC std. err. =       0)
+(For a dyad-dependent model fitted by MPLE this is the pseudolikelihood, as in R.)
+(decay is an estimated curved parameter here - see help nwergm, gw_effects for how this differs from R ergm's own BFGS-ba
+> sed fit)

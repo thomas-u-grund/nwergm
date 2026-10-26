@@ -19,6 +19,16 @@ project uses [Semantic Versioning](https://semver.org/).
 ### Fixed
 - Nothing in the estimates changes when `mcmleeffectivesize(0)` is given with explicit sample sizes: the statistics, the estimates and the log-likelihood of such a fit are identical to 1.2.3 (up to the starting values of large models noted above).
 
+### Added
+- Manual brought to the 1.2 series ("Manual for version 1.2", `manual/nwergm_manual.pdf`, LaTeX source in `manual/`): the model and the estimators, the complete syntax, the reference of the terms (generated from the term inventory by `manual/build_terms.py`), diagnostics and goodness of fit, worked examples with real output, the validation against ergm 4.12.0, the limits, and a translation table from R's ergm. Every listing, comparison table and run-time table was regenerated with nwergm 1.2.3 and nwcommands 3.9.1 (ergm 4.12.0 for the comparisons). The do-files that produce every listing are in `manual/ex`; `manual/run_examples.sh` reruns them. The manual states the 1.2.x behaviour: the defaults of the Markov chain follow R's `control.ergm`, a valued network is fitted as the binary graph, `edgecov()` with a two-mode network, the installation with `nwinstall`.
+
+## [1.2.4] - 2026-10-26
+
+Patch release. Works with nwcommands 3.6.0 and later; no change of the Mata library.
+
+### Changed
+- Help text corrected: the description no longer says that the package is a fully native Stata/Mata implementation or that Mata is always the reference (the sampler, the change statistics and the pseudolikelihood design matrix run in the compiled plugin; the Mata implementation is a slow fallback for tests and comparison); valued networks are described as fitted to the binary graph with one note (not rejected); the speed ratios of an earlier benchmark are removed (speed relative to R depends on the model); Windows and Linux plugins are described as built by the continuous-integration workflow; the page range of Geyer and Thompson (1992) is 657-683; the provenance line says that the package was developed from ergm and is distributed under the GPL-3; the README install lines start with nwinstall. No change in code or results; the Mata library is unchanged.
+
 ## [1.2.3] - 2026-10-26
 
 Patch release. Works with nwcommands 3.6.0 and later; no change of the Mata library.

@@ -1,0 +1,65 @@
+\chapter{From R's \texttt{ergm} to \texttt{nwergm}}\label{app:translation}
+
+The table translates the functions and arguments of R's \ergm{} (and \texttt{statnet}) to \nwergm{}. The right column is the Stata command or option; \texttt{net} stands for a network that was declared with \texttt{nwset} and is named in the command.
+
+\footnotesize
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{6.4cm}>{\raggedright\arraybackslash}p{9.3cm}@{}}
+\toprule
+R (\texttt{ergm}, \texttt{statnet}) & \texttt{nwergm}\\
+\midrule\endhead
+\texttt{net <- network(\ldots)} & The network is declared with \texttt{nwset} (or loaded with \texttt{nwuse}, \texttt{nwwebuse}, or built with \texttt{nwfromedge}) and named in the command: \texttt{nwergm net, \ldots}. Node attributes are numeric variables of the current dataset, one row per node.\\
+\texttt{ergm(net \textasciitilde{} edges + nodematch("sex"))} & \texttt{nwergm net, edges nodematch(sex)}\\
+\texttt{nodematch("sex", diff=TRUE)} & \texttt{nodematchdiff(sex)} or \texttt{nodematch(sex, diff)}\\
+\texttt{nodefactor("x", levels=-1)} & \texttt{nodefactor(x, levels(-1))}\\
+\texttt{absdiff("age")}, \texttt{absdiff("age", pow=2)} & \texttt{absdist(age)}, \texttt{absdist(age, pow(2))}\\
+\texttt{b1degree(0:2)}, \texttt{gwb2degree(0.5, fixed=TRUE)} & \texttt{bdegree1(0/2)}, \texttt{bgwdegree2(0.5)}\\
+\texttt{gwesp(0.5, fixed=TRUE)}, \texttt{gwesp(0.5, fixed=FALSE)} & \texttt{gwesp(0.5)}, \texttt{gwespfree(0.5)}\\
+\texttt{gwesp(0.5, fixed=TRUE, type="ITP")} & \texttt{gwesp(0.5) type(ITP)} (applies to every shared-partner term of the model)\\
+\texttt{twopath}, \texttt{cycle(3:4)}, \texttt{altkstar(0.8, fixed=TRUE)} & \texttt{structural(twopath cycle(k=3 4) altkstar(lambda=0.8 fixed))}\\
+\texttt{Symmetrize(\textasciitilde triangle, rule="strong")} & \texttt{operators(Symmetrize(triangle, rule(strong)))}\\
+\texttt{Sum(\textasciitilde edges | \textasciitilde triangle, label="a")} & \texttt{operators(Sum(edges | triangle, label(a)))}\\
+\texttt{offset(edges)} with \texttt{offset.coef} & \texttt{offset(edges \#)}\\
+\texttt{Label(\textasciitilde nodematch("sex"), "same")} & \texttt{coeflabel(nodematch\_sex same)} or \texttt{operators(Label(\ldots))}\\
+\texttt{ergm(\ldots, estimate="MPLE")} & \texttt{estimate(mple)}\\
+\texttt{ergm(\ldots, estimate="CD")} & \texttt{estimate(cd)}\\
+\texttt{ergm(\ldots, main.method=}\allowbreak\texttt{"Stochastic-Approximation")} & \texttt{mainmethod(sa)}\\
+\texttt{control.ergm(MCMC.burnin=, MCMC.interval=, MCMC.samplesize=)} & \texttt{mcmcburnin()}, \texttt{mcmcinterval()}, \texttt{mcmcsamplesize()}\\
+\texttt{control.ergm(MCMLE.maxit=, MCMLE.termination=, MCMLE.confidence=)} & \texttt{mcmleiterations()}, \texttt{mcmletermination()}, \texttt{mcmleconfidence()}\\
+\texttt{control.ergm(MCMLE.steplength=, MCMLE.steplength.margin=, MCMLE.effectiveSize=)} & \texttt{mcmlesteplength()}, \texttt{mcmlestepmargin()}, \texttt{mcmleeffectivesize()}\\
+\texttt{control.ergm(MPLE.type=, MPLE.check=, MPLE.covariance.method=)} & \texttt{mpletype()}, \texttt{mplecheck()}, \texttt{mplecovariance()}\\
+\texttt{control.ergm(init=)} & \texttt{init(numlist)}\\
+\texttt{control.ergm(CD.nsteps=)}, \texttt{SA.burnin} \ldots & \texttt{cdnsteps()}, \texttt{saburnin()}, \texttt{sainterval()}, \texttt{saphase3()}, \texttt{sagain()}, \texttt{sansub()}\\
+\texttt{control.ergm(MCMC.prop.weights=, MCMC.prop=, MCMC.maxedges=)} & \texttt{proposal()}, \texttt{mcmcprop()}, \texttt{mcmcmaxedges()}\\
+\texttt{control.ergm(seed=)} or \texttt{set.seed()} & \texttt{seed()}\\
+\texttt{control.ergm(bridge.nsteps=)}, \texttt{eval.loglik=FALSE} & \texttt{bridgesteps()}, \texttt{nologlik}\\
+\texttt{constraints = \textasciitilde edges}, \texttt{\textasciitilde bd(maxout=3)} & \texttt{constraints(edges)}, \texttt{constraints(bd(maxout=3))}\\
+\texttt{constraints = \textasciitilde fixallbut(free)}, \texttt{\textasciitilde blockdiag("g")} & \texttt{constraints(fixallbut(free))} or \texttt{freedyads(free)}; \texttt{constraints(blockdiag(g))} or \texttt{blockdiag(g)}\\
+\texttt{obs.constraints = \textasciitilde \ldots} & \texttt{obsconstraints(\ldots)}\\
+\texttt{coef(fit)}, \texttt{vcov(fit)} & \texttt{e(b)}, \texttt{e(V)}; \texttt{matrix list e(b)}\\
+\texttt{summary(fit)} & The table printed by \texttt{nwergm}; \texttt{ereturn list}\\
+\texttt{summary(net \textasciitilde{} terms)} (observed statistics) & The column \emph{obs} of \texttt{estat gof, gof(model)}; \texttt{e(obs\_stats)} after a pseudolikelihood fit\\
+\texttt{simulate(fit, nsim=100)} & \texttt{nwergm simulate, nsim(100)}\\
+\texttt{simulate(net \textasciitilde{} terms, coef=, nsim=)} & \texttt{nwergm simulate \emph{nodes}, edges \emph{terms} theta(\ldots) nsim()}\\
+\texttt{simulate(\ldots, output="stats")} & \texttt{nwergm simulate, output(stats)}; the result is \texttt{r(stats)}\\
+\texttt{simulate(\ldots, basis=)}, \texttt{sequential=FALSE} & \texttt{basis()}, \texttt{nosequential}\\
+\texttt{gof(fit)}, \texttt{gof(fit, GOF=\textasciitilde degree + espartners)} & \texttt{estat gof}, \texttt{estat gof, gof(degree espartners)}\\
+\texttt{plot(gof(fit))} & \texttt{estat gof, plot}\\
+\texttt{mcmc.diagnostics(fit)} & \texttt{estat mcmcdiag} (with \texttt{plot} for trace and density plots)\\
+\texttt{logLik(fit)}, \texttt{AIC(fit)}, \texttt{BIC(fit)} & \texttt{estat ic}; \texttt{e(ll)}, \texttt{e(aic)}, \texttt{e(bic)}; \texttt{estimates stats}\\
+\texttt{anova(fit1, fit2)} & \texttt{lrtest}\\
+\texttt{predict(fit)} & \texttt{predict, frame(name) pr} or \texttt{predict, matrix(name) pr}\\
+\texttt{packageVersion("ergm")} & \texttt{nwergm version}\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\section*{Where the two differ in what they do}
+
+\begin{itemize}[nosep]
+  \item The default of \texttt{gwesp()} (and of the other geometrically weighted terms) in \ergm{} is the curved form (\texttt{fixed=FALSE}); in \nwergm{} the option with a number has a fixed decay and the curved form is the option ending in \texttt{free}.
+  \item The sampler defaults differ (Section~\ref{sec:mcmle}); \ergm{} chooses its sample sizes and intervals adaptively from the model.
+  \item A term with a digit followed by a letter in its name has the digit moved to the end (\texttt{b1degree} $\to$ \texttt{bdegree1}, \texttt{gwb1dsp} $\to$ \texttt{bgwdsp1}).
+  \item \nwergm{} writes the period of R's coefficient names as an underscore (\texttt{nodecov.wealth} $\to$ \texttt{nodecov\_wealth}).
+  \item The order of the coefficients follows \nwergm{}'s processing of the options, not the order of the formula.
+  \item \ergm{} accepts character attributes and \texttt{network} objects with vertex and edge attributes; \nwergm{} reads numeric variables and networks in memory.
+\end{itemize}

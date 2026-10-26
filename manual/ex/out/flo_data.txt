@@ -1,0 +1,28 @@
+. nwwebuse florentine, nwclear
+
+. nwset
+(2 networks)
+--------------------
+      flobusiness
+      flomarriage
+
+. nwsummarize flomarriage
+--------------------------------------------------
+   Network name:  flomarriage
+   Network id:  2
+   Directed: false
+   Valued: false
+   Two-mode: false
+   Nodes: 16
+   Selfloop: false
+   Edges: 20
+   Minimum value:  0
+   Maximum value:  1
+   Density:  .167
+   Temporal: false
+
+. summarize wealth
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+      wealth |         16     42.5625    36.87451          3        146

@@ -1,0 +1,13 @@
+. nwergm simulate 20, edges mutual theta(-2 1) directed nsim(3) seed(1) generate(toy)
+
+. nwset
+(8 networks)
+--------------------
+      lazega_adv
+      lazega_cow
+      lazega_fr
+      lzsim_1
+      lzsim_2
+      toy_1
+      toy_2
+      toy_3

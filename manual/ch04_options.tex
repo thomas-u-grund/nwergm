@@ -1,0 +1,297 @@
+\chapter{Syntax and options}\label{ch:options}
+
+This chapter lists every option of \texttt{nwergm} and of its subcommands. The terms are defined in Chapter~\ref{ch:terms}; the estimators in Chapter~\ref{ch:model}. The names of the corresponding arguments of R's \texttt{ergm()} and \texttt{control.ergm()} are given where they exist.
+
+\section{Syntax}
+
+\begin{lstlisting}
+nwergm [netname], edges [terms] [estimation options]
+nwergm simulate [nodes], edges [terms] theta(numlist) [simulation options]
+nwergm simulate, [nsim(#) output(network|stats|edgelist) ...]     (from the last fit)
+estat gof | estat mcmcdiag | estat ic
+predict, [pr|xb] matrix(name) | frame(name)
+nwergm version
+\end{lstlisting}
+\emph{netname} is the network to fit; the default is the current network. The option \opt{edges} is required (see Chapter~\ref{ch:start}). All other options are optional and can be given in any order. Options that take a \emph{varlist} take numeric node variables; options that take a \emph{numlist} accept ranges as in Stata, \opt{degree(0/3)} for R's \texttt{d=0:3}. In the tables, \emph{netname} is a network in memory and \emph{matname} a Stata matrix.
+
+\section{Terms}
+
+The options that select the statistics of the model. Chapter~\ref{ch:terms} gives the definition, the restrictions and the validation of each term.
+
+\subsection{Node and dyadic covariates, and reciprocity}
+\footnotesize
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{4.7cm}>{\raggedright\arraybackslash}p{11.0cm}@{}}
+\toprule
+Option & Description\\
+\midrule\endhead
+\opt{edges} & Number of ties (the density, the intercept). Required.\\
+\opt{mutual} & Number of reciprocated pairs. Directed networks.\\
+\opt{nodematch(varlist)} & Homophily: ties between nodes with equal values; one coefficient per variable. Suboptions \opt{diff}, \opt{keep()}, \opt{levels()}, \opt{levelvalues()}.\\
+\opt{nodematchdiff(varlist)} & Differential homophily: one coefficient per level (R's \texttt{diff=TRUE}).\\
+\opt{nodecov(varlist)} & Main effect of a numeric covariate (sum over the ties of the values of both endpoints). Stata expressions are allowed.\\
+\opt{nodeicov(varlist)}, \opt{nodeocov(varlist)} & Receiver and sender covariate effects. Directed networks.\\
+\opt{nodefactor(varlist)} & One coefficient per level but the first: number of tie endpoints at the level. Suboptions \opt{levels()}, \opt{levelvalues()}, \opt{base()}.\\
+\opt{nodeofactor(varlist)}, \opt{nodeifactor(varlist)} & The same for out-ties and in-ties. Directed networks.\\
+\opt{nodemix(varlist)} & Mixing matrix: ties between each pair of levels (ordered pairs in directed networks, the first cell omitted). Suboptions \opt{levels()}, \opt{levelvalues()}, \opt{levels2()}, \opt{base()}.\\
+\opt{mm(var)} & Mixing matrix of one attribute (the cells of \opt{nodemix()}). Suboptions \opt{levels()}, \opt{levels2()}.\\
+\opt{absdist(varlist)} & Sum over ties of $|x_i-x_j|^{pow}$ (R's \texttt{absdiff}). Suboption \opt{pow(\#)}.\\
+\opt{absdiffcat(varlist)} & One count per distinct nonzero absolute difference. Suboptions \opt{levels()}, \opt{levelvalues()}, \opt{base()}.\\
+\opt{diff(varlist)} & Sum of $(x_{tail}-x_{head})^{pow}$. Suboptions \opt{pow()}, \opt{dir()}, \opt{signaction()}.\\
+\opt{smalldiff(varlist)} & Ties with $|x_i-x_j|\le$ cutoff. Suboption \opt{cutoff(\#)} (required).\\
+\opt{sociality(varlist)} & Degree of each node (undirected); \opt{sociality(.)} for no attribute. Suboptions \opt{nodes()}, \opt{levels()}.\\
+\opt{attrcov(varlist)} & Edge covariate $x(i,j)=M(\text{level of }i,\text{level of }j)$. Suboption \opt{mat(matname)} (required).\\
+\opt{edgecov(netname|matname)} & Dyadic covariate from a network or an $n\times n$ matrix.\\
+\opt{dyadcov(netname|matname)} & Directed: three coefficients (mutual, upper and lower triangle); undirected: as \opt{edgecov()}.\\
+\opt{hamming(netname)} & Number of dyads that differ from a reference network.\\
+\opt{nodecovrange(varlist)}, \opt{nodeocovrange(varlist)}, \opt{nodeicovrange(varlist)} & Sum over nodes of the range of the covariate among the neighbors (out-, in-neighbors). Dyad-dependent.\\
+\opt{nodefactordistinct(varlist)}, \opt{nodeofactordistinct(varlist)}, \opt{nodeifactordistinct(varlist)} & Sum over nodes of the number of distinct levels among the neighbors. Dyad-dependent.\\
+\opt{sender}, \opt{receiver} & One coefficient per node but the first: out-degree, in-degree of the node. Directed networks.\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\subsection{Geometrically weighted terms}
+\footnotesize
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{4.7cm}>{\raggedright\arraybackslash}p{11.0cm}@{}}
+\toprule
+Option & Description\\
+\midrule\endhead
+\opt{gwesp(\#)} & Geometrically weighted edgewise shared partners, fixed decay. Undirected, or directed with the definition of \opt{type()}.\\
+\opt{gwdsp(\#)}, \opt{gwnsp(\#)} & Geometrically weighted dyadwise and non-edgewise shared partners, fixed decay ($\text{gwdsp}=\text{gwesp}+\text{gwnsp}$).\\
+\opt{gwdegree(\#)} & Geometrically weighted degree, fixed decay.\\
+\opt{gwodegree(\#)}, \opt{gwidegree(\#)} & Out- and in-degree versions. Directed networks.\\
+\opt{gwespfree(\#)}, \opt{gwdspfree(\#)}, \opt{gwnspfree(\#)} & Curved forms with an estimated decay; the number is the starting value of the decay. Report \texttt{\_weight} and \texttt{\_decay}.\\
+\opt{gwdegreefree(\#)} & Curved gwdegree (undirected).\\
+\opt{gwodegreefree(\#)}, \opt{gwidegreefree(\#)} & Curved out- and in-degree versions (directed).\\
+\opt{type(OTP|ITP|OSP|ISP|RTP)} & Definition of the shared partner for \emph{every} term of the model that has one (\opt{gwesp}, \opt{gwdsp}, \opt{gwnsp}, \opt{esp}, \opt{dsp}, \opt{gwespfree}, \ldots) on a directed network; default OTP; ignored on an undirected network. OTP is $i\to k\to j$, ITP $i\leftarrow k\leftarrow j$, OSP $i\to k\leftarrow j$, ISP $i\leftarrow k\to j$, RTP $i\leftrightarrow k\leftrightarrow j$.\\
+\bottomrule
+\end{longtable}
+\normalsize
+Only one curved term can be in a model, and it cannot be combined with the fixed-decay or count terms of its own family (\opt{gwespfree()} with \opt{gwesp()} or \opt{esp()}, \opt{gwdegreefree()} with \opt{gwdegree()} or \opt{degree()}, and so on); see Section~\ref{sec:curved}.
+
+\subsection{Degree, star, triad and shared-partner terms}
+\footnotesize
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{4.7cm}>{\raggedright\arraybackslash}p{11.0cm}@{}}
+\toprule
+Option & Description\\
+\midrule\endhead
+\opt{degree(numlist)} & One coefficient per listed degree: number of nodes with that degree. Undirected.\\
+\opt{odegree(numlist)}, \opt{idegree(numlist)} & The same for out- and in-degree. Directed.\\
+\opt{concurrent} & Number of nodes with degree 2 or more. Undirected.\\
+\opt{kstar(numlist)} & One coefficient per $k$: number of $k$-stars. Undirected.\\
+\opt{ostar(numlist)}, \opt{istar(numlist)} & Out- and in-$k$-stars. Directed.\\
+\opt{degrange(numlist)} \opt{degrangeto(numlist)} & Nodes with degree in $[from,to)$; the two lists pair by position; omit \opt{degrangeto()} for an open upper bound. Undirected.\\
+\opt{odegrange()} \opt{odegrangeto()}, \opt{idegrange()} \opt{idegrangeto()} & The same for out- and in-degree. Directed.\\
+\opt{esp(numlist)} & One coefficient per $d$: tied dyads with exactly $d$ shared partners.\\
+\opt{dsp(numlist)} & One coefficient per $d$: all dyads with exactly $d$ shared partners. An exhaustive list of $d$ is collinear.\\
+\opt{triangle} & Number of triangles. Undirected.\\
+\opt{ctriple} & Number of cyclic triples. Directed.\\
+\opt{transitiveties}, \opt{cyclicalties} & Tied arcs $i\to j$ for which a two-path $i\to k\to j$ (resp.\ $j\to k\to i$) exists. Directed.\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\subsection{Two-mode terms}
+Two-mode terms are valid on two-mode networks only; the mode digit of R's name moves to the end. Suboptions are given after a comma inside the parentheses.
+\footnotesize
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{4.7cm}>{\raggedright\arraybackslash}p{11.0cm}@{}}
+\toprule
+Option & Description (R term)\\
+\midrule\endhead
+\opt{bcov1(varlist)}, \opt{bcov2(varlist)} & Covariate main effect for one mode (\texttt{b1cov}, \texttt{b2cov}).\\
+\opt{bfactor1(varlist)}, \opt{bfactor2(varlist)} & One coefficient per level but the first (\texttt{b1factor}, \texttt{b2factor}).\\
+\opt{bdegree1(numlist)}, \opt{bdegree2(numlist)} & Nodes of the mode with the given degree (\texttt{b1degree}). Suboptions \opt{by()}, \opt{levels()}, \opt{homophily}.\\
+\opt{bstar1(numlist)}, \opt{bstar2(numlist)} & $k$-stars centered on a node of the mode (\texttt{b1star}). Suboptions \opt{attr()}, \opt{levels()}.\\
+\opt{bnodematch1(var)}, \opt{bnodematch2(var)} & Homophily for one mode (\texttt{b1nodematch}). Suboptions \opt{diff}, \opt{alpha()}, \opt{beta()}, \opt{byattr()}, \opt{keep()}, \opt{levels()}.\\
+\opt{bgwdegree1(\#)}, \opt{bgwdegree2(\#)} & Geometrically weighted degree of the mode, fixed decay (\texttt{gwb1degree}). Suboptions \opt{attr()}, \opt{levels()}.\\
+\opt{bgwdegreefree1(\#)}, \opt{bgwdegreefree2(\#)} & The curved forms.\\
+\opt{bgwdsp1(\#)}, \opt{bgwdsp2(\#)}, \opt{bgwdspfree1(\#)}, \opt{bgwdspfree2(\#)} & Geometrically weighted dyadwise shared partners of the mode, fixed and curved (\texttt{gwb1dsp}).\\
+\opt{bconcurrent1()}, \opt{bconcurrent2()} & Nodes of the mode with degree 2 or more; \opt{all} or \opt{by(var)} (\texttt{b1concurrent}).\\
+\opt{bmindegree1(numlist)}, \opt{bmindegree2(numlist)} & Nodes with degree of at least $d$ (\texttt{b1mindegree}).\\
+\opt{bdegrange1()}, \opt{bdegrange2()} & Nodes with degree in $[from,to)$ (\texttt{b1degrange}). Suboptions \opt{to()}, \opt{by()}, \opt{levels()}, \opt{homophily}.\\
+\opt{bcovrange1(var)}, \opt{bcovrange2(var)} & Sum over nodes of the range of the neighbors' covariate (\texttt{b1covrange}).\\
+\opt{bfactordistinct1(var)}, \opt{bfactordistinct2(var)} & Sum over nodes of the number of distinct levels among the neighbors (\texttt{b1factordistinct}). Suboption \opt{levels()}.\\
+\opt{bsociality1(numlist)}, \opt{bsociality2(numlist)} & Degree of single nodes; negative numbers exclude (\texttt{b1sociality}).\\
+\opt{bstarmix1(k)}, \opt{bstarmix2(k)} & Mixing matrix of $k$-stars (\texttt{b1starmix}). Suboptions \opt{attr()}, \opt{nodiff}, \opt{base()}.\\
+\opt{btwostar1(var)}, \opt{btwostar2(var)} & Two-star census by centre and leaf attributes (\texttt{b1twostar}). Suboptions \opt{attr2()}, \opt{levels1()}, \opt{levels2()}, \opt{levels3()}, \opt{base()}.\\
+\opt{coincidence()} & Number of common mode-1 neighbors for each pair of mode-2 nodes; \opt{all} or \opt{active(\#)}.\\
+\opt{bdsp1(numlist)}, \opt{bdsp2(numlist)} & Pairs of nodes of the mode with exactly $d$ shared partners (\texttt{b1dsp}).\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\subsection{Further terms, operators and labels}
+\footnotesize
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{4.7cm}>{\raggedright\arraybackslash}p{11.0cm}@{}}
+\toprule
+Option & Description\\
+\midrule\endhead
+\opt{structural(termlist)} & Further structural terms written like R's terms, with R's argument names (\opt{twopath}, \opt{transitive}, \opt{cycle(k=3 4)}, \opt{altkstar(lambda=0.8 fixed)}, \opt{degree(d=1 2 by=sex)}, \opt{triangle(attr=sex diff)}, \ldots). Section~\ref{sec:structural}.\\
+\opt{operators(oplist)} & Operator terms of R: \texttt{Sum}, \texttt{Prod}, \texttt{S}, \texttt{F}, \texttt{NodematchFilter}, \texttt{Symmetrize}, \texttt{Project}, \texttt{I}, \texttt{For}, \texttt{Label}, \texttt{Log}, \texttt{Exp}, \texttt{Offset}, \texttt{Curve}. Section~\ref{sec:operators}.\\
+\opt{coeflabel(old new \ldots)} & Renames coefficients (R's \texttt{Label()}).\\
+\opt{logstat(names)}, \opt{expstat(names)} & Replaces the statistic of each named coefficient by its natural logarithm (suboption \opt{log0(\#)} for the value of $\log 0$, default $-1/\sqrt{\epsilon}$) or by its exponential (R's \texttt{Log()}, \texttt{Exp()} applied to one term of the model). Cannot be combined with \opt{fixdensity} or a curved term.\\
+\opt{submodel()} & Internal option used by \opt{operators()}; not for direct use.\\
+\opt{offset(coefname \# \ldots)} & Fixes coefficients at known values (R's \texttt{offset()} with \texttt{offset.coef}). Section~\ref{sec:offset}.\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\subsection{Level selection}\label{sec:levels}
+The attribute terms accept the following suboptions after a comma inside the parentheses, for example \opt{nodematch(race, diff levels(-1))}; they apply to every variable in the same option.
+\footnotesize
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{4.7cm}>{\raggedright\arraybackslash}p{11.0cm}@{}}
+\toprule
+Suboption & Description\\
+\midrule\endhead
+\opt{levels(numlist)} & Selects levels by position in the sorted list of distinct values, like a numeric \texttt{levels=} in R: positive numbers keep those positions, negative numbers drop them (\opt{levels(-1)} drops the first level).\\
+\opt{levelvalues(numlist)} & Gives the level values themselves, in the order wanted (R's \texttt{levels=I(c(\ldots))}).\\
+\opt{base(numlist)} & R's deprecated \texttt{base=}: positions to drop when \opt{levels()} is not given. For \opt{nodefactor()}, \opt{nodeofactor()}, \opt{nodeifactor()} the default is \opt{base(1)}; \opt{base(0)} keeps all levels (and the model is then collinear with \opt{edges}).\\
+\opt{levels2(numlist)} & For \opt{nodemix()} and \opt{mm()}: selects the cells of the mixing matrix by position, column by column; the default drops the first cell.\\
+\opt{keep(numlist)} & For \opt{nodematch()}: selects the level positions that count as matches; levels outside the selection never match.\\
+\bottomrule
+\end{longtable}
+\normalsize
+The character-valued \texttt{levels2} of R (grouping of cells), the \texttt{form=} argument for valued networks, and the formula-valued \texttt{levels} arguments are not available.
+
+\section{Estimation options}
+
+\subsection{Method}
+\footnotesize
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{4.7cm}>{\raggedright\arraybackslash}p{11.0cm}@{}}
+\toprule
+Option & Description\\
+\midrule\endhead
+\opt{estimate(mle|mple|cd)} & R's \texttt{estimate=}. \texttt{mle} (default): pseudolikelihood for a dyad-independent model, Monte Carlo maximum likelihood otherwise; \texttt{mple}: pseudolikelihood; \texttt{cd}: contrastive divergence.\\
+\opt{method(mple|mcmle|cd)} & Older spelling of \opt{estimate()}; contradicting values are refused.\\
+\opt{mainmethod(mcmle|sa)} & R's \texttt{main.method=}: Monte Carlo maximum likelihood (default) or stochastic approximation.\\
+\opt{init(numlist)} & Starting values, one per coefficient, \texttt{.} or \texttt{NA} for a value to be estimated (Section~\ref{sec:estimators}).\\
+\opt{mpletype(glm|penalized)} & \texttt{MPLE.type}: ordinary or Firth-penalized pseudolikelihood.\\
+\opt{mplecheck(on|off)} & \texttt{MPLE.check}: test whether the pseudolikelihood estimate exists.\\
+\opt{mplecovariance(invhess|godambe|bootstrap)} & \texttt{MPLE.covariance.method}.\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\subsection{Monte Carlo maximum likelihood, contrastive divergence, stochastic approximation}
+\footnotesize
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{4.7cm}>{\raggedright\arraybackslash}p{11.0cm}@{}}
+\toprule
+Option & Description (default; R argument)\\
+\midrule\endhead
+\opt{mcmleiterations(\#)} & Maximum number of outer iterations (60; \texttt{MCMLE.maxit}); also the maximum for contrastive divergence (\texttt{CD.maxit}). At the limit the fit is reported with a warning and \texttt{e(converged)}${}=0$.\\
+\opt{mcmletermination(confidence|hummel|hotelling|none)} & Stopping rule (\texttt{confidence}; \texttt{MCMLE.termination}).\\
+\opt{mcmleconfidence(\#)} & Confidence level of the \texttt{confidence} rule (0.99; \texttt{MCMLE.confidence}).\\
+\opt{mcmlesteplength(\#)} & Maximum step length (1; \texttt{MCMLE.steplength}).\\
+\opt{mcmlestepmargin(\#)} & Margin of the Hummel step length (0.05; \texttt{MCMLE.steplength.margin}); \texttt{.} switches the Hummel step length off.\\
+\opt{mcmleeffectivesize(\#)} & Floor of the effective sample size that triggers a longer interval (automatic: the larger of 200 and 64 times the number of coefficients; \texttt{MCMLE.effectiveSize}).\\
+\opt{cdnsteps(\#)} & Proposals per draw of contrastive divergence (8; \texttt{CD.nsteps}).\\
+\opt{cdsamplesize(\#)} & Draws per coefficient vector (automatic: 128 times the number of free coefficients; \texttt{CD.samplesize.per\_theta}).\\
+\opt{saburnin(\#)}, \opt{sainterval(\#)} & Burn-in and interval of stochastic approximation (16384, 1024; \texttt{SA.burnin}, \texttt{SA.interval}).\\
+\opt{saphase3(\#)}, \opt{sagain(\#)}, \opt{sansub(\#)} & Phase-3 sample size, initial gain and number of phase-2 sub-phases (1000, 0.1, 4; \texttt{SA.phase3\_n}, \texttt{SA.initial\_gain}, \texttt{SA.nsubphases}).\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\subsection{The Markov chain, reproducibility and performance}
+\footnotesize
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{4.7cm}>{\raggedright\arraybackslash}p{11.0cm}@{}}
+\toprule
+Option & Description (default)\\
+\midrule\endhead
+\opt{mcmcburnin(\#)} & Burn-in proposals per simulation (16 times the interval, 16384; \texttt{MCMLE.burnin}). Given \opt{mcmcinterval()} without \opt{mcmcburnin()}, the burn-in is 16 times the interval.\\
+\opt{mcmcinterval(\#)} & Proposals between recorded draws (1024; \texttt{MCMLE.interval}). May grow in the course of the fit (Section~\ref{sec:mcmle}).\\
+\opt{mcmcsamplesize(\#)} & Recorded draws per simulation (3000; \texttt{MCMC.samplesize}, but see Section~\ref{sec:mcmcopts}: \ergm{} adapts the number).\\
+\opt{proposal(uniform|random|tnt)} & Proposal (\texttt{tnt}; \texttt{MCMC.prop.weights}). \texttt{random} is a synonym of \texttt{uniform}. Masked variants are used when dyads are constrained.\\
+\opt{seed(\#)} & Seed of the sampler; without it the current Stata seed is used (Section~\ref{sec:seed}).\\
+\opt{mcmcprop(hints)} & R's \texttt{MCMC.prop} hint formula, for example \texttt{sparse}.\\
+\opt{mcmcmaxedges(\#)} & R's \texttt{MCMC.maxedges}: stop sampling when the network has more ties.\\
+\opt{verbose} & Shows iteration detail.\\
+\opt{spcache} & Enables the incremental shared-partner cache for the shared-partner and triangle terms on an undirected network. Off by default: direct benchmarks found it a net loss below an average degree of roughly 30--40 and a net win above it. No effect on a directed network.\\
+\opt{nonative} & Forces the pure Mata backend where it exists (for testing and comparison; much slower).\\
+\opt{nomcmcsample} & Does not post \texttt{e(mcmcsample)}. Filling the matrix is the slowest step for a very large \opt{mcmcsamplesize()}; \texttt{estat mcmcdiag} needs it.\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\paragraph{The defaults follow R.}\label{sec:mcmcopts} Since version 1.2.0 the defaults of the Markov chain are those of \ergm{}'s \texttt{control.ergm()} (version 4.12.0): an interval of 1024 proposals between draws (\texttt{MCMLE.interval}), a burn-in of 16 times the interval, 16384 (\texttt{MCMLE.burnin}), at every iteration of the Monte Carlo maximum likelihood fit; \texttt{nwergm simulate} uses the same numbers, as \ergm{}'s \texttt{control.simulate()} does. In versions 1.1.x the defaults were an interval of 50 and a burn-in of 3000. A fit with default settings therefore gives different numbers than in 1.1.x (the same seed gives another chain), takes longer (Section~\ref{sec:runtimes}), and mixes better (Section~\ref{sec:lazega}); a fit that sets both options is unchanged. The old, fast settings are \opt{mcmcburnin(3000) mcmcinterval(50)}. The differences from \ergm{} that remain are two. First, \ergm{} adapts the number of recorded draws to an effective sample size of 64 (at least 256 draws), whereas \nwergm{} records a fixed \opt{mcmcsamplesize()} of 3000 draws. Second, the interval and the sample size grow adaptively when the effective sample size of the final sample is below a floor; that floor is the larger of 200 and 64 times the number of coefficients (\opt{mcmleeffectivesize()}), which is stricter than \ergm{}'s 64. The random-number streams differ in any case.
+
+\subsection{Log-likelihood by bridge sampling}
+\footnotesize
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{4.7cm}>{\raggedright\arraybackslash}p{11.0cm}@{}}
+\toprule
+Option & Description (default)\\
+\midrule\endhead
+\opt{nologlik} & Does not evaluate the log-likelihood of a Monte Carlo fit (\texttt{eval.loglik=FALSE}); log-likelihood, AIC and BIC are then missing.\\
+\opt{bridgesteps(\#)} & Number of bridges (16; \texttt{bridge.nsteps}).\\
+\opt{bridgesamplesize(\#)} & Draws per bridge (the value of \opt{mcmcsamplesize()}).\\
+\opt{bridgeinterval(\#)} & Thinning interval within the bridges (the final interval divided by the number of bridges).\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\subsection{Constraints}\label{sec:consopts}
+\footnotesize
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{4.7cm}>{\raggedright\arraybackslash}p{11.0cm}@{}}
+\toprule
+Option & Description\\
+\midrule\endhead
+\opt{constraints(formula)} & Sample-space constraints as in R's \texttt{constraints=}, several joined by \texttt{+} and \texttt{-} (Section~\ref{sec:conslist}). Needs the plugin.\\
+\opt{obsconstraints(formula)} & Observation-process constraints (R's \texttt{obs.constraints}). Needs the plugin and Monte Carlo maximum likelihood.\\
+\opt{freedyads(netname)} & Only the dyads that are ties in \emph{netname} may vary (R's \texttt{fixallbut()}).\\
+\opt{blockdiag(varname)} & Only dyads within the same value of the variable may vary (R's \texttt{blockdiag()}). Cannot be combined with \opt{freedyads()}.\\
+\opt{fixdensity} & Holds the number of ties fixed (R's \texttt{constraints=\textasciitilde edges}); \opt{edges} is then not estimated. Requires Monte Carlo maximum likelihood and at least one term besides \opt{edges}.\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\section{\texttt{nwergm simulate}}
+
+\subsection{From given coefficients}
+\begin{lstlisting}
+nwergm simulate nodes, edges [terms] theta(numlist) [directed bipartite(#) nsim(#) ...]
+\end{lstlisting}
+draws networks from a fully specified model on \emph{nodes} nodes; no network needs to be in memory. \opt{theta()} gives one coefficient per resulting coefficient, in the order in which \nwergm{} processes the terms (Chapter~\ref{ch:start}); a term that expands into several coefficients uses that many consecutive values. The terms are the options of the model, with fixed decay for the geometrically weighted terms; node covariates are read from the current dataset, which must have \emph{nodes} observations. The result does not carry the covariates forward.
+\footnotesize
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{4.7cm}>{\raggedright\arraybackslash}p{11.0cm}@{}}
+\toprule
+Option & Description (default)\\
+\midrule\endhead
+\opt{theta(numlist)} & Coefficients. Required.\\
+\opt{directed} & Simulate directed networks (default undirected).\\
+\opt{bipartite(\#)} & Number of first-mode nodes of a two-mode network.\\
+\opt{nsim(\#)} & Number of networks (1), each with a fresh burn-in. Named \opt{generate()}\texttt{\_1}, \opt{generate()}\texttt{\_2}, \ldots\ for $\#>1$.\\
+\opt{generate(stub)} & Name of the networks (\texttt{ergmsim}).\\
+\opt{mcmcburnin(\#)}, \opt{mcmcinterval(\#)} & Burn-in and interval (16384 and 1024, as in R's \texttt{control.simulate}; the burn-in is 16 times an interval given alone).\\
+\opt{proposal(uniform|tnt)} & Proposal (\texttt{tnt}).\\
+\opt{seed(\#)} & Seed.\\
+\opt{basis(netname)}, \opt{constraints(formula)} & Starting network and sample-space constraints (one chain from the basis; needs the plugin).\\
+\opt{type()}, \opt{spcache} & As for the model.\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\subsection{From the last fit}
+\begin{lstlisting}
+nwergm simulate, [nsim(#) output(network|stats|edgelist) basis(netname) nosequential
+                  seed(#) burnin(#) interval(#) coef(matname) generate(name) clear]
+\end{lstlisting}
+Without a number of nodes, \texttt{nwergm simulate} draws from the model of the last \texttt{nwergm} fit (R's \texttt{simulate.ergm()}), starting from the last network of the fit or from \opt{basis()}, at the fitted coefficients or at \opt{coef()} (a row vector with one value per coefficient). The chain is sequential (burn-in once, \opt{interval()} proposals between draws) unless \opt{nosequential} restarts every draw from the starting network. The defaults of \opt{burnin()} and \opt{interval()} are those of the fit, or 16384 and 1024 for a fit without a Monte Carlo sample. \opt{output(network)} (default) creates the networks \emph{name}\texttt{\_1}, \emph{name}\texttt{\_2}, \ldots\ (\opt{generate()}, default \texttt{sim}); \opt{output(stats)} returns the statistics in \texttt{r(stats)}; \opt{output(edgelist)} replaces the data with the variables \texttt{\_sim}, \texttt{\_tail}, \texttt{\_head} (specify \opt{clear}). The constraints of the fit stay in force. Simulating a two-mode fit with \opt{output(network)} creates one-mode undirected networks on all nodes (not declared two-mode); use \opt{output(stats)} or \opt{output(edgelist)}.
+
+\section{Postestimation options}
+\footnotesize
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{4.7cm}>{\raggedright\arraybackslash}p{11.0cm}@{}}
+\toprule
+Command and option & Description (default)\\
+\midrule\endhead
+\texttt{estat gof} \opt{gof(statistics)} & Statistics to compare: \texttt{degree idegree odegree b1degree b2degree espartners dspartners distance triadcensus model}; a minus sign drops \texttt{model}. The default is that of R for the type of network.\\
+\opt{nsim(\#)}, \opt{seed(\#)} & Number of simulated networks (100) and seed.\\
+\opt{gofburnin(\#)}, \opt{gofinterval(\#)} & Burn-in and interval; default those of the fit (\texttt{e(mcmc\_burnin)}, \texttt{e(mcmc\_interval\_final)}; 16384 and 1024 after a pseudolikelihood fit).\\
+\opt{plot}, \opt{maxdeg(\#)}, \opt{maxdist(\#)}, \opt{name(string)} & Graph of the degree and geodesic distributions (maximum degree 15, maximum distance 6, name \texttt{gof}).\\
+\texttt{estat mcmcdiag} \opt{plot}, \opt{name(string)} & Trace and density plots (name \texttt{mcmcdiag}).\\
+\opt{pvalue(\#)}, \opt{eps(\#)} & Level of the Heidelberger--Welch test (one of 0.10, 0.05, 0.025, 0.01; default 0.05) and the relative half-width (0.1).\\
+\texttt{estat ic} & Log-likelihood, AIC and BIC.\\
+\texttt{predict} \opt{pr}, \opt{xb} & Conditional probability (default) or conditional log odds of each informative dyad.\\
+\opt{matrix(name)}, \opt{frame(name)} & Result as an $n\times n$ matrix (missing dyads are missing) or as a frame with one row per dyad (\texttt{tail}, \texttt{head}, \texttt{p}). Available for the last fit only.\\
+\bottomrule
+\end{longtable}
+\normalsize

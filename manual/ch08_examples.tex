@@ -1,0 +1,175 @@
+\chapter{Worked examples}\label{ch:examples}
+
+All output in this chapter was produced by the do-files in the directory \texttt{manual/ex} of the repository, run with \nwergm{}~\pkgversion{} and the \texttt{nwcommands} core~3.9.1 in Stata/BE~18 on macOS, with the native plugin. Every Monte Carlo fit has a \opt{seed()}, so that the output can be reproduced on the same platform. The data are example networks of \texttt{nwcommands}, which are loaded from the web with \texttt{nwwebuse}; the Florentine marriage network, the Mesa High School network and the second Kapferer network are the networks \texttt{flomarriage}, \texttt{faux.mesa.high} and \texttt{kapferer2} of \ergm{}. Nothing in this chapter is a substantive analysis; the models are chosen to show the commands.
+
+\section{The Florentine families: estimation methods and stored results}\label{sec:florentine}
+
+Chapter~\ref{ch:start} fitted \opt{edges nodecov(wealth)} by pseudolikelihood (exact) and added \opt{gwesp(0.5)} by Monte Carlo maximum likelihood. This section uses the second model to show the estimation options. The network is small (16 nodes, 20 ties), so that every fit takes a few seconds.
+
+\subsection{The same model by different estimators}\label{sec:flo_methods}
+
+The pseudolikelihood fit of the dyad-dependent model, with \opt{estimate(mple)}, is a starting value and not a maximum likelihood estimate; \nwergm{} says so and labels the deviances ``pseudo-deviance'':
+\showlog{flo_pl}
+Contrastive divergence (\opt{estimate(cd)}) is the cheap estimator for starting values; it ran five iterations here and reports the covariance of the short-run sample:
+\showlog{flo_cd}
+Stochastic approximation (\opt{mainmethod(sa)}) is the alternative to Monte Carlo maximum likelihood (469 phase-2 iterations here):
+\showlog{flo_sa}
+All three agree with the Monte Carlo maximum likelihood fit of Chapter~\ref{ch:start} within what the standard errors allow: the edges coefficient is $-2.61$ (pseudolikelihood), $-2.63$ (contrastive divergence) and $-2.60$ (stochastic approximation) against $-2.60$, and the wealth coefficient is $0.0104$, $0.0121$ and $0.0106$ against $0.0107$. The Firth-penalized pseudolikelihood (\opt{mpletype(penalized)}) shrinks the coefficients slightly; on this network, where the ordinary estimate exists, the difference is small:
+\showlog{flo_pen}
+A coefficient can be fixed with \opt{offset()}; the fixed coefficient is reported at its value with no standard error, and the rest of the model adapts:
+\showlog{flo_offset}
+\opt{init()} gives starting values; here the fit starts from the values below instead of from the pseudolikelihood estimate and ends in the same place up to Monte Carlo noise:
+\showlog{flo_init}
+Finally the curved form of the shared-partner term, \opt{gwespfree(0.5)}, estimates a weight and a decay. On this small network the decay is not identified: the fit ends at a boundary solution, with a decay of about $10^{-9}$ and a standard error of 9, which is what a ``large standard error on the decay'' (Section~\ref{sec:curved}) looks like:
+\showlog{flo_curved}
+
+\subsection{Reproducibility with \texttt{seed()}}\label{sec:flo_seed}
+
+The same call with the same seed gives the same coefficients; a different seed gives a different, statistically equivalent fit. Below the model is fitted twice with \texttt{seed(7)} and once with \texttt{seed(8)}:
+\showlog{flo_seed}
+The first two coefficient vectors are identical to the digit; the third differs in the second decimal of the edges coefficient, which is the Monte Carlo error of this fit. Reporting two or three seeds is a cheap way to judge the size of that error; Chapter~\ref{ch:validation} does this for a larger model.
+
+\subsection{Stored results}\label{sec:flo_ereturn}
+
+The stored results of the pseudolikelihood fit and of the Monte Carlo fit (the output is that of \texttt{ereturn list}; Section~\ref{sec:stored} describes each item):
+\showlog{flo_ereturn_mple}
+\showlog{flo_ereturn}
+\showlog{flo_scalars}
+
+\section{Mesa High School: dyad-independent models}\label{sec:mesa}
+
+The Mesa High School network is the friendship network of 205 students of a US school (\ergm{}'s \texttt{faux.mesa.high}, a simulated network that mimics survey data on adolescent friendships) with the grade, race and sex of each student. The ties are undirected. All the terms in this section depend only on the attributes of the two students, so that the models are dyad-independent: they are fitted by pseudolikelihood, which is exact, and no random numbers are used. The attributes are strings and must be encoded:
+\showlog{mesa_data}
+\showlog{mesa_encode}
+The intercept-only model estimates the density; the edges coefficient is the log odds of a tie between two randomly chosen students ($\exp(-4.63)\approx0.01$):
+\showlog{mesa_edges}
+Adding homophily on the grade, \opt{nodematch(grade)}, shows that students in the same grade are $\exp(2.83)\approx17$ times as likely, in odds, to be tied, and the log-likelihood rises by 173:
+\showlog{mesa_nm}
+\opt{nodematch()} takes several variables, each with its own coefficient:
+\showlog{mesa_nm3}
+Differential homophily, \opt{nodematchdiff()}, gives one coefficient per level of the attribute: homophily is stronger among the students of sex level 1 (female) than among those of level 2 (male); the levels are the values of the encoded variable, whose labels \texttt{label list} shows above:
+\showlog{mesa_diff}
+Finally \opt{nodefactor()} (one coefficient per level of race but the first, each counting the ties of the students at that level) and \opt{nodemix()} (a mixing matrix of the sex of the two students, the first cell dropped) in the same model:
+\showlog{mesa_mix}
+
+\section{The Lazega lawyers: a directed network, diagnostics and goodness of fit}\label{sec:lazega}
+
+The data are the friendship ties among the 71 attorneys of a New England corporate law firm (Lazega~\cite{lazega2001}): a directed network with 575 ties and, for each lawyer, the seniority, the age, the practice (corporate or litigation) and the office, among others. The seniority is a number from 1 to 71.
+\showlog{lz_data}
+The practice is encoded before it is used in \opt{nodematch()}:
+\showlog{lz_encode}
+The model has the density (\opt{edges}), reciprocity (\opt{mutual}), homophily on the practice (\opt{nodematch(prac)}), a main effect of the seniority of the receiver (\opt{nodeicov(seniority)}) and a geometrically weighted shared-partner term (\opt{gwesp(0.5)}), which captures transitive closure. The model is dyad-dependent, so that the Monte Carlo maximum likelihood estimator is used:
+\showlog{lz_fit}
+Friendship ties are reciprocated (\opt{mutual} is $0.81$, so that a tie that reciprocates an existing one has about 2.2 times the odds), among lawyers of the same practice (the odds are $\exp(0.71)\approx2$ times higher), and cluster (the shared-partner coefficient is $0.49$, with a standard error of $0.06$). The coefficient of the seniority of the receiver is small and negative ($-0.004$ per unit of a variable that runs from 1 to 71).
+
+\subsection{Is the chain trustworthy?}
+
+The fit says it converged after one iteration. \texttt{estat mcmcdiag} looks at the final sample (the first part of its output is shown; the rest is the report of \texttt{mcmc.diagnostics()}):
+\showlogpart{lz_diag}{1}{47}
+With the default settings, which are those of \ergm{}, the chain mixes acceptably: the lag-1 autocorrelation of the five statistics is $0.74$ to $0.81$, and the effective sample size is between 291 and 372 out of 3000 draws. Geweke's test does not reject stationarity for any statistic (the smallest $p$-value is $0.15$), and the Heidelberger--Welch test passes. Versions before 1.2.0 used a burn-in of 3000 and an interval of 50 proposals. The same fit with these old settings shows what a chain that is too short looks like:
+\showlog{lz_fit2}
+The coefficients move by less than their standard errors, and the standard errors are of the same size. The diagnostics of the short chain:
+\showlogpart{lz_diag2}{1}{28}
+With the old settings the lag-1 autocorrelation of every statistic is $0.99$, the effective sample size is between 14 and 19 out of 3000 draws, and Geweke's test rejects stationarity for all five statistics, although the Heidelberger--Welch test passes: the coefficients carry a large Monte Carlo error. The remedy was a longer chain (burn-in 20,000, interval 1000, which gave an effective sample size of about 300); it is now the default. The rest of the output of the default fit reports whether the sample statistics differ from the observed ones, with Hotelling's omnibus test:
+\showlogpart{lz_diag}{73}{77}
+None of the five individual tests rejects (the smallest $p$-value is 0.44), but Hotelling's omnibus test, which takes the very high cross-correlations of the five statistics into account, does ($p=3.2\times10^{-5}$). The omnibus test is sensitive to a small joint displacement along the direction in which the statistics move together, and the sample was drawn at the coefficients before the last update of the iteration (the note under the output; Section~\ref{sec:mcmcdiag}). It is a reason for caution, for example refitting from the estimate with \opt{init()} and a larger sample, and not a verdict on the final model, whose check is \texttt{estat gof}.
+Figure~\ref{fig:mcmcdiag} shows the trace and density plots of this sample.
+
+\subsection{Goodness of fit}
+
+\texttt{estat gof} compares the observed network with 100 networks simulated from the fitted model. For a directed network the default statistics are the model statistics, the geodesic distances, the out-degrees, the in-degrees and the edgewise shared partners; the first three blocks are shown:
+\showlogpart{lz_gof}{1}{48}
+The model statistics are reproduced (the observed value is inside the range of the simulations, with $p$-values between 0.72 and 1.00). The geodesic distances show a hint of a discrepancy: in the observed network 140 ordered pairs of lawyers cannot reach each other (distance \texttt{Inf}), whereas the simulated networks have 30 such pairs on average (Monte Carlo $p=0.10$ on that row). A few small $p$-values among some eighty rows, which are not independent, are not surprising (the smallest in the blocks shown is 0.04, for an out-degree of 22), but this row points to a feature, a few lawyers who are reached by few others, that the model may not capture. Figure~\ref{fig:gof} shows the same comparison as a plot. The tables are matrices; for example the edgewise shared partners, with the statistics chosen explicitly:
+\showlog{lz_gof2}
+\showlog{lz_gofmat}
+
+\subsection{Simulation from the fit}
+
+\texttt{nwergm simulate} without a number of nodes draws from the last fit. The statistics of four draws (with \opt{output(stats)}), and two networks that are created as \texttt{nwcommands} networks:
+\showlog{lz_simstats}
+\showlog{lz_simnet}
+Networks can also be drawn from a model that was never fitted, by giving the coefficients; this draws three directed networks with 20 nodes, $\theta_{\mathtt{edges}}=-2$ and $\theta_{\mathtt{mutual}}=1$:
+\showlog{lz_theta}
+
+\section{Kapferer's tailor shop: a degenerate model}\label{sec:kapferer}
+
+The network is the tailor-shop network of Kapferer~\cite{kapferer1972} at the second time point: 43 workers and 190 ties, undirected. A model with edges and triangles is a classical example of a \emph{degenerate} ERGM: the triangle statistic grows so fast with the number of ties that the model puts nearly all its probability on empty and complete networks, the sampler cannot produce a sample whose statistics vary, and the fit stops:
+\showlog{kap_data}
+\showlog{kap_tri}
+The message \emph{unconstrained MCMC sampling did not mix at all} is the error of \ergm{} for this situation, and the return code is 498. The remedy is the geometrically weighted version of the triangle term, which discounts additional shared partners:
+\showlog{kap_gw}
+The model converges. The goodness-of-fit table shows, however, that the fitted model is not far from the degenerate region: the simulated networks range from 134 to 235 ties against the observed 190 (with the settings of versions before 1.2.0 the range was 53 to 214), and many simulated networks leave pairs unconnected (49 pairs on average), which the observed network does not.
+\showlogpart{kap_gof}{1}{21}
+Such a model should be checked with a longer chain and with the diagnostics before it is interpreted.
+
+\section{Missing dyads}\label{sec:missingex}
+
+Missing dyads are tie values that are missing in the network. Here three marriages of the Florentine network are blanked out (set to missing in both directions), by editing the adjacency matrix in Mata and declaring a new network:
+\showlog{miss_make}
+The dyad-independent model drops the missing dyads from the likelihood: the 120 dyads of the complete network become 117 informative dyads, and the coefficients change:
+\showlog{miss_dd}
+For a dyad-dependent model, the missing dyads are handled by the method of Handcock and Gile (Section~\ref{sec:missing}); the output notes that the missing dyads are handled as in \ergm{}:
+\showlog{miss_mcmle}
+A missing \emph{covariate} value is refused, as in \ergm{}:
+\showlog{miss_cov}
+
+\section{Comparing models and predicting ties}\label{sec:comparing}
+
+Two models of the Lazega network, with and without the shared-partner term, are stored and compared. The log-likelihoods come from bridge sampling and carry a small Monte Carlo error (\texttt{e(ll\_se)}); the chains are long.
+\showlog{cmp_m1}
+\showlog{cmp_m2}
+\texttt{estimates stats} and \texttt{lrtest} compare them:
+\showlog{cmp_ic}
+\showlog{cmp_lr}
+The shared-partner term improves the log-likelihood by 31.3, so that the likelihood-ratio statistic is 62.6 on one degree of freedom; AIC and BIC both prefer the model with \opt{gwesp(0.5)}. \texttt{predict} gives the conditional probability of each dyad, as a frame (one row per dyad) or a matrix:
+\showlog{cmp_pred}
+\showlog{cmp_predm}
+The average predicted probability, 0.115, is close to the density of the network, 0.116.
+
+\section{Constraints and observation processes}\label{sec:conex}
+
+\opt{constraints(edges)} holds the number of ties fixed at the observed number; the density term is then not estimated (it is reported as omitted, with a note), and the other coefficients are those of a model conditional on the density. Florentine, with and without the constraint:
+\showlogpart{con_edges}{30}{56}
+\opt{constraints(odegrees)} holds the out-degree of every node fixed, which fixes the number of ties as well. In the Lazega network the density is again omitted, with a note:
+\showlog{cons_deg}
+When a constraint fixes the sample space, \texttt{nwergm simulate} from the fit keeps it: the three simulated networks have exactly 575 ties, the number of ties of the data, and the out-degree of every node is that of the data.
+\showlog{cons_sim}
+A constraint can also confine the model to part of the network. With \opt{constraints(fixallbut(boston))}, where \texttt{boston} is a network that has a tie for every pair of lawyers in the Boston office, only the dyads among the Boston lawyers are modeled and all other dyads are held at their observed values. The network \texttt{boston} is built from the variable \texttt{office} in Mata:
+\showlog{cons_prep}
+\showlog{cons_block}
+The number of informative dyads is $48\times47=2256$.
+
+\subsection{An observation process}\label{sec:obsex}
+
+\opt{obsconstraints()} describes how the network was observed. The three Florentine marriages of Section~\ref{sec:missingex} are now declared as unobserved by a network \texttt{unobs} that has a tie for each of the three pairs, and the observed network \texttt{flo0} has a 0 there:
+\showlog{obs_prep}
+\showlog{obs_fit}
+The result agrees with the missing-dyad fit of Section~\ref{sec:missingex} (edges $-2.7078$ against $-2.7080$, wealth $0.0110$ against $0.0110$, shared partners $0.0384$ against $0.0395$, with standard errors of the same size): in both cases the likelihood of the network is the sum over the values of the three unobserved dyads, which \texttt{obsconstraints(fixallbut(unobs))} expresses directly.
+
+\section{A two-mode network, structural terms, operators and labels}\label{sec:twomode}
+
+Two-mode (bipartite) networks connect two sets of nodes. The network of this section is simulated for the manual: 30 people and 12 clubs, in which people and clubs have a binary type, and ties between the same type are more likely (30\% against 8\%). The network is built from the matrix \texttt{B}, transposed because \texttt{nwset} takes the first mode from the columns, so the 30 people are the first mode:
+\showlog{two_make}
+A model with the density and the mixing of the type of person and club (\opt{nodemix(kind)}; the cell names give the type of the first-mode node and of the second-mode node, and the first cell, both of type 1, is omitted) is dyad-independent:
+\showlog{two_fit}
+Ties between people and clubs of the same type are more likely than ties between different types: the coefficients of the two cells of different types are $-1.5$ and $-2.4$ relative to the cell in which both are of type 1, against $-0.23$ for the cell in which both are of type 2. A geometrically weighted degree term for the second mode (\opt{bgwdegree2(0.5)}) makes the model dyad-dependent:
+\showlog{two_fit2}
+The goodness of fit of a two-mode model compares the statistics of the model, the degree distributions of both modes, the dyadwise shared partners and the distances. The listing shows the first three blocks (the other blocks follow in the same layout):
+\showlogpart{two_gof}{1}{37}
+Operators evaluate terms on a derived network. \texttt{Proj1(edges triangle)} evaluates the number of ties and triangles of the one-mode projection on the first mode (two people are tied if they belong to a common club):
+\showlog{two_ops}
+On the directed Lazega network, \texttt{Symmetrize(triangle, rule(strong))} counts the triangles of the network of reciprocated ties:
+\showlog{op_sym}
+Further structural terms of \ergm{} are available inside \opt{structural()}, here the two-paths and the 3-cycles:
+\showlog{st_fit}
+\opt{coeflabel()} renames a coefficient in the output and in \texttt{e(b)}:
+\showlog{lab_fit}
+
+\section{Network types: a valued network and a two-mode covariate}\label{sec:types}
+
+The type of a network is fixed when it is created (Section~\ref{sec:data}). The edge list of this section is simulated for the manual: 40 nodes and 134 undirected ties, of which about 30\% carry the value 2 and the others the value 1. \texttt{nwfromedge} with the option \opt{valued} makes a valued network of it:
+\showlog{typ_valued}
+The summary shows the flag \texttt{Valued: true} and the maximum value 2. \nwergm{} fits the graph in which a tie is present when its value is not zero, and the note in the first line says so; with \texttt{edges} alone the coefficient is the log odds of the density, $\log(134/646)=-1.57$, as for the binary network. When every value is 1 nothing is lost, and no note is printed:
+\showlog{typ_binary}
+A two-mode covariate network can be used in \opt{edgecov()} on a two-mode model. Here the network \texttt{visits} is a second two-mode network on the same 30 people and 12 clubs as \texttt{clubs}; only the cells between the two modes enter the model:
+\showlog{typ_cov2}

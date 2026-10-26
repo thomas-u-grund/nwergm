@@ -1,0 +1,69 @@
+. estat gof, gof(idegree espartners distance) nsim(100) seed(2) plot name(gof)
+
+Goodness-of-fit for model statistics
+
+                       obs       min      mean       max  MC p-value
+edges                  575       486    571.60       642        0.84
+mutual                  74        51     73.66        97        1.00
+nodematch_prac         412       338    405.75       471        0.72
+nodeicov_senio~y     19379     16514  19354.46     22554        0.98
+gwesp_0.5        555.61913 409.70549    548.57 684.45324        0.86
+
+Goodness-of-fit for minimum geodesic distance
+
+                       obs       min      mean       max  MC p-value
+1                      575       486    571.60       642        0.84
+2                     2316      2109   2502.08      2841        0.28
+3                     1782      1427   1738.89      2011        0.88
+4                      154        22    124.18       310        0.62
+5                        3         0      3.15        41        0.70
+6                        0         0      0.05         2        1.00
+Inf                    140         0     30.05       208        0.10
+
+Goodness-of-fit for in-degree
+
+                       obs       min      mean       max  MC p-value
+0                        0         0      0.16         2        1.00
+1                        0         0      0.73         3        1.00
+2                        3         0      2.00         6        0.72
+3                        2         0      3.41         8        0.54
+4                        8         0      5.25        12        0.28
+5                        6         2      6.51        16        1.00
+6                        5         2      7.29        15        0.58
+7                        8         3      7.84        13        1.00
+8                        9         2      7.80        17        0.72
+9                        5         1      6.95        17        0.62
+10                       7         2      6.19        14        0.82
+11                       6         1      5.13         9        0.82
+12                       4         1      3.90         9        1.00
+13                       2         0      2.54         6        0.98
+14                       4         0      2.12         6        0.28
+15                       1         0      1.23         5        1.00
+16                       0         0      0.88         5        0.86
+17                       1         0      0.55         3        0.80
+18                       0         0      0.29         2        1.00
+19                       0         0      0.09         2        1.00
+20                       0         0      0.09         1        1.00
+21                       0         0      0.03         1        1.00
+22                       0         0      0.01         1        1.00
+23                       0         0      0.01         1        1.00
+
+Goodness-of-fit for edgewise shared partner
+
+                       obs       min      mean       max  MC p-value
+0                      138       101    132.84       163        0.82
+1                      190       167    203.70       250        0.32
+2                      131        86    137.66       187        0.90
+3                       69        31     64.92       107        0.80
+4                       26         6     22.61        42        0.62
+5                       11         0      7.34        21        0.52
+6                        7         0      1.84         9        0.06
+7                        2         0      0.52         4        0.28
+8                        1         0      0.14         4        0.22
+9                        0         0      0.03         1        1.00
+(plot saved as gof; box and whiskers summarize the simulated draws, the dashed line is the observed network)
+
+. graph export "../fig/gof.pdf", name(gof) replace
+file
+    /private/tmp/claude-501/-Users-tgrund-FILES-NEW-SOFTWARE-nwcommands/f80eded9-2ca1-45e7-9a6b-23ada6a895b2/scratchpad
+    > /m4/manual/ex/../fig/gof.pdf saved as PDF format

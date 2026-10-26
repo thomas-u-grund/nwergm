@@ -1,0 +1,16 @@
+. nwwebuse lazega, nwclear
+
+. encode practice, generate(prac)
+
+. encode office, generate(off)
+
+. tempfile lnodes
+
+. save `lnodes'
+file /var/folders/hx/2zp2k5ps2y7d_6hx015fcr1h0000gn/T//S_74887.000001 saved as .dta format
+
+. mata: o = st_data(., "off"); F = (o :== 1) * (o :== 1)'; _diag(F, 0); st_matrix("F", F)
+
+. nwset, mat(F) directed name(boston)
+
+. use `lnodes', clear

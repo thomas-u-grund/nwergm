@@ -1,0 +1,40 @@
+. nwfromedge a b w, undirected name(val) valued
+
+. nwsummarize val
+--------------------------------------------------
+   Network name:  val
+   Network id:  1
+   Directed: false
+   Valued: true
+   Two-mode: false
+   Nodes: 40
+   Selfloop: false
+   Edges: 134
+   Minimum value:  0
+   Maximum value:  2
+   Density:  .172
+   Temporal: false
+
+. nwergm val, edges
+(note: tie values are ignored; the model is fitted to the binary network)
+
+Exponential-family random graph model
+
+Network:               =  val
+Nodes:                 =  40
+Ties:                  =  134
+Directed:              =  No
+Estimation:            =  MPLE
+
+------------------------------------------------------------------------------
+         val | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+       edges |   -1.57296   .0949246   -16.57   0.000    -1.759008   -1.386911
+------------------------------------------------------------------------------
+
+Maximum pseudolikelihood estimate (not full ERGM maximum likelihood unless the model is dyad-independent).
+
+             Null Deviance:    1081.3  on 780 degrees of freedom
+         Residual Deviance:     715.6  on 779 degrees of freedom
+
+Log-likelihood:  -357.8022 (df = 1)   AIC:     717.6   BIC:     722.3   (MC std. err. =       0)

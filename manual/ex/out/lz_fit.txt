@@ -1,0 +1,28 @@
+. nwergm lazega_fr, edges mutual nodematch(prac) nodeicov(seniority) gwesp(0.5) seed(1)
+
+Exponential-family random graph model
+
+Network:               =  lazega_fr
+Nodes:                 =  71
+Ties:                  =  575
+Directed:              =  Yes
+Estimation:            =  MCMLE
+MCMC sample size:      =  3000
+
+------------------------------------------------------------------------------------
+         lazega_fr | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+-------------------+----------------------------------------------------------------
+             edges |  -3.323792   .1300159   -25.56   0.000    -3.578619   -3.068966
+            mutual |   .8118747   .1619457     5.01   0.000     .4944671    1.129282
+    nodematch_prac |   .7068091   .0811852     8.71   0.000      .547689    .8659292
+nodeicov_seniority |  -.0043879   .0016961    -2.59   0.010    -.0077123   -.0010636
+         gwesp_0.5 |   .4927714   .0630313     7.82   0.000     .3692323    .6163106
+------------------------------------------------------------------------------------
+
+MCMLE converged after 1 iteration(s).
+Evaluating log-likelihood at the estimate (bridge sampling with 16 bridges) ...
+
+             Null Deviance:    6889.9  on 4970 degrees of freedom
+         Residual Deviance:    3336.5  on 4965 degrees of freedom
+
+Log-likelihood: -1668.2523 (df = 5)   AIC:    3346.5   BIC:    3379.1   (MC std. err. =  .07975)

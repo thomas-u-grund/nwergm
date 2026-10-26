@@ -4,3 +4,16 @@ native/*.x86_64
 native/*.arm64
 __pycache__/
 *.pyc
+# LaTeX build files of the manual (the PDF itself is committed with git add -f)
+manual/*.aux
+manual/*.toc
+manual/*.out
+manual/*.bbl
+manual/*.blg
+manual/*.lof
+manual/*.lot
+manual/*.fls
+manual/*.fdb_latexmk
+manual/*.synctex.gz
+manual/*.pdf
+manual/ex/r/*.dta

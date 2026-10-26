@@ -1,0 +1,20 @@
+. nwwebuse florentine, nwclear
+
+. nwtomata flomarriage, mat(A)
+
+. mata: A[1,2] = A[2,1] = .
+
+. mata: A[3,5] = A[5,3] = .
+
+. mata: A[4,9] = A[9,4] = .
+
+. mata: st_matrix("Am", A)
+
+. tempfile nodes
+
+. save `nodes'
+file /var/folders/hx/2zp2k5ps2y7d_6hx015fcr1h0000gn/T//S_71858.000001 saved as .dta format
+
+. nwset, mat(Am) undirected name(flomiss)
+
+. use `nodes', clear

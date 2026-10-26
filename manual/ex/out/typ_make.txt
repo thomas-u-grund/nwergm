@@ -1,0 +1,28 @@
+. clear
+
+. set seed 20261026
+
+. set obs 150
+Number of observations (_N) was 0, now 150.
+
+. generate int a = ceil(runiform()*40)
+
+. generate int b = ceil(runiform()*40)
+
+. drop if a == b
+(4 observations deleted)
+
+. duplicates drop a b, force
+
+Duplicates in terms of a b
+
+(8 observations deleted)
+
+. generate byte w = 1 + (runiform() > 0.7)
+
+. generate byte one = 1
+
+. tempfile edges
+
+. save `edges'
+file /var/folders/hx/2zp2k5ps2y7d_6hx015fcr1h0000gn/T//S_76999.000001 saved as .dta format

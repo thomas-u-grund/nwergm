@@ -1,0 +1,26 @@
+. use `edges', clear
+
+. nwfromedge a b one, undirected name(val1) valued
+
+. nwergm val1, edges
+
+Exponential-family random graph model
+
+Network:               =  val1
+Nodes:                 =  40
+Ties:                  =  134
+Directed:              =  No
+Estimation:            =  MPLE
+
+------------------------------------------------------------------------------
+        val1 | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+       edges |   -1.57296   .0949246   -16.57   0.000    -1.759008   -1.386911
+------------------------------------------------------------------------------
+
+Maximum pseudolikelihood estimate (not full ERGM maximum likelihood unless the model is dyad-independent).
+
+             Null Deviance:    1081.3  on 780 degrees of freedom
+         Residual Deviance:     715.6  on 779 degrees of freedom
+
+Log-likelihood:  -357.8022 (df = 1)   AIC:     717.6   BIC:     722.3   (MC std. err. =       0)

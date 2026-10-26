@@ -1,0 +1,26 @@
+. nwergm flomarriage, edges nodecov(wealth) gwesp(0.5) estimate(mple)
+Note: method(mple) requested for a dyad-dependent model - reporting pseudolikelihood, NOT full ERGM maximum likelihood.
+
+Exponential-family random graph model
+
+Network:               =  flomarriage
+Nodes:                 =  16
+Ties:                  =  20
+Directed:              =  No
+Estimation:            =  MPLE
+
+--------------------------------------------------------------------------------
+   flomarriage | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+         edges |  -2.614769   .5469954    -4.78   0.000     -3.68686   -1.542677
+nodecov_wealth |   .0103724   .0047631     2.18   0.029     .0010369    .0197079
+     gwesp_0.5 |   .0333115   .1724709     0.19   0.847    -.3047253    .3713482
+--------------------------------------------------------------------------------
+
+Maximum pseudolikelihood estimate (not full ERGM maximum likelihood unless the model is dyad-independent).
+
+      Null Pseudo-deviance:     166.4  on 120 degrees of freedom
+  Residual Pseudo-deviance:     103.1  on 117 degrees of freedom
+
+Log-likelihood:   -51.5358 (df = 3)   AIC:     109.1   BIC:     117.4   (MC std. err. =       0)
+(For a dyad-dependent model fitted by MPLE this is the pseudolikelihood, as in R.)

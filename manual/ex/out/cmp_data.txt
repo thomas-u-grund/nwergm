@@ -1,0 +1,3 @@
+. nwwebuse lazega, nwclear
+
+. encode practice, generate(prac)

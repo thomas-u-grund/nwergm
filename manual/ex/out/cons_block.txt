@@ -1,0 +1,26 @@
+. nwergm lazega_fr, edges mutual nodematch(prac) constraints(fixallbut(boston)) seed(1)
+
+Exponential-family random graph model
+
+Network:               =  lazega_fr
+Nodes:                 =  71
+Ties:                  =  575
+Directed:              =  Yes
+Estimation:            =  MCMLE
+MCMC sample size:      =  3000
+
+--------------------------------------------------------------------------------
+     lazega_fr | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+         edges |  -2.476418   .1109825   -22.31   0.000     -2.69394   -2.258897
+        mutual |   .7863471   .2000944     3.93   0.000     .3941694    1.178525
+nodematch_prac |   1.009867   .1289483     7.83   0.000      .757133    1.262601
+--------------------------------------------------------------------------------
+
+MCMLE converged after 1 iteration(s).
+Evaluating log-likelihood at the estimate (bridge sampling with 16 bridges) ...
+
+             Null Deviance:    3127.5  on 2256 degrees of freedom
+         Residual Deviance:    1839.3  on 2253 degrees of freedom
+
+Log-likelihood:  -919.6627 (df = 3)   AIC:    1845.3   BIC:    1862.5   (MC std. err. =  .02367)

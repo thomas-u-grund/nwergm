@@ -1,0 +1,25 @@
+. nwergm mesa, edges nodematch(grade) nodematchdiff(sex_n)
+
+Exponential-family random graph model
+
+Network:               =  mesa
+Nodes:                 =  205
+Ties:                  =  203
+Directed:              =  No
+Estimation:            =  MPLE
+
+-----------------------------------------------------------------------------------
+             mesa | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
+------------------+----------------------------------------------------------------
+            edges |  -6.392904   .1856467   -34.44   0.000    -6.756765   -6.029043
+  nodematch_grade |   2.820284   .1774895    15.89   0.000     2.472411    3.168157
+nodematch_sex_n_1 |   .8880277   .1651607     5.38   0.000     .5643186    1.211737
+nodematch_sex_n_2 |    .333064   .1871779     1.78   0.075     -.033798     .699926
+-----------------------------------------------------------------------------------
+
+Maximum pseudolikelihood estimate (not full ERGM maximum likelihood unless the model is dyad-independent).
+
+             Null Deviance:   28987.4  on 20910 degrees of freedom
+         Residual Deviance:    1910.8  on 20906 degrees of freedom
+
+Log-likelihood:  -955.4147 (df = 4)   AIC:    1918.8   BIC:    1950.6   (MC std. err. =       0)

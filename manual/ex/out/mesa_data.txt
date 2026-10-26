@@ -1,0 +1,48 @@
+. nwwebuse mesa, nwclear
+
+. nwset
+(1 networks)
+--------------------
+      mesa
+
+. describe, short
+
+Contains data from https://raw.githubusercontent.com/thomas-u-grund/nwcommands/main/data/mesa.nwdta
+ Observations:           205                  
+    Variables:             5                  1 Sep 2026 21:41
+Sorted by: 
+     Note: Dataset has changed since last saved.
+
+. tabulate grade
+
+      grade |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          7 |         62       30.24       30.24
+          8 |         40       19.51       49.76
+          9 |         42       20.49       70.24
+         10 |         25       12.20       82.44
+         11 |         24       11.71       94.15
+         12 |         12        5.85      100.00
+------------+-----------------------------------
+      Total |        205      100.00
+
+. tabulate race
+
+       race |      Freq.     Percent        Cum.
+------------+-----------------------------------
+      Black |          6        2.93        2.93
+       Hisp |        109       53.17       56.10
+      NatAm |         68       33.17       89.27
+      Other |          4        1.95       91.22
+      White |         18        8.78      100.00
+------------+-----------------------------------
+      Total |        205      100.00
+
+. tabulate sex
+
+        sex |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          F |         99       48.29       48.29
+          M |        106       51.71      100.00
+------------+-----------------------------------
+      Total |        205      100.00

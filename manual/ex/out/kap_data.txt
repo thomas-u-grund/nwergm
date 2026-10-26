@@ -1,0 +1,22 @@
+. nwwebuse kapferer, nwclear
+
+. nwset
+(2 networks)
+--------------------
+      kapferer_t1
+      kapferer_t2
+
+. nwsummarize kapferer_t2
+--------------------------------------------------
+   Network name:  kapferer_t2
+   Network id:  2
+   Directed: false
+   Valued: false
+   Two-mode: false
+   Nodes: 43
+   Selfloop: false
+   Edges: 190
+   Minimum value:  0
+   Maximum value:  1
+   Density:  .21
+   Temporal: false

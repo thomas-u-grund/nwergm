@@ -1,0 +1,42 @@
+. clear
+
+. set seed 20261024
+
+. nwclear
+
+. mata: g1 = (runiform(30,1) :> 0.5) :+ 1
+
+. mata: g2 = (runiform(12,1) :> 0.5) :+ 1
+
+. mata: P = 0.08 :+ 0.22 :* ((g1 * J(1,12,1)) :== (J(30,1,1) * rowshape(g2,1)))
+
+. mata: B = (runiform(30,12) :< P)
+
+. mata: st_matrix("B", transposeonly(B))
+
+. nwset, mat(B) bipartite name(clubs)
+
+. set obs 42
+Number of observations (_N) was 42, now 42.
+
+. generate byte kind = .
+(42 missing values generated)
+
+. mata: st_store(., "kind", (g1 \ g2))
+
+. nwsummarize clubs
+--------------------------------------------------
+   Network name:  clubs
+   Network id:  1
+   Directed: false
+   Valued: false
+   Two-mode: true
+   Nodes: 42
+      Level 1: 30 ()
+      Level 2: 12 ()
+   Selfloop: false
+   Edges: 71
+   Minimum value:  0
+   Maximum value:  1
+   Density:  .197
+   Temporal: false
