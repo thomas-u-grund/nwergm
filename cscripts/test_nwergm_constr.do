@@ -185,6 +185,7 @@ program define e6run
 	mata: th = (`theta1', `theta2')
 	mata: ex = e6_exact(st_matrix("A0"), G.directed, "`kind'", th, (G.has_dyadmask ? G.freedyadmat : J(rows(st_matrix("A0")), rows(st_matrix("A0")), 1)), `maxd')
 	mata: st_numscalar("e6_nstates", rows(ex))
+	set seed 20261026
 	mata: smp = ErgmMCMCSample(M, G, th, 2000, 20, 100000, &ergm_propose_tnt())
 	mata: st_numscalar("e6_inv", e6_invariants(G, st_matrix("A0"), "`kind'", `maxd'))
 	mata: st_numscalar("e6_maxz", e6_compare(smp, ex, "`kind'"))
