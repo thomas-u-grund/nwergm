@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.2.3  26oct2026 author: Thomas Grund}{...}
+{* *! version 1.2.4  26oct2026 author: Thomas Grund}{...}
 {marker topic}
 {helpb nwtopical##analysis_statmodels:[NW-2.6.6] Statistical Estimation of Networks}
 
@@ -168,7 +168,7 @@ Estimation methods (MPLE variants, contrastive divergence, stochastic approximat
 {synopt:{opt verbose}}Show MPLE/MCMLE iteration detail{p_end}
 {synopt:{opt spcache}}Enable the incremental shared-partner cache for {opt gwesp()}/{opt gwdsp()}/{opt gwnsp()}/{opt esp()}/{opt dsp()}/{opt triangle}/{opt ctriple} on an undirected network; OFF by default because direct benchmarking found it a net LOSS below roughly average degree 30-40 (the common case) and a net win only above that - enable only for denser undirected networks; no effect on a directed network or without any of those terms{p_end}
 {synopt:{opt fixdensity}}Hold the total tie count fixed during MCMC (R ergm's own {cmd:constraints=~edges}), via a compound tie/non-tie swap proposal rather than the ordinary single-dyad toggle; native (C)-accelerated when otherwise eligible. Requires {opt method(mcmle)} and at least one term besides {opt edges} (which is dropped, not estimated, under this constraint - see {bf:Remarks}). Cannot currently be combined with {opt freedyads()}/{opt blockdiag()} - v1 supports one dyad-space constraint at a time{p_end}
-{synopt:{opt nonative}}Force the pure-Mata backend even on an otherwise native-eligible model - an explicit escape hatch for testing or direct comparison against the native (C) backend; not needed for ordinary use, since {cmd:nwergm} already picks the native backend automatically whenever a model qualifies{p_end}
+{synopt:{opt nonative}}Force the Mata backend even on an otherwise plugin-eligible model - for testing or direct comparison against the plugin (C) backend; very slow; not needed for ordinary use, since {cmd:nwergm} already picks the native backend automatically whenever a model qualifies{p_end}
 {synopt:{opt nomcmcsample}}Skip posting {bf:e(mcmcsample)} ({bf:method(mcmle)} only). Populating this matrix from Mata is the single slowest step for a fit with a large {opt mcmcsamplesize()} - a genuine Stata matrix-engine cost at bulk-data scale (confirmed by direct timing: over 30 seconds at 100,000 rows), not something {help nwergm_estat:estat mcmcdiag}'s own consumption of it can be blamed for or sped up (reading the already-posted matrix back is fast regardless of size - the cost is entirely in creating it in the first place). Specify {opt nomcmcsample} when fitting with an unusually large {opt mcmcsamplesize()} and you do not need {cmd:estat mcmcdiag} or to inspect the raw sample directly - the coefficient table, standard errors, and every other stored result are completely unaffected{p_end}
 
 {p2colreset}{...}
@@ -198,15 +198,16 @@ menu is installed with {cmd:nwinstall}.
 
 {pstd}
 {cmd:nwergm} fits an exponential-family random graph model (ERGM) to the network(s) in
-{help netname} (default: the currently set network) using a fully native Stata/Mata
-implementation - no R or other external statistical software is called at any point, at
-estimation time or otherwise. Statnet's mature {cmd:ergm} R package was studied in detail as a
-behavioural and architectural reference during development (see {browse "https://cran.r-project.org/package=ergm":statnet.org})
-and used, during development only, to certify {cmd:nwergm}'s own independently-written
-implementation against real reference output; see {help nwergm##provenance:Provenance} below.
+{help netname} (default: the currently set network). The sampler, the change statistics of the
+terms and the pseudolikelihood design matrix run in a compiled plugin that ships with the package;
+the rest is written in Mata and Stata. No R or other external statistical software is called at any
+point. {cmd:nwergm} was developed from Statnet's {cmd:ergm} R package (see
+{browse "https://cran.r-project.org/package=ergm":statnet.org}): the term definitions, the
+estimators and the defaults follow {cmd:ergm}, and the results were compared numerically with it; see
+{help nwergm##provenance:Provenance} below.
 
 {pstd}
-{cmd:nwergm} implements a substantial, independently-certified core of Statnet's own {cmd:ergm}
+{cmd:nwergm} implements a large part of Statnet's own {cmd:ergm}
 term surface and estimation machinery: a term registry, Metropolis-Hastings simulation with a
 genuine tie/no-tie proposal, maximum pseudolikelihood estimation, and Monte Carlo maximum
 likelihood estimation, backed by an effect library covering the full node-covariate family,
@@ -216,9 +217,10 @@ shared-partner counts, the complete degree-distribution family, and directed tri
 - see {help nwergm##limitations:Limitations} below for the complete current list, plus a
 two-mode (bipartite) term family ({help nwergm_bipartite:two-mode terms}) and the sample-space
 constraints of R's {cmd:constraints=} and {cmd:obs.constraints=} ({help nwergm_constraints:constraints}).
-What still sets {cmd:nwergm} apart from full parity is scope: valued, signed and temporal networks
-and directed two-mode networks are not supported, and R's less common terms are added as they are
-certified against R.
+What still sets {cmd:nwergm} apart from full parity is scope: temporal networks and directed two-mode
+networks are not supported, a valued network is fitted as a binary graph (see {help nwergm##limitations:Limitations}),
+and 125 of the 139 terms of {cmd:ergm} 4.12.0 are implemented (the 13 terms for valued networks and the
+operator {cmd:B} are not).
 
 {pstd}
 {opt method()} selects the estimation method. If every requested term is dyad-independent
@@ -283,10 +285,10 @@ networks are rejected with an explicit error, as are the terms R does not allow 
 ({opt mutual}, {opt gwdegree()} and others) - never silently projected to one mode.{p_end}
 {p2col: o}Temporal networks (snapshot/interval/event metadata) are rejected with an explicit
 error - never silently collapsed to a single static slice.{p_end}
-{p2col: o}Valued/weighted or signed networks are rejected with an explicit error - never
-silently dichotomized or stripped of sign. Valued ERGMs are a materially different statistical
-framework (Krivitsky 2012) and are tracked as a separate future initiative, not a small
-extension.{p_end}
+{p2col: o}A valued/weighted network is fitted as the binary graph in which a tie is present when its value
+is not zero, as {cmd:ergm} does without {cmd:response=}; {cmd:nwergm} prints one note that the tie values
+are ignored (no note when every tie value is 1). Valued ERGMs, which model the values as the outcome
+(Krivitsky 2012), are a materially different framework and are not implemented.{p_end}
 {p2col: o}{opt freedyads()} and {opt blockdiag()} restrict which dyads the MCMC proposal may ever
 toggle - every other dyad is held fixed at its observed value for the rest of the fit (matching
 R ergm's own {cmd:constraints=~fixallbut()} and {cmd:constraints=~blockdiag()} respectively).
@@ -297,12 +299,11 @@ TNT restricts every population count - total dyads, current tie count, the "pick
 existing tie" draw - to the free-dyad subspace only; a fully-free mask is statistically identical
 to the ordinary unmasked proposal, confirmed by certification), so a constrained fit gets the
 same TNT mixing advantage an unconstrained fit does, and MCMC sampling for a constrained model is
-native (C)-accelerated when otherwise eligible (roughly 3.7x faster than Mata on a benchmark
-network) - only {opt method(mple)}/curved fits keep using their own Mata-only free-dyad path
+native (C)-accelerated when otherwise eligible (much faster than the Mata sampler) - only {opt method(mple)}/curved fits keep using their own Mata-only free-dyad path
 regardless. Verified to reproduce R ergm's own {cmd:fixallbut()} MPLE fit exactly (a fixed dyad's
 own likelihood contribution is a theta-independent constant, so it drops entirely out of the
 pseudolikelihood - confirmed directly: logit of the FREE-dyads-only density, not the full
-network's own density) - see {browse "dev/freedyads_crosscheck.R"}. Only one of
+network's own density). Only one of
 {opt freedyads()}/{opt blockdiag()} may be given at a time.{p_end}
 {p2col: o}{opt fixdensity} is a third, mutually exclusive dyad-space constraint: rather than
 restricting WHICH dyads may vary (as {opt freedyads()}/{opt blockdiag()} do), it holds the total
@@ -363,25 +364,25 @@ and basic goodness of fit ({help nwergm_estat:estat gof}) are both available; se
 {title:Performance: the native (C) MCMC backend}
 
 {pstd}
-{cmd:nwergm} ships a fully independent Mata implementation of its entire estimator (term
-registry, MCMC sampler, MPLE, MCMLE) - this is always the reference implementation and is what
-runs for every model on every platform. For a growing subset of models, {cmd:nwergm} ALSO
-compiles the MCMC inner loop (for {opt method(mcmle)}) or the MPLE design-matrix build (for
-{opt method(mple)}) into a native Stata plugin (C) and uses that instead, entirely
-transparently: there is nothing to turn on, no option to set, and no difference in how results
-are interpreted. Whether a given run used the native backend or the Mata one is purely a
-performance detail, exposed only for curiosity via {bf:e(native)} after EITHER method - the two
-are certified to produce statistically indistinguishable results for {opt method(mcmle)}
-(independent random-number streams, so not bit-identical sample paths, but the same target
-distribution; see the package's own {cmd:cscripts/test_nwergm_native.do}) and a bit-identical
-design matrix for {opt method(mple)} (deterministic given a fixed graph, so native and Mata
-agree exactly, not merely statistically). {opt nonative} forces the Mata backend deliberately
-even on an otherwise native-eligible model, for testing or direct comparison; ordinary use never
-needs it, since eligibility is otherwise detected and used automatically.
+The Metropolis-Hastings sampler, the change statistics of the terms, the observed statistics, the
+pseudolikelihood design matrix and the Newton iterations of curved pseudolikelihood fits are written in C
+and run in a Stata plugin that ships with the package; there is nothing to turn on and no option to set.
+{bf:e(native)} records that the plugin ran. The estimating step of the Monte Carlo algorithm, the covariance,
+the diagnostics and the output are written in Mata and Stata. The sampling and observation constraints
+({opt freedyads()}, {opt blockdiag()}, {opt fixdensity}, {opt constraints()}, {opt obsconstraints()}),
+{opt structural()} and the operators exist in the plugin only and stop with a message when it is missing.
+
+{pstd}
+A slower Mata implementation of the original terms still exists. It is used only when the plugin file
+for the platform is missing, when the option {opt nonative} is given (for testing and comparison), or when a
+model exceeds the capacity of the plugin. The two are statistically indistinguishable for {opt method(mcmle)}
+(independent random-number streams, so not bit-identical sample paths, but the same target distribution; see
+the package's own {cmd:cscripts/test_nwergm_native.do}) and give a bit-identical design matrix for
+{opt method(mple)}.
 
 {pstd}
 {bf:Warning: the Mata fallback is very slow.} The Mata backend is meant for testing and comparison, not for
-production use. It is typically hundreds of times slower than the compiled plugin (the Lazega model of the
+production use. It is typically about a hundred times slower, or more, than the compiled plugin (the Lazega model of the
 manual takes 31 seconds against 0.6 seconds, a fit with {opt bgwdsp1()} had not finished after 29 minutes, and
 a fit with {cmd:constraints(bd(maxout=30))} takes 165 seconds against 0.16 seconds). When a Monte Carlo fit
 ({opt method(mcmle)}), {cmd:estat gof} or {cmd:nwergm simulate} runs without the plugin, {cmd:nwergm} prints one
@@ -391,8 +392,8 @@ platform not found (reinstall the package with {cmd:net install nwergm, replace}
 {cmd:adopath}), or a model outside the capacity of the plugin. No warning is printed when the plugin is used.
 
 {pstd}
-The native backend requires a compiled plugin for the current platform (macOS is built and
-shipped; Windows/Linux build automatically via the package's own CI once available there). Given
+The native backend requires a compiled plugin for the current platform (macOS, Linux and Windows plugins
+are built by the package's continuous-integration workflow and ship with the package). Given
 a compiled plugin, every term and every constraint mechanism {cmd:nwergm} implements is
 native-eligible - the one-mode term library ({opt edges}, {opt mutual}, every node-covariate term,
 the full degree-distribution family, and the entire shared-partner family under every
@@ -426,20 +427,11 @@ step itself (translating each simulated sample into the next coefficient update)
 Mata, curved or not.
 
 {pstd}
-Concretely, on direct head-to-head benchmarks against R's own {cmd:ergm} 4.12.0 (default
-settings on both sides, median of 5 repeated runs): a 30-node directed {opt edges}+{opt mutual}
-model runs at roughly 1.15x R's own time; a 100-node directed
-{opt edges}+{opt mutual}+{opt nodematch()} model at roughly 0.62x - FASTER than R; a 100-node
-undirected {opt edges}+{opt gwesp()} model at roughly 1.0x (essential parity); a 500-node sparse
-undirected {opt edges}+{opt nodematch()}+{opt gwesp()} model at roughly 0.9x - FASTER than R;
-and a 1000-node directed {opt edges}+{opt mutual}+{opt nodematch()} control at roughly 0.6x -
-FASTER than R. On a real
-published network (the {it:E. coli} transcriptional-regulation network of Salgado et al. 2001
-and Shen-Orr et al. 2002, 418 nodes, 519 edges, distributed with R's own {cmd:ergm} package as
-{cmd:data(ecoli)}), median of five runs each side: a fixed-decay
-{opt edges}+{opt gwesp(.25)} model ({opt method(mcmle)}) runs at roughly 1.2x R's own time, and
-its curved, freely-estimated counterpart {opt edges}+{opt gwespfree(.25)}
-({opt method(mple)}) at roughly 2.1x.
+Speed relative to R's {cmd:ergm} depends on the model. With {cmd:ergm}'s default settings on both sides,
+{cmd:nwergm} is faster than R on some models and slower on others; the cost of a Monte Carlo fit grows
+with the size of the network, the terms and the number of iterations. Check the timing of your own model
+against R before relying on either; the website {browse "https://nwcommands.org/nwergm/":nwcommands.org/nwergm} describes the
+comparison with R.
 
 {title:Postestimation}
 
@@ -530,11 +522,11 @@ step length)
 
 {pstd}
 Geyer, C.J., Thompson, E.A. (1992). Constrained Monte Carlo Maximum Likelihood for Dependent
-Data. {it:Journal of the Royal Statistical Society, Series B}, 54(3), 657-699. (MCMLE)
+Data. {it:Journal of the Royal Statistical Society, Series B}, 54(3), 657-683. (MCMLE)
 
 {pstd}
-{cmd:nwergm} is an independent, native reimplementation and is not affiliated with or endorsed
-by the Statnet project.
+{cmd:nwergm} was developed from {cmd:ergm} and is distributed under the same licence, the GNU General Public
+License, version 3. It is not affiliated with or endorsed by the Statnet project.
 
 {title:Simulation}
 
@@ -633,4 +625,4 @@ restores them.
 	{help nwqap}, {help nwrandom}, {help nwcug}, {help nwintro##limits:feasible network sizes}
 
 {hline}
-{pstd}{it:nwergm version 1.2.3, 26 October 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.2.4, 26 October 2026}{p_end}{* nwversion}
