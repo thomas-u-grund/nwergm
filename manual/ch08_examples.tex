@@ -64,10 +64,10 @@ Friendship ties are reciprocated (\opt{mutual} is $0.80$, so that a tie that rec
 
 \subsection{Is the chain trustworthy?}
 
-The fit says it converged after two iterations. The default sample is adaptive (Section~\ref{sec:adaptive}): the last iteration kept 486 draws, and the interval of that sample is not the requested interval of 1024 (which the header of \texttt{estat mcmcdiag} repeats) but the one that the sampler arrived at:
+The fit says it converged after two iterations. The default sample is adaptive (Section~\ref{sec:adaptive}): the last iteration kept 486 draws, and the interval of that sample is not the requested interval of 1024 but the one that the sampler arrived at (\texttt{e(mcmc\_interval\_final)}); the header of \texttt{estat mcmcdiag} shows the interval of the final sample and names the requested one when the two differ:
 \showlog{lz_interval}
-\texttt{estat mcmcdiag} looks at the final sample (the first part of its output is shown; the rest is the report of \texttt{mcmc.diagnostics()}):
-\showlogpart{lz_diag}{1}{47}
+\texttt{estat mcmcdiag} looks at the final sample (the first part of its output is shown; the rest is the report of \texttt{mcmc.diagnostics()}). Its end note advises a higher target effective sample size (\opt{mcmleeffectivesize()}) for an adaptive fit and a larger \opt{mcmcsamplesize()} or \opt{mcmcinterval()} for a fit with fixed-size samples:
+\showlogpart{lz_diag}{1}{48}
 With the default settings, which are those of \ergm{}, the chain mixes acceptably: the lag-1 autocorrelation of the five statistics is $0.55$ to $0.67$, and the effective sample size is between 74 and 120 out of 486 draws, a little above the target of 64 for the estimating equations. Geweke's test does not reject stationarity for four statistics (the smallest $p$-value is $0.11$) and rejects it narrowly for \texttt{mutual} ($p=0.049$, a rejection to expect once in twenty tests of a stationary chain), and the Heidelberger--Welch test passes. Versions before 1.2.0 used a burn-in of 3000 and an interval of 50 proposals, with exactly 3000 draws. The same fit with these old settings and fixed-size samples (\opt{mcmleeffectivesize(0)}) shows what a chain that is too short looks like:
 \showlog{lz_fit2}
 The coefficients move by less than their standard errors, and the standard errors are of the same size. The diagnostics of the short chain:
@@ -75,7 +75,7 @@ The coefficients move by less than their standard errors, and the standard error
 With the old settings the lag-1 autocorrelation of every statistic is $0.99$, the effective sample size is between 14 and 19 out of 3000 draws, and Geweke's test rejects stationarity for all five statistics, although the Heidelberger--Welch test passes: the coefficients carry a large Monte Carlo error. The adaptive sample is protected against this. With the old interval and burn-in as starting values, but the adaptive sample of the default, the fit does not stay at the short interval; it thins the sample until the effective sample size is reached:
 \showlog{lz_adaptold}
 The interval of the last sample is 6400 proposals, and the effective sample size of the 362 draws kept is between 184 and 215. The old settings are a bad choice of the \emph{fixed} chain, not of the starting values of the adaptive one. The rest of the output of the default fit reports whether the sample statistics differ from the observed ones, with Hotelling's omnibus test:
-\showlogpart{lz_diag}{73}{78}
+\showlogpart{lz_diag}{76}{81}
 None of the five individual tests rejects (the smallest $p$-value is 0.064), but Hotelling's omnibus test, which takes the very high cross-correlations of the five statistics into account, does ($p=0.0019$). The omnibus test is sensitive to a small joint displacement along the direction in which the statistics move together, and the sample was drawn at the coefficients before the last update of the iteration (the note under the output; Section~\ref{sec:mcmcdiag}). It is a reason for caution, for example refitting from the estimate with \opt{init()} and a larger \opt{mcmleeffectivesize()}, and not a verdict on the final model, whose check is \texttt{estat gof}.
 Figure~\ref{fig:mcmcdiag} shows the trace and density plots of this sample.
 

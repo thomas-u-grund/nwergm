@@ -6,6 +6,8 @@ Metadata ready to paste into a new Zenodo upload. Nothing has been uploaded.
 
 **Labelling.** The manual is labelled by the minor series ("Manual for version 1.3", valid for 1.3.x). The package version it was built with (1.3.0) is the exact version of the examples. The Zenodo version field below holds 1.3.0 and is explained there as the series label: the record is the manual of the series 1.3, and a patch release of the package (1.3.1, ...) does not get a new record or version.
 
+**Patch releases.** The manual of the series 1.3 holds for 1.3.x: the patch 1.3.1 (26 October 2026) corrects the header and the end note of `estat mcmcdiag` (the passages and listings of the manual were updated) and changes no documented option or number. The label stays "Manual for version 1.3"; no new Zenodo version is needed for a patch.
+
 ## Metadata
 
 **Title.** nwergm: Exponential random graph models in Stata. Manual for version 1.3

@@ -3,7 +3,8 @@
 MCMC diagnostics for the final simulation (nwergm, method(mcmle))
 Sample size:         =     486
 Burn-in:             =   16384
-Thinning interval:   =    1024
+Thinning interval:   =    2048
+Requested interval:  =    1024  (raised by the adaptive sampler)
 Acceptance rate:     =  0.6692
 
 ------------------------------------------------------------
@@ -47,7 +48,9 @@ Note: Stationary = passed a Cramer-von-Mises test on the chain's own cumulative-
 
 MCMLE's own convergence test was satisfied after   2 iteration(s).
 Note: a satisfied convergence test is a necessary check, not proof of a converged fit - inspect the autocorrelation/ESS a
-> bove, and consider increasing mcmcsamplesize()/mcmleiterations() if acceptance rate or ESS looks poor.
+> bove, and consider raising mcmleeffectivesize() (the target effective sample size of the adaptive sample; mcmleiteratio
+> ns() if the iterations ran out) if acceptance rate or ESS looks poor. For a fit with a fixed-size sample (mcmleeffectiv
+> esize(0)) raise mcmcsamplesize() or mcmcinterval() instead.
 (plot saved as mcmcdiag; each row is one model statistic's MCMC trace and density from the final simulation)
 
 Sample statistics summary (centered at the observed statistics):
@@ -120,4 +123,4 @@ Note: MCMC diagnostics shown here are from the last round of simulation, prior t
 . graph export "../fig/mcmcdiag.pdf", name(mcmcdiag) replace
 file
     /private/tmp/claude-501/-Users-tgrund-FILES-NEW-SOFTWARE-nwcommands/f80eded9-2ca1-45e7-9a6b-23ada6a895b2/scratchpad
-    > /manual13/manual/ex/../fig/mcmcdiag.pdf saved as PDF format
+    > /patch131/manual/ex/../fig/mcmcdiag.pdf saved as PDF format
