@@ -12513,6 +12513,9 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 					// R: .boost_samplesize(MCMLE.last.boost = 4, base = TRUE)
 					esstarget = ess0 * 4
 					ss_base = max((ceil(ss_base0 * 4^0.5), ceil(2 * esstarget)))
+					// safety cap (R has none): a fit that never reaches the test does not grow the sample without bound
+					esstarget = min((esstarget, 32 * ess0))
+					ss_base = min((ss_base, 32 * ss_base0))
 				}
 				else samplesize = min((samplesize * 4, samplesize_cap, floor(total_draws_cap/interval)))
 			}
@@ -12555,6 +12558,9 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 			if (rboost > 0) {
 				esstarget = esstarget * rboost
 				ss_base = max((ceil(ss_base * rboost^0.5), ceil(2 * esstarget)))
+				// safety cap (R has none): a fit that never reaches the test does not grow the sample without bound
+				esstarget = min((esstarget, 32 * ess0))
+				ss_base = min((ss_base, 32 * ss_base0))
 			}
 			bboost = 1
 			stall_count = 0
@@ -12567,6 +12573,9 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 			samplesize_boost = max((1, min((Fstat/Fcrit, confidence_boost))))
 			esstarget = esstarget * samplesize_boost
 			ss_base = max((ceil(ss_base * samplesize_boost^0.5), ceil(2 * esstarget)))
+			// safety cap (R has none): a fit that never reaches the test does not grow the sample without bound
+			esstarget = min((esstarget, 32 * ess0))
+			ss_base = min((ss_base, 32 * ss_base0))
 			stall_count = 0
 		}
 
@@ -12632,6 +12641,9 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 				if (adaptive) {
 					esstarget = esstarget * samplesize_boost
 					ss_base = max((ceil(ss_base * samplesize_boost^0.5), ceil(2 * esstarget)))
+					// safety cap (R has none): a fit that never reaches the test does not grow the sample without bound
+					esstarget = min((esstarget, 32 * ess0))
+					ss_base = min((ss_base, 32 * ss_base0))
 				}
 				else samplesize = min((ceil(samplesize * samplesize_boost), samplesize_cap, floor(total_draws_cap/interval)))
 				stall_count = 0
