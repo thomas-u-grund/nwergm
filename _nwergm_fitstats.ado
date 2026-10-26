@@ -11,7 +11,7 @@ program _nwergm_fitstats, eclass
 	capture confirm number 0
 	syntax , DMAT(string) METHOD(string) [PROPFN(string) NOLOGLIK BRIDGESTEPS(integer 16) BRIDGESAMPLESIZE(integer 0) ///
 		BRIDGEINTERVAL(integer 0) MCMCBURNIN(integer 16384) MCMCINTERVAL(integer 1024) MCMCSAMPLESIZE(integer 3000) ///
-		INTERVALFINAL(integer 0) CURVED(integer 0) DIND(integer 1) CARRY(integer 0) QUIET]
+		INTERVALFINAL(integer 0) CURVED(integer 0) DIND(integer 1) CARRY(integer 0) DCOMP(string) QUIET]
 	tempname b ll se
 	matrix `b' = e(b)
 	local N = e(N)
@@ -33,7 +33,8 @@ program _nwergm_fitstats, eclass
 		}
 		local between = max(ceil(`mcmcburnin'/sqrt(`bridgesteps')), `mcmcinterval'*16)
 		di as txt "Evaluating log-likelihood at the estimate (bridge sampling with `bridgesteps' bridges) ..."
-		mata: __ergm_fs_d = ergm_dind_submodel(__nwergm_last_M, `dmat')
+		if "`dcomp'" != "" mata: __ergm_fs_d = ergm_dind_submodel_c(__nwergm_last_M, `dcomp')
+		else mata: __ergm_fs_d = ergm_dind_submodel(__nwergm_last_M, `dmat')
 		mata: __ergm_fs_r = ergm_bridge_llr(__nwergm_last_M, __nwergm_last_G, __ergm_fs_b, __ergm_fs_d[2..cols(__ergm_fs_d)], ///
 			__ergm_obsstat, `bridgesteps', `mcmcburnin', `between', `bridgeinterval', `bridgesamplesize', `propfn', `carry')
 		mata: st_numscalar("`ll'", __ergm_fs_d[1] + __ergm_fs_r[1])

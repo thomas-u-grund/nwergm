@@ -2118,11 +2118,21 @@ program nwergm, eclass
 		}
 
 		local __ergm_irls 0
+		local __ergm_dcomp 0
+		// a large design matrix usually has few distinct rows: the same likelihood on the distinct rows with their counts
+		tempname __nw_Dc
+		mata: `__nw_Dc' = ergm_mple_compress(`__nw_D')
+		mata: st_local("__ergm_dcomp", strofreal(rows(`__nw_Dc') > 0))
+		local __ergm_matatemps "`__ergm_matatemps' `__nw_Dc'"
 		mata: st_local("__ergm_has_offset", strofreal(sum(__nwergm_last_M.isfixed)>0))
-		if !`__ergm_has_offset' & "`mpletype'" == "glm" & ("`mplecheck'" == "on" | "`method'" != "mple") mata: st_local("__ergm_irls", strofreal(ergm_mple_irls(`__nw_D', "`__b_mple'", "`__V_mple'")))
+		if !`__ergm_has_offset' & "`mpletype'" == "glm" & ("`mplecheck'" == "on" | "`method'" != "mple") {
+			if `__ergm_dcomp' mata: st_local("__ergm_irls", strofreal(ergm_mple_irls_c(`__nw_Dc', "`__b_mple'", "`__V_mple'")))
+			else mata: st_local("__ergm_irls", strofreal(ergm_mple_irls(`__nw_D', "`__b_mple'", "`__V_mple'")))
+		}
 		// a separated pseudolikelihood goes through the existence check and R's glm iterate below
 		if `__ergm_irls' & "`mplecheck'" == "on" {
-			mata: st_local("__e7_ex", strofreal(ergm_mple_exists(`__nw_D')))
+			if `__ergm_dcomp' mata: st_local("__e7_ex", strofreal(ergm_mple_exists_c(`__nw_Dc')))
+			else mata: st_local("__e7_ex", strofreal(ergm_mple_exists(`__nw_D')))
 			if !`__e7_ex' local __ergm_irls 0
 		}
 		if !`__ergm_irls' {
@@ -2687,11 +2697,13 @@ program nwergm, eclass
 		}
 
 		nwergm_display "`netname'" "`nodes'" "`directed'" "`=cond("`method'"=="cd","CD",cond("`mainmethod'"=="sa","SA","MCMLE"))'" "`__ergm_converged'" "`__ergm_niter'" "`mcmcsamplesize'"
+		local __dcname ""
+		if "`__ergm_dcomp'" == "1" local __dcname "`__nw_Dc'"
 		if `__ss_adapt' local __ergm_interval_bridge `__br_int'
 		else local __ergm_interval_bridge `__ergm_interval_final'
 		_nwergm_fitstats, dmat(`__nw_D') method(mcmle) propfn(`__ergm_propfn') mcmcburnin(`__br_burn') mcmcinterval(`__br_int') ///
 			mcmcsamplesize(`__br_ss') intervalfinal(`__ergm_interval_bridge') curved(`__ergm_curved') bridgesteps(`bridgesteps') ///
-			bridgesamplesize(`bridgesamplesize') bridgeinterval(`bridgeinterval') carry(`__ss_adapt') `nologlik'
+			bridgesamplesize(`bridgesamplesize') bridgeinterval(`bridgeinterval') carry(`__ss_adapt') dcomp(`__dcname') `nologlik'
 		if `__ergm_curved' {
 			di as text "(decay is an estimated curved parameter here - see {help nwergm##gw_effects:help nwergm, gw_effects} for how this differs from R ergm's own curved-model machinery)"
 		}

@@ -5245,10 +5245,10 @@ real scalar ergm_pen_glm(real matrix D, string scalar bname, string scalar Vname
 	merged first, their multiplicity entering as the lower bound).
 	Returns 1 if the MPLE exists, 0 if the data are (quasi-)separated.
 */
-real scalar ergm_mple_exists(real matrix D){
+real scalar ergm_mple_exists(real matrix D, | real colvector wt){
 	real scalar p, m, i, j, it, jin, iout, ratio, best, tol, z
 	real matrix A, X, T, key, info
-	real colvector y, cnt, b, basis, perm, st
+	real colvector y, cnt, b, basis, perm, st, cs
 	real rowvector rc
 
 	p = cols(D) - 1
@@ -5265,9 +5265,11 @@ real scalar ergm_mple_exists(real matrix D){
 	m = rows(info)
 	A = J(m, p, 0)
 	cnt = J(m, 1, 0)
+	if (args() >= 2) cs = 0 \ runningsum(wt[perm])
 	for (i=1; i<=m; i++) {
 		A[i, .] = key[info[i,1], .]
-		cnt[i] = info[i,2] - info[i,1] + 1
+		if (args() >= 2) cnt[i] = cs[info[i,2] + 1] - cs[info[i,1]]
+		else cnt[i] = info[i,2] - info[i,1] + 1
 	}
 	// drop all-zero rows (they constrain nothing)
 	// A'nu = -A'cnt, nu >= 0
@@ -9072,7 +9074,7 @@ real scalar ErgmNativeSetup(class ErgmModel scalar M, real scalar proposal_code,
 */
 real matrix ErgmNativeSampleCore(class ErgmModel scalar M, class ErgmGraph scalar G,
 		real rowvector theta, real scalar burnin, real scalar interval,
-		real scalar samplesize, real rowvector obs){
+		real scalar samplesize, real rowvector obs, | real matrix tiesin, real matrix tiesout){
 
 	real matrix ties, out, newties, attrpad
 	real scalar n, directed, nties, p, nattr, ncovmat, nobs_needed, i, k, rngseed, nties_out, __junk
@@ -9088,7 +9090,10 @@ real matrix ErgmNativeSampleCore(class ErgmModel scalar M, class ErgmGraph scala
 	directed = G.directed
 	bipartite = G.bipartite
 	modevec = bipartite ? G.mode : J(0,1,0)
-	ties = G.all_ties()
+	// tiesin / tiesout (optional): the caller keeps the network as a plain tie list between consecutive calls and rebuilds G only
+	// once at the end (ergm_graph_load_ties()); G itself is then neither read nor changed here
+	if (args() >= 8) ties = tiesin
+	else ties = G.all_ties()
 	nties = rows(ties)
 	p = cols(theta)
 	nattr = cols(M.native_attrmat)
@@ -9322,6 +9327,11 @@ real matrix ErgmNativeSampleCore(class ErgmModel scalar M, class ErgmGraph scala
 	st_framecurrent(origframe)
 	stata("capture frame drop __ergm_native")
 
+	if (args() >= 9) {
+		tiesout = newties
+		return(out)
+	}
+
 	G.init(n, directed)
 	// G.init() unconditionally resets `bipartite'=0 (never touched by
 	// init() otherwise, per its own header comment) - since G is being
@@ -9334,6 +9344,20 @@ real matrix ErgmNativeSampleCore(class ErgmModel scalar M, class ErgmGraph scala
 	for (i=1; i<=rows(newties); i++) G.toggle(newties[i,1], newties[i,2])
 
 	return(out)
+}
+
+// rebuilds G from a plain tie list (the state after lazy native sampling runs, see ErgmNativeSampleCore())
+void ergm_graph_load_ties(class ErgmGraph scalar G, real matrix ties)
+{
+	real scalar i, n, directed, bip
+	real colvector modevec
+	n = G.n
+	directed = G.directed
+	bip = G.bipartite
+	modevec = bip ? G.mode : J(0, 1, 0)
+	G.init(n, directed)
+	if (bip) G.set_bipartite(modevec)
+	for (i=1; i<=rows(ties); i++) G.toggle(ties[i,1], ties[i,2])
 }
 
 /*
@@ -10709,18 +10733,21 @@ real scalar ergm_spec0_scalar(real colvector xcentered){
 // is plain (converged, finite, full rank, no (quasi-)separation signs);
 // returns 0 otherwise and the caller falls back to `logit' itself, which
 // keeps Stata's own handling and messages for the degenerate cases.
-real scalar ergm_mple_irls(real matrix D, string scalar bname, string scalar Vname){
+real scalar ergm_mple_irls(real matrix D, string scalar bname, string scalar Vname, | real colvector wt){
 	real matrix X, H, Hi
 	real colvector y, b, eta, mu, w, g, db
-	real scalar p, it, ll, ll0, conv, k
+	real scalar p, it, ll, ll0, conv, k, nobs
 
+	// wt (optional): row weights (multiplicities) when D holds the distinct rows of a larger design (ergm_mple_compress())
 	p = cols(D) - 1
-	if (p < 1 | rows(D) < p + 1) return(0)
+	if (args() < 4) wt = J(rows(D), 1, 1)
+	nobs = sum(wt)
+	if (p < 1 | nobs < p + 1) return(0)
 	if (missing(D) > 0) return(0)
 	X = D[., 1::p]
 	y = D[., p+1]
 	if (min(y) < 0 | max(y) > 1) return(0)
-	if (sum(y) == 0 | sum(y) == rows(y)) return(0)
+	if (sum(wt :* y) == 0 | sum(wt :* y) == nobs) return(0)
 	b = J(p, 1, 0)
 	ll0 = -.
 	conv = 0
@@ -10728,10 +10755,10 @@ real scalar ergm_mple_irls(real matrix D, string scalar bname, string scalar Vna
 		eta = X*b
 		if (max(abs(eta)) > 30) return(0)
 		mu = invlogit(eta)
-		ll = sum(y:*eta :- log1p(exp(eta)))
+		ll = sum(wt :* (y:*eta :- log1p(exp(eta))))
 		if (ll0 != -. & ll < ll0 - 1e-9 * max((1, abs(ll0)))) return(0)
-		w = mu :* (1 :- mu)
-		g = cross(X, y :- mu)
+		w = wt :* (mu :* (1 :- mu))
+		g = cross(X, wt :* (y :- mu))
 		H = cross(X, w, X)
 		Hi = invsym(H)
 		for (k=1; k<=p; k++) if (Hi[k,k] == 0) return(0)
@@ -10744,7 +10771,7 @@ real scalar ergm_mple_irls(real matrix D, string scalar bname, string scalar Vna
 	eta = X*b
 	if (max(abs(eta)) > 30) return(0)
 	mu = invlogit(eta)
-	w = mu :* (1 :- mu)
+	w = wt :* (mu :* (1 :- mu))
 	H = cross(X, w, X)
 	Hi = invsym(H)
 	for (k=1; k<=p; k++) if (Hi[k,k] == 0) return(0)
@@ -11608,14 +11635,17 @@ real rowvector ergm_find_burnin(real matrix X)
 real matrix ErgmMCMCSampleAdaptive(class ErgmModel scalar M, class ErgmGraph scalar G, real rowvector theta,
 	real scalar interval0, real scalar ss0, real scalar esstarget, real rowvector fidx, real matrix Jac,
 	pointer(real rowvector function) scalar proposalfn, real scalar verbose,
-	real scalar finalint, real scalar ess, real scalar acc, real rowvector cur0)
+	real scalar finalint, real scalar ess, real scalar acc, real rowvector cur0, real matrix ties)
 {
-	real matrix sms, draw, esteq, post
+	real matrix sms, draw, esteq, post, tout
+	real scalar lazy
 	real rowvector bp, cur
 	real colvector idx
 	real scalar interval, eS, bb, pv, run, ss, pred, damp, n, tgt, nrun
 	string scalar nofix
 
+	// lazy: the native runs carry the network as a tie list in `ties' (G is not touched; the caller reloads it at the end)
+	lazy = (M.native_enabled_sample & cols(ties) == 2 & cols(cur0) == M.nparam())
 	interval = interval0
 	eS = 0
 	bb = 0
@@ -11632,7 +11662,11 @@ real matrix ErgmMCMCSampleAdaptive(class ErgmModel scalar M, class ErgmGraph sca
 			damp = pred * (eS / (10 + eS)) + ss0 * (1 - eS / (10 + eS))
 			ss = max((1, round(damp)))
 		}
-		if (run == 1) draw = ErgmMCMCSample(M, G, theta, interval, interval, ss, proposalfn, cur0)
+		if (lazy) {
+			draw = ErgmNativeSampleCore(M, G, theta, interval, interval, ss, (run == 1 ? cur0 : sms[rows(sms), .]), ties, tout)
+			ties = tout
+		}
+		else if (run == 1) draw = ErgmMCMCSample(M, G, theta, interval, interval, ss, proposalfn, cur0)
 		else if (M.native_enabled_sample) draw = ErgmNativeSampleCore(M, G, theta, interval, interval, ss, sms[rows(sms), .])
 		else draw = ErgmMCMCSample(M, G, theta, interval, interval, ss, proposalfn)
 		if (M.native_enabled_sample) acc = M.native_lastaccept
@@ -11703,6 +11737,8 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 	real scalar term, conv_now, last_ok, pval, minpval, hmargin, hmax
 	real scalar adaptive, esstarget, ss_base, ss_base0, ess0, final_int, ess_ach, acc_last, next_int, interval_used, bboost
 	real rowvector curstat
+	real matrix tiesc
+	real scalar lazy
 	external real rowvector ergm_ctl
 
 	// control.ergm()-style settings supplied by nwergm: (termination 1=confidence 2=Hummel 3=Hotelling 4=none,
@@ -11710,6 +11746,7 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 	ctl = (1, 0.99, 1, 0.05, ., 0.5)
 	if (cols(ergm_ctl) == 6) ctl = ergm_ctl
 	adaptive = 0
+	lazy = 0
 	if (cols(ergm_ctl) == 7) {
 		ctl = ergm_ctl[1..6]
 		adaptive = (ergm_ctl[7] == 1)
@@ -11854,6 +11891,9 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 		ess_ach = .
 		acc_last = .
 		curstat = (has_obs ? J(1, 0, .) : obs)
+		// native sampling runs hand the network on as a tie list (G is rebuilt once after the last run)
+		lazy = (M.native_enabled_sample & !has_obs)
+		tiesc = (lazy ? G.all_ties() : J(0, 0, .))
 	}
 
 	// Combined safety bound on `interval * samplesize' (the TOTAL raw
@@ -11875,7 +11915,7 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 	for (iter=1; iter<=maxit; iter++) {
 		theta_old = theta	// the eta point THIS iteration's sample was actually drawn at - needed below to reweight that (by-then-stale) sample toward the point the Newton step is about to propose, mirroring R's own importance-sampling reweighting.
 		if (adaptive) {
-			samp = ErgmMCMCSampleAdaptive(M, G, theta, interval, ss_base, esstarget, freeidx, (is_curved ? M.theta_to_eta_jacobian(theta_c) : J(0, 0, .)), proposalfn, verbose, final_int, ess_ach, acc_last, curstat)
+			samp = ErgmMCMCSampleAdaptive(M, G, theta, interval, ss_base, esstarget, freeidx, (is_curved ? M.theta_to_eta_jacobian(theta_c) : J(0, 0, .)), proposalfn, verbose, final_int, ess_ach, acc_last, curstat, tiesc)
 			samplesize = rows(samp)
 			curstat = (has_obs ? J(1, 0, .) : samp[rows(samp), .])
 			interval_used = final_int
@@ -12491,7 +12531,7 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 		// R reports the covariance from the last iteration's own sample; a sample drawn at the final point is only
 		// needed when the iterations ran out before convergence
 		if (!converged) {
-			samp = ErgmMCMCSampleAdaptive(M, G, theta, interval, ss_base, esstarget, freeidx, (is_curved ? M.theta_to_eta_jacobian(theta_c) : J(0, 0, .)), proposalfn, verbose, final_int, ess_ach, acc_last, curstat)
+			samp = ErgmMCMCSampleAdaptive(M, G, theta, interval, ss_base, esstarget, freeidx, (is_curved ? M.theta_to_eta_jacobian(theta_c) : J(0, 0, .)), proposalfn, verbose, final_int, ess_ach, acc_last, curstat, tiesc)
 			interval_used = final_int
 			next_int = max((round(final_int / 2), 1))
 			interval = next_int
@@ -12499,6 +12539,7 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 		diag.sample = samp
 		diag.acceptrate = acc_last
 		samplesize = rows(samp)
+		if (lazy) ergm_graph_load_ties(G, tiesc)
 	}
 	else diag = ErgmMCMCSampleDiag(M, G, theta, burnin, interval, samplesize, proposalfn)
 	samp = diag.sample
@@ -13559,34 +13600,64 @@ class ErgmGraph scalar ergm_graph_clone(class ErgmGraph scalar G)
 
 
 // pseudo-log-likelihood sum(y*lp - log(1+exp(lp))) of the MPLE design matrix D = (x | y) at eta
-real scalar ergm_mple_ll(real matrix D, real rowvector eta)
+real scalar ergm_mple_ll(real matrix D, real rowvector eta, | real colvector wt)
 {
 	real colvector lp, y
 	lp = D[., 1..cols(eta)] * eta'
 	y = D[., cols(eta)+1]
+	if (args() >= 3) return(sum(wt :* (y :* lp - (lp :* (lp :> 0) + ln(1 :+ exp(-abs(lp)))))))
 	return(sum(y :* lp - (lp :* (lp :> 0) + ln(1 :+ exp(-abs(lp))))))
 }
 
+// wrappers for the compressed form U = (distinct rows of the design | counts), see ergm_mple_compress()
+real scalar ergm_mple_irls_c(real matrix U, string scalar bname, string scalar Vname)
+{
+	return(ergm_mple_irls(U[., 1..cols(U)-1], bname, Vname, U[., cols(U)]))
+}
+
+real scalar ergm_mple_exists_c(real matrix U)
+{
+	return(ergm_mple_exists(U[., 1..cols(U)-1], U[., cols(U)]))
+}
+
+real rowvector ergm_dind_submodel_c(class ErgmModel scalar M, real matrix U)
+{
+	return(ergm_dind_submodel(M, U[., 1..cols(U)-1], U[., cols(U)]))
+}
+
+// the distinct rows of a large MPLE design matrix with their multiplicities as a last column, or an empty matrix when the
+// design is small or has few repeated rows (then the unweighted functions are used). Same likelihood, far fewer rows.
+real matrix ergm_mple_compress(real matrix D)
+{
+	real matrix U
+	if (rows(D) < 20000) return(J(0, 0, .))
+	if (missing(D) > 0) return(J(0, 0, .))
+	U = uniqrows(D, 1)
+	if (rows(U) > rows(D) / 4) return(J(0, 0, .))
+	return(U)
+}
+
 // logistic regression by Newton-Raphson with step halving; rank-deficient columns get coefficient 0
-real rowvector ergm_irls(real matrix X, real colvector y, real colvector off)
+real rowvector ergm_irls(real matrix X, real colvector y, real colvector off, | real colvector wt)
 {
 	real rowvector b
 	real colvector lp, pr, g, st
 	real matrix H
 	real scalar it, ll0, ll1, h, p
 	p = cols(X)
+	if (args() < 4) wt = J(rows(X), 1, 1)
 	b = J(1, p, 0)
 	lp = off
-	ll0 = sum(y :* lp - (lp :* (lp :> 0) + ln(1 :+ exp(-abs(lp)))))
+	ll0 = sum(wt :* (y :* lp - (lp :* (lp :> 0) + ln(1 :+ exp(-abs(lp))))))
 	for (it=1; it<=50; it++) {
 		lp = X * b' + off
 		pr = 1 :/ (1 :+ exp(-lp))
-		g = X' * (y - pr)
-		H = cross(X, pr :* (1 :- pr), X)
+		g = X' * (wt :* (y - pr))
+		H = cross(X, wt :* (pr :* (1 :- pr)), X)
 		st = invsym(H) * g
 		for (h=0; h<=20; h++) {
 			lp = X * (b + st' / 2^h)' + off
-			ll1 = sum(y :* lp - (lp :* (lp :> 0) + ln(1 :+ exp(-abs(lp)))))
+			ll1 = sum(wt :* (y :* lp - (lp :* (lp :> 0) + ln(1 :+ exp(-abs(lp))))))
 			if (ll1 >= ll0 - 1e-12) break
 		}
 		b = b + st' / 2^h
@@ -13608,7 +13679,7 @@ real scalar ergm_term_is_dind(string scalar nm)
 
 // MPLE of the dyad-independent submodel (dyad-independent terms of the model; R: ergm.bridge.dindstart.llk).
 // Returns (log-likelihood, theta_d) with theta_d zero on dyad-dependent columns.
-real rowvector ergm_dind_submodel(class ErgmModel scalar M, real matrix D)
+real rowvector ergm_dind_submodel(class ErgmModel scalar M, real matrix D, | real colvector wt)
 {
 	real rowvector isd, bd, full, fx
 	real colvector off
@@ -13626,10 +13697,12 @@ real rowvector ergm_dind_submodel(class ErgmModel scalar M, real matrix D)
 	off = D[., 1..p] * full'
 	isd = isd :* (1 :- fx)
 	if (sum(isd) > 0) {
-		bd = ergm_irls(D[., selectindex(isd)], D[., p+1], off)
+		if (args() >= 3) bd = ergm_irls(D[., selectindex(isd)], D[., p+1], off, wt)
+		else bd = ergm_irls(D[., selectindex(isd)], D[., p+1], off)
 		full[selectindex(isd)] = bd
 	}
-	ll = ergm_mple_ll(D, full)
+	if (args() >= 3) ll = ergm_mple_ll(D, full, wt)
+	else ll = ergm_mple_ll(D, full)
 	return(ll, full)
 }
 
@@ -13639,11 +13712,18 @@ real rowvector ergm_bridge_llr(class ErgmModel scalar M, class ErgmGraph scalar 
 	real rowvector to, real rowvector obsstat, real scalar nsteps, real scalar burnin, real scalar between,
 	real scalar interval, real scalar samplesize, pointer scalar propfn, | real scalar carry)
 {
-	real scalar i, u, llr, vr, b, m1, nso, docarry
+	real scalar i, u, llr, vr, b, m1, nso, docarry, lazy
 	real rowvector th, dth, curc
+	real matrix ties, tout
 	real matrix s, so
 	real colvector x, xo
 	docarry = (args() >= 12 ? carry : 0)
+	// carry = 1 with the native sampler: the network is handed on as a tie list and G is rebuilt once at the end
+	lazy = (docarry & M.native_enabled_sample & !M.obs_active)
+	if (lazy) {
+		ties = G.all_ties()
+		curc = M.full_statistic(G)
+	}
 	dth = to - from
 	llr = 0
 	vr = 0
@@ -13653,7 +13733,11 @@ real rowvector ergm_bridge_llr(class ErgmModel scalar M, class ErgmGraph scalar 
 		th = from + u * dth
 		b = (i == 1 ? burnin : between)
 		// carry = 1: the statistics of the graph are carried from one bridge to the next instead of being recomputed
-		if (docarry & i > 1 & !M.obs_active) s = ErgmMCMCSample(M, G, th, b, interval, samplesize, propfn, curc)
+		if (lazy) {
+			s = ErgmNativeSampleCore(M, G, th, b, interval, samplesize, curc, ties, tout)
+			ties = tout
+		}
+		else if (docarry & i > 1 & !M.obs_active) s = ErgmMCMCSample(M, G, th, b, interval, samplesize, propfn, curc)
 		else s = ErgmMCMCSample(M, G, th, b, interval, samplesize, propfn)
 		curc = s[rows(s), .]
 		if (M.obs_active) {
@@ -13669,6 +13753,7 @@ real rowvector ergm_bridge_llr(class ErgmModel scalar M, class ErgmGraph scalar 
 			vr = vr + variance(x) * ergm_spectral0_ar(x)[1] / rows(x) / nsteps^2
 		}
 	}
+	if (lazy) ergm_graph_load_ties(G, ties)
 	return(llr, vr)
 }
 
