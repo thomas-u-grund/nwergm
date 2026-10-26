@@ -3,6 +3,17 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [1.2.3] - 2026-10-26
+
+Patch release. Works with nwcommands 3.6.0 and later; no change of the Mata library.
+
+### Results that change (read before you re-run old analyses)
+- **A valued network is now fitted as the binary graph, with one note.** With nwcommands 3.6.0 a network made with a value variable is flagged valued (also when every value is 1), and `nwergm` refused every valued network. It now fits the graph in which a tie is present when its value is not zero, as R's ergm does without `response=`; one note says that the tie values are ignored (no note when every value is 1). Fits of networks that are not flagged valued are unchanged.
+
+### Fixed
+- `edgecov()` with a two-mode covariate network on a two-mode model stopped with "has missing dyads" (the node-by-node matrix of a two-mode network is missing between nodes of the same mode); only the cells between the modes are read.
+- A network whose ties are all 1 is accepted (it was refused as valued).
+
 ## [1.2.2] - 2026-10-26
 
 ### Changed
@@ -83,12 +94,6 @@ project uses [Semantic Versioning](https://semver.org/).
 - `seed()` did not reproduce a fit across sessions: the edge order of the starting network, which steers the MCMC, followed the order in which the core returns the neighbors of a node, and that differs once another network has been loaded (`edges` -3.375 in one script, -3.325 in another with the same data and seed). The neighbors are now read in sorted order, so the same call with the same `seed()` gives identical coefficients; the help of `seed()` states what is reproducible. Test `test_nwergm_seedrepro`.
 - The help gave 20 as the default of `mcmleiterations()`; it is 60 as in R. Test `test_nwergm_maxit` checks that MCMLE stops at `mcmleiterations()` with a warning and `e(converged)` = 0. (A fit of a degenerate model can still take long: once the Monte Carlo sample does not mix, the thinning interval grows to 20000 and every iteration costs about a minute, so 60 iterations take about 20 minutes; lower `mcmleiterations()` for such a model.)
 - The display names of the curved two-mode terms are `gwb1degree_weight`, `gwb1degree_decay` and so on (they were labelled as gwesp).
-
-## [Unreleased]
-
-### Fixed
-- With nwcommands 3.6.0 a 0/1 network made with a value variable (every value 1) is declared valued and was refused. A valued network is now fitted as the binary graph (a tie is present when its value is not zero), as R's ergm does without response=; one note says that the tie values are ignored, none when every value is 1. Before, every valued network was refused.
-- `edgecov()` with a two-mode covariate network on a two-mode model stopped with "has missing dyads" (the node-by-node matrix of a two-mode network is missing between nodes of the same mode); only the cells between the modes are read.
 
 ## [1.0.1] - 2026-10-24
 
