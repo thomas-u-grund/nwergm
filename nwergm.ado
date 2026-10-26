@@ -259,11 +259,12 @@ program nwergm, eclass
 		di "{err}nwergm never silently collapses a temporal network to a single slice - build an explicit static network first (e.g. via nwattime) and estimate on that."
 		error 198
 	}
-	if "`valued'" == "true" {
-		di "{err}nwergm estimates binary ERGMs only; {bf:`netname'} is valued/weighted."
-		di "{err}nwergm never silently dichotomizes tie values or drops signs. Valued ERGMs are a separate, larger future initiative."
-		error 198
-	}
+	// since nwcommands 3.6.0 the Valued flag is set at creation (a network made with a value variable is valued also when every
+	// value is 1); a valued network whose ties all equal 1 holds a binary graph and loses nothing, so it is estimated
+	local __ergm_valok = 0
+	if "`valued'" == "true" mata: st_local("__ergm_valok", strofreal(`netobj'->get_arcs_count() == 0 | (`netobj'->get_maximum() <= 1 & `netobj'->get_minimum() >= 0 & `netobj'->get_arcs_sum() == `netobj'->get_arcs_count())))
+	// a valued network with other tie values is fitted as the binary graph (R: ergm without response= ignores the values; a tie is present when the value is non-zero), with one note
+	if "`valued'" == "true" & !`__ergm_valok' & !`__sub' di "{txt}(note: tie values are ignored; the model is fitted to the binary network)"
 	if "`mutual'" != "" & "`directed'" != "true" {
 		di "{err}option {bf:mutual} requires a directed network; {bf:`netname'} is undirected."
 		error 198

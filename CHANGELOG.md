@@ -84,6 +84,12 @@ project uses [Semantic Versioning](https://semver.org/).
 - The help gave 20 as the default of `mcmleiterations()`; it is 60 as in R. Test `test_nwergm_maxit` checks that MCMLE stops at `mcmleiterations()` with a warning and `e(converged)` = 0. (A fit of a degenerate model can still take long: once the Monte Carlo sample does not mix, the thinning interval grows to 20000 and every iteration costs about a minute, so 60 iterations take about 20 minutes; lower `mcmleiterations()` for such a model.)
 - The display names of the curved two-mode terms are `gwb1degree_weight`, `gwb1degree_decay` and so on (they were labelled as gwesp).
 
+## [Unreleased]
+
+### Fixed
+- With nwcommands 3.6.0 a 0/1 network made with a value variable (every value 1) is declared valued and was refused. A valued network is now fitted as the binary graph (a tie is present when its value is not zero), as R's ergm does without response=; one note says that the tie values are ignored, none when every value is 1. Before, every valued network was refused.
+- `edgecov()` with a two-mode covariate network on a two-mode model stopped with "has missing dyads" (the node-by-node matrix of a two-mode network is missing between nodes of the same mode); only the cells between the modes are read.
+
 ## [1.0.1] - 2026-10-24
 
 ### Changed
