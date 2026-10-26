@@ -20,7 +20,7 @@ compare:
 	python3 build_compare.py
 
 examples:
-	./run_examples.sh ex01_florentine ex02_mesa ex03_lazega ex04_kapferer ex05_missing ex06_special ex07_graphs ex08_constraints
+	./run_examples.sh ex01_florentine ex02_mesa ex03_lazega ex04_kapferer ex05_missing ex06_special ex07_graphs ex08_constraints ex0a_types
 
 check:
 	python3 check_layout.py

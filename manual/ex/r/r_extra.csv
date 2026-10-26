@@ -11,10 +11,10 @@
 "dyadcov(lazega_cow)","obs","dyadcov.C.mutual",41,NA
 "dyadcov(lazega_cow)","obs","dyadcov.C.utri",100,NA
 "dyadcov(lazega_cow)","obs","dyadcov.C.ltri",115,NA
-"mm(prac)","coef","edges",-1.56058152090612,0.089517244932821
-"mm(prac)","coef","mm[prac=litigation,prac=corporate]",-1.17378598850997,0.149038371463737
+"mm(prac)","coef","edges",-1.56058152090612,0.0895172449328209
+"mm(prac)","coef","mm[prac=litigation,prac=corporate]",-1.17378598850996,0.149038371463737
 "mm(prac)","coef","mm[prac=corporate,prac=litigation]",-1.0026180548313,0.142311703842301
-"mm(prac)","coef","mm[prac=litigation,prac=litigation]",-0.104011949564486,0.112115645323659
+"mm(prac)","coef","mm[prac=litigation,prac=litigation]",-0.104011949564485,0.112115645323659
 "mm(prac)","obs","edges",575,NA
 "mm(prac)","obs","mm[prac=litigation,prac=corporate]",75,NA
 "mm(prac)","obs","mm[prac=corporate,prac=litigation]",88,NA
@@ -28,7 +28,7 @@
 "nodeofactordistinct(off)","obs","edges",575,NA
 "nodeofactordistinct(off)","obs","nodeofactordistinct.off",130,NA
 "nodeocovrange(age)","coef","edges",-1.88620900968724,0.0478524825950207
-"nodeocovrange(age)","coef","nodeocovrange.age",-0.0861018459896718,0.014472810407345
+"nodeocovrange(age)","coef","nodeocovrange.age",-0.0861018459896719,0.014472810407345
 "nodeocovrange(age)","obs","edges",575,NA
 "nodeocovrange(age)","obs","nodeocovrange.age",1638,NA
 "nodefactordistinct(off)","coef","edges",-1.88491666843522,0.0461780857326032

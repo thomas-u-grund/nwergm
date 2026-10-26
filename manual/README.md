@@ -4,16 +4,17 @@
 
 ## Bumping the version (one-line change)
 
-The version and the date of the release that the manual describes are two macros in `nwergm_manual.tex`:
+The manual is labelled by the minor series, "Manual for version 1.2" (`\manualseries`, valid for 1.2.x). The exact version and date of the release that produced the listings are two more macros in `nwergm_manual.tex` (written by `tools/set_version.py`):
 
-    \newcommand{\pkgversion}{1.2.0}
-    \newcommand{\pkgdate}{25 October 2026}
+    \newcommand{\manualseries}{1.2}
+    \newcommand{\pkgversion}{1.2.3}
+    \newcommand{\pkgdate}{26 October 2026}
 
-Change these two lines for a later release, rebuild (`make -C manual pdf`) and check the pages that the build output of the examples shows (version strings come from `make examples`, see below). The tag in the installation example of `ch01_intro.tex` (`nwergm/v1.2.0/`, inside a listing, so it cannot use the macro) is the only other place with the number.
+Change `\manualseries` only for a new minor or major release whose documented behaviour changed. For a patch release change the last two lines, rebuild (`make -C manual pdf`) and check the pages that the build output of the examples shows (version strings come from `make examples`, see below). The tag in the installation example of `ch01_intro.tex` (`nwergm/v1.2.3/`, inside a listing, so it cannot use the macro) is the only other place with the number.
 
 ## The DOI
 
-`\manualdoi` in `nwergm_manual.tex` is empty until the manual is archived; nothing is printed for an empty DOI. When the Zenodo record exists, put the DOI there (for example `10.5281/zenodo.NNNNNNN`), rebuild, and add the DOI to the citation texts listed in `ZENODO.md`.
+`\manualdoi` in `nwergm_manual.tex` holds 10.5281/zenodo.23661332, the DOI reserved for the record. UNCONFIRMED: it may be the version DOI and not the all-versions DOI; after publication replace it by the all-versions DOI, rebuild, and add the DOI to the citation texts listed in `ZENODO.md`.
 
 ## Building
 

@@ -1,6 +1,6 @@
 \chapter{Worked examples}\label{ch:examples}
 
-All output in this chapter was produced by the do-files in the directory \texttt{manual/ex} of the repository, run with \nwergm{}~\pkgversion{} and the \texttt{nwcommands} core~3.5.0 in Stata/BE~18 on macOS, with the native plugin. Every Monte Carlo fit has a \opt{seed()}, so that the output can be reproduced on the same platform. The data are example networks of \texttt{nwcommands}, which are loaded from the web with \texttt{nwwebuse}; the Florentine marriage network, the Mesa High School network and the second Kapferer network are the networks \texttt{flomarriage}, \texttt{faux.mesa.high} and \texttt{kapferer2} of \ergm{}. Nothing in this chapter is a substantive analysis; the models are chosen to show the commands.
+All output in this chapter was produced by the do-files in the directory \texttt{manual/ex} of the repository, run with \nwergm{}~\pkgversion{} and the \texttt{nwcommands} core~3.9.1 in Stata/BE~18 on macOS, with the native plugin. Every Monte Carlo fit has a \opt{seed()}, so that the output can be reproduced on the same platform. The data are example networks of \texttt{nwcommands}, which are loaded from the web with \texttt{nwwebuse}; the Florentine marriage network, the Mesa High School network and the second Kapferer network are the networks \texttt{flomarriage}, \texttt{faux.mesa.high} and \texttt{kapferer2} of \ergm{}. Nothing in this chapter is a substantive analysis; the models are chosen to show the commands.
 
 \section{The Florentine families: estimation methods and stored results}\label{sec:florentine}
 
@@ -164,3 +164,12 @@ Further structural terms of \ergm{} are available inside \opt{structural()}, her
 \showlog{st_fit}
 \opt{coeflabel()} renames a coefficient in the output and in \texttt{e(b)}:
 \showlog{lab_fit}
+
+\section{Network types: a valued network and a two-mode covariate}\label{sec:types}
+
+The type of a network is fixed when it is created (Section~\ref{sec:data}). The edge list of this section is simulated for the manual: 40 nodes and 134 undirected ties, of which about 30\% carry the value 2 and the others the value 1. \texttt{nwfromedge} with the option \opt{valued} makes a valued network of it:
+\showlog{typ_valued}
+The summary shows the flag \texttt{Valued: true} and the maximum value 2. \nwergm{} fits the graph in which a tie is present when its value is not zero, and the note in the first line says so; with \texttt{edges} alone the coefficient is the log odds of the density, $\log(134/646)=-1.57$, as for the binary network. When every value is 1 nothing is lost, and no note is printed:
+\showlog{typ_binary}
+A two-mode covariate network can be used in \opt{edgecov()} on a two-mode model. Here the network \texttt{visits} is a second two-mode network on the same 30 people and 12 clubs as \texttt{clubs}; only the cells between the two modes enter the model:
+\showlog{typ_cov2}

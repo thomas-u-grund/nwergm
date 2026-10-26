@@ -31,20 +31,22 @@
 \newcommand{\inc}[1]{\typeout{>>>#1}\input{#1}}
 \input{gen_counts.tex}
 \input{gen_compare_nums.tex}
-\newcommand{\pkgversion}{1.2.0}
-\newcommand{\pkgdate}{25 October 2026}
-% Version and date of the release that the manual describes: change these two lines (and nothing else) to bump the version.
+\newcommand{\manualseries}{1.2}
+% The manual is labelled by the minor series (valid for 1.2.x): change \manualseries only for a new minor or major release whose documented behaviour changed.
+\newcommand{\pkgversion}{1.2.3}
+\newcommand{\pkgdate}{26 October 2026}
+% Exact version and date of the release that produced the listings (written by tools/set_version.py; rerun the examples when it changes).
 % DOI of the archived manual (Zenodo). Empty until the manual is archived; nothing is printed for an empty DOI.
-\newcommand{\manualdoi}{}
+\newcommand{\manualdoi}{10.5281/zenodo.23661332}% UNCONFIRMED: version DOI or all-versions DOI; replace by the all-versions DOI after publication
 \newcommand{\citedoi}{\ifdefempty{\manualdoi}{}{ Zenodo. \url{https://doi.org/\manualdoi}}}
 \title{\textbf{nwergm}\\[4pt]\large Exponential random graph models in Stata\\ (a package that builds on \texttt{nwcommands})\\[6pt]\normalsize User manual and reference}
 \author{Thomas U. Grund\\ RWTH Aachen University}
-\date{Version \pkgversion, \pkgdate}
+\date{Manual for version \manualseries\\ (examples produced with \texttt{nwergm} \pkgversion, \pkgdate)}
 \begin{document}
 \maketitle
-\begin{quote}\noindent\textbf{How to cite.} This manual describes \nwergm{} version~\pkgversion{} (\pkgdate) and is the citable reference for the package. Please cite it as:\par\smallskip
-\noindent Grund, T.~U. (2026). \emph{nwergm: Exponential random graph models in Stata. Manual for version \pkgversion.}\citedoi\par\smallskip
-\noindent Please also report the version of the program that produced your results, as printed by \texttt{nwergm version} and stored in \texttt{e(version)}.
+\begin{quote}\noindent\textbf{How to cite.} This manual describes the series~\manualseries{} of \nwergm{} (it holds for all versions 1.2.x); the listings were produced with version~\pkgversion{} (\pkgdate). It is the citable reference for the package. Please cite it as:\par\smallskip
+\noindent Grund, T.~U. (2026). \emph{nwergm: Exponential random graph models in Stata. Manual for version \manualseries.}\citedoi\par\smallskip
+\noindent Please also report the exact version of the program that produced your results, as printed by \texttt{nwergm version} and stored in \texttt{e(version)}.
 \end{quote}
 \chapter*{Acknowledgments}\addcontentsline{toc}{chapter}{Acknowledgments}
 \nwergm{} follows the statnet project closely and exists because of it. The exponential random graph model and the \ergm{} package are due to Mark S.\ Handcock, David R.\ Hunter, Carter T.\ Butts, Steven M.\ Goodreau, Pavel N.\ Krivitsky, Martina Morris and many contributors~\cite{hunter2008jss,handcock2008}. \ergm{}~\ergmver{} is the reference implementation on which the terms, the estimation algorithms, the defaults and the output of \nwergm{} are modeled. The R source code and the manuals of \ergm{} were the specification against which the Stata code was written and checked. The curved exponential families, the pseudolikelihood and the goodness-of-fit method of the package are those of Hunter and Handcock~\cite{hunter2006} and Hunter, Goodreau and Handcock~\cite{hunter2008jasa}; the treatment of missing dyads is that of Handcock and Gile~\cite{handcock2010}.
