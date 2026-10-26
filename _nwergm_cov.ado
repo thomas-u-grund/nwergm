@@ -38,6 +38,14 @@ program _nwergm_cov, rclass
 					error 198
 				}
 				mata: `td'.edgecovmat = *(`zznetobj'->get_matrix_mod(1, `isdir'))
+				if "`zzis2mode'" == "true" {
+					// a two-mode covariate network has no cell between nodes of the same mode (they hold missing values in the node-by-node matrix); only the cells between the modes are read, so those are set to 0
+					mata: _nwcv_m = vec(strtoreal(`zznetobj'->get_modes()))
+					mata: _nwcv_E = `td'.edgecovmat
+					mata: _nwcv_E = (sum((_nwcv_E :== .) :& (J(1, rows(_nwcv_m), _nwcv_m) :!= J(rows(_nwcv_m), 1, _nwcv_m'))) == 0 ? editmissing(_nwcv_E, 0) : _nwcv_E)
+					mata: `td'.edgecovmat = _nwcv_E
+					mata: mata drop _nwcv_E _nwcv_m
+				}
 			}
 			else {
 				capture confirm matrix `v'
