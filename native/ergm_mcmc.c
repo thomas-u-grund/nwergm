@@ -172,6 +172,12 @@
 */
 
 #include "stplugin.h"
+
+/* Plugin generation, published as the Stata scalar __ergm_native_gen on every call. Generation 2: the sampler returns the final
+   network only if it fits the frame the caller supplied (otherwise it reports the number of ties it needs in
+   __ergm_native_nties_out and writes nothing), so that the caller need not allocate one row per dyad. A plugin of generation 1
+   (no such scalar) is always given the frame of one row per dyad by the Mata caller. */
+#define ERGM_NATIVE_GEN 2
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
@@ -233,6 +239,8 @@ typedef struct {
 	long cap;
 	long nlive;
 	long ntomb;
+	unsigned char *bits; /* optional adjacency bit matrix over the dyad key space (speed: has_edge() without hashing); NULL = off */
+	long nbits;
 } dyadht_t;
 
 static long ht_next_pow2(long n) {
@@ -251,8 +259,18 @@ static void ht_alloc(dyadht_t *h, long cap) {
 }
 
 static void ht_free(dyadht_t *h) {
-	free(h->keys); free(h->vals); free(h->state);
-	h->keys = NULL; h->vals = NULL; h->state = NULL;
+	free(h->keys); free(h->vals); free(h->state); free(h->bits);
+	h->keys = NULL; h->vals = NULL; h->state = NULL; h->bits = NULL;
+}
+
+/* adjacency bit matrix over the dyad key space a*(n+1)+b (speed only: has_edge() reads one bit instead of probing the hash
+   table; every result is the same). Off for very large n (memory (n+1)^2/8 bytes). */
+static void ht_enable_bits(dyadht_t *h, long n) {
+	h->bits = NULL; h->nbits = 0;
+	if (n < 1 || n > 16383) return;
+	h->nbits = (n + 1) * (n + 1);
+	h->bits = (unsigned char *)calloc((size_t)(h->nbits >> 3) + 1, 1);
+	if (!h->bits) h->nbits = 0;
 }
 
 static long ht_hash(long key, long cap) {
@@ -266,6 +284,7 @@ static long ht_hash(long key, long cap) {
 static void ht_rehash(dyadht_t *h, long newcap) {
 	dyadht_t old = *h;
 	long i, slot;
+	old.bits = NULL; /* the bit matrix stays with h (ht_alloc does not touch it) */
 	ht_alloc(h, newcap);
 	for (i = 0; i < old.cap; i++) {
 		if (old.state[i] != 1) continue;
@@ -309,6 +328,7 @@ static void ht_put(dyadht_t *h, long key, long val) {
 	h->keys[slot] = key;
 	h->vals[slot] = val;
 	h->nlive++;
+	if (h->bits) h->bits[key >> 3] |= (unsigned char)(1u << (key & 7));
 	ht_maybe_grow(h);
 }
 
@@ -322,6 +342,7 @@ static void ht_del(dyadht_t *h, long key, long *val) {
 			h->state[slot] = 2;
 			h->nlive--;
 			h->ntomb++;
+			if (h->bits) h->bits[key >> 3] &= (unsigned char)~(1u << (key & 7));
 			return;
 		}
 		slot = (slot + 1) & (h->cap - 1);
@@ -418,7 +439,9 @@ static long dyadkey(graph_t *g, long i, long j) {
 
 static int has_edge(graph_t *g, long i, long j) {
 	long val;
-	return ht_get(&g->ht, dyadkey(g, i, j), &val);
+	long key = dyadkey(g, i, j);
+	if (g->ht.bits) return (g->ht.bits[key >> 3] >> (key & 7)) & 1;
+	return ht_get(&g->ht, key, &val);
 }
 
 /* harmonisation unit 168: g->mask is only ever allocated when
@@ -515,8 +538,51 @@ static long common_neighbors(graph_t *g, long i, long j) {
 	return cnt;
 }
 
-static double gw_kernel(double d, double decay) {
+static double gw_kernel_raw(double d, double decay) {
 	return exp(decay) * (1.0 - pow(1.0 - exp(-decay), d));
+}
+
+/* gw_kernel() is evaluated for integer shared-partner counts only; the values are tabulated once per decay with the very same
+   expression (gw_kernel_raw), so every result is bit-identical to the direct evaluation. */
+#define GWK_MAX 16
+static double gwk_decay[GWK_MAX];
+static double *gwk_tab[GWK_MAX];
+static long gwk_len[GWK_MAX];
+static int gwk_cnt = 0;
+static long gwk_nmax = 0;       /* largest count to tabulate, set per plugin call (n + 2) */
+static double gwk_last_decay = 0.0;
+static double *gwk_last_tab = NULL;
+static long gwk_last_len = 0;
+
+static void gwk_reset(long nmax) {
+	int q;
+	for (q = 0; q < gwk_cnt; q++) free(gwk_tab[q]);
+	gwk_cnt = 0; gwk_last_tab = NULL; gwk_last_len = 0; gwk_nmax = nmax;
+}
+
+static double gw_kernel(double d, double decay) {
+	long id;
+	if (gwk_last_tab && decay == gwk_last_decay) {
+		id = (long)d;
+		if (d >= 0.0 && id < gwk_last_len && (double)id == d) return gwk_last_tab[id];
+		return gw_kernel_raw(d, decay);
+	}
+	{
+		int q;
+		for (q = 0; q < gwk_cnt; q++) if (gwk_decay[q] == decay) break;
+		if (q == gwk_cnt) {
+			long t;
+			if (gwk_cnt >= GWK_MAX || gwk_nmax < 1) return gw_kernel_raw(d, decay);
+			gwk_tab[q] = (double *)malloc((size_t)(gwk_nmax + 1) * sizeof(double));
+			if (!gwk_tab[q]) return gw_kernel_raw(d, decay);
+			for (t = 0; t <= gwk_nmax; t++) gwk_tab[q][t] = gw_kernel_raw((double)t, decay);
+			gwk_decay[q] = decay; gwk_len[q] = gwk_nmax + 1; gwk_cnt++;
+		}
+		gwk_last_decay = decay; gwk_last_tab = gwk_tab[q]; gwk_last_len = gwk_len[q];
+	}
+	id = (long)d;
+	if (d >= 0.0 && id < gwk_last_len && (double)id == d) return gwk_last_tab[id];
+	return gw_kernel_raw(d, decay);
 }
 
 /* ===================================================================
@@ -2156,9 +2222,19 @@ static void propose_uniform(graph_t *g, rng_t *rng, long *pi, long *pj, double *
 		j = (col < row) ? col : col + 1;
 	}
 	else {
-		i = 1;
-		while (pick > g->n - i) { pick -= (g->n - i); i++; }
-		j = i + pick;
+		/* row i holds the dyads (i,i+1..n); first dyad of row i has index C(i)+1 with C(i) = (i-1)n - (i-1)i/2.
+		   Closed form for the row (then exact integer correction); same mapping as the former row-by-row loop. */
+		long nn = g->n, m, fm;
+		double disc = (2.0 * nn - 1.0) * (2.0 * nn - 1.0) - 8.0 * (double)(pick - 1);
+		if (disc < 0.0) disc = 0.0;
+		m = (long)(((2.0 * nn - 1.0) - sqrt(disc)) / 2.0);
+		if (m < 0) m = 0;
+		if (m > nn - 2) m = nn - 2;
+		while (m < nn - 2 && (m + 1) * (2 * nn - m - 2) / 2 <= pick - 1) m++;
+		while (m > 0 && m * (2 * nn - m - 1) / 2 > pick - 1) m--;
+		fm = m * (2 * nn - m - 1) / 2;
+		i = m + 1;
+		j = i + (pick - fm);
 	}
 	*pi = i; *pj = j; *logratio = 0.0;
 }
@@ -2910,6 +2986,7 @@ static void graph_make(graph_t *g, long n, int directed, int bip, graph_t *like,
 	g->need_outin = no && directed;
 	g->need_dirsp = nd;
 	ht_alloc(&g->ht, ht_next_pow2(64));
+	ht_enable_bits(&g->ht, n);
 	g->deg = (long *)calloc((size_t)(n + 1), sizeof(long));
 	if (g->need_outin) {
 		g->outdeg = (long *)calloc((size_t)(n + 1), sizeof(long));
@@ -2937,6 +3014,7 @@ static void graph_unmake(graph_t *g) {
 }
 static void ops_free(void) {
 	int q;
+	gwk_reset(0);
 	for (q = 0; q < g_nctx; q++) {
 		graph_unmake(&g_ctx[q].g);
 		free(g_ctx[q].map); free(g_ctx[q].rank); free(g_ctx[q].tbi); free(g_ctx[q].tbj);
@@ -2992,7 +3070,9 @@ STDLL stata_call(int argc, char *argv[]) {
 	   the Mata-side caller still sends as harmless placeholder zeros
 	   rather than requiring a second, divergent argstr format. */
 	mode          = (long)atof(strtok(argbuf, " \t"));
+	SF_scal_save("__ergm_native_gen", (ST_double)ERGM_NATIVE_GEN);
 	n             = next_long();
+	gwk_reset(n + 2);
 	directed      = next_long();
 	bipartite     = next_long();
 	nties_in      = next_long();
@@ -3165,6 +3245,7 @@ STDLL stata_call(int argc, char *argv[]) {
 	g.need_adj = need_adj;
 	g.need_outin = need_outin && directed;
 	ht_alloc(&g.ht, ht_next_pow2(nties_in * 2 + 16));
+	ht_enable_bits(&g.ht, n);
 	g.elist_i = NULL; g.elist_j = NULL; g.ecap = 0; g.nties = 0;
 	g.deg = (long *)calloc((size_t)(n + 1), sizeof(long));
 	g.outdeg = NULL; g.indeg = NULL;
@@ -3707,9 +3788,11 @@ STDLL stata_call(int argc, char *argv[]) {
 	/* write back final edge list so the Mata caller can rebuild its own
 	   ErgmGraph to carry state into the next MCMLE iteration (sequential
 	   MCMLE - matches ErgmMCMCSample()'s own in-place-mutation contract) */
-	for (i = 0; i < g.nties; i++) {
-		SF_vstore(1, i + 1, (ST_double)g.elist_i[i]);
-		SF_vstore(2, i + 1, (ST_double)g.elist_j[i]);
+	if (g.nties <= (long)SF_nobs()) {
+		for (i = 0; i < g.nties; i++) {
+			SF_vstore(1, i + 1, (ST_double)g.elist_i[i]);
+			SF_vstore(2, i + 1, (ST_double)g.elist_j[i]);
+		}
 	}
 
 	SF_scal_save("__ergm_native_nties_out", (ST_double)g.nties);

@@ -9076,7 +9076,7 @@ real matrix ErgmNativeSampleCore(class ErgmModel scalar M, class ErgmGraph scala
 
 	real matrix ties, out, newties, attrpad
 	real scalar n, directed, nties, p, nattr, ncovmat, nobs_needed, i, k, rngseed, nties_out, __junk
-	real scalar bipartite, hasmask, ncon, rc_pl
+	real scalar bipartite, hasmask, ncon, rc_pl, gen, nobs_frame
 	string rowvector convarnames
 	string scalar convarlist
 	real colvector modevec
@@ -9095,7 +9095,13 @@ real matrix ErgmNativeSampleCore(class ErgmModel scalar M, class ErgmGraph scala
 	hasmask = rows(M.native_maskmat) > 0 ? 1 : 0
 	ncovmat = n > 0 ? cols(M.native_covmatstack) / n : 0
 
-	nobs_needed = max((ergm_total_dyads(G), samplesize, n, 1, rows(M.con_cols)))
+	// Frame size: a plugin of generation 2 or later (scalar __ergm_native_gen, published by every call) reports the number of
+	// ties it needs when the final network does not fit and writes nothing, and the call is then repeated with a larger frame
+	// (same seed, same result); an older plugin, or the first call of a session, gets one row per dyad as before.
+	gen = st_numscalar("__ergm_native_gen")
+	if (gen < . & gen >= 2) nobs_needed = max((2*nties + 64, samplesize, n, 1, rows(M.con_cols)))
+	else nobs_needed = max((ergm_total_dyads(G), samplesize, n, 1, rows(M.con_cols)))
+	nobs_frame = nobs_needed
 
 	origframe = st_framecurrent()
 	stata("capture frame drop __ergm_native")
@@ -9294,6 +9300,18 @@ real matrix ErgmNativeSampleCore(class ErgmModel scalar M, class ErgmGraph scala
 	}
 
 	nties_out = st_numscalar("__ergm_native_nties_out")
+	if (nties_out > nobs_frame & st_numscalar("__ergm_native_gen") >= 2) {
+		// the final network did not fit the frame: enlarge it and repeat the call (nothing was written; same seed)
+		st_addobs(nties_out - nobs_frame + 16)
+		nobs_frame = nties_out + 16
+		rc_pl = _stata(cmd)
+		if (rc_pl) {
+			st_framecurrent(origframe)
+			stata("capture frame drop __ergm_native")
+			exit(rc_pl)
+		}
+		nties_out = st_numscalar("__ergm_native_nties_out")
+	}
 	M.native_lastaccept = st_numscalar("__ergm_native_naccept") / st_numscalar("__ergm_native_ntried")
 
 	out = st_data((1::samplesize), outvarnames)
