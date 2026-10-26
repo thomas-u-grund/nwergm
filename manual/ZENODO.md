@@ -45,7 +45,7 @@ Confirm that the GitHub release v1.3.0 is published before the upload, because t
 
 ## Steps for the owner
 
-0. This file describes the manual for the series 1.3 (the first manual of nwergm on Zenodo; the earlier drafts for 1.1.3, 1.2.0 and the series 1.2 were never uploaded). The listings, comparison tables and run times were regenerated with nwergm 1.3.0 and nwcommands 3.10.0.
+0. This file describes the manual for the series 1.3 (the first manual of nwergm on Zenodo; the earlier drafts for 1.1.3, 1.2.0 and the series 1.2 were never uploaded). The listings, comparison tables and run times were regenerated with nwergm 1.3.0 and nwcommands 3.10.0. The run-time tables were remeasured on 27 October 2026 on an idle machine (R, nwergm 1.2.3 and nwergm 1.3.0 in turn, median of seven fits): nwergm 1.3.0 is 2.9 to 9.4 times faster than ergm 4.12.0 on the eight benchmark models; the description above carries no timing numbers and needs no change.
 1. For a later patch release (1.3.1, ...) nothing is uploaded: only `\pkgversion` and `\pkgdate` change (`tools/set_version.py`), the examples are rerun if their output changes, and the PDF is committed. A new Zenodo version only for 1.4 or 2.0 with changed documented behaviour: then change `\manualseries` too.
 2. On zenodo.org upload `manual/nwergm_manual.pdf` to the reserved record (DOI above), fill the fields above, and publish.
 3. Send the all-versions DOI to the maintainer (or put it into `\manualdoi`), rebuild, and replace the file in the draft if the DOI changed the PDF.
