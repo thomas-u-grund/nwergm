@@ -3,6 +3,13 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [1.2.4] - 2026-10-26
+
+Patch release. Works with nwcommands 3.6.0 and later; no change of the Mata library.
+
+### Changed
+- Help text corrected: the description no longer says that the package is a fully native Stata/Mata implementation or that Mata is always the reference (the sampler, the change statistics and the pseudolikelihood design matrix run in the compiled plugin; the Mata implementation is a slow fallback for tests and comparison); valued networks are described as fitted to the binary graph with one note (not rejected); the speed ratios of an earlier benchmark are removed (speed relative to R depends on the model); Windows and Linux plugins are described as built by the continuous-integration workflow; the page range of Geyer and Thompson (1992) is 657-683; the provenance line says that the package was developed from ergm and is distributed under the GPL-3; the README install lines start with nwinstall. No change in code or results; the Mata library is unchanged.
+
 ## [1.2.3] - 2026-10-26
 
 Patch release. Works with nwcommands 3.6.0 and later; no change of the Mata library.
