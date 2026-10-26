@@ -1,4 +1,4 @@
-*! version 1.3.0  26oct2026 nwergm_estat
+*! version 1.3.1  26oct2026 nwergm_estat
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -80,7 +80,15 @@ program define nwergm_estat_mcmcdiag, rclass
 	di as txt "MCMC diagnostics for the final simulation (nwergm, method(mcmle))"
 	di as txt "Sample size:{col 22}={res}  " %6.0f e(mcmc_samplesize)
 	di as txt "Burn-in:{col 22}={res}  " %6.0f e(mcmc_burnin)
-	di as txt "Thinning interval:{col 22}={res}  " %6.0f e(mcmc_interval)
+	// The interval of the FINAL sample: the adaptive sampler may have raised it
+	// above the requested e(mcmc_interval); the sample was recorded at
+	// e(mcmc_interval_final) (as the interval of R's mcmc.diagnostics() report).
+	local __ergm_ivf = e(mcmc_interval)
+	if "`e(mcmc_interval_final)'" != "" local __ergm_ivf = e(mcmc_interval_final)
+	di as txt "Thinning interval:{col 22}={res}  " %6.0f `__ergm_ivf'
+	if `__ergm_ivf' != e(mcmc_interval) {
+		di as txt "Requested interval:{col 22}={res}  " %6.0f e(mcmc_interval) as txt "  (raised by the adaptive sampler)"
+	}
 	di as txt "Acceptance rate:{col 22}={res}  " %6.4f e(mcmc_acceptrate)
 	di
 	tempname __essm
@@ -130,7 +138,8 @@ program define nwergm_estat_mcmcdiag, rclass
 		mata: st_local("__ergm_gz", strofreal(`__gew_m'[1,`k']))
 		mata: st_local("__ergm_gp", strofreal(2*(1-normal(abs(`__gew_m'[1,`k'])))))
 		if abs(`__ergm_gz') > 1.96 {
-			di as txt %-16s "`nm'" "{c |}" as err %10.3f `__ergm_gz' %10.4f `__ergm_gp' "  *"
+			// "{err}" (SMCL) rather than "as err": the latter is not silenced by -quietly-
+			di as txt %-16s "`nm'" "{c |}" "{err}" %10.3f `__ergm_gz' %10.4f `__ergm_gp' "  *"
 		}
 		else {
 			di as txt %-16s "`nm'" "{c |}" as res %10.3f `__ergm_gz' %10.4f `__ergm_gp'
@@ -155,7 +164,7 @@ program define nwergm_estat_mcmcdiag, rclass
 			di as txt %-16s "`nm'" "{c |}" as res %11s "passed" %9.0f `__ergm_hstart' %11.4f `__ergm_hhw' %10s "`__ergm_httext'"
 		}
 		else {
-			di as txt %-16s "`nm'" "{c |}" as err %11s "FAILED" %9s "-" %11s "n/a" %10s "n/a"
+			di as txt %-16s "`nm'" "{c |}" "{err}" %11s "FAILED" %9s "-" %11s "n/a" %10s "n/a"
 		}
 	}
 	di as txt "{hline 16}{c BT}{hline 12}{hline 10}{hline 12}{hline 11}"
@@ -170,9 +179,9 @@ program define nwergm_estat_mcmcdiag, rclass
 		di as txt "MCMLE's own convergence test was satisfied after " %3.0f e(mcmle_iterations) " iteration(s)."
 	}
 	else {
-		di as err "Warning: MCMLE did NOT satisfy its own convergence test - treat these diagnostics, and the fitted coefficients, with caution."
+		di "{err}Warning: MCMLE did NOT satisfy its own convergence test - treat these diagnostics, and the fitted coefficients, with caution."
 	}
-	di as txt "Note: a satisfied convergence test is a necessary check, not proof of a converged fit - inspect the autocorrelation/ESS above, and consider increasing {bf:mcmcsamplesize()}/{bf:mcmleiterations()} if acceptance rate or ESS looks poor."
+	di as txt "Note: a satisfied convergence test is a necessary check, not proof of a converged fit - inspect the autocorrelation/ESS above, and consider raising {bf:mcmleeffectivesize()} (the target effective sample size of the adaptive sample; {bf:mcmleiterations()} if the iterations ran out) if acceptance rate or ESS looks poor. For a fit with a fixed-size sample ({bf:mcmleeffectivesize(0)}) raise {bf:mcmcsamplesize()} or {bf:mcmcinterval()} instead."
 
 	return scalar acceptrate = e(mcmc_acceptrate)
 

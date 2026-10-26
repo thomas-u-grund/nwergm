@@ -183,6 +183,89 @@ mata: mata drop __ergm_n __ergm_noise __ergm_conv __ergm_drift __ergm_t __ergm_g
 di "=== ergm_geweke_z()/ergm_heidel_diag(): correctly distinguish converged from non-converged chains ==="
 
 * =====================================================================
+* nwergm 1.3.1: (1) -quietly estat mcmcdiag- prints nothing (a Geweke-flagged
+* row, the FAILED row of the Heidelberger-Welch table and the non-convergence
+* warning used -as err-, which -quietly- does not silence); (2) the thinning
+* interval printed is the one of the final sample, e(mcmc_interval_final), and
+* the requested one is named when it differs; (3) the end note advises
+* mcmleeffectivesize() for the adaptive default and mcmcsamplesize()/
+* mcmcinterval() for fixed-size samples.
+* =====================================================================
+tempfile q1 q2 q3
+set linesize 255
+* a fit that did not converge (one iteration) exercises the warning line too
+set seed 999
+qui nwergm mydirnet, edges mutual mcmcburnin(1000) mcmcinterval(20) mcmcsamplesize(1000) mcmleeffectivesize(0) mcmleiterations(1)
+di "converged = " e(converged)
+quietly log using `q1', text replace nomsg
+quietly estat mcmcdiag
+quietly log close
+file open __fh using `q1', read text
+file read __fh __line
+local nleak 0
+while r(eof) == 0 {
+	if trim(`"`macval(__line)'"') != "" & substr(`"`macval(__line)'"', 1, 2) != ". " local ++nleak
+	file read __fh __line
+}
+file close __fh
+di "lines printed by -quietly estat mcmcdiag-: `nleak'"
+assert `nleak' == 0
+di "=== quietly estat mcmcdiag prints nothing ==="
+
+* adaptive default with a small starting interval: the sampler raises the interval
+set seed 999
+qui nwergm mydirnet, edges mutual mcmcburnin(10) mcmcinterval(1)
+local ivf = e(mcmc_interval_final)
+local ivr = e(mcmc_interval)
+di "requested interval `ivr', interval of the final sample `ivf'"
+quietly log using `q2', text replace nomsg
+estat mcmcdiag
+quietly log close
+local printed ""
+local reqprinted ""
+local endnote 0
+file open __fh using `q2', read text
+file read __fh __line
+while r(eof) == 0 {
+	if strpos(`"`macval(__line)'"', "Thinning interval:") == 1 {
+		local printed = real(trim(substr(`"`macval(__line)'"', strpos(`"`macval(__line)'"', "=") + 1, .)))
+	}
+	if strpos(`"`macval(__line)'"', "Requested interval:") == 1 {
+		local reqprinted = real(trim(substr(`"`macval(__line)'"', strpos(`"`macval(__line)'"', "=") + 1, 8)))
+	}
+	if strpos(`"`macval(__line)'"', "raising mcmleeffectivesize()") > 0 local endnote 1
+	file read __fh __line
+}
+file close __fh
+di "printed interval `printed' (e(mcmc_interval_final) = `ivf')"
+assert `printed' == `ivf'
+if `ivf' != `ivr' assert `reqprinted' == `ivr'
+else assert "`reqprinted'" == ""
+assert `endnote' == 1
+di "=== estat mcmcdiag prints the interval of the final sample ==="
+
+* the end note names mcmcsamplesize()/mcmcinterval() for a fixed-size fit
+set seed 999
+qui nwergm mydirnet, edges mutual mcmcburnin(1000) mcmcinterval(20) mcmcsamplesize(1000) mcmleeffectivesize(0) mcmleiterations(15)
+quietly log using `q3', text replace nomsg
+estat mcmcdiag
+quietly log close
+local fixednote 0
+file open __fh using `q3', read text
+file read __fh __line
+while r(eof) == 0 {
+	if strpos(`"`macval(__line)'"', "mcmcsamplesize() or mcmcinterval()") > 0 local fixednote 1
+	if strpos(`"`macval(__line)'"', "Requested interval:") == 1 {
+		di as err "fixed-size fit printed a requested-interval line"
+		exit 9
+	}
+	file read __fh __line
+}
+file close __fh
+assert `fixednote' == 1
+di "=== estat mcmcdiag end note: ALL 1.3.1 CHECKS PASSED ==="
+
+* =====================================================================
 * Harmonisation unit 154: nomcmcsample - opts out of posting
 * e(mcmcsample) at all, the single slowest step of a fit with a large
 * mcmcsamplesize() (a genuine Stata matrix-engine cost at bulk-data

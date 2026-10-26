@@ -5,8 +5,21 @@ project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.3.1] - 2026-10-26
+
+### Fixed
+- `quietly estat mcmcdiag` printed the row of a statistic flagged by Geweke's test (and the FAILED row of the Heidelberger-Welch table and the warning about a fit that did not converge), because those lines were written in the error colour, which `quietly` does not silence. It now prints nothing.
+- `estat mcmcdiag` printed the requested thinning interval (for example 1024) although the final sample was recorded at the interval the adaptive sampler arrived at, `e(mcmc_interval_final)` (for example 4096; 6400 with `mcmcinterval(50)`). The header now shows the interval of the final sample, as the report of R's `mcmc.diagnostics()` does, and a second line names the requested interval when the two differ. The autocorrelation lags of the report were already computed from the interval of the final sample.
+- The closing note of `estat mcmcdiag` advised raising `mcmcsamplesize()`. It now advises raising `mcmleeffectivesize()` (the target effective sample size of the adaptive default) and, for fits with fixed-size samples (`mcmleeffectivesize(0)`), `mcmcsamplesize()` or `mcmcinterval()`.
+- README: the section on the MCMC defaults describes the adaptive sample of 1.3 (base size max(256, 32 p), target effective sample size 64, interval halved from one iteration to the next; `mcmleeffectivesize(0)` is the algorithm of 1.2.3) and the install-by-tag example uses `v1.3.1`. The hint next to `mcmcsamplesize()` in the dialog no longer says "default 3000".
+
+### Corrected
+- The notes of 1.3.0 said "2.4 to 7.7 times faster than R; 1.2.3 slower on seven of the eight" benchmark models. Re-measured on an idle machine (median of seven interleaved fits): nwergm 1.3.0 is 2.9 to 9.4 times faster than R's `ergm` 4.12.0, and 1.2.3 is slower than R on six of the eight models, about equal on one and faster on one (details: the benchmark section of the manual). The 1.3.0 section below is left as it was published.
+
+### Changed
 ### Changed
 - Manual brought to the 1.3 series ("Manual for version 1.3", `manual/nwergm_manual.pdf`, 104 pages): it now describes the sampling of 1.3.0 (adaptive sample size, `mcmleeffectivesize()` and its interplay with `mcmcsamplesize()`, `mcmcburnin()` and `mcmcinterval()`, R's convergence test, covariance and bridge from the fit's own sample), the speed comparison with R (eight benchmark models), and the new correspondences in the translation table. Every listing, comparison table and run-time table was regenerated with nwergm 1.3.0 and nwcommands 3.10.0 (ergm 4.12.0 for the comparisons); `manual/ZENODO.md` carries the metadata of the Zenodo record for the series 1.3.
+- Test `test_nwergm_estat` checks that `quietly estat mcmcdiag` prints nothing, that the printed interval equals `e(mcmc_interval_final)` and the end note.
 
 ## [1.3.0] - 2026-10-26
 
