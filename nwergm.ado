@@ -50,7 +50,7 @@ program nwergm, eclass
 		BGWDEGREEFREE1(string) BGWDEGREEFREE2(string) BGWDSPFREE1(string) BGWDSPFREE2(string) ///
 		TYPE(string) FREEDYADS(string) BLOCKDIAG(string) FIXDENSITY ///
 		METHOD(string) MCMCBURNIN(integer -1) MCMCINTERVAL(integer 1024) ///
-		MCMCSAMPLESIZE(integer 3000) MCMLEITERATIONS(integer 60) ///
+		MCMCSAMPLESIZE(integer -1) MCMLEITERATIONS(integer 60) ///
 		PROPOSAL(string) SEED(integer -1) VERBOSE SPCACHE NOMCMCSAMPLE NONATIVE ///
 		OFFSET(string) COEFLABEL(string) LOGSTAT(string) EXPSTAT(string) STRUCTURAL(string asis) OPERATORS(string asis) SUBMODEL(string) NOLOGLIK BRIDGESTEPS(integer 16) BRIDGESAMPLESIZE(integer 0) BRIDGEINTERVAL(integer 0) ///
 		INIT(string) MPLETYPE(string) MPLECHECK(string) MPLECOVariance(string) ESTimate(string) MAINMETHOD(string) ///
@@ -2432,6 +2432,11 @@ program nwergm, eclass
 
 		_nwergm_est ctl, termination(`mcmletermination') confidence(`mcmleconfidence') steplength(`mcmlesteplength') ///
 			margin(`mcmlestepmargin') effsize(`mcmleeffectivesize')
+		// R: the MCMLE sample size is chosen adaptively (MCMLE.effectiveSize = 64, base size max(256, 32 * parameters)) unless
+		// mcmleeffectivesize(0) asks for fixed-size samples; the fixed-size default is 3000 draws. The constrained (missing
+		// data), contrastive-divergence and stochastic-approximation fits keep their own fixed sizes.
+		local __ss_adapt = (`mcmleeffectivesize' != 0 & !`__obs_active' & "`method'" != "cd" & "`mainmethod'" != "sa")
+		if `mcmcsamplesize' < 0 & !`__ss_adapt' local mcmcsamplesize 3000
 		mata: __nwergm_ties0 = __nwergm_last_G.all_ties()
 		capture mata: mata drop __ergm_obsstat
 		capture confirm number 0
@@ -2472,6 +2477,15 @@ program nwergm, eclass
 			}
 		}
 		local __ergm_matatemps "`__ergm_matatemps' `__fit'"
+		local __br_ss "`mcmcsamplesize'"
+		local __br_int "`mcmcinterval'"
+		local __br_burn "`mcmcburnin'"
+		if `__ss_adapt' {
+			mata: st_local("mcmcsamplesize", strofreal(`__fit'.final_samplesize, "%18.0g"))
+			mata: st_local("__br_ss", strofreal(`__fit'.bridge_samplesize, "%18.0g"))
+			mata: st_local("__br_int", strofreal(`__fit'.next_interval, "%18.0g"))
+			mata: st_local("__br_burn", strofreal(max((16, 16 * `__fit'.final_interval)), "%18.0g"))
+		}
 
 		tempname __b_mcmle __V_mcmle
 		if `__ergm_curved' {
@@ -2673,9 +2687,11 @@ program nwergm, eclass
 		}
 
 		nwergm_display "`netname'" "`nodes'" "`directed'" "`=cond("`method'"=="cd","CD",cond("`mainmethod'"=="sa","SA","MCMLE"))'" "`__ergm_converged'" "`__ergm_niter'" "`mcmcsamplesize'"
-		_nwergm_fitstats, dmat(`__nw_D') method(mcmle) propfn(`__ergm_propfn') mcmcburnin(`mcmcburnin') mcmcinterval(`mcmcinterval') ///
-			mcmcsamplesize(`mcmcsamplesize') intervalfinal(`__ergm_interval_final') curved(`__ergm_curved') bridgesteps(`bridgesteps') ///
-			bridgesamplesize(`bridgesamplesize') bridgeinterval(`bridgeinterval') `nologlik'
+		if `__ss_adapt' local __ergm_interval_bridge `__br_int'
+		else local __ergm_interval_bridge `__ergm_interval_final'
+		_nwergm_fitstats, dmat(`__nw_D') method(mcmle) propfn(`__ergm_propfn') mcmcburnin(`__br_burn') mcmcinterval(`__br_int') ///
+			mcmcsamplesize(`__br_ss') intervalfinal(`__ergm_interval_bridge') curved(`__ergm_curved') bridgesteps(`bridgesteps') ///
+			bridgesamplesize(`bridgesamplesize') bridgeinterval(`bridgeinterval') carry(`__ss_adapt') `nologlik'
 		if `__ergm_curved' {
 			di as text "(decay is an estimated curved parameter here - see {help nwergm##gw_effects:help nwergm, gw_effects} for how this differs from R ergm's own curved-model machinery)"
 		}

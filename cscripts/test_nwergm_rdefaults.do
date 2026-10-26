@@ -19,7 +19,7 @@ nwclear
 clear
 mata: rseed(4); n = 25; R = runiform(n,n) :< 0.15; R = R :* (1 :- I(n)); R = ((R + R') :> 0); st_matrix("A", R)
 nwset, mat(A) undirected name(un) nooutput
-local base "edges triangle mcmleiterations(2) mcmcsamplesize(200) nologlik seed(1)"
+local base "edges triangle mcmleiterations(2) mcmcsamplesize(200) mcmleeffectivesize(0) nologlik seed(1)"
 
 * A: nothing given -> R's values
 qui nwergm un, `base'

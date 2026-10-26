@@ -20,7 +20,7 @@ set more off
 nwwebuse mesa, nwclear
 encode race, generate(racen)
 qui nwergm mesa, edges nodematch(grade racen) gwesp(.25) seed(12345) ///
-	mcmcinterval(1000) mcmcburnin(20000)
+	mcmcinterval(1000) mcmcburnin(20000) mcmleeffectivesize(0) mcmcsamplesize(3000)
 qui estat mcmcdiag
 matrix E = r(ess)
 matrix R = (277.8, 262.0, 317.8, 291.8)

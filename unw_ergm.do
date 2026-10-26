@@ -9099,6 +9099,7 @@ real matrix ErgmNativeSampleCore(class ErgmModel scalar M, class ErgmGraph scala
 	// ties it needs when the final network does not fit and writes nothing, and the call is then repeated with a larger frame
 	// (same seed, same result); an older plugin, or the first call of a session, gets one row per dyad as before.
 	gen = st_numscalar("__ergm_native_gen")
+	if (rows(gen) * cols(gen) != 1) gen = .		// no such scalar yet: Mata returns an empty matrix
 	if (gen < . & gen >= 2) nobs_needed = max((2*nties + 64, samplesize, n, 1, rows(M.con_cols)))
 	else nobs_needed = max((ergm_total_dyads(G), samplesize, n, 1, rows(M.con_cols)))
 	nobs_frame = nobs_needed
@@ -10067,13 +10068,19 @@ real matrix ErgmMCMCSampleSwap(class ErgmModel scalar M, class ErgmGraph scalar 
 
 real matrix ErgmMCMCSample(class ErgmModel scalar M, class ErgmGraph scalar G,
 	real rowvector theta, real scalar burnin, real scalar interval,
-	real scalar samplesize, pointer(real rowvector function) scalar proposalfn){
+	real scalar samplesize, pointer(real rowvector function) scalar proposalfn, | real rowvector cur0){
 
 	real rowvector cur, prop, chg
 	real scalar step, draw, tail, head, logratio, cutoff
 	real matrix out
 
-	cur = M.full_statistic(G)
+	// cur0 (optional): the statistics of G as they stand, carried over from the previous call on the same graph, so that the
+	// full statistic need not be recomputed from scratch (a sampling run changes G only through the draws it returns)
+	if (args() >= 8) {
+		if (cols(cur0) == M.nparam()) cur = cur0
+		else cur = M.full_statistic(G)
+	}
+	else cur = M.full_statistic(G)
 
 	// Native backend fast path (harmonisation unit 83) - see this file's
 	// own "Native (C) MCMC backend" section above. M.native_enabled is
@@ -10370,6 +10377,9 @@ struct ErgmMCMLEFit {
 				// basic MCMC diagnostics sample (Part XIX)
 	real scalar acceptrate	// Metropolis-Hastings acceptance rate over that
 				// same final simulation's sampling phase
+	real scalar final_samplesize	// size of the sample the covariance rests on (adaptive MCMLE: the ESS-driven size)
+	real scalar next_interval	// adaptive MCMLE: the interval a further iteration would start from (R: control$MCMC.interval)
+	real scalar bridge_samplesize	// adaptive MCMLE: the base sample size at the end (R: control$MCMC.samplesize, used by the bridge)
 	real scalar final_interval	// the (possibly grown - unit 85's own
 				// adaptive-interval mechanism) `interval' value
 				// actually used for the LAST MCMLE iteration and
@@ -10719,7 +10729,7 @@ real scalar ergm_mple_irls(real matrix D, string scalar bname, string scalar Vna
 		if (max(abs(eta)) > 30) return(0)
 		mu = invlogit(eta)
 		ll = sum(y:*eta :- log1p(exp(eta)))
-		if (ll0 != -. & ll < ll0 - 1e-9) return(0)
+		if (ll0 != -. & ll < ll0 - 1e-9 * max((1, abs(ll0)))) return(0)
 		w = mu :* (1 :- mu)
 		g = cross(X, y :- mu)
 		H = cross(X, w, X)
@@ -11432,6 +11442,236 @@ real matrix ergm_mple_cov(class ErgmModel scalar M, class ErgmGraph scalar G, re
 	return(variance(B))
 }
 
+/*
+	R-style adaptive MCMC sampling for MCMLE (speed130).  R's ergm_MCMC_sample() with MCMC.effectiveSize set (the default in
+	MCMLE: MCMLE.effectiveSize = 64): sample in runs, find the burn-in from the sample itself, estimate the effective sample
+	size (ESS) of the estimating equations after the burn-in and keep sampling (with a predicted, dampened run length) until the
+	target ESS is reached with a trustworthy burn-in estimate; whenever the sample has become twice the base size it is thinned
+	by two and the interval doubled.  Differences from R, all in the statistics only: the ESS inflation is the geometric mean of
+	the univariate AR spectral inflations of the whitened estimating equations (R: determinant of the multivariate AR spectral
+	density), and the burn-in p-value is a Hotelling-type comparison of the first 10% and the last 50% of the post-burn-in
+	sample with AR-corrected covariances (R: approx.hotelling.diff.test with spectrum0.mvar).
+*/
+
+// geometric-mean AR spectral variance inflation of the whitened columns of X (R: attr(spectrum0.mvar(X), "infl")); >= 1
+real scalar ergm_geomean_infl(real matrix X)
+{
+	real matrix Xs, C, V, Z
+	real rowvector sd, L
+	real colvector sdc
+	real scalar n, k, pmax, s, cnt, tol
+	n = rows(X)
+	if (n < 8) return(1)
+	tol = 1.490116119384766e-08
+	sd = sqrt(diagonal(variance(X)))'
+	cnt = 0
+	for (k=1; k<=cols(sd); k++) if (sd[k] > tol) cnt++
+	if (cnt == 0) return(1)
+	Xs = J(n, cnt, 0)
+	s = 0
+	for (k=1; k<=cols(sd); k++) if (sd[k] > tol) {
+		s++
+		Xs[., s] = (X[., k] :- mean(X[., k])) / sd[k]
+	}
+	C = variance(Xs)
+	symeigensystem(C, V, L)
+	pmax = floor(min((n-1, 10*log10(n))))
+	if (pmax > 50) pmax = 50
+	if (pmax < 1) pmax = 1
+	s = 0
+	cnt = 0
+	for (k=1; k<=cols(L); k++) if (L[k] > tol) {
+		Z = (Xs * V[., k]) / sqrt(L[k])
+		s = s + ln(ergm_ar_yw_infl(Z, pmax))
+		cnt++
+	}
+	if (cnt == 0) return(1)
+	return(max((1, exp(s / cnt))))
+}
+
+// RSS of the regression of y on a constant and 2^(-t/decay), t = 1..n (R: .find_OK_burnin's ssr())
+real scalar _ergm_burn_ssr(real colvector y, real scalar decay, real colvector t, real scalar b, real scalar a)
+{
+	real colvector x
+	real scalar xm, ym, sxx, sxy, syy, n
+	n = rows(y)
+	x = 2:^(-t :/ decay)
+	xm = mean(x)
+	ym = mean(y)
+	sxx = sum((x :- xm):^2)
+	sxy = sum((x :- xm) :* (y :- ym))
+	syy = sum((y :- ym):^2)
+	if (sxx < 1e-300) {
+		b = 0
+		a = ym
+		return(syy)
+	}
+	b = sxy / sxx
+	a = ym - b * xm
+	return(max((0, syy - b * sxy)))
+}
+
+// R's .find_OK_burnin() (one chain): returns (burn-in rows, p-value of the burn-in check)
+real rowvector ergm_find_burnin(real matrix X)
+{
+	real scalar nit, bscl, k, lo, hi, gr, c, d, fc, fd, it, decay, rss, b, a, s, ratio, cnt, best, sc, nmax, n2, x1n, x2n
+	real scalar infl1, infl2, df, T2, F, p, pv
+	real colvector y, t, bk, idx
+	real matrix W, W1, W2, Cm, Vm, Wp
+	real rowvector m, dd, sd
+	nit = rows(X)
+	bscl = 32
+	if (nit < 4 | cols(X) == 0) return((0, 0))
+	t = (1::nit)
+	bk = J(0, 1, 0)
+	sd = sqrt(diagonal(variance(X)))'
+	for (k=1; k<=cols(X); k++) {
+		if (!(sd[k] > 0)) continue
+		y = (X[., k] :- mean(X[., k])) / sd[k]
+		lo = 1e-3
+		hi = nit * log(bscl) / ln(2) * 8
+		gr = (sqrt(5) - 1) / 2
+		c = hi - gr * (hi - lo)
+		d = lo + gr * (hi - lo)
+		fc = _ergm_burn_ssr(y, c, t, b, a)
+		fd = _ergm_burn_ssr(y, d, t, b, a)
+		for (it=1; it<=60; it++) {
+			if (fc < fd) {
+				hi = d
+				d = c
+				fd = fc
+				c = hi - gr * (hi - lo)
+				fc = _ergm_burn_ssr(y, c, t, b, a)
+			}
+			else {
+				lo = c
+				c = d
+				fc = fd
+				d = lo + gr * (hi - lo)
+				fd = _ergm_burn_ssr(y, d, t, b, a)
+			}
+			if (hi - lo < 1e-4 * max((1, abs(lo)))) break
+		}
+		decay = (lo + hi) / 2
+		rss = _ergm_burn_ssr(y, decay, t, b, a)
+		s = sqrt(rss / max((1, nit - 2)))
+		ratio = sqrt(rss / (nit - 1))
+		if (ratio < 1 - 2 / bscl & b != 0) best = -decay * ln(s / bscl / abs(b)) / ln(2)
+		else best = round(nit * 0.05)
+		if (best == .) best = round(nit * 0.05)
+		bk = bk \ best
+	}
+	if (rows(bk) == 0) return((round(nit * 0.5), 0))
+	bk = rowmin((rowmax((bk, J(rows(bk), 1, 0))), J(rows(bk), 1, nit * 0.5)))
+	best = sqrt(mean(bk:^2))
+	if (best >= .) return((round(nit * 0.5), 0))
+	best = round(best)
+	// Geweke-type check on the sample after the burn-in
+	W = X[(best+1)::nit, .]
+	n2 = rows(W)
+	cnt = 0
+	sd = sqrt(diagonal(variance(W)))'
+	for (k=1; k<=cols(sd); k++) if (sd[k] > 1.490116119384766e-08) cnt++
+	if (n2 < 8 | cnt == 0) return((best, 0))
+	W = W[., selectindex(sd :> 1.490116119384766e-08)]
+	nmax = max((128, cols(W) * 2 * 4))
+	if (n2 > nmax) {
+		idx = round(rangen(1, n2, round(nmax)))
+		W = W[idx, .]
+		n2 = rows(W)
+	}
+	x1n = floor(0.1 * (n2 - 1)) + 1
+	x2n = floor(0.5 * (n2 - 1)) + 1
+	W1 = W[1::x1n, .]
+	W2 = W[(n2 - x2n + 1)::n2, .]
+	if (x1n < 3 | x2n < 3) return((best, 0))
+	p = cols(W)
+	// R (var.equal = TRUE): both parts are centred about their own means and pooled; one autocorrelation inflation for the pool
+	dd = mean(W1) - mean(W2)
+	Wp = (W1 :- mean(W1)) \ (W2 :- mean(W2))
+	infl1 = ergm_geomean_infl(Wp)
+	infl2 = infl1
+	Vm = variance(Wp) * infl1 * (1 / x1n + 1 / x2n)
+	Vm = invsym(Vm)
+	if (missing(Vm) > 0) return((best, 0))
+	T2 = dd * Vm * dd'
+	df = x1n / infl1 + x2n / infl2 - 2
+	if (df <= p) return((best, 0))
+	F = T2 * (df - p + 1) / (df * p)
+	pv = Ftail(p, df - p + 1, F)
+	if (pv >= .) pv = 0
+	return((best, pv))
+}
+
+// R's ergm_MCMC_sample() with MCMC.effectiveSize set: returns the thinned post-burn-in sample (statistic levels); `finalint' is
+// the interval of that sample, `ess' the achieved ESS, `acc' the acceptance rate of the last run
+real matrix ErgmMCMCSampleAdaptive(class ErgmModel scalar M, class ErgmGraph scalar G, real rowvector theta,
+	real scalar interval0, real scalar ss0, real scalar esstarget, real rowvector fidx, real matrix Jac,
+	pointer(real rowvector function) scalar proposalfn, real scalar verbose,
+	real scalar finalint, real scalar ess, real scalar acc, real rowvector cur0)
+{
+	real matrix sms, draw, esteq, post
+	real rowvector bp, cur
+	real colvector idx
+	real scalar interval, eS, bb, pv, run, ss, pred, damp, n, tgt, nrun
+	string scalar nofix
+
+	interval = interval0
+	eS = 0
+	bb = 0
+	pv = 0.2
+	tgt = esstarget
+	sms = J(0, 0, .)
+	nrun = 0
+	acc = .
+	for (run=1; run<=16; run++) {
+		if (run == 1) ss = ss0
+		else if (pv >= . | pv <= 0.2) ss = ss0
+		else {
+			pred = (tgt - eS) * (rows(sms) - bb) / eS
+			damp = pred * (eS / (10 + eS)) + ss0 * (1 - eS / (10 + eS))
+			ss = max((1, round(damp)))
+		}
+		if (run == 1) draw = ErgmMCMCSample(M, G, theta, interval, interval, ss, proposalfn, cur0)
+		else if (M.native_enabled_sample) draw = ErgmNativeSampleCore(M, G, theta, interval, interval, ss, sms[rows(sms), .])
+		else draw = ErgmMCMCSample(M, G, theta, interval, interval, ss, proposalfn)
+		if (M.native_enabled_sample) acc = M.native_lastaccept
+		nrun++
+		if (run == 1) sms = draw
+		else sms = sms \ draw
+		// the carried-over statistics of the thinned rows are not needed: thinning only drops rows
+		while (rows(sms) - bb >= 2 * ss0) {
+			n = rows(sms)
+			idx = (1::floor(n/2)) * 2 :+ mod(n, 2)
+			sms = sms[idx, .]
+			interval = interval * 2
+			if (verbose) printf("{txt}  (adaptive MCMC: thinning to interval %g)\n", interval)
+		}
+		if (cols(Jac) > 0) esteq = sms * Jac
+		else esteq = sms[., fidx]
+		bp = ergm_find_burnin(esteq)
+		bb = bp[1]
+		pv = bp[2]
+		post = esteq[(bb+1)::rows(esteq), .]
+		if (pv >= . | pv <= 0.2) {
+			if (max(sqrt(diagonal(variance(post)))) <= 1.490116119384766e-08) {
+				tgt = 1
+				eS = 1
+				break
+			}
+			if (verbose) printf("{txt}  (adaptive MCMC run %g: burn-in estimate %g of %g rows, p = %g - not trustworthy, sampling on)\n", run, bb, rows(sms), pv)
+			continue
+		}
+		eS = rows(post) / ergm_geomean_infl(post)
+		if (verbose) printf("{txt}  (adaptive MCMC run %g: ESS %g of target %g, burn-in %g of %g rows, p = %g)\n", run, eS, tgt, bb, rows(sms), pv)
+		if (eS >= tgt) break
+	}
+	finalint = interval
+	ess = eS
+	return(sms[(bb+1)::rows(sms), .])
+}
+
+
 struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph scalar G,
 	real rowvector theta0, real scalar maxit, real scalar burnin, real scalar interval0,
 	real scalar samplesize0, pointer(real rowvector function) scalar proposalfn,
@@ -11461,12 +11701,19 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 	real rowvector freeidx, delta_apply
 	real rowvector ctl
 	real scalar term, conv_now, last_ok, pval, minpval, hmargin, hmax
+	real scalar adaptive, esstarget, ss_base, ss_base0, ess0, final_int, ess_ach, acc_last, next_int, interval_used, bboost
+	real rowvector curstat
 	external real rowvector ergm_ctl
 
 	// control.ergm()-style settings supplied by nwergm: (termination 1=confidence 2=Hummel 3=Hotelling 4=none,
 	// MCMLE.confidence, MCMLE.steplength, MCMLE.steplength.margin (. = NULL), MCMLE.effectiveSize (. = default), MCMLE.conv.min.pval)
 	ctl = (1, 0.99, 1, 0.05, ., 0.5)
 	if (cols(ergm_ctl) == 6) ctl = ergm_ctl
+	adaptive = 0
+	if (cols(ergm_ctl) == 7) {
+		ctl = ergm_ctl[1..6]
+		adaptive = (ergm_ctl[7] == 1)
+	}
 	term = ctl[1]
 	hmax = ctl[3]
 	hmargin = ctl[4]
@@ -11592,6 +11839,22 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 	min_neff = max((200, 64*ptest_const))
 	if (ctl[5] < .) min_neff = ctl[5]
 	interval_cap = 20000
+	if (adaptive) {
+		// R: MCMLE.samplesize = max(MCMLE.samplesize.min = 256, MCMLE.samplesize.per_theta = 32 * number of parameters),
+		// MCMLE.effectiveSize = 64 (nwergm.ado passes it in ctl[5]); a user sample size is the base size
+		if (samplesize0 < 0) ss_base = max((256, 32 * ptest_const))
+		else ss_base = samplesize0
+		esstarget = (ctl[5] < . ? ctl[5] : 64)
+		ss_base = max((ss_base, ceil(2 * esstarget)))
+		ss_base0 = ss_base
+		ess0 = esstarget
+		samplesize = ss_base
+		samplesize_o = max((round(ss_base / 2), min((ss_base, 500))))
+		final_int = interval
+		ess_ach = .
+		acc_last = .
+		curstat = (has_obs ? J(1, 0, .) : obs)
+	}
 
 	// Combined safety bound on `interval * samplesize' (the TOTAL raw
 	// MCMC draws one sample costs): `interval' (autocorrelation
@@ -11611,11 +11874,23 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 
 	for (iter=1; iter<=maxit; iter++) {
 		theta_old = theta	// the eta point THIS iteration's sample was actually drawn at - needed below to reweight that (by-then-stale) sample toward the point the Newton step is about to propose, mirroring R's own importance-sampling reweighting.
-		samp = ErgmMCMCSample(M, G, theta, burnin, interval, samplesize, proposalfn)
+		if (adaptive) {
+			samp = ErgmMCMCSampleAdaptive(M, G, theta, interval, ss_base, esstarget, freeidx, (is_curved ? M.theta_to_eta_jacobian(theta_c) : J(0, 0, .)), proposalfn, verbose, final_int, ess_ach, acc_last, curstat)
+			samplesize = rows(samp)
+			curstat = (has_obs ? J(1, 0, .) : samp[rows(samp), .])
+			interval_used = final_int
+			// R: MCMLE.effectiveSize.interval_drop = 2 - the next iteration starts from half the interval that was needed
+			next_int = max((round(final_int / 2), 1))
+			interval = next_int
+		}
+		else {
+			interval_used = interval
+			samp = ErgmMCMCSample(M, G, theta, burnin, interval, samplesize, proposalfn)
+		}
 		if (has_obs) {
 			// missing dyads: the "observed" statistic is the mean of the constrained sample
 			// (only the missing dyads free), as in R ergm's observational-process MCMLE
-			sampo = ErgmMCMCSampleConstrained(M, theta, burnin, interval, samplesize_o)
+			sampo = ErgmMCMCSampleConstrained(M, theta, burnin, interval_used, samplesize_o)
 			obs = mean(sampo)
 			Dobs = sampo :- obs
 		}
@@ -11996,7 +12271,7 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 				printf(" theta_c=")
 				for (k=1; k<=cols(theta_c); k++) printf("%9.5f ", theta_c[k])
 			}
-			printf(" F=%7.3f (crit %7.3f at %g%% conf, neff=%7.1f/%g) max|Dtestbar_w/se|=%6.3f interval=%g ess=%5.3f\n", Fstat, Fcrit, confidence*100, neff, min_neff, max(abs(Dtestbar_w :/ se)), interval, 1/ess_factor)
+			printf(" F=%7.3f (crit %7.3f at %g%% conf, neff=%7.1f/%g) max|Dtestbar_w/se|=%6.3f interval=%g ess=%5.3f n=%g\n", Fstat, Fcrit, confidence*100, neff, min_neff, max(abs(Dtestbar_w :/ se)), interval_used, 1/ess_factor, samplesize)
 		}
 		// Convergence is decided by the statistical test ALONE (plus
 		// `gamma==1', i.e. the outer Newton step itself was undamped -
@@ -12099,7 +12374,12 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 					break
 				}
 				last_ok = 1
-				samplesize = min((samplesize * 4, samplesize_cap, floor(total_draws_cap/interval)))
+				if (adaptive) {
+					// R: .boost_samplesize(MCMLE.last.boost = 4, base = TRUE)
+					esstarget = ess0 * 4
+					ss_base = max((ceil(ss_base0 * 4^0.5), ceil(2 * esstarget)))
+				}
+				else samplesize = min((samplesize * 4, samplesize_cap, floor(total_draws_cap/interval)))
 			}
 			else last_ok = 0
 		}
@@ -12112,9 +12392,20 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 		// unchanged (no adaptation) whenever `neff' already clears the
 		// floor - the ordinary case for the small/well-mixing benchmarks
 		// (1-3), which never pay for this mechanism at all.
-		if (neff < min_neff) {
+		if (neff < min_neff & !adaptive) {
 			growth = min((8, ceil(min_neff/neff)))
 			interval = min((interval * growth, interval_cap))
+		}
+		bboost = 0
+		if (adaptive & gamma == 1 & Fstat < . & Fcrit < . & Fstat > Fcrit & term == 1) {
+			// R (confidence termination): the sample failed the test although the step is full: increase the target ESS and the
+			// sample size by the factor needed to reach the critical value (at most MCMLE.confidence.boost = 2); the sample size
+			// grows with the square root of the factor (MCMLE.sampsize.boost.pow = 0.5)
+			bboost = 1
+			samplesize_boost = max((1, min((Fstat/Fcrit, confidence_boost))))
+			esstarget = esstarget * samplesize_boost
+			ss_base = max((ceil(ss_base * samplesize_boost^0.5), ceil(2 * esstarget)))
+			stall_count = 0
 		}
 
 		// R-faithful sample-size boosting: when `ergm.MCMLE()''s own
@@ -12171,12 +12462,16 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 				else stall_count = 0
 			}
 			Fstat_prev = Fstat
-			if (stall_count > boost_threshold & samplesize < samplesize_cap) {
+			if (stall_count > boost_threshold & (adaptive | samplesize < samplesize_cap) & !bboost) {
 				// a boost is never a shrink: Fstat/Fcrit is below 1 when the test would pass, which happens here
 				// whenever the termination is not the confidence test (mcmletermination(none)); unclamped it cut the
 				// sample to a single draw and the variance step then failed with 'subscript invalid'
 				samplesize_boost = max((1, min((Fstat/Fcrit, confidence_boost))))
-				samplesize = min((ceil(samplesize * samplesize_boost), samplesize_cap, floor(total_draws_cap/interval)))
+				if (adaptive) {
+					esstarget = esstarget * samplesize_boost
+					ss_base = max((ceil(ss_base * samplesize_boost^0.5), ceil(2 * esstarget)))
+				}
+				else samplesize = min((ceil(samplesize * samplesize_boost), samplesize_cap, floor(total_draws_cap/interval)))
 				stall_count = 0
 			}
 		}
@@ -12192,7 +12487,20 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 	// acceptance rate; the accept/reject draw sequence itself is
 	// identical (see ErgmMCMCSampleDiag()'s own header comment), so this
 	// substitution changes nothing about the numeric result.
-	diag = ErgmMCMCSampleDiag(M, G, theta, burnin, interval, samplesize, proposalfn)
+	if (adaptive) {
+		// R reports the covariance from the last iteration's own sample; a sample drawn at the final point is only
+		// needed when the iterations ran out before convergence
+		if (!converged) {
+			samp = ErgmMCMCSampleAdaptive(M, G, theta, interval, ss_base, esstarget, freeidx, (is_curved ? M.theta_to_eta_jacobian(theta_c) : J(0, 0, .)), proposalfn, verbose, final_int, ess_ach, acc_last, curstat)
+			interval_used = final_int
+			next_int = max((round(final_int / 2), 1))
+			interval = next_int
+		}
+		diag.sample = samp
+		diag.acceptrate = acc_last
+		samplesize = rows(samp)
+	}
+	else diag = ErgmMCMCSampleDiag(M, G, theta, burnin, interval, samplesize, proposalfn)
 	samp = diag.sample
 	V = variance(samp)
 	// ergm_batchmeans_inflation() (a more general, non-AR(1)-assuming
@@ -12277,7 +12585,10 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 	res.coefhist = coefhist
 	res.finalsample = samp
 	res.acceptrate = diag.acceptrate
-	res.final_interval = interval
+	res.final_interval = (adaptive ? interval_used : interval)
+	res.final_samplesize = rows(samp)
+	res.next_interval = interval
+	res.bridge_samplesize = (adaptive ? ss_base : samplesize)
 	// `theta_c' already reflects the SAME final eta-space `theta'
 	// reported above (both were updated together, in lockstep, at the
 	// end of every loop iteration - the post-loop diagnostics
@@ -13326,12 +13637,13 @@ real rowvector ergm_dind_submodel(class ErgmModel scalar M, real matrix D)
 // first attempt is 0, so the u points are the equally weighted midpoints). Returns (llr, variance of llr).
 real rowvector ergm_bridge_llr(class ErgmModel scalar M, class ErgmGraph scalar G, real rowvector from,
 	real rowvector to, real rowvector obsstat, real scalar nsteps, real scalar burnin, real scalar between,
-	real scalar interval, real scalar samplesize, pointer scalar propfn)
+	real scalar interval, real scalar samplesize, pointer scalar propfn, | real scalar carry)
 {
-	real scalar i, u, llr, vr, b, m1, nso
-	real rowvector th, dth
+	real scalar i, u, llr, vr, b, m1, nso, docarry
+	real rowvector th, dth, curc
 	real matrix s, so
 	real colvector x, xo
+	docarry = (args() >= 12 ? carry : 0)
 	dth = to - from
 	llr = 0
 	vr = 0
@@ -13340,7 +13652,10 @@ real rowvector ergm_bridge_llr(class ErgmModel scalar M, class ErgmGraph scalar 
 		u = (i - 0.5) / nsteps
 		th = from + u * dth
 		b = (i == 1 ? burnin : between)
-		s = ErgmMCMCSample(M, G, th, b, interval, samplesize, propfn)
+		// carry = 1: the statistics of the graph are carried from one bridge to the next instead of being recomputed
+		if (docarry & i > 1 & !M.obs_active) s = ErgmMCMCSample(M, G, th, b, interval, samplesize, propfn, curc)
+		else s = ErgmMCMCSample(M, G, th, b, interval, samplesize, propfn)
+		curc = s[rows(s), .]
 		if (M.obs_active) {
 			so = ErgmMCMCSampleConstrained(M, th, b, interval, nso)
 			x = s * dth'

@@ -37,7 +37,7 @@ assert _rc == 498
 * independently at the Mata level in test_nwergm_mcmc.do - this test is
 * about the .ado/estat plumbing, not re-deriving that number).
 set seed 999
-qui nwergm mydirnet, edges mutual mcmcburnin(1000) mcmcinterval(20) mcmcsamplesize(1000) mcmleiterations(15)
+qui nwergm mydirnet, edges mutual mcmcburnin(1000) mcmcinterval(20) mcmcsamplesize(1000) mcmleeffectivesize(0) mcmleiterations(15)
 qui estat mcmcdiag
 assert r(acceptrate) > 0 & r(acceptrate) <= 1
 assert reldif(r(acceptrate), e(mcmc_acceptrate)) < 1e-10
@@ -204,7 +204,7 @@ di "=== ergm_geweke_z()/ergm_heidel_diag(): correctly distinguish converged from
 * =====================================================================
 
 set seed 999
-qui nwergm mydirnet, edges mutual mcmcburnin(1000) mcmcinterval(20) mcmcsamplesize(1000) mcmleiterations(15) nomcmcsample
+qui nwergm mydirnet, edges mutual mcmcburnin(1000) mcmcinterval(20) mcmcsamplesize(1000) mcmleeffectivesize(0) mcmleiterations(15) nomcmcsample
 capture confirm matrix e(mcmcsample)
 assert _rc != 0
 assert e(mcmc_samplesize) == 1000

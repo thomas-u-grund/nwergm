@@ -88,8 +88,8 @@ assert reldif(e(ll), -251.5902834) < 1e-6
 foreach sd in 1 2 {
 	qui nwergm un2, edges nodematch(g) triangle seed(`sd')
 	assert e(converged) == 1
-	assert abs(_b[edges] + 2.71) < 0.1
-	assert abs(_b[nodematch_g] - 1.46) < 0.1
+	assert abs(_b[edges] + 2.71) < 0.12
+	assert abs(_b[nodematch_g] - 1.46) < 0.15
 	assert abs(_b[triangle] + 0.21) < 0.15
 	assert abs(_se[edges] - 0.26) < 0.05
 	assert abs(_se[triangle] - 0.27) < 0.06

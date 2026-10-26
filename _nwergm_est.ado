@@ -153,8 +153,14 @@ program _nwergm_est_ctl
 		di "{err}Hummel termination requires a non-missing {bf:mcmlestepmargin()} and {bf:mcmlesteplength(1)}."
 		exit 198
 	}
-	if `effsize' < 0 local effsize .
-	mata: ergm_ctl = (`tcode', `confidence', `steplength', `margin', `effsize', 0.5)
+	// R: MCMLE.effectiveSize = 64 by default (adaptive sample size); 0 = fixed-size samples (R: NULL)
+	local adapt 1
+	if `effsize' < 0 local effsize 64
+	if `effsize' == 0 {
+		local adapt 0
+		local effsize .
+	}
+	mata: ergm_ctl = (`tcode', `confidence', `steplength', `margin', `effsize', 0.5, `adapt')
 end
 
 capture program drop _nwergm_est_cdstart
