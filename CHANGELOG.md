@@ -5,6 +5,12 @@ project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.3.2] - 2026-10-27
+
+### Changed
+- README: the manual is on Zenodo; the all-versions address is https://doi.org/10.5281/zenodo.23661331. Cite the manual by that address together with the package version printed by `nwergm version`.
+- Development script `dev/ergm_benchmark_usair/01_prep_network.do` no longer reaches into the internal network registry of the core package (its name changes between core versions). It reads the network with `nwtomata`; the exported edge list is identical to the earlier one. No change to the package itself (same code and plugins as 1.3.1; core 3.6.0 or later).
+
 ## [1.3.1] - 2026-10-26
 
 ### Fixed
