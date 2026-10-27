@@ -32,9 +32,9 @@ fit and term & & nwergm & ergm & $|\Delta|$ & SE nwergm & SE ergm\\\midrule
 & \opt{b2degree\_6} & 2.75054 & 2.75054 & 6.1e-10 & 0.62388 & 0.62387\\
 & \opt{b1star\_2} & -0.13954 & -0.13954 & 1.7e-11 & 0.13553 & 0.13553\\
 \bottomrule\end{tabular}\end{table}
-\begin{table}[ht]\centering\small\caption{Monte Carlo maximum likelihood, Lazega friendship network, five seeds each: mean and (in parentheses) standard deviation over the seeds of the coefficients, and mean standard error. nwergm with its default settings (adaptive sample), nwergm with the settings of version 1.1 and fixed-size samples (\texttt{mcmleeffectivesize(0) mcmcburnin(3000) mcmcinterval(50)}: 3000 draws per iteration), and ergm with its default settings.}\label{tab:cmpmcmle}
+\begin{table}[ht]\centering\small\caption{Monte Carlo maximum likelihood, Lazega friendship network, five seeds each: mean and (in parentheses) standard deviation over the seeds of the coefficients, and mean standard error. nwergm with its default settings (adaptive sample), nwergm with a short fixed chain (fixed-size samples, \texttt{mcmleeffectivesize(0) mcmcburnin(3000) mcmcinterval(50)}: 3000 draws per iteration), and ergm with its default settings.}\label{tab:cmpmcmle}
 \begin{tabular}{@{}lrrrrrr@{}}\toprule
- & \multicolumn{2}{c}{nwergm, default} & \multicolumn{2}{c}{nwergm, fixed, old settings} & \multicolumn{2}{c}{ergm}\\\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+ & \multicolumn{2}{c}{nwergm, default} & \multicolumn{2}{c}{nwergm, short fixed chain} & \multicolumn{2}{c}{ergm}\\\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
 term & mean (sd) & SE & mean (sd) & SE & mean (sd) & SE\\\midrule
 \opt{edges} & -3.318 (0.010) & 0.133 & -3.332 (0.009) & 0.138 & -3.315 (0.003) & 0.136\\
 \opt{mutual} & 0.804 (0.008) & 0.160 & 0.817 (0.033) & 0.174 & 0.804 (0.006) & 0.161\\

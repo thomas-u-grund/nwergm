@@ -43,8 +43,8 @@ out.append("\\bottomrule\\end{tabular}\\end{table}")
 def seeds(P, prefix):
     return [P[k] for k in P if k.startswith(prefix)]
 nw, nl, rr = seeds(S, "laz_mcmle_"), seeds(S, "laz_mcmleO_"), seeds(R, "laz_mcmle_")
-out.append("\\begin{table}[ht]\\centering\\small\\caption{Monte Carlo maximum likelihood, Lazega friendship network, five seeds each: mean and (in parentheses) standard deviation over the seeds of the coefficients, and mean standard error. nwergm with its default settings (adaptive sample), nwergm with the settings of version 1.1 and fixed-size samples (\\texttt{mcmleeffectivesize(0) mcmcburnin(3000) mcmcinterval(50)}: 3000 draws per iteration), and ergm with its default settings.}\\label{tab:cmpmcmle}")
-out.append("\\begin{tabular}{@{}lrrrrrr@{}}\\toprule\n & \\multicolumn{2}{c}{nwergm, default} & \\multicolumn{2}{c}{nwergm, fixed, old settings} & \\multicolumn{2}{c}{ergm}\\\\\\cmidrule(lr){2-3}\\cmidrule(lr){4-5}\\cmidrule(lr){6-7}\nterm & mean (sd) & SE & mean (sd) & SE & mean (sd) & SE\\\\\\midrule")
+out.append("\\begin{table}[ht]\\centering\\small\\caption{Monte Carlo maximum likelihood, Lazega friendship network, five seeds each: mean and (in parentheses) standard deviation over the seeds of the coefficients, and mean standard error. nwergm with its default settings (adaptive sample), nwergm with a short fixed chain (fixed-size samples, \\texttt{mcmleeffectivesize(0) mcmcburnin(3000) mcmcinterval(50)}: 3000 draws per iteration), and ergm with its default settings.}\\label{tab:cmpmcmle}")
+out.append("\\begin{tabular}{@{}lrrrrrr@{}}\\toprule\n & \\multicolumn{2}{c}{nwergm, default} & \\multicolumn{2}{c}{nwergm, short fixed chain} & \\multicolumn{2}{c}{ergm}\\\\\\cmidrule(lr){2-3}\\cmidrule(lr){4-5}\\cmidrule(lr){6-7}\nterm & mean (sd) & SE & mean (sd) & SE & mean (sd) & SE\\\\\\midrule")
 maxdiffsd = 0
 for j, (n1, _, _) in enumerate(nw[0]):
     cells = []
@@ -83,7 +83,7 @@ print("stat max diff %.2e, mple max coef diff %.2e, max rel SE diff %.2e, max mc
 # ---- run times of the Lazega model (ex9a_timing.do, r/timing.R)
 tm, rt = rd("timing.csv"), rd("r_timing.csv")
 lines = ["\\begin{tabular}{@{}>{\\raggedright\\arraybackslash}p{7.4cm}rrrr@{}}\\toprule\nsetting & runs & median & range & iterations\\\\\\midrule"]
-for lab, k, src in (("nwergm 1.3, default settings", "default", tm), ("nwergm, fixed 3000 draws (\\texttt{mcmleeffectivesize(0)}, as in 1.2)", "fixed", tm), ("nwergm, fixed 3000 draws, burn-in 3000, interval 50 (as in 1.1)", "old", tm),
+for lab, k, src in (("nwergm, default settings", "default", tm), ("nwergm, fixed 3000 draws (\\texttt{mcmleeffectivesize(0)})", "fixed", tm), ("nwergm, fixed 3000 draws, burn-in 3000, interval 50", "old", tm),
                     ("nwergm, Mata sampler (\\texttt{nonative}, default settings)", "default nonative", tm), ("R \\texttt{ergm()}, default settings", "ergm default", rt)):
     v = [float(r["seconds"]) for r in src if r["setting"] == k]
     it = [float(r["iterations"]) for r in src if r["setting"] == k]
