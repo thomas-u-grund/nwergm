@@ -33,12 +33,19 @@ nwfromedge sourceap destap, directed name(usair)
 di "nodes: " e(nodes)
 di "ties: " e(ties)
 
+* Read the network through the supported command nwtomata (adjacency matrix in Mata), not through the
+* core's internal network registry, whose name differs between core versions.
+nwtomata usair, mat(A)
 mata:
-mata set matastrict off
-p = nw.nws.pdefs[nw.nws.get_index_of("usair")]
-el = p->edgelist()
+n = rows(A)
+el = J(0, 2, .)
+for (i=1; i<=n; i++) {
+	j = selectindex((A[i,.] :!= 0) :& ((1..n) :!= i))
+	if (cols(j)) el = el \ (J(cols(j), 1, i), j')
+}
+(void) _unlink("`ddir'/usair_edgelist.csv")
 fh = fopen("`ddir'/usair_edgelist.csv", "w")
 for (i=1; i<=rows(el); i++) fput(fh, strofreal(el[i,1]) + "," + strofreal(el[i,2]))
 fclose(fh)
-printf("exported usair_edgelist.csv: %g nodes, %g directed ties\n", p->get_nodes(), rows(el))
+printf("exported usair_edgelist.csv: %g nodes, %g directed ties\n", n, rows(el))
 end
