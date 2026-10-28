@@ -8,7 +8,7 @@ Two rules from there that are easy to miss: push the release tag by name (`git p
 (old local tags of this clone never existed on GitHub); and build `lib/*.mlib` with Stata 17, not 18.
 
 Manual (`manual/`): rebuild it with `make -C manual pdf` and `make -C manual check`; rerun the examples first (`NWCORE=/path/to/nwcommands make -C manual examples`) if the
-output changed. The manual is labelled by the minor series ("Manual for version 1.2"); `\pkgversion` and `\pkgdate` in `manual/*.tex` (written by `tools/set_version.py`) name
+output changed. The manual's title and citation carry no version number ("nwergm: Exponential random graph models in Stata. Manual"; the title page states the series it describes); `\pkgversion` and `\pkgdate` in `manual/*.tex` (written by `tools/set_version.py`) name
 the exact package version the listings were produced with. Commit the PDF with `git add -f manual/nwergm_manual.pdf`. A new Zenodo version of the manual only for a new minor or
 major whose documented behaviour changed (master B.10; steps in `manual/ZENODO.md`).
 

@@ -4,7 +4,7 @@
 
 ## Bumping the version (one-line change)
 
-The manual is labelled by the minor series, "Manual for version 1.3" (`\manualseries`, valid for 1.3.x). The exact version and date of the release that produced the listings are two more macros in `nwergm_manual.tex` (written by `tools/set_version.py`):
+The manual's title and citation carry no version number; the title page states the series it describes (`\manualseries`, valid for 1.3.x). The exact version and date of the release that produced the listings are two more macros in `nwergm_manual.tex` (written by `tools/set_version.py`):
 
     \newcommand{\manualseries}{1.3}
     \newcommand{\pkgversion}{1.3.0}
@@ -14,7 +14,7 @@ Change `\manualseries` only for a new minor or major release whose documented be
 
 ## The DOI
 
-`\manualdoi` in `nwergm_manual.tex` holds 10.5281/zenodo.23661332, the DOI reserved for the record. UNCONFIRMED: it may be the version DOI and not the all-versions DOI; after publication replace it by the all-versions DOI, rebuild, and add the DOI to the citation texts listed in `ZENODO.md`.
+`\manualdoi` in `nwergm_manual.tex` holds 10.5281/zenodo.23661331, the all-versions DOI of the Zenodo record (the owner's rule: the all-versions DOI everywhere). Add it to the citation texts listed in `ZENODO.md`.
 
 ## Building
 

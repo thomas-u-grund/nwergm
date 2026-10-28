@@ -2,17 +2,17 @@
 
 Metadata ready to paste into a new Zenodo upload. Nothing has been uploaded.
 
-**DOI (unconfirmed).** The owner reserved 10.5281/zenodo.23661332 for this manual; it is printed on the title page and in the citation (`\manualdoi` in `nwergm_manual.tex`). It is not known whether this is the version DOI of the first version or the all-versions ("Cite all versions") DOI, and the record is not yet published (the Zenodo API answers 404). The citation text must use the all-versions DOI (master RELEASING.md B.10). After publication, send the all-versions DOI to the maintainer, replace `\manualdoi`, rebuild and replace the PDF in the record if it differs.
+**DOI.** The all-versions ("Cite all versions") DOI of this manual is 10.5281/zenodo.23661331 (owner, 2026-10-28); it is printed on the title page and in the citation (`\manualdoi` in `nwergm_manual.tex`). The citation text always uses the all-versions DOI (master RELEASING.md B.10).
 
-**Labelling.** The manual is labelled by the minor series ("Manual for version 1.3", valid for 1.3.x). The package version it was built with (1.3.0) is the exact version of the examples. The Zenodo version field below holds 1.3.0 and is explained there as the series label: the record is the manual of the series 1.3, and a patch release of the package (1.3.1, ...) does not get a new record or version.
+**Labelling.** The title and the citation of the manual contain no version number. The Zenodo version label is the series "X.Y" (for example "1.3"; internal to Zenodo, not part of the citation), and the description says that the manual describes nwergm X.Y.x. The PDF title page has one line saying which series it describes (`\manualseries`); the exact package version of the examples is `\pkgversion`. The software version is cited separately, as printed by `nwergm version`. A patch release of the package (1.3.1, ...) does not get a new Zenodo version.
 
-**Patch releases.** The manual of the series 1.3 holds for 1.3.x; a patch release changes no documented option or number. The label stays "Manual for version 1.3"; no new Zenodo version is needed for a patch.
+**Patch releases.** The manual of the series 1.3 holds for 1.3.x; a patch release changes no documented option or number. Title and citation stay unchanged; no new Zenodo version is needed for a patch.
 
 ## Metadata
 
-**Title.** nwergm: Exponential random graph models in Stata. Manual for version 1.3
+**Title.** nwergm: Exponential random graph models in Stata. Manual
 
-**Version.** 1.3.0 (the series label: the manual describes the series 1.3 of nwergm, and 1.3.0 is the first release of the series, the version the examples were produced with; it holds for all versions 1.3.x)
+**Version.** 1.3 (the series label, internal to Zenodo: the manual describes nwergm 1.3.x; not part of the citation)
 
 **Publication date.** 2026-10-26 (or the day of the upload)
 
@@ -50,16 +50,16 @@ Confirm that the GitHub release v1.3.0 is published before the upload, because t
 0. This file describes the manual for the series 1.3 (the first manual of nwergm on Zenodo). The listings, comparison tables and run times were regenerated with nwergm 1.3.0 and nwcommands 3.10.0. The run-time tables were remeasured on 27 October 2026 on an idle machine (R and nwergm in turn, median of seven fits): nwergm is 2.9 to 9.4 times faster than ergm 4.12.0 on the eight benchmark models; the description above carries no timing numbers and needs no change.
 1. For a later patch release (1.3.1, ...) nothing is uploaded: only `\pkgversion` and `\pkgdate` change (`tools/set_version.py`), the examples are rerun if their output changes, and the PDF is committed. A new Zenodo version only for 1.4 or 2.0 with changed documented behaviour: then change `\manualseries` too.
 2. On zenodo.org upload `manual/nwergm_manual.pdf` to the reserved record (DOI above), fill the fields above, and publish.
-3. Send the all-versions DOI to the maintainer (or put it into `\manualdoi`), rebuild, and replace the file in the draft if the DOI changed the PDF.
+3. Check that the all-versions DOI of the record is 10.5281/zenodo.23661331 (it is already in `\manualdoi`).
 4. Commit the rebuilt PDF (`git add -f manual/nwergm_manual.pdf`) on the branch that carries the manual.
 
 ## Suggested edits after the DOI exists (not made)
 
-Replace NNNNNNN by the DOI.
+The DOI is 10.5281/zenodo.23661331 (all versions).
 
-1. `README.md` (repository), section Manual: add "Archived at Zenodo: https://doi.org/10.5281/zenodo.NNNNNNN". The PDF now has 104 pages; "about 100 pages" in the README is still right.
-2. `CITATION.cff`: add a `preferred-citation` as in nwsaom: type manual, title "nwergm: Exponential random graph models in Stata. Manual for version 1.3", author Grund, Thomas U., year 2026, publisher Zenodo, doi 10.5281/zenodo.NNNNNNN.
-3. `NOTICE.md`, section How to cite: add the line "Grund, T. U. (2026). nwergm: Exponential random graph models in Stata. Manual for version 1.3. Zenodo. https://doi.org/10.5281/zenodo.NNNNNNN".
+1. `README.md` (repository), section Manual: add "Archived at Zenodo: https://doi.org/10.5281/zenodo.23661331". The PDF now has 104 pages; "about 100 pages" in the README is still right.
+2. `CITATION.cff`: add a `preferred-citation` as in nwsaom: type manual, title "nwergm: Exponential random graph models in Stata. Manual", author Grund, Thomas U., year 2026, publisher Zenodo, doi 10.5281/zenodo.23661331.
+3. `NOTICE.md`, section How to cite: add the line "Grund, T. U. (2026). nwergm: Exponential random graph models in Stata. Manual. Zenodo. https://doi.org/10.5281/zenodo.23661331".
 4. Website `nwergm/citation.md`: replace "There is no archived record with a DOI yet." by a sentence giving the manual's citation and the DOI, and change the block quote to the manual citation as above; the example "nwergm 1.1.1" and the text "(version 1.1.1)" become the current version (1.3.0).
 5. Website `citing.md`: nwergm leaves the list "nwergm, nwdynam and nwrem. These have no DOI" and gets its own entry with the manual citation, as nwsaom has; the version in the nwergm entry becomes 1.3.0.
 6. Website `index.md` (packages table) and `nwergm/index.md` (Version row): 1.1.1 becomes 1.3.0; add the "Manual" menu entry for nwergm (a copy of `website/nwsaom/manual.md` with the nwergm DOI, `nav_order` 10, permalink `/nwergm/manual/`); `news.md`: a dated entry "nwergm manual archived at Zenodo".
