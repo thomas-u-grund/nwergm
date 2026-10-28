@@ -7,7 +7,7 @@ project uses [Semantic Versioning](https://semver.org/).
 
 ## [1.3.5] - 2026-10-28
 
-Patch release (dialogs only; prototype to be tested in a real window). The Mata libraries and the plugin are unchanged.
+Patch release (dialogs only; includes the changes listed under 1.3.4, which was not released separately). The Mata libraries and the plugin are unchanged.
 
 ### Changed
 - The simulate dialog starts with the choice "Use the model of the last nwergm fit". It is on when the last estimation was nwergm; the command is then `nwergm simulate, nsim() ...` and all model fields (nodes, terms, theta) are greyed out. Untick it to specify the model yourself.
@@ -16,7 +16,7 @@ Patch release (dialogs only; prototype to be tested in a real window). The Mata 
 
 ## [1.3.4] - 2026-10-28
 
-Patch release. The Mata libraries and the plugin are unchanged.
+Not released separately: these changes are part of 1.3.5. The Mata libraries and the plugin are unchanged.
 
 ### Changed
 
