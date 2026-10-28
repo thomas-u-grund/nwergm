@@ -105,7 +105,9 @@ class C:
                     parts.append("dropdownlist contents(%s) values(%s)" % (k["lst"], k["lst"] + "_v"))
             else:
                 parts.append("dropdown contents(netlist)")
-        if self.kind != "TEXT" and self.kind != "GROUPBOX":
+        if self.kind == "BUTTON":
+            parts.append('label("%s") onpush(program %s)' % (k["label"], k["prog"]))
+        if self.kind not in ("TEXT", "GROUPBOX", "BUTTON"):
             parts.append("nomem")
         return base + ", " + " ".join(parts)
 
@@ -396,6 +398,11 @@ def assemble(b, plan):
     b.pages = newpages
 
 
+# related dialogs opened from the main dialog: (control id, x, width, label, dialog name)
+RELATED_BUTTONS = [("bt_simulate", 400, 190, "Simulate networks...", "nwergm_simulate"),
+                   ("bt_estat", 600, 300, "Postestimation and goodness of fit...", "nwergm_estat")]
+
+
 def build_main(which):
     b = Builder(which)
     ents = entries_for(which)
@@ -425,6 +432,11 @@ def build_main(which):
         b.build_tab(t, rows, first)
         first = False
     assemble(b, TAB_PLAN[which])
+    if which == "ergm":
+        # push buttons that open the related dialogs, on the first row of the Basic tab (right of the network drop-down)
+        first = b.pages[0]
+        for cid, x, w, lab, dlgn in RELATED_BUTTONS:
+            first["ctls"].append(C("BUTTON", cid, x, 9, w, 22, label=lab, prog="open_" + dlgn))
     b.register()
     return b, ents
 
@@ -829,6 +841,9 @@ def emit_file(b, ents, which, fname, label, help_cmd, dlgname, cmdprog):
         L.append(ptxt)
         L.append("END")
         L.append("")
+    if dlgname == "nwergm":
+        for cid, x, w, lab, dn in RELATED_BUTTONS:
+            L += ["PROGRAM open_%s" % dn, "BEGIN", '\tput "db %s"' % dn, "\tstata hidden", "END", ""]
     L.append("PROGRAM command")
     L.append("BEGIN")
     L.append(cmdprog)

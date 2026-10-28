@@ -363,7 +363,7 @@ def check_file(fname, which):
                     # TEXT labels sit 2px lower than edits in the same row; only report real overlaps of different kinds of widgets
                     fail("%s: controls %s and %s overlap in tab %s" % (base, cs[i][0], cs[j][0], dn))
     # 4 options in command program
-    prog = "\n".join(b for nm, body in d.programs.items() if nm != "initialize" for (_, b) in body)
+    prog = "\n".join(b for nm, body in d.programs.items() if nm != "initialize" and not nm.startswith("open_") for (_, b) in body)
     lits = re.findall(r'put\s+(.*)', prog)
     words = set()
     for l in lits:

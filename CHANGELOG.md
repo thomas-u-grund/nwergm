@@ -5,6 +5,13 @@ project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.3.3] - 2026-10-28
+
+Patch release. The Mata libraries and the plugin are unchanged.
+
+### Changed
+- **Dialog box.** The main dialog (`db nwergm`) has two buttons on its first tab, "Simulate networks..." and "Postestimation and goodness of fit...", that open the matching dialogs. The commands the dialogs build are unchanged.
+
 ## [1.3.2] - 2026-10-27
 
 ### Changed
