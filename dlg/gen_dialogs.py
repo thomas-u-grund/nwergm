@@ -107,6 +107,8 @@ class C:
                 parts.append("dropdown contents(netlist)")
         if self.kind == "BUTTON":
             parts.append('label("%s") onpush(program %s)' % (k["label"], k["prog"]))
+        if k.get("opt") and self.kind in ("EDIT", "COMBOBOX", "VARLIST", "VARNAME"):
+            parts.append("option(%s)" % k["opt"])   # used by optionarg, which trims blanks around the value
         if self.kind not in ("TEXT", "GROUPBOX", "BUTTON"):
             parts.append("nomem")
         return base + ", " + " ".join(parts)
@@ -148,6 +150,14 @@ class Builder:
 
     # -- widgets -------------------------------------------------------------------------
     def widget(self, e, f, cid, x, y, w=None):
+        c = self.widget0(e, f, cid, x, y, w)
+        if e["kind"] in ("opt", "ctl") and c.kind != "CHECKBOX":
+            for (oname, fname) in e.get("options", []):
+                if fname == f["name"] and not oname.startswith("__"):
+                    c.kw["opt"] = oname
+        return c
+
+    def widget0(self, e, f, cid, x, y, w=None):
         w = w or field_width(f)
         kind = f["w"]
         if kind == "combo":
@@ -516,20 +526,26 @@ def gen_opt(b, out, e):
     out.open(cx)
     fm = e["fields"][0]
     out.w("require " + ref(b, cid_f(e, "main")))
-    put(out, q(" %s(" % e["name"]), ref(b, cid_f(e, "main")))
-    for f in e["fields"][1:]:
-        if f["name"] == "sub":
-            if e.get("subreq"):
-                out.w("require " + ref(b, cid_f(e, "sub")))
-            out.open(ref(b, cid_f(e, "sub")))
-            put(out, q(", "), ref(b, cid_f(e, "sub")))
+    sub = [f for f in e["fields"][1:] if f["name"] == "sub"]
+    if sub:
+        # optionarg trims the blanks around the value; with sub-options the closing bracket needs a put
+        if e.get("subreq"):
+            out.w("require " + ref(b, cid_f(e, "sub")))
+        else:
+            out.open("!" + ref(b, cid_f(e, "sub")))
+            out.w("optionarg /asis " + ref(b, cid_f(e, "main")))
             out.close()
-    put(out, q(")"))
+            out.open(ref(b, cid_f(e, "sub")))
+        put(out, q(" %s(" % e["name"]), ref(b, cid_f(e, "main")), q(", "), ref(b, cid_f(e, "sub")), q(")"))
+        if not e.get("subreq"):
+            out.close()
+    else:
+        out.w("optionarg /asis " + ref(b, cid_f(e, "main")))
     for f in e["fields"][1:]:
         if f["name"] != "sub":
             oname = [o for o in e["options"] if o[1] == f["name"]][0][0]
             out.open(ref(b, cid_f(e, f["name"])))
-            put(out, q(" %s(" % oname), ref(b, cid_f(e, f["name"])), q(")"))
+            out.w("optionarg /asis " + ref(b, cid_f(e, f["name"])))
             out.close()
     out.close()
 
@@ -543,13 +559,9 @@ def gen_ctl(b, out, e):
         put(out, q(" " + name))
         out.close()
     elif f["w"] == "combo":
-        out.open('%s.isneq("")' % r)
-        put(out, q(" %s(" % name), r, q(")"))
-        out.close()
+        out.w("optionarg /asis " + r)
     else:
-        out.open(r)
-        put(out, q(" %s(" % name), r, q(")"))
-        out.close()
+        out.w("optionarg /asis " + r)
 
 
 def token_conds(b, e):
@@ -643,6 +655,7 @@ def chunk_emit(out, prefix, fns):
             name = "%s%d" % (prefix, k)
             PROGS[name] = cur.text()
             out.w("put /program " + name)
+            out.w('put " "')   # the text of a sub-program is joined to the next one without a blank
             cur = Out()
     for fn in fns:
         fn(cur)
@@ -843,7 +856,7 @@ def emit_file(b, ents, which, fname, label, help_cmd, dlgname, cmdprog):
         L.append("")
     if dlgname == "nwergm":
         for cid, x, w, lab, dn in RELATED_BUTTONS:
-            L += ["PROGRAM open_%s" % dn, "BEGIN", '\tput "db %s"' % dn, "\tstata hidden", "END", ""]
+            L += ["PROGRAM open_%s" % dn, "BEGIN", '\tput "db %s"' % dn, "\tstata hidden queue", "END", ""]
     L.append("PROGRAM command")
     L.append("BEGIN")
     L.append(cmdprog)

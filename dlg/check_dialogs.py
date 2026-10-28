@@ -239,6 +239,20 @@ def build_command(dlg, values):
             if m:
                 run(_logical_lines(dlg.programs[m.group(1)]), depth + 1)
                 continue
+            m = re.match(r"optionarg /asis (\S+)$", ln)
+            if m:
+                cid = m.group(1).split(".")[1]
+                v = val(cid)
+                if v not in (None, "", False):
+                    on = None
+                    for d_ in dlg.dialogs.values():
+                        if cid in d_["ctrls"]:
+                            mm = re.search(r"option\((\w+)\)", d_["ctrls"][cid]["opts"] or "")
+                            on = mm.group(1) if mm else None
+                    if on is None:
+                        raise ValueError("optionarg on a control without option(): " + cid)
+                    out.append(" %s(%s) " % (on, str(v).strip()))
+                continue
             m = re.match(r"put (.*)$", ln)
             if m:
                 for t in re.findall(r'"[^"]*"|\S+', m.group(1)):
@@ -366,6 +380,11 @@ def check_file(fname, which):
     prog = "\n".join(b for nm, body in d.programs.items() if nm != "initialize" and not nm.startswith("open_") for (_, b) in body)
     lits = re.findall(r'put\s+(.*)', prog)
     words = set()
+    for d_ in d.dialogs.values():
+        for c_ in d_["ctrls"].values():
+            mm = re.search(r"option\((\w+)\)", c_["opts"] or "")
+            if mm:
+                words.add(mm.group(1))
     for l in lits:
         for s in re.findall(r'"([^"]*)"', l):
             m = re.match(r"\s*([A-Za-z][A-Za-z0-9_.]*)", s)

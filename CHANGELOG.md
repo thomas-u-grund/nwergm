@@ -12,6 +12,8 @@ Patch release. The Mata libraries and the plugin are unchanged.
 ### Changed
 
 - Dialogs (nwergm and nwergm simulate): the geometrically weighted terms are easier to find. gwesp(), gwdsp(), gwnsp(), their decay-estimated versions gwespfree(), gwdspfree(), gwnspfree() and the type() box for directed shared partners moved from the Curved tab to the Triads tab. gwdegree(), gwodegree(), gwidegree() and their decay-estimated versions moved to the Degree tab. The Curved tab is gone because nothing was left on it. The commands the dialogs build are unchanged.
+- Dialogs: the 'Simulate networks...' and 'Postestimation...' buttons gave the Stata message 'Wait until Stata has completed the current command...'. They now queue the db command instead of running it at once, so the related dialog opens.
+- Dialogs: the command built by the dialogs no longer has a blank before a closing bracket (nodecov(wealth) instead of nodecov(wealth )), and the terms are always separated by one blank. With sub-options a blank can remain before the comma.
 
 ## [1.3.3] - 2026-10-28
 

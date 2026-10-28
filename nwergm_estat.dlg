@@ -27,25 +27,25 @@ END
 DIALOG gof, tabtitle("GOF")
 BEGIN
   TEXT      tx_g_nsim 10 12 200 ., label("nsim()")
-  EDIT      f_g_nsim 215 10 110 ., nomem
+  EDIT      f_g_nsim 215 10 110 ., option(nsim) nomem
   TEXT      tx_h1 335 12 650 ., label("simulated networks; default 100")
   TEXT      tx_g_seed 10 33 200 ., label("seed()")
-  EDIT      f_g_seed 215 31 110 ., nomem
+  EDIT      f_g_seed 215 31 110 ., option(seed) nomem
   TEXT      tx_h2 335 33 650 ., label("random-number seed")
   TEXT      tx_g_burnin 10 54 200 ., label("gofburnin()")
-  EDIT      f_g_burnin 215 52 110 ., nomem
+  EDIT      f_g_burnin 215 52 110 ., option(gofburnin) nomem
   TEXT      tx_h3 335 54 650 ., label("default: burn-in of the fit")
   TEXT      tx_g_interval 10 75 200 ., label("gofinterval()")
-  EDIT      f_g_interval 215 73 110 ., nomem
+  EDIT      f_g_interval 215 73 110 ., option(gofinterval) nomem
   TEXT      tx_h4 335 75 650 ., label("default: interval of the fit")
   TEXT      tx_g_maxdeg 10 96 200 ., label("maxdeg()")
-  EDIT      f_g_maxdeg 215 94 110 ., nomem
+  EDIT      f_g_maxdeg 215 94 110 ., option(maxdeg) nomem
   TEXT      tx_h5 335 96 650 ., label("largest degree plotted; default 15")
   TEXT      tx_g_maxdist 10 117 200 ., label("maxdist()")
-  EDIT      f_g_maxdist 215 115 110 ., nomem
+  EDIT      f_g_maxdist 215 115 110 ., option(maxdist) nomem
   TEXT      tx_h6 335 117 650 ., label("largest distance plotted; default 6")
   TEXT      tx_g_name 10 138 200 ., label("name()")
-  EDIT      f_g_name 215 136 110 ., nomem
+  EDIT      f_g_name 215 136 110 ., option(name) nomem
   TEXT      tx_h7 335 138 650 ., label("name of the graph")
   CHECKBOX  f_g_plot 10 157 200 ., label("plot") default(0) nomem
   TEXT      tx_h8 220 159 765 ., label("draw the comparison graphs")
@@ -66,13 +66,13 @@ END
 DIALOG mcmcdiag, tabtitle("MCMC")
 BEGIN
   TEXT      tx_m_pvalue 10 12 200 ., label("pvalue()")
-  COMBOBOX  f_m_pvalue 215 10 100 ., dropdownlist contents(l_f_m_pvalue) values(l_f_m_pvalue_v) nomem
+  COMBOBOX  f_m_pvalue 215 10 100 ., dropdownlist contents(l_f_m_pvalue) values(l_f_m_pvalue_v) option(pvalue) nomem
   TEXT      tx_h9 325 12 660 ., label("level of the stationarity test")
   TEXT      tx_m_eps 10 33 200 ., label("eps()")
-  EDIT      f_m_eps 215 31 110 ., nomem
+  EDIT      f_m_eps 215 31 110 ., option(eps) nomem
   TEXT      tx_h10 335 33 650 ., label("half-width tolerance; default 0.1")
   TEXT      tx_m_name 10 54 200 ., label("name()")
-  EDIT      f_m_name 215 52 110 ., nomem
+  EDIT      f_m_name 215 52 110 ., option(name) nomem
   TEXT      tx_h11 335 54 650 ., label("name of the combined graph")
   CHECKBOX  f_m_plot 10 73 200 ., label("plot") default(0) nomem
   TEXT      tx_h12 220 75 765 ., label("trace and density plots")
@@ -86,27 +86,27 @@ END
 DIALOG simfit, tabtitle("Simulate")
 BEGIN
   TEXT      tx_s_nsim 10 12 200 ., label("nsim()")
-  EDIT      f_s_nsim 215 10 110 ., nomem
+  EDIT      f_s_nsim 215 10 110 ., option(nsim) nomem
   TEXT      tx_h13 335 12 650 ., label("default 1")
   TEXT      tx_s_seed 10 33 200 ., label("seed()")
-  EDIT      f_s_seed 215 31 110 ., nomem
+  EDIT      f_s_seed 215 31 110 ., option(seed) nomem
   TEXT      tx_s_output 10 54 200 ., label("output()")
-  COMBOBOX  f_s_output 215 52 100 ., dropdownlist contents(l_f_s_output) values(l_f_s_output_v) nomem
+  COMBOBOX  f_s_output 215 52 100 ., dropdownlist contents(l_f_s_output) values(l_f_s_output_v) option(output) nomem
   TEXT      tx_h14 325 54 660 ., label("what to produce (default network)")
   TEXT      tx_s_basis 10 75 200 ., label("basis()")
-  COMBOBOX  f_s_basis 215 73 170 ., dropdown contents(netlist) nomem
+  COMBOBOX  f_s_basis 215 73 170 ., dropdown contents(netlist) option(basis) nomem
   TEXT      tx_h15 395 75 590 ., label("start network (default: last network of the fit)")
   TEXT      tx_s_coef 10 96 200 ., label("coef()")
-  EDIT      f_s_coef 215 94 110 ., nomem
+  EDIT      f_s_coef 215 94 110 ., option(coef) nomem
   TEXT      tx_h16 335 96 650 ., label("name of a Stata matrix with the coefficients")
   CHECKBOX  f_s_nosequential 10 115 200 ., label("nosequential") default(0) nomem
   TEXT      tx_h17 220 117 765 ., label("restart every draw from the start network")
   TEXT      tx_s_burnin 10 138 200 ., label("burnin()")
-  EDIT      f_s_burnin 215 136 110 ., nomem
+  EDIT      f_s_burnin 215 136 110 ., option(burnin) nomem
   TEXT      tx_s_interval 10 159 200 ., label("interval()")
-  EDIT      f_s_interval 215 157 110 ., nomem
+  EDIT      f_s_interval 215 157 110 ., option(interval) nomem
   TEXT      tx_s_generate 10 180 200 ., label("generate()")
-  EDIT      f_s_generate 215 178 110 ., nomem
+  EDIT      f_s_generate 215 178 110 ., option(generate) nomem
   TEXT      tx_h18 335 180 650 ., label("stub for the simulated networks")
   CHECKBOX  f_s_clear 10 199 200 ., label("clear") default(0) nomem
   TEXT      tx_h19 220 201 765 ., label("needed with output(edgelist)")
@@ -178,27 +178,13 @@ BEGIN
 	if main.cb_which.iseq("gof") {
 		put "estat gof"
 		beginoptions
-			if gof.f_g_nsim {
-				put " nsim(" gof.f_g_nsim ")"
-			}
-			if gof.f_g_seed {
-				put " seed(" gof.f_g_seed ")"
-			}
-			if gof.f_g_burnin {
-				put " gofburnin(" gof.f_g_burnin ")"
-			}
-			if gof.f_g_interval {
-				put " gofinterval(" gof.f_g_interval ")"
-			}
-			if gof.f_g_maxdeg {
-				put " maxdeg(" gof.f_g_maxdeg ")"
-			}
-			if gof.f_g_maxdist {
-				put " maxdist(" gof.f_g_maxdist ")"
-			}
-			if gof.f_g_name {
-				put " name(" gof.f_g_name ")"
-			}
+			optionarg /asis gof.f_g_nsim
+			optionarg /asis gof.f_g_seed
+			optionarg /asis gof.f_g_burnin
+			optionarg /asis gof.f_g_interval
+			optionarg /asis gof.f_g_maxdeg
+			optionarg /asis gof.f_g_maxdist
+			optionarg /asis gof.f_g_name
 			if gof.f_g_plot {
 				put " plot"
 			}
@@ -276,15 +262,9 @@ BEGIN
 	if main.cb_which.iseq("mcmcdiag") {
 		put "estat mcmcdiag"
 		beginoptions
-			if mcmcdiag.f_m_pvalue.isneq("") {
-				put " pvalue(" mcmcdiag.f_m_pvalue ")"
-			}
-			if mcmcdiag.f_m_eps {
-				put " eps(" mcmcdiag.f_m_eps ")"
-			}
-			if mcmcdiag.f_m_name {
-				put " name(" mcmcdiag.f_m_name ")"
-			}
+			optionarg /asis mcmcdiag.f_m_pvalue
+			optionarg /asis mcmcdiag.f_m_eps
+			optionarg /asis mcmcdiag.f_m_name
 			if mcmcdiag.f_m_plot {
 				put " plot"
 			}
@@ -293,33 +273,17 @@ BEGIN
 	if main.cb_which.iseq("simfit") {
 		put "nwergm simulate"
 		beginoptions
-			if simfit.f_s_nsim {
-				put " nsim(" simfit.f_s_nsim ")"
-			}
-			if simfit.f_s_seed {
-				put " seed(" simfit.f_s_seed ")"
-			}
-			if simfit.f_s_output.isneq("") {
-				put " output(" simfit.f_s_output ")"
-			}
-			if simfit.f_s_basis {
-				put " basis(" simfit.f_s_basis ")"
-			}
-			if simfit.f_s_coef {
-				put " coef(" simfit.f_s_coef ")"
-			}
+			optionarg /asis simfit.f_s_nsim
+			optionarg /asis simfit.f_s_seed
+			optionarg /asis simfit.f_s_output
+			optionarg /asis simfit.f_s_basis
+			optionarg /asis simfit.f_s_coef
 			if simfit.f_s_nosequential {
 				put " nosequential"
 			}
-			if simfit.f_s_burnin {
-				put " burnin(" simfit.f_s_burnin ")"
-			}
-			if simfit.f_s_interval {
-				put " interval(" simfit.f_s_interval ")"
-			}
-			if simfit.f_s_generate {
-				put " generate(" simfit.f_s_generate ")"
-			}
+			optionarg /asis simfit.f_s_burnin
+			optionarg /asis simfit.f_s_interval
+			optionarg /asis simfit.f_s_generate
 			if simfit.f_s_clear {
 				put " clear"
 			}

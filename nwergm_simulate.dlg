@@ -1097,47 +1097,47 @@ BEGIN
   COMBOBOX  cb_sec_deg 85 10 380 ., dropdownlist contents(l_sec_deg) onselchangelist(l_sec_deg_a) nomem
   TEXT      tx_s10_deg 10 45 960 ., label("== Degree, geometrically weighted: fixed decay ==")
   CHECKBOX  cx_gwdegree 10 64 235 ., label("gwdegree()") default(0) nomem
-  EDIT      f_gwdegree 253 64 170 ., default("0.5") nomem
+  EDIT      f_gwdegree 253 64 170 ., default("0.5") option(gwdegree) nomem
   TEXT      tx_h15 431 66 554 ., label("decay; undirected only")
   CHECKBOX  cx_gwodegree 10 85 235 ., label("gwodegree()") default(0) nomem
-  EDIT      f_gwodegree 253 85 170 ., default("0.5") nomem
+  EDIT      f_gwodegree 253 85 170 ., default("0.5") option(gwodegree) nomem
   TEXT      tx_h16 431 87 554 ., label("decay; directed only")
   CHECKBOX  cx_gwidegree 10 106 235 ., label("gwidegree()") default(0) nomem
-  EDIT      f_gwidegree 253 106 170 ., default("0.5") nomem
+  EDIT      f_gwidegree 253 106 170 ., default("0.5") option(gwidegree) nomem
   TEXT      tx_h17 431 108 554 ., label("decay; directed only")
   TEXT      tx_s94_deg 10 129 960 ., label("== Degree distribution (native options) ==")
   CHECKBOX  cx_degree 10 148 235 ., label("degree()") default(0) nomem
-  EDIT      f_degree 253 148 170 ., nomem
+  EDIT      f_degree 253 148 170 ., option(degree) nomem
   TEXT      tx_h18 431 150 554 ., label("numlist, e.g. 1 2 3; undirected only")
   CHECKBOX  cx_odegree 10 169 235 ., label("odegree()") default(0) nomem
-  EDIT      f_odegree 253 169 170 ., nomem
+  EDIT      f_odegree 253 169 170 ., option(odegree) nomem
   TEXT      tx_h19 431 171 554 ., label("numlist; directed only")
   CHECKBOX  cx_idegree 10 190 235 ., label("idegree()") default(0) nomem
-  EDIT      f_idegree 253 190 170 ., nomem
+  EDIT      f_idegree 253 190 170 ., option(idegree) nomem
   TEXT      tx_h20 431 192 554 ., label("numlist; directed only")
   CHECKBOX  cx_kstar 10 211 235 ., label("kstar()") default(0) nomem
-  EDIT      f_kstar 253 211 170 ., nomem
+  EDIT      f_kstar 253 211 170 ., option(kstar) nomem
   TEXT      tx_h21 431 213 554 ., label("numlist of k; undirected only")
   CHECKBOX  cx_ostar 10 232 235 ., label("ostar()") default(0) nomem
-  EDIT      f_ostar 253 232 170 ., nomem
+  EDIT      f_ostar 253 232 170 ., option(ostar) nomem
   TEXT      tx_h22 431 234 554 ., label("numlist of k; directed only")
   CHECKBOX  cx_istar 10 253 235 ., label("istar()") default(0) nomem
-  EDIT      f_istar 253 253 170 ., nomem
+  EDIT      f_istar 253 253 170 ., option(istar) nomem
   TEXT      tx_h23 431 255 554 ., label("numlist of k; directed only")
   CHECKBOX  cx_degrange 10 274 235 ., label("degrange() + degrangeto()") default(0) nomem
-  EDIT      f_degrange 253 274 170 ., nomem
+  EDIT      f_degrange 253 274 170 ., option(degrange) nomem
   TEXT      tx_degrange_to 431 276 75 ., label("degrangeto:")
-  EDIT      f_degrange_to 506 274 90 ., nomem
+  EDIT      f_degrange_to 506 274 90 ., option(degrangeto) nomem
   TEXT      tx_h24 604 276 381 ., label("from-values, then to-values; undirected only")
   CHECKBOX  cx_odegrange 10 295 235 ., label("odegrange() + odegrangeto()") default(0) nomem
-  EDIT      f_odegrange 253 295 170 ., nomem
+  EDIT      f_odegrange 253 295 170 ., option(odegrange) nomem
   TEXT      tx_odegrange_to 431 297 81 ., label("odegrangeto:")
-  EDIT      f_odegrange_to 512 295 90 ., nomem
+  EDIT      f_odegrange_to 512 295 90 ., option(odegrangeto) nomem
   TEXT      tx_h25 610 297 375 ., label("from-values, then to-values; directed only")
   CHECKBOX  cx_idegrange 10 316 235 ., label("idegrange() + idegrangeto()") default(0) nomem
-  EDIT      f_idegrange 253 316 170 ., nomem
+  EDIT      f_idegrange 253 316 170 ., option(idegrange) nomem
   TEXT      tx_idegrange_to 431 318 81 ., label("idegrangeto:")
-  EDIT      f_idegrange_to 512 316 90 ., nomem
+  EDIT      f_idegrange_to 512 316 90 ., option(idegrangeto) nomem
   TEXT      tx_h26 610 318 375 ., label("from-values, then to-values; directed only")
   TEXT      tx_s304_deg 10 339 960 ., label("== Degree terms with by= / homophily (structural()) ==")
   CHECKBOX  cx_s_degree 10 358 235 ., label("degree(d= by= homophily)") default(0) nomem
@@ -1235,23 +1235,23 @@ BEGIN
   COMBOBOX  cb_sec_tri 85 10 380 ., dropdownlist contents(l_sec_tri) onselchangelist(l_sec_tri_a) nomem
   TEXT      tx_s10_tri 10 45 960 ., label("== Shared partners (native options) ==")
   CHECKBOX  cx_esp 10 64 190 ., label("esp()") default(0) nomem
-  EDIT      f_esp 208 64 170 ., nomem
+  EDIT      f_esp 208 64 170 ., option(esp) nomem
   TEXT      tx_h44 386 66 599 ., label("numlist of d; see type() above")
   CHECKBOX  cx_dsp 10 85 190 ., label("dsp()") default(0) nomem
-  EDIT      f_dsp 208 85 170 ., nomem
+  EDIT      f_dsp 208 85 170 ., option(dsp) nomem
   TEXT      tx_h45 386 87 599 ., label("numlist of d; see type() above")
   TEXT      tx_type 10 108 200 ., label("type()  - directed shared partners")
-  COMBOBOX  f_type 215 106 100 ., dropdownlist contents(l_f_type) values(l_f_type_v) nomem
+  COMBOBOX  f_type 215 106 100 ., dropdownlist contents(l_f_type) values(l_f_type_v) option(type) nomem
   TEXT      tx_h46 325 108 660 ., label("applies to gwesp gwdsp gwnsp esp dsp (directed networks)")
   TEXT      tx_s94_tri 10 129 960 ., label("== Shared partners, geometrically weighted: fixed decay ==")
   CHECKBOX  cx_gwesp 10 148 190 ., label("gwesp()") default(0) nomem
-  EDIT      f_gwesp 208 148 170 ., default("0.5") nomem
+  EDIT      f_gwesp 208 148 170 ., default("0.5") option(gwesp) nomem
   TEXT      tx_h47 386 150 599 ., label("decay; edgewise shared partners")
   CHECKBOX  cx_gwdsp 10 169 190 ., label("gwdsp()") default(0) nomem
-  EDIT      f_gwdsp 208 169 170 ., default("0.5") nomem
+  EDIT      f_gwdsp 208 169 170 ., default("0.5") option(gwdsp) nomem
   TEXT      tx_h48 386 171 599 ., label("decay; dyadwise shared partners")
   CHECKBOX  cx_gwnsp 10 190 190 ., label("gwnsp()") default(0) nomem
-  EDIT      f_gwnsp 208 190 170 ., default("0.5") nomem
+  EDIT      f_gwnsp 208 190 170 ., default("0.5") option(gwnsp) nomem
   TEXT      tx_h49 386 192 599 ., label("decay; non-edgewise shared partners")
   TEXT      tx_s178_tri 10 213 960 ., label("== Triad terms (structural()) ==")
   CHECKBOX  cx_s_triangle 10 232 190 ., label("triangle(attr= diff)") default(0) nomem
@@ -1334,61 +1334,61 @@ DIALOG cov, tabtitle("Covariate")
 BEGIN
   TEXT      tx_s10_cov 10 12 960 ., label("== Node attribute terms (variables; the part after the comma is passed on as suboptions) ==")
   CHECKBOX  cx_nodecov 10 31 190 ., label("nodecov()") default(0) nomem
-  VARLIST   f_nodecov 208 31 200 ., label("vars") nomem
+  VARLIST   f_nodecov 208 31 200 ., label("vars") option(nodecov) nomem
   TEXT      tx_nodecov_c 416 33 8 ., label(",")
   EDIT      f_nodecov_sub 428 31 150 ., nomem
   TEXT      tx_h69 586 33 399 ., label("[, expressions allowed]")
   CHECKBOX  cx_nodeicov 10 52 190 ., label("nodeicov()") default(0) nomem
-  VARLIST   f_nodeicov 208 52 200 ., label("vars") nomem
+  VARLIST   f_nodeicov 208 52 200 ., label("vars") option(nodeicov) nomem
   TEXT      tx_nodeicov_c 416 54 8 ., label(",")
   EDIT      f_nodeicov_sub 428 52 150 ., nomem
   TEXT      tx_h70 586 54 399 ., label("directed only")
   CHECKBOX  cx_nodeocov 10 73 190 ., label("nodeocov()") default(0) nomem
-  VARLIST   f_nodeocov 208 73 200 ., label("vars") nomem
+  VARLIST   f_nodeocov 208 73 200 ., label("vars") option(nodeocov) nomem
   TEXT      tx_nodeocov_c 416 75 8 ., label(",")
   EDIT      f_nodeocov_sub 428 73 150 ., nomem
   TEXT      tx_h71 586 75 399 ., label("directed only")
   CHECKBOX  cx_nodefactor 10 94 190 ., label("nodefactor()") default(0) nomem
-  VARLIST   f_nodefactor 208 94 200 ., label("vars") nomem
+  VARLIST   f_nodefactor 208 94 200 ., label("vars") option(nodefactor) nomem
   TEXT      tx_nodefactor_c 416 96 8 ., label(",")
   EDIT      f_nodefactor_sub 428 94 150 ., nomem
   TEXT      tx_h72 586 96 399 ., label("[, levels() levelvalues() base()]")
   CHECKBOX  cx_nodeofactor 10 115 190 ., label("nodeofactor()") default(0) nomem
-  VARLIST   f_nodeofactor 208 115 200 ., label("vars") nomem
+  VARLIST   f_nodeofactor 208 115 200 ., label("vars") option(nodeofactor) nomem
   TEXT      tx_nodeofactor_c 416 117 8 ., label(",")
   EDIT      f_nodeofactor_sub 428 115 150 ., nomem
   TEXT      tx_h73 586 117 399 ., label("directed; [, levels() base()]")
   CHECKBOX  cx_nodeifactor 10 136 190 ., label("nodeifactor()") default(0) nomem
-  VARLIST   f_nodeifactor 208 136 200 ., label("vars") nomem
+  VARLIST   f_nodeifactor 208 136 200 ., label("vars") option(nodeifactor) nomem
   TEXT      tx_nodeifactor_c 416 138 8 ., label(",")
   EDIT      f_nodeifactor_sub 428 136 150 ., nomem
   TEXT      tx_h74 586 138 399 ., label("directed; [, levels() base()]")
   CHECKBOX  cx_nodematch 10 157 190 ., label("nodematch()") default(0) nomem
-  VARLIST   f_nodematch 208 157 200 ., label("vars") nomem
+  VARLIST   f_nodematch 208 157 200 ., label("vars") option(nodematch) nomem
   TEXT      tx_nodematch_c 416 159 8 ., label(",")
   EDIT      f_nodematch_sub 428 157 150 ., nomem
   TEXT      tx_h75 586 159 399 ., label("[, diff keep() levels() levelvalues()]")
   CHECKBOX  cx_nodematchdiff 10 178 190 ., label("nodematchdiff()") default(0) nomem
-  VARLIST   f_nodematchdiff 208 178 200 ., label("vars") nomem
+  VARLIST   f_nodematchdiff 208 178 200 ., label("vars") option(nodematchdiff) nomem
   TEXT      tx_nodematchdiff_c 416 180 8 ., label(",")
   EDIT      f_nodematchdiff_sub 428 178 150 ., nomem
   TEXT      tx_h76 586 180 399 ., label("same as nodematch(vars, diff)")
   CHECKBOX  cx_nodemix 10 199 190 ., label("nodemix()") default(0) nomem
-  VARLIST   f_nodemix 208 199 200 ., label("vars") nomem
+  VARLIST   f_nodemix 208 199 200 ., label("vars") option(nodemix) nomem
   TEXT      tx_nodemix_c 416 201 8 ., label(",")
   EDIT      f_nodemix_sub 428 199 150 ., nomem
   TEXT      tx_h77 586 201 399 ., label("[, levels() levels2() base()]; also two-mode")
   CHECKBOX  cx_absdist 10 220 190 ., label("absdist()  [absdiff]") default(0) nomem
-  VARLIST   f_absdist 208 220 200 ., label("vars") nomem
+  VARLIST   f_absdist 208 220 200 ., label("vars") option(absdist) nomem
   TEXT      tx_absdist_c 416 222 8 ., label(",")
   EDIT      f_absdist_sub 428 220 150 ., nomem
   TEXT      tx_h78 586 222 399 ., label("[, pow(#)]")
   TEXT      tx_s241_cov 10 243 960 ., label("== Dyadic covariates (networks or matrices) ==")
   CHECKBOX  cx_edgecov 10 262 190 ., label("edgecov()") default(0) nomem
-  COMBOBOX  f_edgecov 208 262 170 ., dropdown contents(netlist) nomem
+  COMBOBOX  f_edgecov 208 262 170 ., dropdown contents(netlist) option(edgecov) nomem
   TEXT      tx_h79 386 264 599 ., label("a network or an n x n Stata matrix; also two-mode")
   CHECKBOX  cx_hamming 10 283 190 ., label("hamming()") default(0) nomem
-  COMBOBOX  f_hamming 208 283 170 ., dropdown contents(netlist) nomem
+  COMBOBOX  f_hamming 208 283 170 ., dropdown contents(netlist) option(hamming) nomem
   TEXT      tx_h80 386 285 599 ., label("Hamming distance to a reference network")
 END
 
@@ -1398,158 +1398,158 @@ BEGIN
   COMBOBOX  cb_sec_two 85 10 380 ., dropdownlist contents(l_sec_two) onselchangelist(l_sec_two_a) nomem
   TEXT      tx_s10_two 10 45 960 ., label("== Two-mode terms (mode-1 / mode-2) ==")
   CHECKBOX  cx_bcov1 10 64 267 ., label("bcov1()  [b1cov]") default(0) nomem
-  VARLIST   f_bcov1 285 64 200 ., label("vars") nomem
+  VARLIST   f_bcov1 285 64 200 ., label("vars") option(bcov1) nomem
   TEXT      tx_h81 493 66 492 ., label("two-mode only; node covariate")
   CHECKBOX  cx_bfactor1 10 85 267 ., label("bfactor1()  [b1factor]") default(0) nomem
-  VARLIST   f_bfactor1 285 85 200 ., label("vars") nomem
+  VARLIST   f_bfactor1 285 85 200 ., label("vars") option(bfactor1) nomem
   TEXT      tx_h82 493 87 492 ., label("two-mode only")
   CHECKBOX  cx_bdegree1 10 106 267 ., label("bdegree1()  [b1degree]") default(0) nomem
-  EDIT      f_bdegree1 285 106 170 ., nomem
+  EDIT      f_bdegree1 285 106 170 ., option(bdegree1) nomem
   TEXT      tx_bdegree1_c 463 108 8 ., label(",")
   EDIT      f_bdegree1_sub 475 106 150 ., nomem
   TEXT      tx_h83 633 108 352 ., label("two-mode only; [, by() levels()]")
   CHECKBOX  cx_bstar1 10 127 267 ., label("bstar1()  [b1star]") default(0) nomem
-  EDIT      f_bstar1 285 127 170 ., nomem
+  EDIT      f_bstar1 285 127 170 ., option(bstar1) nomem
   TEXT      tx_bstar1_c 463 129 8 ., label(",")
   EDIT      f_bstar1_sub 475 127 150 ., nomem
   TEXT      tx_h84 633 129 352 ., label("two-mode only; [, attr() levels()]")
   CHECKBOX  cx_bnodematch1 10 148 267 ., label("bnodematch1()  [b1nodematch]") default(0) nomem
-  VARLIST   f_bnodematch1 285 148 200 ., label("vars") nomem
+  VARLIST   f_bnodematch1 285 148 200 ., label("vars") option(bnodematch1) nomem
   TEXT      tx_bnodematch1_c 493 150 8 ., label(",")
   EDIT      f_bnodematch1_sub 505 148 150 ., nomem
   TEXT      tx_h85 663 150 322 ., label("two-mode only; [, diff alpha()]")
   CHECKBOX  cx_bgwdegree1 10 169 267 ., label("bgwdegree1()  [gwb1degree]") default(0) nomem
-  EDIT      f_bgwdegree1 285 169 170 ., default("0.5") nomem
+  EDIT      f_bgwdegree1 285 169 170 ., default("0.5") option(bgwdegree1) nomem
   TEXT      tx_bgwdegree1_c 463 171 8 ., label(",")
   EDIT      f_bgwdegree1_sub 475 169 150 ., nomem
   TEXT      tx_h86 633 171 352 ., label("two-mode only; decay [, attr() levels()]")
   CHECKBOX  cx_bconcurrent1 10 190 267 ., label("bconcurrent1()  [b1concurrent]") default(0) nomem
-  EDIT      f_bconcurrent1 285 190 170 ., default("all") nomem
+  EDIT      f_bconcurrent1 285 190 170 ., default("all") option(bconcurrent1) nomem
   TEXT      tx_h87 463 192 522 ., label("two-mode only; all  or  by(var) [levels()]")
   CHECKBOX  cx_bmindegree1 10 211 267 ., label("bmindegree1()  [b1mindegree]") default(0) nomem
-  EDIT      f_bmindegree1 285 211 170 ., nomem
+  EDIT      f_bmindegree1 285 211 170 ., option(bmindegree1) nomem
   TEXT      tx_h88 463 213 522 ., label("two-mode only; numlist of d")
   CHECKBOX  cx_bdegrange1 10 232 267 ., label("bdegrange1()  [b1degrange]") default(0) nomem
-  EDIT      f_bdegrange1 285 232 170 ., nomem
+  EDIT      f_bdegrange1 285 232 170 ., option(bdegrange1) nomem
   TEXT      tx_bdegrange1_c 463 234 8 ., label(",")
   EDIT      f_bdegrange1_sub 475 232 150 ., nomem
   TEXT      tx_h89 633 234 352 ., label("two-mode only; [, to() by()]")
   CHECKBOX  cx_bcovrange1 10 253 267 ., label("bcovrange1()  [b1covrange]") default(0) nomem
-  VARLIST   f_bcovrange1 285 253 200 ., label("vars") nomem
+  VARLIST   f_bcovrange1 285 253 200 ., label("vars") option(bcovrange1) nomem
   TEXT      tx_h90 493 255 492 ., label("two-mode only; one variable")
   CHECKBOX  cx_bfactordistinct1 10 274 267 ., label("bfactordistinct1()  [b1factordistinct]") default(0) nomem
-  VARLIST   f_bfactordistinct1 285 274 200 ., label("vars") nomem
+  VARLIST   f_bfactordistinct1 285 274 200 ., label("vars") option(bfactordistinct1) nomem
   TEXT      tx_bfactordistinct1_c 493 276 8 ., label(",")
   EDIT      f_bfactordistinct1_sub 505 274 150 ., nomem
   TEXT      tx_h91 663 276 322 ., label("two-mode only; [, levels()]")
   CHECKBOX  cx_bsociality1 10 295 267 ., label("bsociality1()  [b1sociality]") default(0) nomem
-  EDIT      f_bsociality1 285 295 170 ., default("-1") nomem
+  EDIT      f_bsociality1 285 295 170 ., default("-1") option(bsociality1) nomem
   TEXT      tx_h92 463 297 522 ., label("two-mode only; node positions, -1 drops the first")
   CHECKBOX  cx_bstarmix1 10 316 267 ., label("bstarmix1()  [b1starmix]") default(0) nomem
-  EDIT      f_bstarmix1 285 316 170 ., nomem
+  EDIT      f_bstarmix1 285 316 170 ., option(bstarmix1) nomem
   TEXT      tx_bstarmix1_c 463 318 8 ., label(",")
   EDIT      f_bstarmix1_sub 475 316 150 ., nomem
   TEXT      tx_h93 633 318 352 ., label("two-mode only; k [, attr() base()]")
   CHECKBOX  cx_btwostar1 10 337 267 ., label("btwostar1()  [b1twostar]") default(0) nomem
-  VARLIST   f_btwostar1 285 337 200 ., label("vars") nomem
+  VARLIST   f_btwostar1 285 337 200 ., label("vars") option(btwostar1) nomem
   TEXT      tx_btwostar1_c 493 339 8 ., label(",")
   EDIT      f_btwostar1_sub 505 337 150 ., nomem
   TEXT      tx_h94 663 339 322 ., label("two-mode only; [, attr2()]")
   CHECKBOX  cx_bdsp1 10 358 267 ., label("bdsp1()  [b1dsp]") default(0) nomem
-  EDIT      f_bdsp1 285 358 170 ., nomem
+  EDIT      f_bdsp1 285 358 170 ., option(bdsp1) nomem
   TEXT      tx_h95 463 360 522 ., label("two-mode only; numlist of d")
   CHECKBOX  cx_bgwdsp1 10 379 267 ., label("bgwdsp1()  [gwb1dsp]") default(0) nomem
-  EDIT      f_bgwdsp1 285 379 170 ., default("0.5") nomem
+  EDIT      f_bgwdsp1 285 379 170 ., default("0.5") option(bgwdsp1) nomem
   TEXT      tx_h96 463 381 522 ., label("two-mode only; fixed decay")
   CHECKBOX  cx_bcov2 10 400 267 ., label("bcov2()  [b2cov]") default(0) nomem
-  VARLIST   f_bcov2 285 400 200 ., label("vars") nomem
+  VARLIST   f_bcov2 285 400 200 ., label("vars") option(bcov2) nomem
   TEXT      tx_h97 493 402 492 ., label("two-mode only; node covariate")
   CHECKBOX  cx_bfactor2 10 421 267 ., label("bfactor2()  [b2factor]") default(0) nomem
-  VARLIST   f_bfactor2 285 421 200 ., label("vars") nomem
+  VARLIST   f_bfactor2 285 421 200 ., label("vars") option(bfactor2) nomem
   TEXT      tx_h98 493 423 492 ., label("two-mode only")
   CHECKBOX  cx_bdegree2 10 43 267 ., label("bdegree2()  [b2degree]") default(0) nomem
-  EDIT      f_bdegree2 285 43 170 ., nomem
+  EDIT      f_bdegree2 285 43 170 ., option(bdegree2) nomem
   TEXT      tx_bdegree2_c 463 45 8 ., label(",")
   EDIT      f_bdegree2_sub 475 43 150 ., nomem
   TEXT      tx_h99 633 45 352 ., label("two-mode only; [, by() levels()]")
   CHECKBOX  cx_bstar2 10 64 267 ., label("bstar2()  [b2star]") default(0) nomem
-  EDIT      f_bstar2 285 64 170 ., nomem
+  EDIT      f_bstar2 285 64 170 ., option(bstar2) nomem
   TEXT      tx_bstar2_c 463 66 8 ., label(",")
   EDIT      f_bstar2_sub 475 64 150 ., nomem
   TEXT      tx_h100 633 66 352 ., label("two-mode only; [, attr() levels()]")
   CHECKBOX  cx_bnodematch2 10 85 267 ., label("bnodematch2()  [b2nodematch]") default(0) nomem
-  VARLIST   f_bnodematch2 285 85 200 ., label("vars") nomem
+  VARLIST   f_bnodematch2 285 85 200 ., label("vars") option(bnodematch2) nomem
   TEXT      tx_bnodematch2_c 493 87 8 ., label(",")
   EDIT      f_bnodematch2_sub 505 85 150 ., nomem
   TEXT      tx_h101 663 87 322 ., label("two-mode only; [, diff alpha()]")
   CHECKBOX  cx_bgwdegree2 10 106 267 ., label("bgwdegree2()  [gwb2degree]") default(0) nomem
-  EDIT      f_bgwdegree2 285 106 170 ., default("0.5") nomem
+  EDIT      f_bgwdegree2 285 106 170 ., default("0.5") option(bgwdegree2) nomem
   TEXT      tx_bgwdegree2_c 463 108 8 ., label(",")
   EDIT      f_bgwdegree2_sub 475 106 150 ., nomem
   TEXT      tx_h102 633 108 352 ., label("two-mode only; decay [, attr() levels()]")
   CHECKBOX  cx_bconcurrent2 10 127 267 ., label("bconcurrent2()  [b2concurrent]") default(0) nomem
-  EDIT      f_bconcurrent2 285 127 170 ., default("all") nomem
+  EDIT      f_bconcurrent2 285 127 170 ., default("all") option(bconcurrent2) nomem
   TEXT      tx_h103 463 129 522 ., label("two-mode only; all  or  by(var) [levels()]")
   CHECKBOX  cx_bmindegree2 10 148 267 ., label("bmindegree2()  [b2mindegree]") default(0) nomem
-  EDIT      f_bmindegree2 285 148 170 ., nomem
+  EDIT      f_bmindegree2 285 148 170 ., option(bmindegree2) nomem
   TEXT      tx_h104 463 150 522 ., label("two-mode only; numlist of d")
   CHECKBOX  cx_bdegrange2 10 169 267 ., label("bdegrange2()  [b2degrange]") default(0) nomem
-  EDIT      f_bdegrange2 285 169 170 ., nomem
+  EDIT      f_bdegrange2 285 169 170 ., option(bdegrange2) nomem
   TEXT      tx_bdegrange2_c 463 171 8 ., label(",")
   EDIT      f_bdegrange2_sub 475 169 150 ., nomem
   TEXT      tx_h105 633 171 352 ., label("two-mode only; [, to() by()]")
   CHECKBOX  cx_bcovrange2 10 190 267 ., label("bcovrange2()  [b2covrange]") default(0) nomem
-  VARLIST   f_bcovrange2 285 190 200 ., label("vars") nomem
+  VARLIST   f_bcovrange2 285 190 200 ., label("vars") option(bcovrange2) nomem
   TEXT      tx_h106 493 192 492 ., label("two-mode only; one variable")
   CHECKBOX  cx_bfactordistinct2 10 211 267 ., label("bfactordistinct2()  [b2factordistinct]") default(0) nomem
-  VARLIST   f_bfactordistinct2 285 211 200 ., label("vars") nomem
+  VARLIST   f_bfactordistinct2 285 211 200 ., label("vars") option(bfactordistinct2) nomem
   TEXT      tx_bfactordistinct2_c 493 213 8 ., label(",")
   EDIT      f_bfactordistinct2_sub 505 211 150 ., nomem
   TEXT      tx_h107 663 213 322 ., label("two-mode only; [, levels()]")
   CHECKBOX  cx_bsociality2 10 232 267 ., label("bsociality2()  [b2sociality]") default(0) nomem
-  EDIT      f_bsociality2 285 232 170 ., default("-1") nomem
+  EDIT      f_bsociality2 285 232 170 ., default("-1") option(bsociality2) nomem
   TEXT      tx_h108 463 234 522 ., label("two-mode only; node positions, -1 drops the first")
   CHECKBOX  cx_bstarmix2 10 253 267 ., label("bstarmix2()  [b2starmix]") default(0) nomem
-  EDIT      f_bstarmix2 285 253 170 ., nomem
+  EDIT      f_bstarmix2 285 253 170 ., option(bstarmix2) nomem
   TEXT      tx_bstarmix2_c 463 255 8 ., label(",")
   EDIT      f_bstarmix2_sub 475 253 150 ., nomem
   TEXT      tx_h109 633 255 352 ., label("two-mode only; k [, attr() base()]")
   CHECKBOX  cx_btwostar2 10 274 267 ., label("btwostar2()  [b2twostar]") default(0) nomem
-  VARLIST   f_btwostar2 285 274 200 ., label("vars") nomem
+  VARLIST   f_btwostar2 285 274 200 ., label("vars") option(btwostar2) nomem
   TEXT      tx_btwostar2_c 493 276 8 ., label(",")
   EDIT      f_btwostar2_sub 505 274 150 ., nomem
   TEXT      tx_h110 663 276 322 ., label("two-mode only; [, attr2()]")
   CHECKBOX  cx_bdsp2 10 295 267 ., label("bdsp2()  [b2dsp]") default(0) nomem
-  EDIT      f_bdsp2 285 295 170 ., nomem
+  EDIT      f_bdsp2 285 295 170 ., option(bdsp2) nomem
   TEXT      tx_h111 463 297 522 ., label("two-mode only; numlist of d")
   CHECKBOX  cx_bgwdsp2 10 316 267 ., label("bgwdsp2()  [gwb2dsp]") default(0) nomem
-  EDIT      f_bgwdsp2 285 316 170 ., default("0.5") nomem
+  EDIT      f_bgwdsp2 285 316 170 ., default("0.5") option(bgwdsp2) nomem
   TEXT      tx_h112 463 318 522 ., label("two-mode only; fixed decay")
   CHECKBOX  cx_coincidence 10 337 267 ., label("coincidence()") default(0) nomem
-  EDIT      f_coincidence 285 337 170 ., default("all") nomem
+  EDIT      f_coincidence 285 337 170 ., default("all") option(coincidence) nomem
   TEXT      tx_h113 463 339 522 ., label("two-mode only; all  or  active(#)")
 END
 
 DIALOG space, tabtitle("Sample")
 BEGIN
   TEXT      tx_constraints_extra 10 12 200 ., label("constraints()  typed terms")
-  EDIT      f_constraints_extra 215 10 330 ., nomem
+  EDIT      f_constraints_extra 215 10 330 ., option(constraints) nomem
   TEXT      tx_h114 555 12 430 ., label("e.g. blockdiag(g) + bd(maxout=5)")
 END
 
 DIALOG mcmc, tabtitle("MCMC")
 BEGIN
   TEXT      tx_proposal 10 12 200 ., label("proposal()")
-  COMBOBOX  f_proposal 215 10 100 ., dropdownlist contents(l_f_proposal) values(l_f_proposal_v) nomem
+  COMBOBOX  f_proposal 215 10 100 ., dropdownlist contents(l_f_proposal) values(l_f_proposal_v) option(proposal) nomem
   TEXT      tx_h115 325 12 660 ., label("Metropolis-Hastings proposal (default tnt)")
   TEXT      tx_mcmcburnin 10 33 200 ., label("mcmcburnin()")
-  EDIT      f_mcmcburnin 215 31 80 ., nomem
+  EDIT      f_mcmcburnin 215 31 80 ., option(mcmcburnin) nomem
   TEXT      tx_h116 305 33 680 ., label("default 16 x mcmcinterval (16384)")
   TEXT      tx_mcmcinterval 10 54 200 ., label("mcmcinterval()")
-  EDIT      f_mcmcinterval 215 52 80 ., nomem
+  EDIT      f_mcmcinterval 215 52 80 ., option(mcmcinterval) nomem
   TEXT      tx_h117 305 54 680 ., label("default 1024 (the old default was 50)")
   TEXT      tx_seed 10 75 200 ., label("seed()")
-  EDIT      f_seed 215 73 80 ., nomem
+  EDIT      f_seed 215 73 80 ., option(seed) nomem
   TEXT      tx_h118 305 75 680 ., label("random-number seed")
   CHECKBOX  f_spcache 10 94 200 ., label("spcache") default(0) nomem
   TEXT      tx_h119 220 96 765 ., label("shared-partner cache for dense undirected networks")
@@ -1561,21 +1561,21 @@ BEGIN
   EDIT      f_sim_nodes 215 10 80 ., nomem
   TEXT      tx_h120 305 12 680 ., label("positional argument")
   TEXT      tx_theta 10 33 200 ., label("theta()")
-  EDIT      f_theta 215 31 250 ., nomem
+  EDIT      f_theta 215 31 250 ., option(theta) nomem
   TEXT      tx_h121 475 33 510 ., label("one coefficient per model term, in estimation order")
   TEXT      tx_nsim 10 54 200 ., label("nsim()")
-  EDIT      f_nsim 215 52 80 ., nomem
+  EDIT      f_nsim 215 52 80 ., option(nsim) nomem
   TEXT      tx_h122 305 54 680 ., label("number of networks to draw (default 1)")
   TEXT      tx_generate 10 75 200 ., label("generate()")
-  EDIT      f_generate 215 73 120 ., nomem
+  EDIT      f_generate 215 73 120 ., option(generate) nomem
   TEXT      tx_h123 345 75 640 ., label("stub name of the simulated networks")
   CHECKBOX  f_sim_directed 10 94 200 ., label("directed") default(0) nomem
   TEXT      tx_h124 220 96 765 ., label("simulate a directed network")
   TEXT      tx_bipartite 10 117 200 ., label("bipartite()")
-  EDIT      f_bipartite 215 115 80 ., nomem
+  EDIT      f_bipartite 215 115 80 ., option(bipartite) nomem
   TEXT      tx_h125 305 117 680 ., label("number of mode-1 nodes (two-mode network)")
   TEXT      tx_basis 10 138 200 ., label("basis()")
-  COMBOBOX  f_basis 215 136 150 ., dropdown contents(netlist) nomem
+  COMBOBOX  f_basis 215 136 150 ., dropdown contents(netlist) option(basis) nomem
   TEXT      tx_h126 375 138 610 ., label("start from (and take constraints from) this network")
 END
 
@@ -1725,400 +1725,391 @@ BEGIN
 	}
 	if deg.cx_gwdegree {
 		require deg.f_gwdegree
-		put " gwdegree(" deg.f_gwdegree
-		put ")"
+		optionarg /asis deg.f_gwdegree
 	}
 	if deg.cx_gwodegree {
 		require deg.f_gwodegree
-		put " gwodegree(" deg.f_gwodegree
-		put ")"
+		optionarg /asis deg.f_gwodegree
 	}
 	if deg.cx_gwidegree {
 		require deg.f_gwidegree
-		put " gwidegree(" deg.f_gwidegree
-		put ")"
+		optionarg /asis deg.f_gwidegree
 	}
 	if deg.cx_degree {
 		require deg.f_degree
-		put " degree(" deg.f_degree
-		put ")"
+		optionarg /asis deg.f_degree
 	}
 	if deg.cx_odegree {
 		require deg.f_odegree
-		put " odegree(" deg.f_odegree
-		put ")"
+		optionarg /asis deg.f_odegree
 	}
 	if deg.cx_idegree {
 		require deg.f_idegree
-		put " idegree(" deg.f_idegree
-		put ")"
+		optionarg /asis deg.f_idegree
 	}
 	if deg.cx_kstar {
 		require deg.f_kstar
-		put " kstar(" deg.f_kstar
-		put ")"
+		optionarg /asis deg.f_kstar
 	}
 	if deg.cx_ostar {
 		require deg.f_ostar
-		put " ostar(" deg.f_ostar
-		put ")"
+		optionarg /asis deg.f_ostar
 	}
 	if deg.cx_istar {
 		require deg.f_istar
-		put " istar(" deg.f_istar
-		put ")"
+		optionarg /asis deg.f_istar
 	}
 	if deg.cx_degrange {
 		require deg.f_degrange
-		put " degrange(" deg.f_degrange
-		put ")"
+		optionarg /asis deg.f_degrange
 		if deg.f_degrange_to {
-			put " degrangeto(" deg.f_degrange_to ")"
+			optionarg /asis deg.f_degrange_to
 		}
 	}
 	if deg.cx_odegrange {
 		require deg.f_odegrange
-		put " odegrange(" deg.f_odegrange
-		put ")"
+		optionarg /asis deg.f_odegrange
 		if deg.f_odegrange_to {
-			put " odegrangeto(" deg.f_odegrange_to ")"
+			optionarg /asis deg.f_odegrange_to
 		}
 	}
 	if deg.cx_idegrange {
 		require deg.f_idegrange
-		put " idegrange(" deg.f_idegrange
-		put ")"
+		optionarg /asis deg.f_idegrange
 		if deg.f_idegrange_to {
-			put " idegrangeto(" deg.f_idegrange_to ")"
+			optionarg /asis deg.f_idegrange_to
 		}
 	}
 	if tri.cx_esp {
 		require tri.f_esp
-		put " esp(" tri.f_esp
-		put ")"
+		optionarg /asis tri.f_esp
+	}
+	if tri.cx_dsp {
+		require tri.f_dsp
+		optionarg /asis tri.f_dsp
+	}
+	optionarg /asis tri.f_type
+	if tri.cx_gwesp {
+		require tri.f_gwesp
+		optionarg /asis tri.f_gwesp
+	}
+	if tri.cx_gwdsp {
+		require tri.f_gwdsp
+		optionarg /asis tri.f_gwdsp
 	}
 END
 
 PROGRAM o_plain2
 BEGIN
-	if tri.cx_dsp {
-		require tri.f_dsp
-		put " dsp(" tri.f_dsp
-		put ")"
-	}
-	if tri.f_type.isneq("") {
-		put " type(" tri.f_type ")"
-	}
-	if tri.cx_gwesp {
-		require tri.f_gwesp
-		put " gwesp(" tri.f_gwesp
-		put ")"
-	}
-	if tri.cx_gwdsp {
-		require tri.f_gwdsp
-		put " gwdsp(" tri.f_gwdsp
-		put ")"
-	}
 	if tri.cx_gwnsp {
 		require tri.f_gwnsp
-		put " gwnsp(" tri.f_gwnsp
-		put ")"
+		optionarg /asis tri.f_gwnsp
 	}
 	if cov.cx_nodecov {
 		require cov.f_nodecov
-		put " nodecov(" cov.f_nodecov
-		if cov.f_nodecov_sub {
-			put ", " cov.f_nodecov_sub
+		if !cov.f_nodecov_sub {
+			optionarg /asis cov.f_nodecov
 		}
-		put ")"
+		if cov.f_nodecov_sub {
+			put " nodecov(" cov.f_nodecov ", " cov.f_nodecov_sub ")"
+		}
 	}
 	if cov.cx_nodeicov {
 		require cov.f_nodeicov
-		put " nodeicov(" cov.f_nodeicov
-		if cov.f_nodeicov_sub {
-			put ", " cov.f_nodeicov_sub
+		if !cov.f_nodeicov_sub {
+			optionarg /asis cov.f_nodeicov
 		}
-		put ")"
+		if cov.f_nodeicov_sub {
+			put " nodeicov(" cov.f_nodeicov ", " cov.f_nodeicov_sub ")"
+		}
 	}
 	if cov.cx_nodeocov {
 		require cov.f_nodeocov
-		put " nodeocov(" cov.f_nodeocov
-		if cov.f_nodeocov_sub {
-			put ", " cov.f_nodeocov_sub
+		if !cov.f_nodeocov_sub {
+			optionarg /asis cov.f_nodeocov
 		}
-		put ")"
+		if cov.f_nodeocov_sub {
+			put " nodeocov(" cov.f_nodeocov ", " cov.f_nodeocov_sub ")"
+		}
 	}
 	if cov.cx_nodefactor {
 		require cov.f_nodefactor
-		put " nodefactor(" cov.f_nodefactor
-		if cov.f_nodefactor_sub {
-			put ", " cov.f_nodefactor_sub
+		if !cov.f_nodefactor_sub {
+			optionarg /asis cov.f_nodefactor
 		}
-		put ")"
+		if cov.f_nodefactor_sub {
+			put " nodefactor(" cov.f_nodefactor ", " cov.f_nodefactor_sub ")"
+		}
 	}
 	if cov.cx_nodeofactor {
 		require cov.f_nodeofactor
-		put " nodeofactor(" cov.f_nodeofactor
-		if cov.f_nodeofactor_sub {
-			put ", " cov.f_nodeofactor_sub
+		if !cov.f_nodeofactor_sub {
+			optionarg /asis cov.f_nodeofactor
 		}
-		put ")"
+		if cov.f_nodeofactor_sub {
+			put " nodeofactor(" cov.f_nodeofactor ", " cov.f_nodeofactor_sub ")"
+		}
 	}
 	if cov.cx_nodeifactor {
 		require cov.f_nodeifactor
-		put " nodeifactor(" cov.f_nodeifactor
-		if cov.f_nodeifactor_sub {
-			put ", " cov.f_nodeifactor_sub
+		if !cov.f_nodeifactor_sub {
+			optionarg /asis cov.f_nodeifactor
 		}
-		put ")"
+		if cov.f_nodeifactor_sub {
+			put " nodeifactor(" cov.f_nodeifactor ", " cov.f_nodeifactor_sub ")"
+		}
 	}
 	if cov.cx_nodematch {
 		require cov.f_nodematch
-		put " nodematch(" cov.f_nodematch
-		if cov.f_nodematch_sub {
-			put ", " cov.f_nodematch_sub
+		if !cov.f_nodematch_sub {
+			optionarg /asis cov.f_nodematch
 		}
-		put ")"
+		if cov.f_nodematch_sub {
+			put " nodematch(" cov.f_nodematch ", " cov.f_nodematch_sub ")"
+		}
 	}
 	if cov.cx_nodematchdiff {
 		require cov.f_nodematchdiff
-		put " nodematchdiff(" cov.f_nodematchdiff
-		if cov.f_nodematchdiff_sub {
-			put ", " cov.f_nodematchdiff_sub
+		if !cov.f_nodematchdiff_sub {
+			optionarg /asis cov.f_nodematchdiff
 		}
-		put ")"
+		if cov.f_nodematchdiff_sub {
+			put " nodematchdiff(" cov.f_nodematchdiff ", " cov.f_nodematchdiff_sub ")"
+		}
 	}
 	if cov.cx_nodemix {
 		require cov.f_nodemix
-		put " nodemix(" cov.f_nodemix
-		if cov.f_nodemix_sub {
-			put ", " cov.f_nodemix_sub
+		if !cov.f_nodemix_sub {
+			optionarg /asis cov.f_nodemix
 		}
-		put ")"
+		if cov.f_nodemix_sub {
+			put " nodemix(" cov.f_nodemix ", " cov.f_nodemix_sub ")"
+		}
 	}
 	if cov.cx_absdist {
 		require cov.f_absdist
-		put " absdist(" cov.f_absdist
-		if cov.f_absdist_sub {
-			put ", " cov.f_absdist_sub
+		if !cov.f_absdist_sub {
+			optionarg /asis cov.f_absdist
 		}
-		put ")"
+		if cov.f_absdist_sub {
+			put " absdist(" cov.f_absdist ", " cov.f_absdist_sub ")"
+		}
+	}
+	if cov.cx_edgecov {
+		require cov.f_edgecov
+		optionarg /asis cov.f_edgecov
+	}
+	if cov.cx_hamming {
+		require cov.f_hamming
+		optionarg /asis cov.f_hamming
 	}
 END
 
 PROGRAM o_plain3
 BEGIN
-	if cov.cx_edgecov {
-		require cov.f_edgecov
-		put " edgecov(" cov.f_edgecov
-		put ")"
-	}
-	if cov.cx_hamming {
-		require cov.f_hamming
-		put " hamming(" cov.f_hamming
-		put ")"
-	}
 	if two.cx_bcov1 {
 		require two.f_bcov1
-		put " bcov1(" two.f_bcov1
-		put ")"
+		optionarg /asis two.f_bcov1
 	}
 	if two.cx_bfactor1 {
 		require two.f_bfactor1
-		put " bfactor1(" two.f_bfactor1
-		put ")"
+		optionarg /asis two.f_bfactor1
 	}
 	if two.cx_bdegree1 {
 		require two.f_bdegree1
-		put " bdegree1(" two.f_bdegree1
-		if two.f_bdegree1_sub {
-			put ", " two.f_bdegree1_sub
+		if !two.f_bdegree1_sub {
+			optionarg /asis two.f_bdegree1
 		}
-		put ")"
+		if two.f_bdegree1_sub {
+			put " bdegree1(" two.f_bdegree1 ", " two.f_bdegree1_sub ")"
+		}
 	}
 	if two.cx_bstar1 {
 		require two.f_bstar1
-		put " bstar1(" two.f_bstar1
-		if two.f_bstar1_sub {
-			put ", " two.f_bstar1_sub
+		if !two.f_bstar1_sub {
+			optionarg /asis two.f_bstar1
 		}
-		put ")"
+		if two.f_bstar1_sub {
+			put " bstar1(" two.f_bstar1 ", " two.f_bstar1_sub ")"
+		}
 	}
 	if two.cx_bnodematch1 {
 		require two.f_bnodematch1
-		put " bnodematch1(" two.f_bnodematch1
-		if two.f_bnodematch1_sub {
-			put ", " two.f_bnodematch1_sub
+		if !two.f_bnodematch1_sub {
+			optionarg /asis two.f_bnodematch1
 		}
-		put ")"
+		if two.f_bnodematch1_sub {
+			put " bnodematch1(" two.f_bnodematch1 ", " two.f_bnodematch1_sub ")"
+		}
 	}
 	if two.cx_bgwdegree1 {
 		require two.f_bgwdegree1
-		put " bgwdegree1(" two.f_bgwdegree1
-		if two.f_bgwdegree1_sub {
-			put ", " two.f_bgwdegree1_sub
+		if !two.f_bgwdegree1_sub {
+			optionarg /asis two.f_bgwdegree1
 		}
-		put ")"
+		if two.f_bgwdegree1_sub {
+			put " bgwdegree1(" two.f_bgwdegree1 ", " two.f_bgwdegree1_sub ")"
+		}
 	}
 	if two.cx_bconcurrent1 {
 		require two.f_bconcurrent1
-		put " bconcurrent1(" two.f_bconcurrent1
-		put ")"
+		optionarg /asis two.f_bconcurrent1
 	}
 	if two.cx_bmindegree1 {
 		require two.f_bmindegree1
-		put " bmindegree1(" two.f_bmindegree1
-		put ")"
+		optionarg /asis two.f_bmindegree1
 	}
 	if two.cx_bdegrange1 {
 		require two.f_bdegrange1
-		put " bdegrange1(" two.f_bdegrange1
-		if two.f_bdegrange1_sub {
-			put ", " two.f_bdegrange1_sub
+		if !two.f_bdegrange1_sub {
+			optionarg /asis two.f_bdegrange1
 		}
-		put ")"
+		if two.f_bdegrange1_sub {
+			put " bdegrange1(" two.f_bdegrange1 ", " two.f_bdegrange1_sub ")"
+		}
 	}
 	if two.cx_bcovrange1 {
 		require two.f_bcovrange1
-		put " bcovrange1(" two.f_bcovrange1
-		put ")"
+		optionarg /asis two.f_bcovrange1
 	}
 	if two.cx_bfactordistinct1 {
 		require two.f_bfactordistinct1
-		put " bfactordistinct1(" two.f_bfactordistinct1
-		if two.f_bfactordistinct1_sub {
-			put ", " two.f_bfactordistinct1_sub
+		if !two.f_bfactordistinct1_sub {
+			optionarg /asis two.f_bfactordistinct1
 		}
-		put ")"
+		if two.f_bfactordistinct1_sub {
+			put " bfactordistinct1(" two.f_bfactordistinct1 ", " two.f_bfactordistinct1_sub ")"
+		}
 	}
 	if two.cx_bsociality1 {
 		require two.f_bsociality1
-		put " bsociality1(" two.f_bsociality1
-		put ")"
+		optionarg /asis two.f_bsociality1
 	}
 	if two.cx_bstarmix1 {
 		require two.f_bstarmix1
-		put " bstarmix1(" two.f_bstarmix1
-		if two.f_bstarmix1_sub {
-			put ", " two.f_bstarmix1_sub
+		if !two.f_bstarmix1_sub {
+			optionarg /asis two.f_bstarmix1
 		}
-		put ")"
+		if two.f_bstarmix1_sub {
+			put " bstarmix1(" two.f_bstarmix1 ", " two.f_bstarmix1_sub ")"
+		}
 	}
 	if two.cx_btwostar1 {
 		require two.f_btwostar1
-		put " btwostar1(" two.f_btwostar1
-		if two.f_btwostar1_sub {
-			put ", " two.f_btwostar1_sub
+		if !two.f_btwostar1_sub {
+			optionarg /asis two.f_btwostar1
 		}
-		put ")"
+		if two.f_btwostar1_sub {
+			put " btwostar1(" two.f_btwostar1 ", " two.f_btwostar1_sub ")"
+		}
+	}
+	if two.cx_bdsp1 {
+		require two.f_bdsp1
+		optionarg /asis two.f_bdsp1
 	}
 END
 
 PROGRAM o_plain4
 BEGIN
-	if two.cx_bdsp1 {
-		require two.f_bdsp1
-		put " bdsp1(" two.f_bdsp1
-		put ")"
-	}
 	if two.cx_bgwdsp1 {
 		require two.f_bgwdsp1
-		put " bgwdsp1(" two.f_bgwdsp1
-		put ")"
+		optionarg /asis two.f_bgwdsp1
 	}
 	if two.cx_bcov2 {
 		require two.f_bcov2
-		put " bcov2(" two.f_bcov2
-		put ")"
+		optionarg /asis two.f_bcov2
 	}
 	if two.cx_bfactor2 {
 		require two.f_bfactor2
-		put " bfactor2(" two.f_bfactor2
-		put ")"
+		optionarg /asis two.f_bfactor2
 	}
 	if two.cx_bdegree2 {
 		require two.f_bdegree2
-		put " bdegree2(" two.f_bdegree2
-		if two.f_bdegree2_sub {
-			put ", " two.f_bdegree2_sub
+		if !two.f_bdegree2_sub {
+			optionarg /asis two.f_bdegree2
 		}
-		put ")"
+		if two.f_bdegree2_sub {
+			put " bdegree2(" two.f_bdegree2 ", " two.f_bdegree2_sub ")"
+		}
 	}
 	if two.cx_bstar2 {
 		require two.f_bstar2
-		put " bstar2(" two.f_bstar2
-		if two.f_bstar2_sub {
-			put ", " two.f_bstar2_sub
+		if !two.f_bstar2_sub {
+			optionarg /asis two.f_bstar2
 		}
-		put ")"
+		if two.f_bstar2_sub {
+			put " bstar2(" two.f_bstar2 ", " two.f_bstar2_sub ")"
+		}
 	}
 	if two.cx_bnodematch2 {
 		require two.f_bnodematch2
-		put " bnodematch2(" two.f_bnodematch2
-		if two.f_bnodematch2_sub {
-			put ", " two.f_bnodematch2_sub
+		if !two.f_bnodematch2_sub {
+			optionarg /asis two.f_bnodematch2
 		}
-		put ")"
+		if two.f_bnodematch2_sub {
+			put " bnodematch2(" two.f_bnodematch2 ", " two.f_bnodematch2_sub ")"
+		}
 	}
 	if two.cx_bgwdegree2 {
 		require two.f_bgwdegree2
-		put " bgwdegree2(" two.f_bgwdegree2
-		if two.f_bgwdegree2_sub {
-			put ", " two.f_bgwdegree2_sub
+		if !two.f_bgwdegree2_sub {
+			optionarg /asis two.f_bgwdegree2
 		}
-		put ")"
+		if two.f_bgwdegree2_sub {
+			put " bgwdegree2(" two.f_bgwdegree2 ", " two.f_bgwdegree2_sub ")"
+		}
 	}
 	if two.cx_bconcurrent2 {
 		require two.f_bconcurrent2
-		put " bconcurrent2(" two.f_bconcurrent2
-		put ")"
+		optionarg /asis two.f_bconcurrent2
 	}
 	if two.cx_bmindegree2 {
 		require two.f_bmindegree2
-		put " bmindegree2(" two.f_bmindegree2
-		put ")"
+		optionarg /asis two.f_bmindegree2
 	}
 	if two.cx_bdegrange2 {
 		require two.f_bdegrange2
-		put " bdegrange2(" two.f_bdegrange2
-		if two.f_bdegrange2_sub {
-			put ", " two.f_bdegrange2_sub
+		if !two.f_bdegrange2_sub {
+			optionarg /asis two.f_bdegrange2
 		}
-		put ")"
+		if two.f_bdegrange2_sub {
+			put " bdegrange2(" two.f_bdegrange2 ", " two.f_bdegrange2_sub ")"
+		}
 	}
 	if two.cx_bcovrange2 {
 		require two.f_bcovrange2
-		put " bcovrange2(" two.f_bcovrange2
-		put ")"
+		optionarg /asis two.f_bcovrange2
 	}
 	if two.cx_bfactordistinct2 {
 		require two.f_bfactordistinct2
-		put " bfactordistinct2(" two.f_bfactordistinct2
-		if two.f_bfactordistinct2_sub {
-			put ", " two.f_bfactordistinct2_sub
+		if !two.f_bfactordistinct2_sub {
+			optionarg /asis two.f_bfactordistinct2
 		}
-		put ")"
+		if two.f_bfactordistinct2_sub {
+			put " bfactordistinct2(" two.f_bfactordistinct2 ", " two.f_bfactordistinct2_sub ")"
+		}
 	}
 	if two.cx_bsociality2 {
 		require two.f_bsociality2
-		put " bsociality2(" two.f_bsociality2
-		put ")"
+		optionarg /asis two.f_bsociality2
 	}
 	if two.cx_bstarmix2 {
 		require two.f_bstarmix2
-		put " bstarmix2(" two.f_bstarmix2
-		if two.f_bstarmix2_sub {
-			put ", " two.f_bstarmix2_sub
+		if !two.f_bstarmix2_sub {
+			optionarg /asis two.f_bstarmix2
 		}
-		put ")"
+		if two.f_bstarmix2_sub {
+			put " bstarmix2(" two.f_bstarmix2 ", " two.f_bstarmix2_sub ")"
+		}
 	}
 	if two.cx_btwostar2 {
 		require two.f_btwostar2
-		put " btwostar2(" two.f_btwostar2
-		if two.f_btwostar2_sub {
-			put ", " two.f_btwostar2_sub
+		if !two.f_btwostar2_sub {
+			optionarg /asis two.f_btwostar2
 		}
-		put ")"
+		if two.f_btwostar2_sub {
+			put " btwostar2(" two.f_btwostar2 ", " two.f_btwostar2_sub ")"
+		}
 	}
 END
 
@@ -2126,52 +2117,31 @@ PROGRAM o_plain5
 BEGIN
 	if two.cx_bdsp2 {
 		require two.f_bdsp2
-		put " bdsp2(" two.f_bdsp2
-		put ")"
+		optionarg /asis two.f_bdsp2
 	}
 	if two.cx_bgwdsp2 {
 		require two.f_bgwdsp2
-		put " bgwdsp2(" two.f_bgwdsp2
-		put ")"
+		optionarg /asis two.f_bgwdsp2
 	}
 	if two.cx_coincidence {
 		require two.f_coincidence
-		put " coincidence(" two.f_coincidence
-		put ")"
+		optionarg /asis two.f_coincidence
 	}
-	if mcmc.f_proposal.isneq("") {
-		put " proposal(" mcmc.f_proposal ")"
-	}
-	if mcmc.f_mcmcburnin {
-		put " mcmcburnin(" mcmc.f_mcmcburnin ")"
-	}
-	if mcmc.f_mcmcinterval {
-		put " mcmcinterval(" mcmc.f_mcmcinterval ")"
-	}
-	if mcmc.f_seed {
-		put " seed(" mcmc.f_seed ")"
-	}
+	optionarg /asis mcmc.f_proposal
+	optionarg /asis mcmc.f_mcmcburnin
+	optionarg /asis mcmc.f_mcmcinterval
+	optionarg /asis mcmc.f_seed
 	if mcmc.f_spcache {
 		put " spcache"
 	}
-	if simctl.f_theta {
-		put " theta(" simctl.f_theta ")"
-	}
-	if simctl.f_nsim {
-		put " nsim(" simctl.f_nsim ")"
-	}
-	if simctl.f_generate {
-		put " generate(" simctl.f_generate ")"
-	}
+	optionarg /asis simctl.f_theta
+	optionarg /asis simctl.f_nsim
+	optionarg /asis simctl.f_generate
 	if simctl.f_sim_directed {
 		put " directed"
 	}
-	if simctl.f_bipartite {
-		put " bipartite(" simctl.f_bipartite ")"
-	}
-	if simctl.f_basis {
-		put " basis(" simctl.f_basis ")"
-	}
+	optionarg /asis simctl.f_bipartite
+	optionarg /asis simctl.f_basis
 END
 
 PROGRAM o_struct1
@@ -2660,10 +2630,15 @@ BEGIN
 	put "nwergm simulate " simctl.f_sim_nodes
 	beginoptions
 		put /program o_plain1
+		put " "
 		put /program o_plain2
+		put " "
 		put /program o_plain3
+		put " "
 		put /program o_plain4
+		put " "
 		put /program o_plain5
+		put " "
 		if main.cx_density | main.cx_meandeg | main.cx_twopath | main.cx_isolates | main.cx_isolatededges | deg.cx_s_degree | ///
 			deg.cx_s_odegree | deg.cx_s_idegree | deg.cx_s_degrange | deg.cx_s_odegrange | deg.cx_s_idegrange | deg.cx_s_kstar | ///
 			deg.cx_s_ostar | deg.cx_s_istar | deg.cx_s_concurrent | deg.cx_concurrentties | deg.cx_degree1_5 | deg.cx_odegree1_5 | ///
@@ -2673,15 +2648,21 @@ BEGIN
 			tri.cx_asymmetric | tri.cx_s_mutual | tri.cx_localtriangle | tri.cx_opentriad | tri.cx_nsp | tri.cx_s_altkstar {
 			put " structural("
 			put /program o_struct1
+			put " "
 			put /program o_struct2
+			put " "
 			put /program o_struct3
+			put " "
 			put /program o_struct4
+			put " "
 			put /program o_struct5
+			put " "
 			put ")"
 		}
 		if space.f_constraints_extra {
 			put " constraints("
 			put /program o_con_1
+			put " "
 			put ")"
 		}
 	endoptions
