@@ -3208,25 +3208,25 @@ END
 
 SCRIPT nettype_auto
 BEGIN
-	main.cb_type.setvalue auto
+	main.cb_type.setvalue "auto"
 	program type_apply
 END
 
 SCRIPT nettype_u
 BEGIN
-	main.cb_type.setvalue undirected
+	main.cb_type.setvalue "undirected"
 	program type_apply
 END
 
 SCRIPT nettype_d
 BEGIN
-	main.cb_type.setvalue directed
+	main.cb_type.setvalue "directed"
 	program type_apply
 END
 
 SCRIPT nettype_b
 BEGIN
-	main.cb_type.setvalue two-mode
+	main.cb_type.setvalue "two-mode"
 	program type_apply
 END
 
@@ -5900,7 +5900,7 @@ END
 PROGRAM postinit_fit
 BEGIN
 	if main.cb_fitflag.iseq("fit") {
-		call main.cx_fit.setvalue 1
+		call main.cx_fit.seton
 		call program fit_changed
 	}
 	call main.cb_fitflag.hide

@@ -521,7 +521,7 @@ def add_typing(b, ents, which):
             lines += ["%s.%s" % (i, verb) for i in ids]
         _chunk_scripts(b, "ty_" + t[0] if t != "two-mode" else "ty_b", lines)
     for sc, t in (("nettype_auto", "auto"), ("nettype_u", "undirected"), ("nettype_d", "directed"), ("nettype_b", "two-mode")):
-        b.scripts.append((sc, ["%s.setvalue %s" % (ref(b, "cb_type"), t), "program type_apply"]))
+        b.scripts.append((sc, ['%s.setvalue "%s"' % (ref(b, "cb_type"), t), "program type_apply"]))
     ty = ref(b, "cb_type")
     P = ["\tcall script ty_auto"]
     for t, sc in (("undirected", "ty_u"), ("directed", "ty_d"), ("two-mode", "ty_b")):
@@ -535,7 +535,7 @@ def add_typing(b, ents, which):
         fx = ref(b, "cx_fit")
         b.extra_progs["fit_changed"] = "\n".join(["\tif %s {" % fx, "\t\tcall script fit_dis", "\t}",
                                                  "\tif !%s {" % fx, "\t\tcall script fit_en", "\t\tcall program type_apply", "\t}"])
-        b.extra_progs["postinit_fit"] = "\n".join(["\tif %s.iseq(\"fit\") {" % ref(b, "cb_fitflag"), "\t\tcall %s.setvalue 1" % fx,
+        b.extra_progs["postinit_fit"] = "\n".join(["\tif %s.iseq(\"fit\") {" % ref(b, "cb_fitflag"), "\t\tcall %s.seton" % fx,
                                                   "\t\tcall program fit_changed", "\t}", "\tcall %s.hide" % ref(b, "cb_fitflag")])
         for c in [c for pg in b.pages for c in pg["ctls"] if c.id == "cx_fit"]:
             c.kw["onclick"] = "program fit_changed"
