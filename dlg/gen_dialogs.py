@@ -339,9 +339,9 @@ def sim_filter_fields(e, simset):
 TAB_PLAN = {
     # at most 9 tabs, titles of at most 10 characters; a tab made of several pages gets a "Section" selector
     "ergm": [("Basic", ["basic"]), ("Degree", ["deg"]), ("Triads", ["tri"]), ("Covariate", ["cov"]), ("Two-mode", ["two"]),
-             ("Curved", ["curved"]), ("Operators", ["oper"]), ("Constraint", ["cons", "space"]), ("Estimate", ["est", "mcmc", "out"])],
+             ("Operators", ["oper"]), ("Constraint", ["cons", "space"]), ("Estimate", ["est", "mcmc", "out"])],
     "sim": [("Basic", ["basic"]), ("Degree", ["deg"]), ("Triads", ["tri"]), ("Covariate", ["cov"]), ("Two-mode", ["two"]),
-            ("Curved", ["curved"]), ("Sample", ["space"]), ("MCMC", ["mcmc"]), ("Simulate", ["simctl"])],
+            ("Sample", ["space"]), ("MCMC", ["mcmc"]), ("Simulate", ["simctl"])],
 }
 SCRIPT_CHUNK = 40     # statements per SCRIPT (Stata rejects very long programs)
 

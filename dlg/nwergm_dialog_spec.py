@@ -121,7 +121,6 @@ tab("deg", "Degree terms")
 tab("tri", "Triad terms")
 tab("cov", "Covariate terms")
 tab("two", "Two-mode terms")
-tab("curved", "Curved terms")
 tab("oper", "Operators")
 tab("cons", "Constraints", ("ergm",))
 tab("space", "Missing data and sample space", ("ergm", "sim"))
@@ -155,6 +154,16 @@ struct("isolatededges", "basic", "isolatededges", nets="U", hint="structural(), 
 # --------------------------------------------------------------------------------------
 # DEGREE
 # --------------------------------------------------------------------------------------
+SD = "Degree, geometrically weighted: fixed decay"
+for (nm, nets, h) in [("gwdegree", "U", "undirected only"), ("gwodegree", "D", "directed only"), ("gwidegree", "D", "directed only")]:
+    opt(nm, "deg", nm, main="edit", nets=nets, default="0.5", hint="decay; " + h, smoke=dict(net="und" if "U" in nets else "dir", use=dict(main="0.5")),
+        section=SD if nm == "gwdegree" else None)
+SD2 = "Degree, geometrically weighted: decay estimated (the value is the starting value)"
+for (nm, nets, h) in [("gwdegreefree", "U", "gwdegree"), ("gwodegreefree", "D", "gwodegree"), ("gwidegreefree", "D", "gwidegree")]:
+    opt(nm, "deg", nm, ergm=[], main="edit", nets=nets, default="0.5", label=nm + "()  [" + h + ", curved]",
+        hint="start value; method(mple) or mcmle", smoke=dict(net="und" if "U" in nets else "dir", use=dict(main="0.5")),
+        section=SD2 if nm == "gwdegreefree" else None)
+
 opt("degree", "deg", "degree", main="edit", nets="U", hint="numlist, e.g. 1 2 3; undirected only", smoke=dict(net="und", use=dict(main="1 2 3")), section="Degree distribution (native options)")
 opt("odegree", "deg", "odegree", main="edit", nets="D", hint="numlist; directed only", smoke=dict(net="dir", use=dict(main="1 2")))
 opt("idegree", "deg", "idegree", main="edit", nets="D", hint="numlist; directed only", smoke=dict(net="dir", use=dict(main="1 2")))
@@ -206,9 +215,22 @@ struct("m2star", "deg", "m2star", nets="D", hint="structural(), directed only", 
 # --------------------------------------------------------------------------------------
 # TRIAD and shared partners
 # --------------------------------------------------------------------------------------
-opt("esp", "tri", "esp", main="edit", nets="UD", hint="numlist of d; see type() on the Curved tab", smoke=dict(net="und", use=dict(main="1 2")), section="Shared partners (native options)")
-opt("dsp", "tri", "dsp", main="edit", nets="UD", hint="numlist of d; see type() on the Curved tab", smoke=dict(net="und", use=dict(main="1 2")))
+opt("esp", "tri", "esp", main="edit", nets="UD", hint="numlist of d; see type() above", smoke=dict(net="und", use=dict(main="1 2")), section="Shared partners (native options)")
+opt("dsp", "tri", "dsp", main="edit", nets="UD", hint="numlist of d; see type() above", smoke=dict(net="und", use=dict(main="1 2")))
 
+ctl("type", "tri", "type", "combo", "type()  - directed shared partners", choices=["", "OTP", "ITP", "OSP", "ISP", "RTP"],
+    hint="applies to gwesp gwdsp gwnsp esp dsp (directed networks)", nets="D", smoke=dict(net="dir", use=dict(main="ITP"), also={"gwesp": "0.5"}))
+
+SC = "Shared partners, geometrically weighted: fixed decay"
+for (nm, nets, h) in [("gwesp", "UD", "edgewise shared partners"), ("gwdsp", "UD", "dyadwise shared partners"),
+                      ("gwnsp", "UD", "non-edgewise shared partners")]:
+    opt(nm, "tri", nm, main="edit", nets=nets, default="0.5", hint="decay; " + h, smoke=dict(net="und" if "U" in nets else "dir", use=dict(main="0.5")),
+        section=SC if nm == "gwesp" else None)
+SC2 = "Shared partners, geometrically weighted: decay estimated (the value is the starting value)"
+for (nm, nets, h) in [("gwespfree", "UD", "gwesp"), ("gwdspfree", "U", "gwdsp"), ("gwnspfree", "U", "gwnsp")]:
+    opt(nm, "tri", nm, ergm=[], main="edit", nets=nets, default="0.5", label=nm + "()  [" + h + ", curved]",
+        hint="start value; method(mple) or mcmle", smoke=dict(net="und" if "U" in nets else "dir", use=dict(main="0.5")),
+        section=SC2 if nm == "gwespfree" else None)
 S3 = "Triad terms (structural())"
 struct("s_triangle", "tri", "triangle", ergm=["triangle"], fields=[F("attr", key="attr", width=70), F("diff", flag=True, key="diff")],
        nets="UD", label="triangle(attr= diff)", hint="triangle by attribute", smoke=dict(net="und", use=dict(attr="sex", diff=True)), section=S3)
@@ -325,24 +347,6 @@ for m in "12":
         section="Two-mode curved terms (estimated decay)" if m == "1" else None)
     opt("bgwdspfree" + m, "two", "bgwdspfree" + m, ergm=[], main="edit", nets="B", label="bgwdspfree%s()  [gwb%sdsp, curved]" % (m, m),
         hint=BIP + "; start value of the decay (estimated)", smoke=dict(net="bip", use=dict(main="0.5")), default="0.5")
-
-# --------------------------------------------------------------------------------------
-# CURVED / geometrically weighted
-# --------------------------------------------------------------------------------------
-SC = "Geometrically weighted terms, fixed decay"
-for (nm, nets, h) in [("gwesp", "UD", "edgewise shared partners"), ("gwdsp", "UD", "dyadwise shared partners"),
-                      ("gwnsp", "UD", "non-edgewise shared partners"), ("gwdegree", "U", "undirected only"),
-                      ("gwodegree", "D", "directed only"), ("gwidegree", "D", "directed only")]:
-    opt(nm, "curved", nm, main="edit", nets=nets, default="0.5", hint="decay; " + h, smoke=dict(net="und" if "U" in nets else "dir", use=dict(main="0.5")),
-        section=SC if nm == "gwesp" else None)
-SC2 = "Curved terms: decay is estimated (the value is the starting value)"
-for (nm, nets, h) in [("gwespfree", "UD", "gwesp"), ("gwdspfree", "U", "gwdsp"), ("gwnspfree", "U", "gwnsp"),
-                      ("gwdegreefree", "U", "gwdegree"), ("gwodegreefree", "D", "gwodegree"), ("gwidegreefree", "D", "gwidegree")]:
-    opt(nm, "curved", nm, ergm=[], main="edit", nets=nets, default="0.5", label=nm + "()  [" + h + ", curved]",
-        hint="start value; method(mple) or mcmle", smoke=dict(net="und" if "U" in nets else "dir", use=dict(main="0.5")),
-        section=SC2 if nm == "gwespfree" else None)
-ctl("type", "curved", "type", "combo", "type()  - directed shared partners", choices=["", "OTP", "ITP", "OSP", "ISP", "RTP"],
-    hint="applies to gwesp gwdsp gwnsp esp dsp (directed networks)", nets="D", smoke=dict(net="dir", use=dict(main="ITP"), also={"gwesp": "0.5"}))
 
 # --------------------------------------------------------------------------------------
 # OPERATORS

@@ -30,65 +30,163 @@ END
 SCRIPT sh_deg_0_0
 BEGIN
 	deg.tx_s10_deg.show
+	deg.cx_gwdegree.show
+	deg.f_gwdegree.show
+	deg.tx_h15.show
+	deg.cx_gwodegree.show
+	deg.f_gwodegree.show
+	deg.tx_h16.show
+	deg.cx_gwidegree.show
+	deg.f_gwidegree.show
+	deg.tx_h17.show
+	deg.tx_s94_deg.show
+	deg.cx_gwdegreefree.show
+	deg.f_gwdegreefree.show
+	deg.tx_h18.show
+	deg.cx_gwodegreefree.show
+	deg.f_gwodegreefree.show
+	deg.tx_h19.show
+	deg.cx_gwidegreefree.show
+	deg.f_gwidegreefree.show
+	deg.tx_h20.show
+	deg.tx_s178_deg.show
 	deg.cx_degree.show
 	deg.f_degree.show
-	deg.tx_h15.show
+	deg.tx_h21.show
 	deg.cx_odegree.show
 	deg.f_odegree.show
-	deg.tx_h16.show
+	deg.tx_h22.show
 	deg.cx_idegree.show
 	deg.f_idegree.show
-	deg.tx_h17.show
+	deg.tx_h23.show
 	deg.cx_kstar.show
 	deg.f_kstar.show
-	deg.tx_h18.show
+	deg.tx_h24.show
 	deg.cx_ostar.show
 	deg.f_ostar.show
-	deg.tx_h19.show
+	deg.tx_h25.show
 	deg.cx_istar.show
 	deg.f_istar.show
-	deg.tx_h20.show
+	deg.tx_h26.show
 	deg.cx_degrange.show
+END
+
+SCRIPT sh_deg_0_1
+BEGIN
 	deg.f_degrange.show
 	deg.tx_degrange_to.show
 	deg.f_degrange_to.show
-	deg.tx_h21.show
+	deg.tx_h27.show
 	deg.cx_odegrange.show
 	deg.f_odegrange.show
 	deg.tx_odegrange_to.show
 	deg.f_odegrange_to.show
-	deg.tx_h22.show
+	deg.tx_h28.show
 	deg.cx_idegrange.show
 	deg.f_idegrange.show
 	deg.tx_idegrange_to.show
 	deg.f_idegrange_to.show
-	deg.tx_h23.show
-	deg.tx_s220_deg.show
+	deg.tx_h29.show
+END
+
+SCRIPT sh_deg_0
+BEGIN
+	script sh_deg_0_0
+	script sh_deg_0_1
+END
+
+SCRIPT hi_deg_0_0
+BEGIN
+	deg.tx_s10_deg.hide
+	deg.cx_gwdegree.hide
+	deg.f_gwdegree.hide
+	deg.tx_h15.hide
+	deg.cx_gwodegree.hide
+	deg.f_gwodegree.hide
+	deg.tx_h16.hide
+	deg.cx_gwidegree.hide
+	deg.f_gwidegree.hide
+	deg.tx_h17.hide
+	deg.tx_s94_deg.hide
+	deg.cx_gwdegreefree.hide
+	deg.f_gwdegreefree.hide
+	deg.tx_h18.hide
+	deg.cx_gwodegreefree.hide
+	deg.f_gwodegreefree.hide
+	deg.tx_h19.hide
+	deg.cx_gwidegreefree.hide
+	deg.f_gwidegreefree.hide
+	deg.tx_h20.hide
+	deg.tx_s178_deg.hide
+	deg.cx_degree.hide
+	deg.f_degree.hide
+	deg.tx_h21.hide
+	deg.cx_odegree.hide
+	deg.f_odegree.hide
+	deg.tx_h22.hide
+	deg.cx_idegree.hide
+	deg.f_idegree.hide
+	deg.tx_h23.hide
+	deg.cx_kstar.hide
+	deg.f_kstar.hide
+	deg.tx_h24.hide
+	deg.cx_ostar.hide
+	deg.f_ostar.hide
+	deg.tx_h25.hide
+	deg.cx_istar.hide
+	deg.f_istar.hide
+	deg.tx_h26.hide
+	deg.cx_degrange.hide
+END
+
+SCRIPT hi_deg_0_1
+BEGIN
+	deg.f_degrange.hide
+	deg.tx_degrange_to.hide
+	deg.f_degrange_to.hide
+	deg.tx_h27.hide
+	deg.cx_odegrange.hide
+	deg.f_odegrange.hide
+	deg.tx_odegrange_to.hide
+	deg.f_odegrange_to.hide
+	deg.tx_h28.hide
+	deg.cx_idegrange.hide
+	deg.f_idegrange.hide
+	deg.tx_idegrange_to.hide
+	deg.f_idegrange_to.hide
+	deg.tx_h29.hide
+END
+
+SCRIPT hi_deg_0
+BEGIN
+	script hi_deg_0_0
+	script hi_deg_0_1
+END
+
+SCRIPT sh_deg_1_0
+BEGIN
+	deg.tx_s10_deg2.show
 	deg.cx_s_degree.show
 	deg.tx_s_degree_d.show
 	deg.f_s_degree_d.show
 	deg.tx_s_degree_by.show
 	deg.f_s_degree_by.show
-END
-
-SCRIPT sh_deg_0_1
-BEGIN
 	deg.f_s_degree_homophily.show
-	deg.tx_h24.show
+	deg.tx_h30.show
 	deg.cx_s_odegree.show
 	deg.tx_s_odegree_d.show
 	deg.f_s_odegree_d.show
 	deg.tx_s_odegree_by.show
 	deg.f_s_odegree_by.show
 	deg.f_s_odegree_homophily.show
-	deg.tx_h25.show
+	deg.tx_h31.show
 	deg.cx_s_idegree.show
 	deg.tx_s_idegree_d.show
 	deg.f_s_idegree_d.show
 	deg.tx_s_idegree_by.show
 	deg.f_s_idegree_by.show
 	deg.f_s_idegree_homophily.show
-	deg.tx_h26.show
+	deg.tx_h32.show
 	deg.cx_s_degrange.show
 	deg.tx_s_degrange_from.show
 	deg.f_s_degrange_from.show
@@ -97,7 +195,7 @@ BEGIN
 	deg.tx_s_degrange_by.show
 	deg.f_s_degrange_by.show
 	deg.f_s_degrange_homophily.show
-	deg.tx_h27.show
+	deg.tx_h33.show
 	deg.cx_s_odegrange.show
 	deg.tx_s_odegrange_from.show
 	deg.f_s_odegrange_from.show
@@ -106,103 +204,96 @@ BEGIN
 	deg.tx_s_odegrange_by.show
 	deg.f_s_odegrange_by.show
 	deg.f_s_odegrange_homophily.show
-	deg.tx_h28.show
+	deg.tx_h34.show
+END
+
+SCRIPT sh_deg_1_1
+BEGIN
 	deg.cx_s_idegrange.show
 	deg.tx_s_idegrange_from.show
 	deg.f_s_idegrange_from.show
 	deg.tx_s_idegrange_to.show
 	deg.f_s_idegrange_to.show
 	deg.tx_s_idegrange_by.show
-END
-
-SCRIPT sh_deg_0_2
-BEGIN
 	deg.f_s_idegrange_by.show
 	deg.f_s_idegrange_homophily.show
-	deg.tx_h29.show
+	deg.tx_h35.show
 	deg.cx_s_kstar.show
 	deg.tx_s_kstar_k.show
 	deg.f_s_kstar_k.show
 	deg.tx_s_kstar_attr.show
 	deg.f_s_kstar_attr.show
-	deg.tx_h30.show
+	deg.tx_h36.show
 	deg.cx_s_ostar.show
 	deg.tx_s_ostar_k.show
 	deg.f_s_ostar_k.show
 	deg.tx_s_ostar_attr.show
 	deg.f_s_ostar_attr.show
-	deg.tx_h31.show
+	deg.tx_h37.show
+	deg.cx_s_istar.show
+	deg.tx_s_istar_k.show
+	deg.f_s_istar_k.show
+	deg.tx_s_istar_attr.show
+	deg.f_s_istar_attr.show
+	deg.tx_h38.show
+	deg.cx_s_concurrent.show
+	deg.tx_s_concurrent_by.show
+	deg.f_s_concurrent_by.show
+	deg.tx_h39.show
+	deg.cx_concurrentties.show
+	deg.tx_concurrentties_by.show
+	deg.f_concurrentties_by.show
+	deg.tx_h40.show
+	deg.tx_s262_deg2.show
+	deg.cx_degree1_5.show
+	deg.tx_h41.show
+	deg.cx_odegree1_5.show
+	deg.tx_h42.show
 END
 
-SCRIPT sh_deg_0
+SCRIPT sh_deg_1_2
 BEGIN
-	script sh_deg_0_0
-	script sh_deg_0_1
-	script sh_deg_0_2
+	deg.cx_idegree1_5.show
+	deg.tx_h43.show
+	deg.cx_degcrossprod.show
+	deg.tx_h44.show
+	deg.cx_degcor.show
+	deg.tx_h45.show
+	deg.cx_m2star.show
+	deg.tx_h46.show
 END
 
-SCRIPT hi_deg_0_0
+SCRIPT sh_deg_1
 BEGIN
-	deg.tx_s10_deg.hide
-	deg.cx_degree.hide
-	deg.f_degree.hide
-	deg.tx_h15.hide
-	deg.cx_odegree.hide
-	deg.f_odegree.hide
-	deg.tx_h16.hide
-	deg.cx_idegree.hide
-	deg.f_idegree.hide
-	deg.tx_h17.hide
-	deg.cx_kstar.hide
-	deg.f_kstar.hide
-	deg.tx_h18.hide
-	deg.cx_ostar.hide
-	deg.f_ostar.hide
-	deg.tx_h19.hide
-	deg.cx_istar.hide
-	deg.f_istar.hide
-	deg.tx_h20.hide
-	deg.cx_degrange.hide
-	deg.f_degrange.hide
-	deg.tx_degrange_to.hide
-	deg.f_degrange_to.hide
-	deg.tx_h21.hide
-	deg.cx_odegrange.hide
-	deg.f_odegrange.hide
-	deg.tx_odegrange_to.hide
-	deg.f_odegrange_to.hide
-	deg.tx_h22.hide
-	deg.cx_idegrange.hide
-	deg.f_idegrange.hide
-	deg.tx_idegrange_to.hide
-	deg.f_idegrange_to.hide
-	deg.tx_h23.hide
-	deg.tx_s220_deg.hide
+	script sh_deg_1_0
+	script sh_deg_1_1
+	script sh_deg_1_2
+END
+
+SCRIPT hi_deg_1_0
+BEGIN
+	deg.tx_s10_deg2.hide
 	deg.cx_s_degree.hide
 	deg.tx_s_degree_d.hide
 	deg.f_s_degree_d.hide
 	deg.tx_s_degree_by.hide
 	deg.f_s_degree_by.hide
-END
-
-SCRIPT hi_deg_0_1
-BEGIN
 	deg.f_s_degree_homophily.hide
-	deg.tx_h24.hide
+	deg.tx_h30.hide
 	deg.cx_s_odegree.hide
 	deg.tx_s_odegree_d.hide
 	deg.f_s_odegree_d.hide
 	deg.tx_s_odegree_by.hide
 	deg.f_s_odegree_by.hide
 	deg.f_s_odegree_homophily.hide
-	deg.tx_h25.hide
+	deg.tx_h31.hide
 	deg.cx_s_idegree.hide
 	deg.tx_s_idegree_d.hide
 	deg.f_s_idegree_d.hide
 	deg.tx_s_idegree_by.hide
 	deg.f_s_idegree_by.hide
 	deg.f_s_idegree_homophily.hide
-	deg.tx_h26.hide
+	deg.tx_h32.hide
 	deg.cx_s_degrange.hide
 	deg.tx_s_degrange_from.hide
 	deg.f_s_degrange_from.hide
@@ -211,7 +302,7 @@ BEGIN
 	deg.tx_s_degrange_by.hide
 	deg.f_s_degrange_by.hide
 	deg.f_s_degrange_homophily.hide
-	deg.tx_h27.hide
+	deg.tx_h33.hide
 	deg.cx_s_odegrange.hide
 	deg.tx_s_odegrange_from.hide
 	deg.f_s_odegrange_from.hide
@@ -220,111 +311,70 @@ BEGIN
 	deg.tx_s_odegrange_by.hide
 	deg.f_s_odegrange_by.hide
 	deg.f_s_odegrange_homophily.hide
-	deg.tx_h28.hide
+	deg.tx_h34.hide
+END
+
+SCRIPT hi_deg_1_1
+BEGIN
 	deg.cx_s_idegrange.hide
 	deg.tx_s_idegrange_from.hide
 	deg.f_s_idegrange_from.hide
 	deg.tx_s_idegrange_to.hide
 	deg.f_s_idegrange_to.hide
 	deg.tx_s_idegrange_by.hide
-END
-
-SCRIPT hi_deg_0_2
-BEGIN
 	deg.f_s_idegrange_by.hide
 	deg.f_s_idegrange_homophily.hide
-	deg.tx_h29.hide
+	deg.tx_h35.hide
 	deg.cx_s_kstar.hide
 	deg.tx_s_kstar_k.hide
 	deg.f_s_kstar_k.hide
 	deg.tx_s_kstar_attr.hide
 	deg.f_s_kstar_attr.hide
-	deg.tx_h30.hide
+	deg.tx_h36.hide
 	deg.cx_s_ostar.hide
 	deg.tx_s_ostar_k.hide
 	deg.f_s_ostar_k.hide
 	deg.tx_s_ostar_attr.hide
 	deg.f_s_ostar_attr.hide
-	deg.tx_h31.hide
-END
-
-SCRIPT hi_deg_0
-BEGIN
-	script hi_deg_0_0
-	script hi_deg_0_1
-	script hi_deg_0_2
-END
-
-SCRIPT sh_deg_1_0
-BEGIN
-	deg.cx_s_istar.show
-	deg.tx_s_istar_k.show
-	deg.f_s_istar_k.show
-	deg.tx_s_istar_attr.show
-	deg.f_s_istar_attr.show
-	deg.tx_h32.show
-	deg.cx_s_concurrent.show
-	deg.tx_s_concurrent_by.show
-	deg.f_s_concurrent_by.show
-	deg.tx_h33.show
-	deg.cx_concurrentties.show
-	deg.tx_concurrentties_by.show
-	deg.f_concurrentties_by.show
-	deg.tx_h34.show
-	deg.tx_s73_deg2.show
-	deg.cx_degree1_5.show
-	deg.tx_h35.show
-	deg.cx_odegree1_5.show
-	deg.tx_h36.show
-	deg.cx_idegree1_5.show
-	deg.tx_h37.show
-	deg.cx_degcrossprod.show
-	deg.tx_h38.show
-	deg.cx_degcor.show
-	deg.tx_h39.show
-	deg.cx_m2star.show
-	deg.tx_h40.show
-END
-
-SCRIPT sh_deg_1
-BEGIN
-	script sh_deg_1_0
-END
-
-SCRIPT hi_deg_1_0
-BEGIN
+	deg.tx_h37.hide
 	deg.cx_s_istar.hide
 	deg.tx_s_istar_k.hide
 	deg.f_s_istar_k.hide
 	deg.tx_s_istar_attr.hide
 	deg.f_s_istar_attr.hide
-	deg.tx_h32.hide
+	deg.tx_h38.hide
 	deg.cx_s_concurrent.hide
 	deg.tx_s_concurrent_by.hide
 	deg.f_s_concurrent_by.hide
-	deg.tx_h33.hide
+	deg.tx_h39.hide
 	deg.cx_concurrentties.hide
 	deg.tx_concurrentties_by.hide
 	deg.f_concurrentties_by.hide
-	deg.tx_h34.hide
-	deg.tx_s73_deg2.hide
-	deg.cx_degree1_5.hide
-	deg.tx_h35.hide
-	deg.cx_odegree1_5.hide
-	deg.tx_h36.hide
-	deg.cx_idegree1_5.hide
-	deg.tx_h37.hide
-	deg.cx_degcrossprod.hide
-	deg.tx_h38.hide
-	deg.cx_degcor.hide
-	deg.tx_h39.hide
-	deg.cx_m2star.hide
 	deg.tx_h40.hide
+	deg.tx_s262_deg2.hide
+	deg.cx_degree1_5.hide
+	deg.tx_h41.hide
+	deg.cx_odegree1_5.hide
+	deg.tx_h42.hide
+END
+
+SCRIPT hi_deg_1_2
+BEGIN
+	deg.cx_idegree1_5.hide
+	deg.tx_h43.hide
+	deg.cx_degcrossprod.hide
+	deg.tx_h44.hide
+	deg.cx_degcor.hide
+	deg.tx_h45.hide
+	deg.cx_m2star.hide
+	deg.tx_h46.hide
 END
 
 SCRIPT hi_deg_1
 BEGIN
 	script hi_deg_1_0
+	script hi_deg_1_1
+	script hi_deg_1_2
 END
 
 SCRIPT sel_deg_0
@@ -344,72 +394,62 @@ BEGIN
 	tri.tx_s10_tri.show
 	tri.cx_esp.show
 	tri.f_esp.show
-	tri.tx_h41.show
+	tri.tx_h47.show
 	tri.cx_dsp.show
 	tri.f_dsp.show
-	tri.tx_h42.show
-	tri.tx_s73_tri.show
+	tri.tx_h48.show
+	tri.tx_type.show
+	tri.f_type.show
+	tri.tx_h49.show
+	tri.tx_s94_tri.show
+	tri.cx_gwesp.show
+	tri.f_gwesp.show
+	tri.tx_h50.show
+	tri.cx_gwdsp.show
+	tri.f_gwdsp.show
+	tri.tx_h51.show
+	tri.cx_gwnsp.show
+	tri.f_gwnsp.show
+	tri.tx_h52.show
+	tri.tx_s178_tri.show
+	tri.cx_gwespfree.show
+	tri.f_gwespfree.show
+	tri.tx_h53.show
+	tri.cx_gwdspfree.show
+	tri.f_gwdspfree.show
+	tri.tx_h54.show
+	tri.cx_gwnspfree.show
+	tri.f_gwnspfree.show
+	tri.tx_h55.show
+	tri.tx_s262_tri.show
 	tri.cx_s_triangle.show
 	tri.tx_s_triangle_attr.show
 	tri.f_s_triangle_attr.show
 	tri.f_s_triangle_diff.show
-	tri.tx_h43.show
+	tri.tx_h56.show
 	tri.cx_transitive.show
-	tri.tx_h44.show
+	tri.tx_h57.show
 	tri.cx_intransitive.show
-	tri.tx_h45.show
-	tri.cx_ttriple.show
-	tri.tx_ttriple_attr.show
-	tri.f_ttriple_attr.show
-	tri.f_ttriple_diff.show
-	tri.tx_h46.show
-	tri.cx_s_ctriple.show
-	tri.tx_s_ctriple_attr.show
-	tri.f_s_ctriple_attr.show
-	tri.f_s_ctriple_diff.show
-	tri.tx_h47.show
-	tri.cx_cycle.show
-	tri.tx_cycle_k.show
-	tri.f_cycle_k.show
-	tri.f_cycle_semi.show
-	tri.tx_h48.show
-	tri.cx_threetrail.show
-	tri.tx_threetrail_keep.show
-	tri.f_threetrail_keep.show
-	tri.tx_h49.show
-	tri.cx_balance.show
-	tri.tx_h50.show
-	tri.cx_triadcensus.show
-	tri.tx_triadcensus_levels.show
+	tri.tx_h58.show
 END
 
 SCRIPT sh_tri_0_1
 BEGIN
-	tri.f_triadcensus_levels.show
-	tri.tx_h51.show
-	tri.cx_tripercent.show
-	tri.tx_tripercent_attr.show
-	tri.f_tripercent_attr.show
-	tri.f_tripercent_diff.show
-	tri.tx_h52.show
-	tri.cx_nearsimmelian.show
-	tri.tx_h53.show
-	tri.cx_simmelian.show
-	tri.tx_h54.show
-	tri.cx_simmelianties.show
-	tri.tx_h55.show
-	tri.cx_asymmetric.show
-	tri.tx_asymmetric_attr.show
-	tri.f_asymmetric_attr.show
-	tri.f_asymmetric_diff.show
-	tri.tx_h56.show
-	tri.cx_s_mutual.show
-	tri.tx_s_mutual_same.show
-	tri.f_s_mutual_same.show
-	tri.f_s_mutual_diff.show
-	tri.tx_s_mutual_by.show
-	tri.f_s_mutual_by.show
-	tri.tx_h57.show
+	tri.cx_ttriple.show
+	tri.tx_ttriple_attr.show
+	tri.f_ttriple_attr.show
+	tri.f_ttriple_diff.show
+	tri.tx_h59.show
+	tri.cx_s_ctriple.show
+	tri.tx_s_ctriple_attr.show
+	tri.f_s_ctriple_attr.show
+	tri.f_s_ctriple_diff.show
+	tri.tx_h60.show
+	tri.cx_cycle.show
+	tri.tx_cycle_k.show
+	tri.f_cycle_k.show
+	tri.f_cycle_semi.show
+	tri.tx_h61.show
 END
 
 SCRIPT sh_tri_0
@@ -423,72 +463,62 @@ BEGIN
 	tri.tx_s10_tri.hide
 	tri.cx_esp.hide
 	tri.f_esp.hide
-	tri.tx_h41.hide
+	tri.tx_h47.hide
 	tri.cx_dsp.hide
 	tri.f_dsp.hide
-	tri.tx_h42.hide
-	tri.tx_s73_tri.hide
+	tri.tx_h48.hide
+	tri.tx_type.hide
+	tri.f_type.hide
+	tri.tx_h49.hide
+	tri.tx_s94_tri.hide
+	tri.cx_gwesp.hide
+	tri.f_gwesp.hide
+	tri.tx_h50.hide
+	tri.cx_gwdsp.hide
+	tri.f_gwdsp.hide
+	tri.tx_h51.hide
+	tri.cx_gwnsp.hide
+	tri.f_gwnsp.hide
+	tri.tx_h52.hide
+	tri.tx_s178_tri.hide
+	tri.cx_gwespfree.hide
+	tri.f_gwespfree.hide
+	tri.tx_h53.hide
+	tri.cx_gwdspfree.hide
+	tri.f_gwdspfree.hide
+	tri.tx_h54.hide
+	tri.cx_gwnspfree.hide
+	tri.f_gwnspfree.hide
+	tri.tx_h55.hide
+	tri.tx_s262_tri.hide
 	tri.cx_s_triangle.hide
 	tri.tx_s_triangle_attr.hide
 	tri.f_s_triangle_attr.hide
 	tri.f_s_triangle_diff.hide
-	tri.tx_h43.hide
+	tri.tx_h56.hide
 	tri.cx_transitive.hide
-	tri.tx_h44.hide
+	tri.tx_h57.hide
 	tri.cx_intransitive.hide
-	tri.tx_h45.hide
-	tri.cx_ttriple.hide
-	tri.tx_ttriple_attr.hide
-	tri.f_ttriple_attr.hide
-	tri.f_ttriple_diff.hide
-	tri.tx_h46.hide
-	tri.cx_s_ctriple.hide
-	tri.tx_s_ctriple_attr.hide
-	tri.f_s_ctriple_attr.hide
-	tri.f_s_ctriple_diff.hide
-	tri.tx_h47.hide
-	tri.cx_cycle.hide
-	tri.tx_cycle_k.hide
-	tri.f_cycle_k.hide
-	tri.f_cycle_semi.hide
-	tri.tx_h48.hide
-	tri.cx_threetrail.hide
-	tri.tx_threetrail_keep.hide
-	tri.f_threetrail_keep.hide
-	tri.tx_h49.hide
-	tri.cx_balance.hide
-	tri.tx_h50.hide
-	tri.cx_triadcensus.hide
-	tri.tx_triadcensus_levels.hide
+	tri.tx_h58.hide
 END
 
 SCRIPT hi_tri_0_1
 BEGIN
-	tri.f_triadcensus_levels.hide
-	tri.tx_h51.hide
-	tri.cx_tripercent.hide
-	tri.tx_tripercent_attr.hide
-	tri.f_tripercent_attr.hide
-	tri.f_tripercent_diff.hide
-	tri.tx_h52.hide
-	tri.cx_nearsimmelian.hide
-	tri.tx_h53.hide
-	tri.cx_simmelian.hide
-	tri.tx_h54.hide
-	tri.cx_simmelianties.hide
-	tri.tx_h55.hide
-	tri.cx_asymmetric.hide
-	tri.tx_asymmetric_attr.hide
-	tri.f_asymmetric_attr.hide
-	tri.f_asymmetric_diff.hide
-	tri.tx_h56.hide
-	tri.cx_s_mutual.hide
-	tri.tx_s_mutual_same.hide
-	tri.f_s_mutual_same.hide
-	tri.f_s_mutual_diff.hide
-	tri.tx_s_mutual_by.hide
-	tri.f_s_mutual_by.hide
-	tri.tx_h57.hide
+	tri.cx_ttriple.hide
+	tri.tx_ttriple_attr.hide
+	tri.f_ttriple_attr.hide
+	tri.f_ttriple_diff.hide
+	tri.tx_h59.hide
+	tri.cx_s_ctriple.hide
+	tri.tx_s_ctriple_attr.hide
+	tri.f_s_ctriple_attr.hide
+	tri.f_s_ctriple_diff.hide
+	tri.tx_h60.hide
+	tri.cx_cycle.hide
+	tri.tx_cycle_k.hide
+	tri.f_cycle_k.hide
+	tri.f_cycle_semi.hide
+	tri.tx_h61.hide
 END
 
 SCRIPT hi_tri_0
@@ -499,54 +529,130 @@ END
 
 SCRIPT sh_tri_1_0
 BEGIN
+	tri.cx_threetrail.show
+	tri.tx_threetrail_keep.show
+	tri.f_threetrail_keep.show
+	tri.tx_h62.show
+	tri.cx_balance.show
+	tri.tx_h63.show
+	tri.cx_triadcensus.show
+	tri.tx_triadcensus_levels.show
+	tri.f_triadcensus_levels.show
+	tri.tx_h64.show
+	tri.cx_tripercent.show
+	tri.tx_tripercent_attr.show
+	tri.f_tripercent_attr.show
+	tri.f_tripercent_diff.show
+	tri.tx_h65.show
+	tri.cx_nearsimmelian.show
+	tri.tx_h66.show
+	tri.cx_simmelian.show
+	tri.tx_h67.show
+	tri.cx_simmelianties.show
+	tri.tx_h68.show
+	tri.cx_asymmetric.show
+	tri.tx_asymmetric_attr.show
+	tri.f_asymmetric_attr.show
+	tri.f_asymmetric_diff.show
+	tri.tx_h69.show
+	tri.cx_s_mutual.show
+	tri.tx_s_mutual_same.show
+	tri.f_s_mutual_same.show
+	tri.f_s_mutual_diff.show
+	tri.tx_s_mutual_by.show
+	tri.f_s_mutual_by.show
+	tri.tx_h70.show
 	tri.cx_localtriangle.show
 	tri.tx_localtriangle_x.show
 	tri.f_localtriangle_x.show
-	tri.tx_h58.show
+	tri.tx_h71.show
 	tri.cx_opentriad.show
-	tri.tx_h59.show
+	tri.tx_h72.show
 	tri.cx_nsp.show
+END
+
+SCRIPT sh_tri_1_1
+BEGIN
 	tri.tx_nsp_d.show
 	tri.f_nsp_d.show
 	tri.tx_nsp_type.show
 	tri.f_nsp_type.show
-	tri.tx_h60.show
+	tri.tx_h73.show
 	tri.cx_s_altkstar.show
 	tri.tx_s_altkstar_lambda.show
 	tri.f_s_altkstar_lambda.show
 	tri.f_s_altkstar_fixed.show
-	tri.tx_h61.show
+	tri.tx_h74.show
 END
 
 SCRIPT sh_tri_1
 BEGIN
 	script sh_tri_1_0
+	script sh_tri_1_1
 END
 
 SCRIPT hi_tri_1_0
 BEGIN
+	tri.cx_threetrail.hide
+	tri.tx_threetrail_keep.hide
+	tri.f_threetrail_keep.hide
+	tri.tx_h62.hide
+	tri.cx_balance.hide
+	tri.tx_h63.hide
+	tri.cx_triadcensus.hide
+	tri.tx_triadcensus_levels.hide
+	tri.f_triadcensus_levels.hide
+	tri.tx_h64.hide
+	tri.cx_tripercent.hide
+	tri.tx_tripercent_attr.hide
+	tri.f_tripercent_attr.hide
+	tri.f_tripercent_diff.hide
+	tri.tx_h65.hide
+	tri.cx_nearsimmelian.hide
+	tri.tx_h66.hide
+	tri.cx_simmelian.hide
+	tri.tx_h67.hide
+	tri.cx_simmelianties.hide
+	tri.tx_h68.hide
+	tri.cx_asymmetric.hide
+	tri.tx_asymmetric_attr.hide
+	tri.f_asymmetric_attr.hide
+	tri.f_asymmetric_diff.hide
+	tri.tx_h69.hide
+	tri.cx_s_mutual.hide
+	tri.tx_s_mutual_same.hide
+	tri.f_s_mutual_same.hide
+	tri.f_s_mutual_diff.hide
+	tri.tx_s_mutual_by.hide
+	tri.f_s_mutual_by.hide
+	tri.tx_h70.hide
 	tri.cx_localtriangle.hide
 	tri.tx_localtriangle_x.hide
 	tri.f_localtriangle_x.hide
-	tri.tx_h58.hide
+	tri.tx_h71.hide
 	tri.cx_opentriad.hide
-	tri.tx_h59.hide
+	tri.tx_h72.hide
 	tri.cx_nsp.hide
+END
+
+SCRIPT hi_tri_1_1
+BEGIN
 	tri.tx_nsp_d.hide
 	tri.f_nsp_d.hide
 	tri.tx_nsp_type.hide
 	tri.f_nsp_type.hide
-	tri.tx_h60.hide
+	tri.tx_h73.hide
 	tri.cx_s_altkstar.hide
 	tri.tx_s_altkstar_lambda.hide
 	tri.f_s_altkstar_lambda.hide
 	tri.f_s_altkstar_fixed.hide
-	tri.tx_h61.hide
+	tri.tx_h74.hide
 END
 
 SCRIPT hi_tri_1
 BEGIN
 	script hi_tri_1_0
+	script hi_tri_1_1
 END
 
 SCRIPT sel_tri_0
@@ -568,37 +674,37 @@ BEGIN
 	cov.f_nodecov.show
 	cov.tx_nodecov_c.show
 	cov.f_nodecov_sub.show
-	cov.tx_h62.show
+	cov.tx_h75.show
 	cov.cx_nodeicov.show
 	cov.f_nodeicov.show
 	cov.tx_nodeicov_c.show
 	cov.f_nodeicov_sub.show
-	cov.tx_h63.show
+	cov.tx_h76.show
 	cov.cx_nodeocov.show
 	cov.f_nodeocov.show
 	cov.tx_nodeocov_c.show
 	cov.f_nodeocov_sub.show
-	cov.tx_h64.show
+	cov.tx_h77.show
 	cov.cx_nodefactor.show
 	cov.f_nodefactor.show
 	cov.tx_nodefactor_c.show
 	cov.f_nodefactor_sub.show
-	cov.tx_h65.show
+	cov.tx_h78.show
 	cov.cx_nodeofactor.show
 	cov.f_nodeofactor.show
 	cov.tx_nodeofactor_c.show
 	cov.f_nodeofactor_sub.show
-	cov.tx_h66.show
+	cov.tx_h79.show
 	cov.cx_nodeifactor.show
 	cov.f_nodeifactor.show
 	cov.tx_nodeifactor_c.show
 	cov.f_nodeifactor_sub.show
-	cov.tx_h67.show
+	cov.tx_h80.show
 	cov.cx_nodematch.show
 	cov.f_nodematch.show
 	cov.tx_nodematch_c.show
 	cov.f_nodematch_sub.show
-	cov.tx_h68.show
+	cov.tx_h81.show
 	cov.cx_nodematchdiff.show
 	cov.f_nodematchdiff.show
 	cov.tx_nodematchdiff_c.show
@@ -607,42 +713,42 @@ END
 
 SCRIPT sh_cov_0_1
 BEGIN
-	cov.tx_h69.show
+	cov.tx_h82.show
 	cov.cx_nodemix.show
 	cov.f_nodemix.show
 	cov.tx_nodemix_c.show
 	cov.f_nodemix_sub.show
-	cov.tx_h70.show
+	cov.tx_h83.show
 	cov.cx_mm.show
 	cov.f_mm.show
 	cov.tx_mm_c.show
 	cov.f_mm_sub.show
-	cov.tx_h71.show
+	cov.tx_h84.show
 	cov.cx_absdist.show
 	cov.f_absdist.show
 	cov.tx_absdist_c.show
 	cov.f_absdist_sub.show
-	cov.tx_h72.show
+	cov.tx_h85.show
 	cov.cx_absdiffcat.show
 	cov.f_absdiffcat.show
 	cov.tx_absdiffcat_c.show
 	cov.f_absdiffcat_sub.show
-	cov.tx_h73.show
+	cov.tx_h86.show
 	cov.cx_diff.show
 	cov.f_diff.show
 	cov.tx_diff_c.show
 	cov.f_diff_sub.show
-	cov.tx_h74.show
+	cov.tx_h87.show
 	cov.cx_smalldiff.show
 	cov.f_smalldiff.show
 	cov.tx_smalldiff_c.show
 	cov.f_smalldiff_sub.show
-	cov.tx_h75.show
+	cov.tx_h88.show
 	cov.cx_sociality.show
 	cov.f_sociality.show
 	cov.tx_sociality_c.show
 	cov.f_sociality_sub.show
-	cov.tx_h76.show
+	cov.tx_h89.show
 	cov.cx_nodecovrange.show
 	cov.f_nodecovrange.show
 	cov.tx_nodecovrange_c.show
@@ -651,17 +757,17 @@ END
 
 SCRIPT sh_cov_0_2
 BEGIN
-	cov.tx_h77.show
+	cov.tx_h90.show
 	cov.cx_nodeocovrange.show
 	cov.f_nodeocovrange.show
 	cov.tx_nodeocovrange_c.show
 	cov.f_nodeocovrange_sub.show
-	cov.tx_h78.show
+	cov.tx_h91.show
 	cov.cx_nodeicovrange.show
 	cov.f_nodeicovrange.show
 	cov.tx_nodeicovrange_c.show
 	cov.f_nodeicovrange_sub.show
-	cov.tx_h79.show
+	cov.tx_h92.show
 END
 
 SCRIPT sh_cov_0
@@ -678,37 +784,37 @@ BEGIN
 	cov.f_nodecov.hide
 	cov.tx_nodecov_c.hide
 	cov.f_nodecov_sub.hide
-	cov.tx_h62.hide
+	cov.tx_h75.hide
 	cov.cx_nodeicov.hide
 	cov.f_nodeicov.hide
 	cov.tx_nodeicov_c.hide
 	cov.f_nodeicov_sub.hide
-	cov.tx_h63.hide
+	cov.tx_h76.hide
 	cov.cx_nodeocov.hide
 	cov.f_nodeocov.hide
 	cov.tx_nodeocov_c.hide
 	cov.f_nodeocov_sub.hide
-	cov.tx_h64.hide
+	cov.tx_h77.hide
 	cov.cx_nodefactor.hide
 	cov.f_nodefactor.hide
 	cov.tx_nodefactor_c.hide
 	cov.f_nodefactor_sub.hide
-	cov.tx_h65.hide
+	cov.tx_h78.hide
 	cov.cx_nodeofactor.hide
 	cov.f_nodeofactor.hide
 	cov.tx_nodeofactor_c.hide
 	cov.f_nodeofactor_sub.hide
-	cov.tx_h66.hide
+	cov.tx_h79.hide
 	cov.cx_nodeifactor.hide
 	cov.f_nodeifactor.hide
 	cov.tx_nodeifactor_c.hide
 	cov.f_nodeifactor_sub.hide
-	cov.tx_h67.hide
+	cov.tx_h80.hide
 	cov.cx_nodematch.hide
 	cov.f_nodematch.hide
 	cov.tx_nodematch_c.hide
 	cov.f_nodematch_sub.hide
-	cov.tx_h68.hide
+	cov.tx_h81.hide
 	cov.cx_nodematchdiff.hide
 	cov.f_nodematchdiff.hide
 	cov.tx_nodematchdiff_c.hide
@@ -717,42 +823,42 @@ END
 
 SCRIPT hi_cov_0_1
 BEGIN
-	cov.tx_h69.hide
+	cov.tx_h82.hide
 	cov.cx_nodemix.hide
 	cov.f_nodemix.hide
 	cov.tx_nodemix_c.hide
 	cov.f_nodemix_sub.hide
-	cov.tx_h70.hide
+	cov.tx_h83.hide
 	cov.cx_mm.hide
 	cov.f_mm.hide
 	cov.tx_mm_c.hide
 	cov.f_mm_sub.hide
-	cov.tx_h71.hide
+	cov.tx_h84.hide
 	cov.cx_absdist.hide
 	cov.f_absdist.hide
 	cov.tx_absdist_c.hide
 	cov.f_absdist_sub.hide
-	cov.tx_h72.hide
+	cov.tx_h85.hide
 	cov.cx_absdiffcat.hide
 	cov.f_absdiffcat.hide
 	cov.tx_absdiffcat_c.hide
 	cov.f_absdiffcat_sub.hide
-	cov.tx_h73.hide
+	cov.tx_h86.hide
 	cov.cx_diff.hide
 	cov.f_diff.hide
 	cov.tx_diff_c.hide
 	cov.f_diff_sub.hide
-	cov.tx_h74.hide
+	cov.tx_h87.hide
 	cov.cx_smalldiff.hide
 	cov.f_smalldiff.hide
 	cov.tx_smalldiff_c.hide
 	cov.f_smalldiff_sub.hide
-	cov.tx_h75.hide
+	cov.tx_h88.hide
 	cov.cx_sociality.hide
 	cov.f_sociality.hide
 	cov.tx_sociality_c.hide
 	cov.f_sociality_sub.hide
-	cov.tx_h76.hide
+	cov.tx_h89.hide
 	cov.cx_nodecovrange.hide
 	cov.f_nodecovrange.hide
 	cov.tx_nodecovrange_c.hide
@@ -761,17 +867,17 @@ END
 
 SCRIPT hi_cov_0_2
 BEGIN
-	cov.tx_h77.hide
+	cov.tx_h90.hide
 	cov.cx_nodeocovrange.hide
 	cov.f_nodeocovrange.hide
 	cov.tx_nodeocovrange_c.hide
 	cov.f_nodeocovrange_sub.hide
-	cov.tx_h78.hide
+	cov.tx_h91.hide
 	cov.cx_nodeicovrange.hide
 	cov.f_nodeicovrange.hide
 	cov.tx_nodeicovrange_c.hide
 	cov.f_nodeicovrange_sub.hide
-	cov.tx_h79.hide
+	cov.tx_h92.hide
 END
 
 SCRIPT hi_cov_0
@@ -787,32 +893,32 @@ BEGIN
 	cov.f_nodefactordistinct.show
 	cov.tx_nodefactordistinct_c.show
 	cov.f_nodefactordistinct_sub.show
-	cov.tx_h80.show
+	cov.tx_h93.show
 	cov.cx_nodeofactordistinct.show
 	cov.f_nodeofactordistinct.show
 	cov.tx_nodeofactordistinct_c.show
 	cov.f_nodeofactordistinct_sub.show
-	cov.tx_h81.show
+	cov.tx_h94.show
 	cov.cx_nodeifactordistinct.show
 	cov.f_nodeifactordistinct.show
 	cov.tx_nodeifactordistinct_c.show
 	cov.f_nodeifactordistinct_sub.show
-	cov.tx_h82.show
+	cov.tx_h95.show
 	cov.tx_s73_cov2.show
 	cov.cx_edgecov.show
 	cov.f_edgecov.show
-	cov.tx_h83.show
+	cov.tx_h96.show
 	cov.cx_dyadcov.show
 	cov.f_dyadcov.show
-	cov.tx_h84.show
+	cov.tx_h97.show
 	cov.cx_hamming.show
 	cov.f_hamming.show
-	cov.tx_h85.show
+	cov.tx_h98.show
 	cov.cx_attrcov.show
 	cov.f_attrcov.show
 	cov.tx_attrcov_c.show
 	cov.f_attrcov_sub.show
-	cov.tx_h86.show
+	cov.tx_h99.show
 END
 
 SCRIPT sh_cov_1
@@ -826,32 +932,32 @@ BEGIN
 	cov.f_nodefactordistinct.hide
 	cov.tx_nodefactordistinct_c.hide
 	cov.f_nodefactordistinct_sub.hide
-	cov.tx_h80.hide
+	cov.tx_h93.hide
 	cov.cx_nodeofactordistinct.hide
 	cov.f_nodeofactordistinct.hide
 	cov.tx_nodeofactordistinct_c.hide
 	cov.f_nodeofactordistinct_sub.hide
-	cov.tx_h81.hide
+	cov.tx_h94.hide
 	cov.cx_nodeifactordistinct.hide
 	cov.f_nodeifactordistinct.hide
 	cov.tx_nodeifactordistinct_c.hide
 	cov.f_nodeifactordistinct_sub.hide
-	cov.tx_h82.hide
+	cov.tx_h95.hide
 	cov.tx_s73_cov2.hide
 	cov.cx_edgecov.hide
 	cov.f_edgecov.hide
-	cov.tx_h83.hide
+	cov.tx_h96.hide
 	cov.cx_dyadcov.hide
 	cov.f_dyadcov.hide
-	cov.tx_h84.hide
+	cov.tx_h97.hide
 	cov.cx_hamming.hide
 	cov.f_hamming.hide
-	cov.tx_h85.hide
+	cov.tx_h98.hide
 	cov.cx_attrcov.hide
 	cov.f_attrcov.hide
 	cov.tx_attrcov_c.hide
 	cov.f_attrcov_sub.hide
-	cov.tx_h86.hide
+	cov.tx_h99.hide
 END
 
 SCRIPT hi_cov_1
@@ -876,78 +982,78 @@ BEGIN
 	two.tx_s10_two.show
 	two.cx_bcov1.show
 	two.f_bcov1.show
-	two.tx_h87.show
+	two.tx_h100.show
 	two.cx_bfactor1.show
 	two.f_bfactor1.show
-	two.tx_h88.show
+	two.tx_h101.show
 	two.cx_bdegree1.show
 	two.f_bdegree1.show
 	two.tx_bdegree1_c.show
 	two.f_bdegree1_sub.show
-	two.tx_h89.show
+	two.tx_h102.show
 	two.cx_bstar1.show
 	two.f_bstar1.show
 	two.tx_bstar1_c.show
 	two.f_bstar1_sub.show
-	two.tx_h90.show
+	two.tx_h103.show
 	two.cx_bnodematch1.show
 	two.f_bnodematch1.show
 	two.tx_bnodematch1_c.show
 	two.f_bnodematch1_sub.show
-	two.tx_h91.show
+	two.tx_h104.show
 	two.cx_bgwdegree1.show
 	two.f_bgwdegree1.show
 	two.tx_bgwdegree1_c.show
 	two.f_bgwdegree1_sub.show
-	two.tx_h92.show
+	two.tx_h105.show
 	two.cx_bconcurrent1.show
 	two.f_bconcurrent1.show
-	two.tx_h93.show
+	two.tx_h106.show
 	two.cx_bmindegree1.show
 	two.f_bmindegree1.show
-	two.tx_h94.show
+	two.tx_h107.show
 	two.cx_bdegrange1.show
 	two.f_bdegrange1.show
 	two.tx_bdegrange1_c.show
 	two.f_bdegrange1_sub.show
-	two.tx_h95.show
+	two.tx_h108.show
 	two.cx_bcovrange1.show
 	two.f_bcovrange1.show
 END
 
 SCRIPT sh_two_0_1
 BEGIN
-	two.tx_h96.show
+	two.tx_h109.show
 	two.cx_bfactordistinct1.show
 	two.f_bfactordistinct1.show
 	two.tx_bfactordistinct1_c.show
 	two.f_bfactordistinct1_sub.show
-	two.tx_h97.show
+	two.tx_h110.show
 	two.cx_bsociality1.show
 	two.f_bsociality1.show
-	two.tx_h98.show
+	two.tx_h111.show
 	two.cx_bstarmix1.show
 	two.f_bstarmix1.show
 	two.tx_bstarmix1_c.show
 	two.f_bstarmix1_sub.show
-	two.tx_h99.show
+	two.tx_h112.show
 	two.cx_btwostar1.show
 	two.f_btwostar1.show
 	two.tx_btwostar1_c.show
 	two.f_btwostar1_sub.show
-	two.tx_h100.show
+	two.tx_h113.show
 	two.cx_bdsp1.show
 	two.f_bdsp1.show
-	two.tx_h101.show
+	two.tx_h114.show
 	two.cx_bgwdsp1.show
 	two.f_bgwdsp1.show
-	two.tx_h102.show
+	two.tx_h115.show
 	two.cx_bcov2.show
 	two.f_bcov2.show
-	two.tx_h103.show
+	two.tx_h116.show
 	two.cx_bfactor2.show
 	two.f_bfactor2.show
-	two.tx_h104.show
+	two.tx_h117.show
 END
 
 SCRIPT sh_two_0
@@ -961,78 +1067,78 @@ BEGIN
 	two.tx_s10_two.hide
 	two.cx_bcov1.hide
 	two.f_bcov1.hide
-	two.tx_h87.hide
+	two.tx_h100.hide
 	two.cx_bfactor1.hide
 	two.f_bfactor1.hide
-	two.tx_h88.hide
+	two.tx_h101.hide
 	two.cx_bdegree1.hide
 	two.f_bdegree1.hide
 	two.tx_bdegree1_c.hide
 	two.f_bdegree1_sub.hide
-	two.tx_h89.hide
+	two.tx_h102.hide
 	two.cx_bstar1.hide
 	two.f_bstar1.hide
 	two.tx_bstar1_c.hide
 	two.f_bstar1_sub.hide
-	two.tx_h90.hide
+	two.tx_h103.hide
 	two.cx_bnodematch1.hide
 	two.f_bnodematch1.hide
 	two.tx_bnodematch1_c.hide
 	two.f_bnodematch1_sub.hide
-	two.tx_h91.hide
+	two.tx_h104.hide
 	two.cx_bgwdegree1.hide
 	two.f_bgwdegree1.hide
 	two.tx_bgwdegree1_c.hide
 	two.f_bgwdegree1_sub.hide
-	two.tx_h92.hide
+	two.tx_h105.hide
 	two.cx_bconcurrent1.hide
 	two.f_bconcurrent1.hide
-	two.tx_h93.hide
+	two.tx_h106.hide
 	two.cx_bmindegree1.hide
 	two.f_bmindegree1.hide
-	two.tx_h94.hide
+	two.tx_h107.hide
 	two.cx_bdegrange1.hide
 	two.f_bdegrange1.hide
 	two.tx_bdegrange1_c.hide
 	two.f_bdegrange1_sub.hide
-	two.tx_h95.hide
+	two.tx_h108.hide
 	two.cx_bcovrange1.hide
 	two.f_bcovrange1.hide
 END
 
 SCRIPT hi_two_0_1
 BEGIN
-	two.tx_h96.hide
+	two.tx_h109.hide
 	two.cx_bfactordistinct1.hide
 	two.f_bfactordistinct1.hide
 	two.tx_bfactordistinct1_c.hide
 	two.f_bfactordistinct1_sub.hide
-	two.tx_h97.hide
+	two.tx_h110.hide
 	two.cx_bsociality1.hide
 	two.f_bsociality1.hide
-	two.tx_h98.hide
+	two.tx_h111.hide
 	two.cx_bstarmix1.hide
 	two.f_bstarmix1.hide
 	two.tx_bstarmix1_c.hide
 	two.f_bstarmix1_sub.hide
-	two.tx_h99.hide
+	two.tx_h112.hide
 	two.cx_btwostar1.hide
 	two.f_btwostar1.hide
 	two.tx_btwostar1_c.hide
 	two.f_btwostar1_sub.hide
-	two.tx_h100.hide
+	two.tx_h113.hide
 	two.cx_bdsp1.hide
 	two.f_bdsp1.hide
-	two.tx_h101.hide
+	two.tx_h114.hide
 	two.cx_bgwdsp1.hide
 	two.f_bgwdsp1.hide
-	two.tx_h102.hide
+	two.tx_h115.hide
 	two.cx_bcov2.hide
 	two.f_bcov2.hide
-	two.tx_h103.hide
+	two.tx_h116.hide
 	two.cx_bfactor2.hide
 	two.f_bfactor2.hide
-	two.tx_h104.hide
+	two.tx_h117.hide
 END
 
 SCRIPT hi_two_0
@@ -1047,77 +1153,77 @@ BEGIN
 	two.f_bdegree2.show
 	two.tx_bdegree2_c.show
 	two.f_bdegree2_sub.show
-	two.tx_h105.show
+	two.tx_h118.show
 	two.cx_bstar2.show
 	two.f_bstar2.show
 	two.tx_bstar2_c.show
 	two.f_bstar2_sub.show
-	two.tx_h106.show
+	two.tx_h119.show
 	two.cx_bnodematch2.show
 	two.f_bnodematch2.show
 	two.tx_bnodematch2_c.show
 	two.f_bnodematch2_sub.show
-	two.tx_h107.show
+	two.tx_h120.show
 	two.cx_bgwdegree2.show
 	two.f_bgwdegree2.show
 	two.tx_bgwdegree2_c.show
 	two.f_bgwdegree2_sub.show
-	two.tx_h108.show
+	two.tx_h121.show
 	two.cx_bconcurrent2.show
 	two.f_bconcurrent2.show
-	two.tx_h109.show
+	two.tx_h122.show
 	two.cx_bmindegree2.show
 	two.f_bmindegree2.show
-	two.tx_h110.show
+	two.tx_h123.show
 	two.cx_bdegrange2.show
 	two.f_bdegrange2.show
 	two.tx_bdegrange2_c.show
 	two.f_bdegrange2_sub.show
-	two.tx_h111.show
+	two.tx_h124.show
 	two.cx_bcovrange2.show
 	two.f_bcovrange2.show
-	two.tx_h112.show
+	two.tx_h125.show
 	two.cx_bfactordistinct2.show
 	two.f_bfactordistinct2.show
 	two.tx_bfactordistinct2_c.show
 	two.f_bfactordistinct2_sub.show
-	two.tx_h113.show
+	two.tx_h126.show
 	two.cx_bsociality2.show
 END
 
 SCRIPT sh_two_1_1
 BEGIN
 	two.f_bsociality2.show
-	two.tx_h114.show
+	two.tx_h127.show
 	two.cx_bstarmix2.show
 	two.f_bstarmix2.show
 	two.tx_bstarmix2_c.show
 	two.f_bstarmix2_sub.show
-	two.tx_h115.show
+	two.tx_h128.show
 	two.cx_btwostar2.show
 	two.f_btwostar2.show
 	two.tx_btwostar2_c.show
 	two.f_btwostar2_sub.show
-	two.tx_h116.show
+	two.tx_h129.show
 	two.cx_bdsp2.show
 	two.f_bdsp2.show
-	two.tx_h117.show
+	two.tx_h130.show
 	two.cx_bgwdsp2.show
 	two.f_bgwdsp2.show
-	two.tx_h118.show
+	two.tx_h131.show
 	two.cx_coincidence.show
 	two.f_coincidence.show
-	two.tx_h119.show
+	two.tx_h132.show
 	two.tx_s325_two2.show
 	two.cx_bgwdegreefree1.show
 	two.f_bgwdegreefree1.show
-	two.tx_h120.show
+	two.tx_h133.show
 	two.cx_bgwdspfree1.show
 	two.f_bgwdspfree1.show
-	two.tx_h121.show
+	two.tx_h134.show
 	two.cx_bgwdegreefree2.show
 	two.f_bgwdegreefree2.show
-	two.tx_h122.show
+	two.tx_h135.show
 END
 
 SCRIPT sh_two_1
@@ -1132,77 +1238,77 @@ BEGIN
 	two.f_bdegree2.hide
 	two.tx_bdegree2_c.hide
 	two.f_bdegree2_sub.hide
-	two.tx_h105.hide
+	two.tx_h118.hide
 	two.cx_bstar2.hide
 	two.f_bstar2.hide
 	two.tx_bstar2_c.hide
 	two.f_bstar2_sub.hide
-	two.tx_h106.hide
+	two.tx_h119.hide
 	two.cx_bnodematch2.hide
 	two.f_bnodematch2.hide
 	two.tx_bnodematch2_c.hide
 	two.f_bnodematch2_sub.hide
-	two.tx_h107.hide
+	two.tx_h120.hide
 	two.cx_bgwdegree2.hide
 	two.f_bgwdegree2.hide
 	two.tx_bgwdegree2_c.hide
 	two.f_bgwdegree2_sub.hide
-	two.tx_h108.hide
+	two.tx_h121.hide
 	two.cx_bconcurrent2.hide
 	two.f_bconcurrent2.hide
-	two.tx_h109.hide
+	two.tx_h122.hide
 	two.cx_bmindegree2.hide
 	two.f_bmindegree2.hide
-	two.tx_h110.hide
+	two.tx_h123.hide
 	two.cx_bdegrange2.hide
 	two.f_bdegrange2.hide
 	two.tx_bdegrange2_c.hide
 	two.f_bdegrange2_sub.hide
-	two.tx_h111.hide
+	two.tx_h124.hide
 	two.cx_bcovrange2.hide
 	two.f_bcovrange2.hide
-	two.tx_h112.hide
+	two.tx_h125.hide
 	two.cx_bfactordistinct2.hide
 	two.f_bfactordistinct2.hide
 	two.tx_bfactordistinct2_c.hide
 	two.f_bfactordistinct2_sub.hide
-	two.tx_h113.hide
+	two.tx_h126.hide
 	two.cx_bsociality2.hide
 END
 
 SCRIPT hi_two_1_1
 BEGIN
 	two.f_bsociality2.hide
-	two.tx_h114.hide
+	two.tx_h127.hide
 	two.cx_bstarmix2.hide
 	two.f_bstarmix2.hide
 	two.tx_bstarmix2_c.hide
 	two.f_bstarmix2_sub.hide
-	two.tx_h115.hide
+	two.tx_h128.hide
 	two.cx_btwostar2.hide
 	two.f_btwostar2.hide
 	two.tx_btwostar2_c.hide
 	two.f_btwostar2_sub.hide
-	two.tx_h116.hide
+	two.tx_h129.hide
 	two.cx_bdsp2.hide
 	two.f_bdsp2.hide
-	two.tx_h117.hide
+	two.tx_h130.hide
 	two.cx_bgwdsp2.hide
 	two.f_bgwdsp2.hide
-	two.tx_h118.hide
+	two.tx_h131.hide
 	two.cx_coincidence.hide
 	two.f_coincidence.hide
-	two.tx_h119.hide
+	two.tx_h132.hide
 	two.tx_s325_two2.hide
 	two.cx_bgwdegreefree1.hide
 	two.f_bgwdegreefree1.hide
-	two.tx_h120.hide
+	two.tx_h133.hide
 	two.cx_bgwdspfree1.hide
 	two.f_bgwdspfree1.hide
-	two.tx_h121.hide
+	two.tx_h134.hide
 	two.cx_bgwdegreefree2.hide
 	two.f_bgwdegreefree2.hide
-	two.tx_h122.hide
+	two.tx_h135.hide
 END
 
 SCRIPT hi_two_1
@@ -1215,7 +1321,7 @@ SCRIPT sh_two_2_0
 BEGIN
 	two.cx_bgwdspfree2.show
 	two.f_bgwdspfree2.show
-	two.tx_h123.show
+	two.tx_h136.show
 END
 
 SCRIPT sh_two_2
@@ -1227,7 +1333,7 @@ SCRIPT hi_two_2_0
 BEGIN
 	two.cx_bgwdspfree2.hide
 	two.f_bgwdspfree2.hide
-	two.tx_h123.hide
+	two.tx_h136.hide
 END
 
 SCRIPT hi_two_2
@@ -1819,128 +1925,148 @@ DIALOG deg, tabtitle("Degree")
 BEGIN
   TEXT      tx_sec_deg 10 12 70 ., label("Section:")
   COMBOBOX  cb_sec_deg 85 10 380 ., dropdownlist contents(l_sec_deg) onselchangelist(l_sec_deg_a) nomem
-  TEXT      tx_s10_deg 10 45 960 ., label("== Degree distribution (native options) ==")
-  CHECKBOX  cx_degree 10 64 235 ., label("degree()") default(0) nomem
-  EDIT      f_degree 253 64 170 ., nomem
-  TEXT      tx_h15 431 66 554 ., label("numlist, e.g. 1 2 3; undirected only")
-  CHECKBOX  cx_odegree 10 85 235 ., label("odegree()") default(0) nomem
-  EDIT      f_odegree 253 85 170 ., nomem
-  TEXT      tx_h16 431 87 554 ., label("numlist; directed only")
-  CHECKBOX  cx_idegree 10 106 235 ., label("idegree()") default(0) nomem
-  EDIT      f_idegree 253 106 170 ., nomem
-  TEXT      tx_h17 431 108 554 ., label("numlist; directed only")
-  CHECKBOX  cx_kstar 10 127 235 ., label("kstar()") default(0) nomem
-  EDIT      f_kstar 253 127 170 ., nomem
-  TEXT      tx_h18 431 129 554 ., label("numlist of k; undirected only")
-  CHECKBOX  cx_ostar 10 148 235 ., label("ostar()") default(0) nomem
-  EDIT      f_ostar 253 148 170 ., nomem
-  TEXT      tx_h19 431 150 554 ., label("numlist of k; directed only")
-  CHECKBOX  cx_istar 10 169 235 ., label("istar()") default(0) nomem
-  EDIT      f_istar 253 169 170 ., nomem
-  TEXT      tx_h20 431 171 554 ., label("numlist of k; directed only")
-  CHECKBOX  cx_degrange 10 190 235 ., label("degrange() + degrangeto()") default(0) nomem
-  EDIT      f_degrange 253 190 170 ., nomem
-  TEXT      tx_degrange_to 431 192 75 ., label("degrangeto:")
-  EDIT      f_degrange_to 506 190 90 ., nomem
-  TEXT      tx_h21 604 192 381 ., label("from-values, then to-values; undirected only")
-  CHECKBOX  cx_odegrange 10 211 235 ., label("odegrange() + odegrangeto()") default(0) nomem
-  EDIT      f_odegrange 253 211 170 ., nomem
-  TEXT      tx_odegrange_to 431 213 81 ., label("odegrangeto:")
-  EDIT      f_odegrange_to 512 211 90 ., nomem
-  TEXT      tx_h22 610 213 375 ., label("from-values, then to-values; directed only")
-  CHECKBOX  cx_idegrange 10 232 235 ., label("idegrange() + idegrangeto()") default(0) nomem
-  EDIT      f_idegrange 253 232 170 ., nomem
-  TEXT      tx_idegrange_to 431 234 81 ., label("idegrangeto:")
-  EDIT      f_idegrange_to 512 232 90 ., nomem
-  TEXT      tx_h23 610 234 375 ., label("from-values, then to-values; directed only")
-  TEXT      tx_s220_deg 10 255 960 ., label("== Degree terms with by= / homophily (structural()) ==")
-  CHECKBOX  cx_s_degree 10 274 235 ., label("degree(d= by= homophily)") default(0) nomem
-  TEXT      tx_s_degree_d 253 276 18 ., label("d=")
-  EDIT      f_s_degree_d 271 274 60 ., nomem
-  TEXT      tx_s_degree_by 339 276 24 ., label("by=")
-  EDIT      f_s_degree_by 363 274 60 ., nomem
-  CHECKBOX  f_s_degree_homophily 431 274 80 ., label("homophily") default(0) nomem
-  TEXT      tx_h24 515 276 470 ., label("undirected only")
-  CHECKBOX  cx_s_odegree 10 295 235 ., label("odegree(d= by= homophily)") default(0) nomem
-  TEXT      tx_s_odegree_d 253 297 18 ., label("d=")
-  EDIT      f_s_odegree_d 271 295 60 ., nomem
-  TEXT      tx_s_odegree_by 339 297 24 ., label("by=")
-  EDIT      f_s_odegree_by 363 295 60 ., nomem
-  CHECKBOX  f_s_odegree_homophily 431 295 80 ., label("homophily") default(0) nomem
-  TEXT      tx_h25 515 297 470 ., label("directed only")
-  CHECKBOX  cx_s_idegree 10 316 235 ., label("idegree(d= by= homophily)") default(0) nomem
-  TEXT      tx_s_idegree_d 253 318 18 ., label("d=")
-  EDIT      f_s_idegree_d 271 316 60 ., nomem
-  TEXT      tx_s_idegree_by 339 318 24 ., label("by=")
-  EDIT      f_s_idegree_by 363 316 60 ., nomem
-  CHECKBOX  f_s_idegree_homophily 431 316 80 ., label("homophily") default(0) nomem
-  TEXT      tx_h26 515 318 470 ., label("directed only")
-  CHECKBOX  cx_s_degrange 10 337 235 ., label("degrange(from= to= by= homophily)") default(0) nomem
-  TEXT      tx_s_degrange_from 253 339 37 ., label("from=")
-  EDIT      f_s_degrange_from 290 337 50 ., nomem
-  TEXT      tx_s_degrange_to 348 339 24 ., label("to=")
-  EDIT      f_s_degrange_to 372 337 50 ., nomem
-  TEXT      tx_s_degrange_by 430 339 24 ., label("by=")
-  EDIT      f_s_degrange_by 454 337 50 ., nomem
-  CHECKBOX  f_s_degrange_homophily 512 337 80 ., label("homophily") default(0) nomem
-  TEXT      tx_h27 596 339 389 ., label("undirected")
-  CHECKBOX  cx_s_odegrange 10 358 235 ., label("odegrange(from= to= by=)") default(0) nomem
-  TEXT      tx_s_odegrange_from 253 360 37 ., label("from=")
-  EDIT      f_s_odegrange_from 290 358 50 ., nomem
-  TEXT      tx_s_odegrange_to 348 360 24 ., label("to=")
-  EDIT      f_s_odegrange_to 372 358 50 ., nomem
-  TEXT      tx_s_odegrange_by 430 360 24 ., label("by=")
-  EDIT      f_s_odegrange_by 454 358 50 ., nomem
-  CHECKBOX  f_s_odegrange_homophily 512 358 80 ., label("homophily") default(0) nomem
-  TEXT      tx_h28 596 360 389 ., label("directed")
-  CHECKBOX  cx_s_idegrange 10 379 235 ., label("idegrange(from= to= by=)") default(0) nomem
-  TEXT      tx_s_idegrange_from 253 381 37 ., label("from=")
-  EDIT      f_s_idegrange_from 290 379 50 ., nomem
-  TEXT      tx_s_idegrange_to 348 381 24 ., label("to=")
-  EDIT      f_s_idegrange_to 372 379 50 ., nomem
-  TEXT      tx_s_idegrange_by 430 381 24 ., label("by=")
-  EDIT      f_s_idegrange_by 454 379 50 ., nomem
-  CHECKBOX  f_s_idegrange_homophily 512 379 80 ., label("homophily") default(0) nomem
-  TEXT      tx_h29 596 381 389 ., label("directed")
-  CHECKBOX  cx_s_kstar 10 400 235 ., label("kstar(k= attr=)") default(0) nomem
-  TEXT      tx_s_kstar_k 253 402 18 ., label("k=")
-  EDIT      f_s_kstar_k 271 400 60 ., nomem
-  TEXT      tx_s_kstar_attr 339 402 37 ., label("attr=")
-  EDIT      f_s_kstar_attr 376 400 70 ., nomem
-  TEXT      tx_h30 454 402 531 ., label("undirected")
-  CHECKBOX  cx_s_ostar 10 421 235 ., label("ostar(k= attr=)") default(0) nomem
-  TEXT      tx_s_ostar_k 253 423 18 ., label("k=")
-  EDIT      f_s_ostar_k 271 421 60 ., nomem
-  TEXT      tx_s_ostar_attr 339 423 37 ., label("attr=")
-  EDIT      f_s_ostar_attr 376 421 70 ., nomem
-  TEXT      tx_h31 454 423 531 ., label("directed")
-  CHECKBOX  cx_s_istar 10 43 235 ., label("istar(k= attr=)") default(0) nomem
-  TEXT      tx_s_istar_k 253 45 18 ., label("k=")
-  EDIT      f_s_istar_k 271 43 60 ., nomem
-  TEXT      tx_s_istar_attr 339 45 37 ., label("attr=")
-  EDIT      f_s_istar_attr 376 43 70 ., nomem
-  TEXT      tx_h32 454 45 531 ., label("directed")
-  CHECKBOX  cx_s_concurrent 10 64 235 ., label("concurrent(by=)") default(0) nomem
-  TEXT      tx_s_concurrent_by 253 66 24 ., label("by=")
-  EDIT      f_s_concurrent_by 277 64 70 ., nomem
-  TEXT      tx_h33 355 66 630 ., label("structural form of concurrent; undirected")
-  CHECKBOX  cx_concurrentties 10 85 235 ., label("concurrentties(by=)") default(0) nomem
-  TEXT      tx_concurrentties_by 253 87 24 ., label("by=")
-  EDIT      f_concurrentties_by 277 85 70 ., nomem
-  TEXT      tx_h34 355 87 630 ., label("undirected")
-  TEXT      tx_s73_deg2 10 108 960 ., label("== Other degree terms (structural()) ==")
-  CHECKBOX  cx_degree1_5 10 127 235 ., label("degree1.5") default(0) nomem
-  TEXT      tx_h35 253 129 732 ., label("undirected")
-  CHECKBOX  cx_odegree1_5 10 148 235 ., label("odegree1.5") default(0) nomem
-  TEXT      tx_h36 253 150 732 ., label("directed")
-  CHECKBOX  cx_idegree1_5 10 169 235 ., label("idegree1.5") default(0) nomem
-  TEXT      tx_h37 253 171 732 ., label("directed")
-  CHECKBOX  cx_degcrossprod 10 190 235 ., label("degcrossprod") default(0) nomem
-  TEXT      tx_h38 253 192 732 ., label("undirected; not in nwergm simulate")
-  CHECKBOX  cx_degcor 10 211 235 ., label("degcor") default(0) nomem
-  TEXT      tx_h39 253 213 732 ., label("undirected; not in nwergm simulate")
-  CHECKBOX  cx_m2star 10 232 235 ., label("m2star") default(0) nomem
-  TEXT      tx_h40 253 234 732 ., label("structural(), directed only")
+  TEXT      tx_s10_deg 10 45 960 ., label("== Degree, geometrically weighted: fixed decay ==")
+  CHECKBOX  cx_gwdegree 10 64 254 ., label("gwdegree()") default(0) nomem
+  EDIT      f_gwdegree 272 64 170 ., default("0.5") nomem
+  TEXT      tx_h15 450 66 535 ., label("decay; undirected only")
+  CHECKBOX  cx_gwodegree 10 85 254 ., label("gwodegree()") default(0) nomem
+  EDIT      f_gwodegree 272 85 170 ., default("0.5") nomem
+  TEXT      tx_h16 450 87 535 ., label("decay; directed only")
+  CHECKBOX  cx_gwidegree 10 106 254 ., label("gwidegree()") default(0) nomem
+  EDIT      f_gwidegree 272 106 170 ., default("0.5") nomem
+  TEXT      tx_h17 450 108 535 ., label("decay; directed only")
+  TEXT      tx_s94_deg 10 129 960 ., label("== Degree, geometrically weighted: decay estimated (the value is the starting value) ==")
+  CHECKBOX  cx_gwdegreefree 10 148 254 ., label("gwdegreefree()  [gwdegree, curved]") default(0) nomem
+  EDIT      f_gwdegreefree 272 148 170 ., default("0.5") nomem
+  TEXT      tx_h18 450 150 535 ., label("start value; method(mple) or mcmle")
+  CHECKBOX  cx_gwodegreefree 10 169 254 ., label("gwodegreefree()  [gwodegree, curved]") default(0) nomem
+  EDIT      f_gwodegreefree 272 169 170 ., default("0.5") nomem
+  TEXT      tx_h19 450 171 535 ., label("start value; method(mple) or mcmle")
+  CHECKBOX  cx_gwidegreefree 10 190 254 ., label("gwidegreefree()  [gwidegree, curved]") default(0) nomem
+  EDIT      f_gwidegreefree 272 190 170 ., default("0.5") nomem
+  TEXT      tx_h20 450 192 535 ., label("start value; method(mple) or mcmle")
+  TEXT      tx_s178_deg 10 213 960 ., label("== Degree distribution (native options) ==")
+  CHECKBOX  cx_degree 10 232 254 ., label("degree()") default(0) nomem
+  EDIT      f_degree 272 232 170 ., nomem
+  TEXT      tx_h21 450 234 535 ., label("numlist, e.g. 1 2 3; undirected only")
+  CHECKBOX  cx_odegree 10 253 254 ., label("odegree()") default(0) nomem
+  EDIT      f_odegree 272 253 170 ., nomem
+  TEXT      tx_h22 450 255 535 ., label("numlist; directed only")
+  CHECKBOX  cx_idegree 10 274 254 ., label("idegree()") default(0) nomem
+  EDIT      f_idegree 272 274 170 ., nomem
+  TEXT      tx_h23 450 276 535 ., label("numlist; directed only")
+  CHECKBOX  cx_kstar 10 295 254 ., label("kstar()") default(0) nomem
+  EDIT      f_kstar 272 295 170 ., nomem
+  TEXT      tx_h24 450 297 535 ., label("numlist of k; undirected only")
+  CHECKBOX  cx_ostar 10 316 254 ., label("ostar()") default(0) nomem
+  EDIT      f_ostar 272 316 170 ., nomem
+  TEXT      tx_h25 450 318 535 ., label("numlist of k; directed only")
+  CHECKBOX  cx_istar 10 337 254 ., label("istar()") default(0) nomem
+  EDIT      f_istar 272 337 170 ., nomem
+  TEXT      tx_h26 450 339 535 ., label("numlist of k; directed only")
+  CHECKBOX  cx_degrange 10 358 254 ., label("degrange() + degrangeto()") default(0) nomem
+  EDIT      f_degrange 272 358 170 ., nomem
+  TEXT      tx_degrange_to 450 360 75 ., label("degrangeto:")
+  EDIT      f_degrange_to 525 358 90 ., nomem
+  TEXT      tx_h27 623 360 362 ., label("from-values, then to-values; undirected only")
+  CHECKBOX  cx_odegrange 10 379 254 ., label("odegrange() + odegrangeto()") default(0) nomem
+  EDIT      f_odegrange 272 379 170 ., nomem
+  TEXT      tx_odegrange_to 450 381 81 ., label("odegrangeto:")
+  EDIT      f_odegrange_to 531 379 90 ., nomem
+  TEXT      tx_h28 629 381 356 ., label("from-values, then to-values; directed only")
+  CHECKBOX  cx_idegrange 10 400 254 ., label("idegrange() + idegrangeto()") default(0) nomem
+  EDIT      f_idegrange 272 400 170 ., nomem
+  TEXT      tx_idegrange_to 450 402 81 ., label("idegrangeto:")
+  EDIT      f_idegrange_to 531 400 90 ., nomem
+  TEXT      tx_h29 629 402 356 ., label("from-values, then to-values; directed only")
+  TEXT      tx_s10_deg2 10 45 960 ., label("== Degree terms with by= / homophily (structural()) ==")
+  CHECKBOX  cx_s_degree 10 64 254 ., label("degree(d= by= homophily)") default(0) nomem
+  TEXT      tx_s_degree_d 272 66 18 ., label("d=")
+  EDIT      f_s_degree_d 290 64 60 ., nomem
+  TEXT      tx_s_degree_by 358 66 24 ., label("by=")
+  EDIT      f_s_degree_by 382 64 60 ., nomem
+  CHECKBOX  f_s_degree_homophily 450 64 80 ., label("homophily") default(0) nomem
+  TEXT      tx_h30 534 66 451 ., label("undirected only")
+  CHECKBOX  cx_s_odegree 10 85 254 ., label("odegree(d= by= homophily)") default(0) nomem
+  TEXT      tx_s_odegree_d 272 87 18 ., label("d=")
+  EDIT      f_s_odegree_d 290 85 60 ., nomem
+  TEXT      tx_s_odegree_by 358 87 24 ., label("by=")
+  EDIT      f_s_odegree_by 382 85 60 ., nomem
+  CHECKBOX  f_s_odegree_homophily 450 85 80 ., label("homophily") default(0) nomem
+  TEXT      tx_h31 534 87 451 ., label("directed only")
+  CHECKBOX  cx_s_idegree 10 106 254 ., label("idegree(d= by= homophily)") default(0) nomem
+  TEXT      tx_s_idegree_d 272 108 18 ., label("d=")
+  EDIT      f_s_idegree_d 290 106 60 ., nomem
+  TEXT      tx_s_idegree_by 358 108 24 ., label("by=")
+  EDIT      f_s_idegree_by 382 106 60 ., nomem
+  CHECKBOX  f_s_idegree_homophily 450 106 80 ., label("homophily") default(0) nomem
+  TEXT      tx_h32 534 108 451 ., label("directed only")
+  CHECKBOX  cx_s_degrange 10 127 254 ., label("degrange(from= to= by= homophily)") default(0) nomem
+  TEXT      tx_s_degrange_from 272 129 37 ., label("from=")
+  EDIT      f_s_degrange_from 309 127 50 ., nomem
+  TEXT      tx_s_degrange_to 367 129 24 ., label("to=")
+  EDIT      f_s_degrange_to 391 127 50 ., nomem
+  TEXT      tx_s_degrange_by 449 129 24 ., label("by=")
+  EDIT      f_s_degrange_by 473 127 50 ., nomem
+  CHECKBOX  f_s_degrange_homophily 531 127 80 ., label("homophily") default(0) nomem
+  TEXT      tx_h33 615 129 370 ., label("undirected")
+  CHECKBOX  cx_s_odegrange 10 148 254 ., label("odegrange(from= to= by=)") default(0) nomem
+  TEXT      tx_s_odegrange_from 272 150 37 ., label("from=")
+  EDIT      f_s_odegrange_from 309 148 50 ., nomem
+  TEXT      tx_s_odegrange_to 367 150 24 ., label("to=")
+  EDIT      f_s_odegrange_to 391 148 50 ., nomem
+  TEXT      tx_s_odegrange_by 449 150 24 ., label("by=")
+  EDIT      f_s_odegrange_by 473 148 50 ., nomem
+  CHECKBOX  f_s_odegrange_homophily 531 148 80 ., label("homophily") default(0) nomem
+  TEXT      tx_h34 615 150 370 ., label("directed")
+  CHECKBOX  cx_s_idegrange 10 169 254 ., label("idegrange(from= to= by=)") default(0) nomem
+  TEXT      tx_s_idegrange_from 272 171 37 ., label("from=")
+  EDIT      f_s_idegrange_from 309 169 50 ., nomem
+  TEXT      tx_s_idegrange_to 367 171 24 ., label("to=")
+  EDIT      f_s_idegrange_to 391 169 50 ., nomem
+  TEXT      tx_s_idegrange_by 449 171 24 ., label("by=")
+  EDIT      f_s_idegrange_by 473 169 50 ., nomem
+  CHECKBOX  f_s_idegrange_homophily 531 169 80 ., label("homophily") default(0) nomem
+  TEXT      tx_h35 615 171 370 ., label("directed")
+  CHECKBOX  cx_s_kstar 10 190 254 ., label("kstar(k= attr=)") default(0) nomem
+  TEXT      tx_s_kstar_k 272 192 18 ., label("k=")
+  EDIT      f_s_kstar_k 290 190 60 ., nomem
+  TEXT      tx_s_kstar_attr 358 192 37 ., label("attr=")
+  EDIT      f_s_kstar_attr 395 190 70 ., nomem
+  TEXT      tx_h36 473 192 512 ., label("undirected")
+  CHECKBOX  cx_s_ostar 10 211 254 ., label("ostar(k= attr=)") default(0) nomem
+  TEXT      tx_s_ostar_k 272 213 18 ., label("k=")
+  EDIT      f_s_ostar_k 290 211 60 ., nomem
+  TEXT      tx_s_ostar_attr 358 213 37 ., label("attr=")
+  EDIT      f_s_ostar_attr 395 211 70 ., nomem
+  TEXT      tx_h37 473 213 512 ., label("directed")
+  CHECKBOX  cx_s_istar 10 232 254 ., label("istar(k= attr=)") default(0) nomem
+  TEXT      tx_s_istar_k 272 234 18 ., label("k=")
+  EDIT      f_s_istar_k 290 232 60 ., nomem
+  TEXT      tx_s_istar_attr 358 234 37 ., label("attr=")
+  EDIT      f_s_istar_attr 395 232 70 ., nomem
+  TEXT      tx_h38 473 234 512 ., label("directed")
+  CHECKBOX  cx_s_concurrent 10 253 254 ., label("concurrent(by=)") default(0) nomem
+  TEXT      tx_s_concurrent_by 272 255 24 ., label("by=")
+  EDIT      f_s_concurrent_by 296 253 70 ., nomem
+  TEXT      tx_h39 374 255 611 ., label("structural form of concurrent; undirected")
+  CHECKBOX  cx_concurrentties 10 274 254 ., label("concurrentties(by=)") default(0) nomem
+  TEXT      tx_concurrentties_by 272 276 24 ., label("by=")
+  EDIT      f_concurrentties_by 296 274 70 ., nomem
+  TEXT      tx_h40 374 276 611 ., label("undirected")
+  TEXT      tx_s262_deg2 10 297 960 ., label("== Other degree terms (structural()) ==")
+  CHECKBOX  cx_degree1_5 10 316 254 ., label("degree1.5") default(0) nomem
+  TEXT      tx_h41 272 318 713 ., label("undirected")
+  CHECKBOX  cx_odegree1_5 10 337 254 ., label("odegree1.5") default(0) nomem
+  TEXT      tx_h42 272 339 713 ., label("directed")
+  CHECKBOX  cx_idegree1_5 10 358 254 ., label("idegree1.5") default(0) nomem
+  TEXT      tx_h43 272 360 713 ., label("directed")
+  CHECKBOX  cx_degcrossprod 10 379 254 ., label("degcrossprod") default(0) nomem
+  TEXT      tx_h44 272 381 713 ., label("undirected; not in nwergm simulate")
+  CHECKBOX  cx_degcor 10 400 254 ., label("degcor") default(0) nomem
+  TEXT      tx_h45 272 402 713 ., label("undirected; not in nwergm simulate")
+  CHECKBOX  cx_m2star 10 421 254 ., label("m2star") default(0) nomem
+  TEXT      tx_h46 272 423 713 ., label("structural(), directed only")
 END
 
 DIALOG tri, tabtitle("Triads")
@@ -1948,87 +2074,110 @@ BEGIN
   TEXT      tx_sec_tri 10 12 70 ., label("Section:")
   COMBOBOX  cb_sec_tri 85 10 380 ., dropdownlist contents(l_sec_tri) onselchangelist(l_sec_tri_a) nomem
   TEXT      tx_s10_tri 10 45 960 ., label("== Shared partners (native options) ==")
-  CHECKBOX  cx_esp 10 64 190 ., label("esp()") default(0) nomem
-  EDIT      f_esp 208 64 170 ., nomem
-  TEXT      tx_h41 386 66 599 ., label("numlist of d; see type() on the Curved tab")
-  CHECKBOX  cx_dsp 10 85 190 ., label("dsp()") default(0) nomem
-  EDIT      f_dsp 208 85 170 ., nomem
-  TEXT      tx_h42 386 87 599 ., label("numlist of d; see type() on the Curved tab")
-  TEXT      tx_s73_tri 10 108 960 ., label("== Triad terms (structural()) ==")
-  CHECKBOX  cx_s_triangle 10 127 190 ., label("triangle(attr= diff)") default(0) nomem
-  TEXT      tx_s_triangle_attr 208 129 37 ., label("attr=")
-  EDIT      f_s_triangle_attr 245 127 70 ., nomem
-  CHECKBOX  f_s_triangle_diff 323 127 49 ., label("diff") default(0) nomem
-  TEXT      tx_h43 376 129 609 ., label("triangle by attribute")
-  CHECKBOX  cx_transitive 10 148 190 ., label("transitive") default(0) nomem
-  TEXT      tx_h44 208 150 777 ., label("directed")
-  CHECKBOX  cx_intransitive 10 169 190 ., label("intransitive") default(0) nomem
-  TEXT      tx_h45 208 171 777 ., label("directed")
-  CHECKBOX  cx_ttriple 10 190 190 ., label("ttriple(attr= diff)") default(0) nomem
-  TEXT      tx_ttriple_attr 208 192 37 ., label("attr=")
-  EDIT      f_ttriple_attr 245 190 70 ., nomem
-  CHECKBOX  f_ttriple_diff 323 190 49 ., label("diff") default(0) nomem
-  TEXT      tx_h46 376 192 609 ., label("directed")
-  CHECKBOX  cx_s_ctriple 10 211 190 ., label("ctriple(attr= diff)") default(0) nomem
-  TEXT      tx_s_ctriple_attr 208 213 37 ., label("attr=")
-  EDIT      f_s_ctriple_attr 245 211 70 ., nomem
-  CHECKBOX  f_s_ctriple_diff 323 211 49 ., label("diff") default(0) nomem
-  TEXT      tx_h47 376 213 609 ., label("directed; plain form is on the first tab")
-  CHECKBOX  cx_cycle 10 232 190 ., label("cycle(k= semi)") default(0) nomem
-  TEXT      tx_cycle_k 208 234 18 ., label("k=")
-  EDIT      f_cycle_k 226 232 60 ., nomem
-  CHECKBOX  f_cycle_semi 294 232 49 ., label("semi") default(0) nomem
-  TEXT      tx_h48 347 234 638 ., label("k = cycle lengths, e.g. 3 4")
-  CHECKBOX  cx_threetrail 10 253 190 ., label("threetrail(keep=)") default(0) nomem
-  TEXT      tx_threetrail_keep 208 255 37 ., label("keep=")
-  EDIT      f_threetrail_keep 245 253 70 ., nomem
-  TEXT      tx_h49 323 255 662 ., label("four types RRR RRL LRR LRL if directed")
-  CHECKBOX  cx_balance 10 274 190 ., label("balance") default(0) nomem
-  TEXT      tx_h50 208 276 777 ., label("balanced triads")
-  CHECKBOX  cx_triadcensus 10 295 190 ., label("triadcensus(levels=)") default(0) nomem
-  TEXT      tx_triadcensus_levels 208 297 50 ., label("levels=")
-  EDIT      f_triadcensus_levels 258 295 70 ., nomem
-  TEXT      tx_h51 336 297 649 ., label("triad census")
-  CHECKBOX  cx_tripercent 10 316 190 ., label("tripercent(attr= diff)") default(0) nomem
-  TEXT      tx_tripercent_attr 208 318 37 ., label("attr=")
-  EDIT      f_tripercent_attr 245 316 70 ., nomem
-  CHECKBOX  f_tripercent_diff 323 316 49 ., label("diff") default(0) nomem
-  TEXT      tx_h52 376 318 609 ., label("undirected")
-  CHECKBOX  cx_nearsimmelian 10 337 190 ., label("nearsimmelian") default(0) nomem
-  TEXT      tx_h53 208 339 777 ., label("directed")
-  CHECKBOX  cx_simmelian 10 358 190 ., label("simmelian") default(0) nomem
-  TEXT      tx_h54 208 360 777 ., label("directed")
-  CHECKBOX  cx_simmelianties 10 379 190 ., label("simmelianties") default(0) nomem
-  TEXT      tx_h55 208 381 777 ., label("directed")
-  CHECKBOX  cx_asymmetric 10 400 190 ., label("asymmetric(attr= diff)") default(0) nomem
-  TEXT      tx_asymmetric_attr 208 402 37 ., label("attr=")
-  EDIT      f_asymmetric_attr 245 400 70 ., nomem
-  CHECKBOX  f_asymmetric_diff 323 400 49 ., label("diff") default(0) nomem
-  TEXT      tx_h56 376 402 609 ., label("directed")
-  CHECKBOX  cx_s_mutual 10 421 190 ., label("mutual(same= diff by=)") default(0) nomem
-  TEXT      tx_s_mutual_same 208 423 37 ., label("same=")
-  EDIT      f_s_mutual_same 245 421 60 ., nomem
-  CHECKBOX  f_s_mutual_diff 313 421 49 ., label("diff") default(0) nomem
-  TEXT      tx_s_mutual_by 366 423 24 ., label("by=")
-  EDIT      f_s_mutual_by 390 421 60 ., nomem
-  TEXT      tx_h57 458 423 527 ., label("directed; use instead of plain mutual")
-  CHECKBOX  cx_localtriangle 10 43 190 ., label("localtriangle(x=)") default(0) nomem
-  TEXT      tx_localtriangle_x 208 45 18 ., label("x=")
-  COMBOBOX  f_localtriangle_x 226 43 90 ., dropdown contents(netlist) nomem
-  TEXT      tx_h58 324 45 661 ., label("x = network with the same nodes")
-  CHECKBOX  cx_opentriad 10 64 190 ., label("opentriad") default(0) nomem
-  TEXT      tx_h59 208 66 777 ., label("structural()")
-  CHECKBOX  cx_nsp 10 85 190 ., label("nsp(d= type=)") default(0) nomem
-  TEXT      tx_nsp_d 208 87 18 ., label("d=")
-  EDIT      f_nsp_d 226 85 60 ., nomem
-  TEXT      tx_nsp_type 294 87 37 ., label("type=")
-  COMBOBOX  f_nsp_type 331 85 70 ., dropdownlist contents(l_f_nsp_type) values(l_f_nsp_type_v) nomem
-  TEXT      tx_h60 409 87 576 ., label("non-shared partner counts")
-  CHECKBOX  cx_s_altkstar 10 106 190 ., label("altkstar(lambda= fixed)") default(0) nomem
-  TEXT      tx_s_altkstar_lambda 208 108 50 ., label("lambda=")
-  EDIT      f_s_altkstar_lambda 258 106 60 ., default("0.8") nomem
-  CHECKBOX  f_s_altkstar_fixed 326 106 55 ., label("fixed") default(0) nomem
-  TEXT      tx_h61 385 108 600 ., label("fixed: lambda held; else curved, needs init(), method(mple)")
+  CHECKBOX  cx_esp 10 64 204 ., label("esp()") default(0) nomem
+  EDIT      f_esp 222 64 170 ., nomem
+  TEXT      tx_h47 400 66 585 ., label("numlist of d; see type() above")
+  CHECKBOX  cx_dsp 10 85 204 ., label("dsp()") default(0) nomem
+  EDIT      f_dsp 222 85 170 ., nomem
+  TEXT      tx_h48 400 87 585 ., label("numlist of d; see type() above")
+  TEXT      tx_type 10 108 200 ., label("type()  - directed shared partners")
+  COMBOBOX  f_type 215 106 100 ., dropdownlist contents(l_f_type) values(l_f_type_v) nomem
+  TEXT      tx_h49 325 108 660 ., label("applies to gwesp gwdsp gwnsp esp dsp (directed networks)")
+  TEXT      tx_s94_tri 10 129 960 ., label("== Shared partners, geometrically weighted: fixed decay ==")
+  CHECKBOX  cx_gwesp 10 148 204 ., label("gwesp()") default(0) nomem
+  EDIT      f_gwesp 222 148 170 ., default("0.5") nomem
+  TEXT      tx_h50 400 150 585 ., label("decay; edgewise shared partners")
+  CHECKBOX  cx_gwdsp 10 169 204 ., label("gwdsp()") default(0) nomem
+  EDIT      f_gwdsp 222 169 170 ., default("0.5") nomem
+  TEXT      tx_h51 400 171 585 ., label("decay; dyadwise shared partners")
+  CHECKBOX  cx_gwnsp 10 190 204 ., label("gwnsp()") default(0) nomem
+  EDIT      f_gwnsp 222 190 170 ., default("0.5") nomem
+  TEXT      tx_h52 400 192 585 ., label("decay; non-edgewise shared partners")
+  TEXT      tx_s178_tri 10 213 960 ., label("== Shared partners, geometrically weighted: decay estimated (the value is the starting value) ==")
+  CHECKBOX  cx_gwespfree 10 232 204 ., label("gwespfree()  [gwesp, curved]") default(0) nomem
+  EDIT      f_gwespfree 222 232 170 ., default("0.5") nomem
+  TEXT      tx_h53 400 234 585 ., label("start value; method(mple) or mcmle")
+  CHECKBOX  cx_gwdspfree 10 253 204 ., label("gwdspfree()  [gwdsp, curved]") default(0) nomem
+  EDIT      f_gwdspfree 222 253 170 ., default("0.5") nomem
+  TEXT      tx_h54 400 255 585 ., label("start value; method(mple) or mcmle")
+  CHECKBOX  cx_gwnspfree 10 274 204 ., label("gwnspfree()  [gwnsp, curved]") default(0) nomem
+  EDIT      f_gwnspfree 222 274 170 ., default("0.5") nomem
+  TEXT      tx_h55 400 276 585 ., label("start value; method(mple) or mcmle")
+  TEXT      tx_s262_tri 10 297 960 ., label("== Triad terms (structural()) ==")
+  CHECKBOX  cx_s_triangle 10 316 204 ., label("triangle(attr= diff)") default(0) nomem
+  TEXT      tx_s_triangle_attr 222 318 37 ., label("attr=")
+  EDIT      f_s_triangle_attr 259 316 70 ., nomem
+  CHECKBOX  f_s_triangle_diff 337 316 49 ., label("diff") default(0) nomem
+  TEXT      tx_h56 390 318 595 ., label("triangle by attribute")
+  CHECKBOX  cx_transitive 10 337 204 ., label("transitive") default(0) nomem
+  TEXT      tx_h57 222 339 763 ., label("directed")
+  CHECKBOX  cx_intransitive 10 358 204 ., label("intransitive") default(0) nomem
+  TEXT      tx_h58 222 360 763 ., label("directed")
+  CHECKBOX  cx_ttriple 10 379 204 ., label("ttriple(attr= diff)") default(0) nomem
+  TEXT      tx_ttriple_attr 222 381 37 ., label("attr=")
+  EDIT      f_ttriple_attr 259 379 70 ., nomem
+  CHECKBOX  f_ttriple_diff 337 379 49 ., label("diff") default(0) nomem
+  TEXT      tx_h59 390 381 595 ., label("directed")
+  CHECKBOX  cx_s_ctriple 10 400 204 ., label("ctriple(attr= diff)") default(0) nomem
+  TEXT      tx_s_ctriple_attr 222 402 37 ., label("attr=")
+  EDIT      f_s_ctriple_attr 259 400 70 ., nomem
+  CHECKBOX  f_s_ctriple_diff 337 400 49 ., label("diff") default(0) nomem
+  TEXT      tx_h60 390 402 595 ., label("directed; plain form is on the first tab")
+  CHECKBOX  cx_cycle 10 421 204 ., label("cycle(k= semi)") default(0) nomem
+  TEXT      tx_cycle_k 222 423 18 ., label("k=")
+  EDIT      f_cycle_k 240 421 60 ., nomem
+  CHECKBOX  f_cycle_semi 308 421 49 ., label("semi") default(0) nomem
+  TEXT      tx_h61 361 423 624 ., label("k = cycle lengths, e.g. 3 4")
+  CHECKBOX  cx_threetrail 10 43 204 ., label("threetrail(keep=)") default(0) nomem
+  TEXT      tx_threetrail_keep 222 45 37 ., label("keep=")
+  EDIT      f_threetrail_keep 259 43 70 ., nomem
+  TEXT      tx_h62 337 45 648 ., label("four types RRR RRL LRR LRL if directed")
+  CHECKBOX  cx_balance 10 64 204 ., label("balance") default(0) nomem
+  TEXT      tx_h63 222 66 763 ., label("balanced triads")
+  CHECKBOX  cx_triadcensus 10 85 204 ., label("triadcensus(levels=)") default(0) nomem
+  TEXT      tx_triadcensus_levels 222 87 50 ., label("levels=")
+  EDIT      f_triadcensus_levels 272 85 70 ., nomem
+  TEXT      tx_h64 350 87 635 ., label("triad census")
+  CHECKBOX  cx_tripercent 10 106 204 ., label("tripercent(attr= diff)") default(0) nomem
+  TEXT      tx_tripercent_attr 222 108 37 ., label("attr=")
+  EDIT      f_tripercent_attr 259 106 70 ., nomem
+  CHECKBOX  f_tripercent_diff 337 106 49 ., label("diff") default(0) nomem
+  TEXT      tx_h65 390 108 595 ., label("undirected")
+  CHECKBOX  cx_nearsimmelian 10 127 204 ., label("nearsimmelian") default(0) nomem
+  TEXT      tx_h66 222 129 763 ., label("directed")
+  CHECKBOX  cx_simmelian 10 148 204 ., label("simmelian") default(0) nomem
+  TEXT      tx_h67 222 150 763 ., label("directed")
+  CHECKBOX  cx_simmelianties 10 169 204 ., label("simmelianties") default(0) nomem
+  TEXT      tx_h68 222 171 763 ., label("directed")
+  CHECKBOX  cx_asymmetric 10 190 204 ., label("asymmetric(attr= diff)") default(0) nomem
+  TEXT      tx_asymmetric_attr 222 192 37 ., label("attr=")
+  EDIT      f_asymmetric_attr 259 190 70 ., nomem
+  CHECKBOX  f_asymmetric_diff 337 190 49 ., label("diff") default(0) nomem
+  TEXT      tx_h69 390 192 595 ., label("directed")
+  CHECKBOX  cx_s_mutual 10 211 204 ., label("mutual(same= diff by=)") default(0) nomem
+  TEXT      tx_s_mutual_same 222 213 37 ., label("same=")
+  EDIT      f_s_mutual_same 259 211 60 ., nomem
+  CHECKBOX  f_s_mutual_diff 327 211 49 ., label("diff") default(0) nomem
+  TEXT      tx_s_mutual_by 380 213 24 ., label("by=")
+  EDIT      f_s_mutual_by 404 211 60 ., nomem
+  TEXT      tx_h70 472 213 513 ., label("directed; use instead of plain mutual")
+  CHECKBOX  cx_localtriangle 10 232 204 ., label("localtriangle(x=)") default(0) nomem
+  TEXT      tx_localtriangle_x 222 234 18 ., label("x=")
+  COMBOBOX  f_localtriangle_x 240 232 90 ., dropdown contents(netlist) nomem
+  TEXT      tx_h71 338 234 647 ., label("x = network with the same nodes")
+  CHECKBOX  cx_opentriad 10 253 204 ., label("opentriad") default(0) nomem
+  TEXT      tx_h72 222 255 763 ., label("structural()")
+  CHECKBOX  cx_nsp 10 274 204 ., label("nsp(d= type=)") default(0) nomem
+  TEXT      tx_nsp_d 222 276 18 ., label("d=")
+  EDIT      f_nsp_d 240 274 60 ., nomem
+  TEXT      tx_nsp_type 308 276 37 ., label("type=")
+  COMBOBOX  f_nsp_type 345 274 70 ., dropdownlist contents(l_f_nsp_type) values(l_f_nsp_type_v) nomem
+  TEXT      tx_h73 423 276 562 ., label("non-shared partner counts")
+  CHECKBOX  cx_s_altkstar 10 295 204 ., label("altkstar(lambda= fixed)") default(0) nomem
+  TEXT      tx_s_altkstar_lambda 222 297 50 ., label("lambda=")
+  EDIT      f_s_altkstar_lambda 272 295 60 ., default("0.8") nomem
+  CHECKBOX  f_s_altkstar_fixed 340 295 55 ., label("fixed") default(0) nomem
+  TEXT      tx_h74 399 297 586 ., label("fixed: lambda held; else curved, needs init(), method(mple)")
 END
 
 DIALOG cov, tabtitle("Covariate")
@@ -2040,122 +2189,122 @@ BEGIN
   VARLIST   f_nodecov 208 64 200 ., label("vars") nomem
   TEXT      tx_nodecov_c 416 66 8 ., label(",")
   EDIT      f_nodecov_sub 428 64 150 ., nomem
-  TEXT      tx_h62 586 66 399 ., label("[, expressions allowed]")
+  TEXT      tx_h75 586 66 399 ., label("[, expressions allowed]")
   CHECKBOX  cx_nodeicov 10 85 190 ., label("nodeicov()") default(0) nomem
   VARLIST   f_nodeicov 208 85 200 ., label("vars") nomem
   TEXT      tx_nodeicov_c 416 87 8 ., label(",")
   EDIT      f_nodeicov_sub 428 85 150 ., nomem
-  TEXT      tx_h63 586 87 399 ., label("directed only")
+  TEXT      tx_h76 586 87 399 ., label("directed only")
   CHECKBOX  cx_nodeocov 10 106 190 ., label("nodeocov()") default(0) nomem
   VARLIST   f_nodeocov 208 106 200 ., label("vars") nomem
   TEXT      tx_nodeocov_c 416 108 8 ., label(",")
   EDIT      f_nodeocov_sub 428 106 150 ., nomem
-  TEXT      tx_h64 586 108 399 ., label("directed only")
+  TEXT      tx_h77 586 108 399 ., label("directed only")
   CHECKBOX  cx_nodefactor 10 127 190 ., label("nodefactor()") default(0) nomem
   VARLIST   f_nodefactor 208 127 200 ., label("vars") nomem
   TEXT      tx_nodefactor_c 416 129 8 ., label(",")
   EDIT      f_nodefactor_sub 428 127 150 ., nomem
-  TEXT      tx_h65 586 129 399 ., label("[, levels() levelvalues() base()]")
+  TEXT      tx_h78 586 129 399 ., label("[, levels() levelvalues() base()]")
   CHECKBOX  cx_nodeofactor 10 148 190 ., label("nodeofactor()") default(0) nomem
   VARLIST   f_nodeofactor 208 148 200 ., label("vars") nomem
   TEXT      tx_nodeofactor_c 416 150 8 ., label(",")
   EDIT      f_nodeofactor_sub 428 148 150 ., nomem
-  TEXT      tx_h66 586 150 399 ., label("directed; [, levels() base()]")
+  TEXT      tx_h79 586 150 399 ., label("directed; [, levels() base()]")
   CHECKBOX  cx_nodeifactor 10 169 190 ., label("nodeifactor()") default(0) nomem
   VARLIST   f_nodeifactor 208 169 200 ., label("vars") nomem
   TEXT      tx_nodeifactor_c 416 171 8 ., label(",")
   EDIT      f_nodeifactor_sub 428 169 150 ., nomem
-  TEXT      tx_h67 586 171 399 ., label("directed; [, levels() base()]")
+  TEXT      tx_h80 586 171 399 ., label("directed; [, levels() base()]")
   CHECKBOX  cx_nodematch 10 190 190 ., label("nodematch()") default(0) nomem
   VARLIST   f_nodematch 208 190 200 ., label("vars") nomem
   TEXT      tx_nodematch_c 416 192 8 ., label(",")
   EDIT      f_nodematch_sub 428 190 150 ., nomem
-  TEXT      tx_h68 586 192 399 ., label("[, diff keep() levels() levelvalues()]")
+  TEXT      tx_h81 586 192 399 ., label("[, diff keep() levels() levelvalues()]")
   CHECKBOX  cx_nodematchdiff 10 211 190 ., label("nodematchdiff()") default(0) nomem
   VARLIST   f_nodematchdiff 208 211 200 ., label("vars") nomem
   TEXT      tx_nodematchdiff_c 416 213 8 ., label(",")
   EDIT      f_nodematchdiff_sub 428 211 150 ., nomem
-  TEXT      tx_h69 586 213 399 ., label("same as nodematch(vars, diff)")
+  TEXT      tx_h82 586 213 399 ., label("same as nodematch(vars, diff)")
   CHECKBOX  cx_nodemix 10 232 190 ., label("nodemix()") default(0) nomem
   VARLIST   f_nodemix 208 232 200 ., label("vars") nomem
   TEXT      tx_nodemix_c 416 234 8 ., label(",")
   EDIT      f_nodemix_sub 428 232 150 ., nomem
-  TEXT      tx_h70 586 234 399 ., label("[, levels() levels2() base()]; also two-mode")
+  TEXT      tx_h83 586 234 399 ., label("[, levels() levels2() base()]; also two-mode")
   CHECKBOX  cx_mm 10 253 190 ., label("mm()") default(0) nomem
   VARLIST   f_mm 208 253 200 ., label("vars") nomem
   TEXT      tx_mm_c 416 255 8 ., label(",")
   EDIT      f_mm_sub 428 253 150 ., nomem
-  TEXT      tx_h71 586 255 399 ., label("[, levels() levels2()]; one attribute")
+  TEXT      tx_h84 586 255 399 ., label("[, levels() levels2()]; one attribute")
   CHECKBOX  cx_absdist 10 274 190 ., label("absdist()  [absdiff]") default(0) nomem
   VARLIST   f_absdist 208 274 200 ., label("vars") nomem
   TEXT      tx_absdist_c 416 276 8 ., label(",")
   EDIT      f_absdist_sub 428 274 150 ., nomem
-  TEXT      tx_h72 586 276 399 ., label("[, pow(#)]")
+  TEXT      tx_h85 586 276 399 ., label("[, pow(#)]")
   CHECKBOX  cx_absdiffcat 10 295 190 ., label("absdiffcat()") default(0) nomem
   VARLIST   f_absdiffcat 208 295 200 ., label("vars") nomem
   TEXT      tx_absdiffcat_c 416 297 8 ., label(",")
   EDIT      f_absdiffcat_sub 428 295 150 ., nomem
-  TEXT      tx_h73 586 297 399 ., label("[, levels() levelvalues() base()]")
+  TEXT      tx_h86 586 297 399 ., label("[, levels() levelvalues() base()]")
   CHECKBOX  cx_diff 10 316 190 ., label("diff()") default(0) nomem
   VARLIST   f_diff 208 316 200 ., label("vars") nomem
   TEXT      tx_diff_c 416 318 8 ., label(",")
   EDIT      f_diff_sub 428 316 150 ., nomem
-  TEXT      tx_h74 586 318 399 ., label("[, pow() dir() signaction()]")
+  TEXT      tx_h87 586 318 399 ., label("[, pow() dir() signaction()]")
   CHECKBOX  cx_smalldiff 10 337 190 ., label("smalldiff()") default(0) nomem
   VARLIST   f_smalldiff 208 337 200 ., label("vars") nomem
   TEXT      tx_smalldiff_c 416 339 8 ., label(",")
   EDIT      f_smalldiff_sub 428 337 150 ., nomem
-  TEXT      tx_h75 586 339 399 ., label("needs , cutoff(#)")
+  TEXT      tx_h88 586 339 399 ., label("needs , cutoff(#)")
   CHECKBOX  cx_sociality 10 358 190 ., label("sociality()") default(0) nomem
   VARLIST   f_sociality 208 358 200 ., label("vars") nomem
   TEXT      tx_sociality_c 416 360 8 ., label(",")
   EDIT      f_sociality_sub 428 358 150 ., nomem
-  TEXT      tx_h76 586 360 399 ., label("[, nodes() levels()]; . = none; undirected")
+  TEXT      tx_h89 586 360 399 ., label("[, nodes() levels()]; . = none; undirected")
   CHECKBOX  cx_nodecovrange 10 379 190 ., label("nodecovrange()") default(0) nomem
   VARLIST   f_nodecovrange 208 379 200 ., label("vars") nomem
   TEXT      tx_nodecovrange_c 416 381 8 ., label(",")
   EDIT      f_nodecovrange_sub 428 379 150 ., nomem
-  TEXT      tx_h77 586 381 399 ., label("dyad-dependent")
+  TEXT      tx_h90 586 381 399 ., label("dyad-dependent")
   CHECKBOX  cx_nodeocovrange 10 400 190 ., label("nodeocovrange()") default(0) nomem
   VARLIST   f_nodeocovrange 208 400 200 ., label("vars") nomem
   TEXT      tx_nodeocovrange_c 416 402 8 ., label(",")
   EDIT      f_nodeocovrange_sub 428 400 150 ., nomem
-  TEXT      tx_h78 586 402 399 ., label("directed; dyad-dependent")
+  TEXT      tx_h91 586 402 399 ., label("directed; dyad-dependent")
   CHECKBOX  cx_nodeicovrange 10 421 190 ., label("nodeicovrange()") default(0) nomem
   VARLIST   f_nodeicovrange 208 421 200 ., label("vars") nomem
   TEXT      tx_nodeicovrange_c 416 423 8 ., label(",")
   EDIT      f_nodeicovrange_sub 428 421 150 ., nomem
-  TEXT      tx_h79 586 423 399 ., label("directed; dyad-dependent")
+  TEXT      tx_h92 586 423 399 ., label("directed; dyad-dependent")
   CHECKBOX  cx_nodefactordistinct 10 43 190 ., label("nodefactordistinct()") default(0) nomem
   VARLIST   f_nodefactordistinct 208 43 200 ., label("vars") nomem
   TEXT      tx_nodefactordistinct_c 416 45 8 ., label(",")
   EDIT      f_nodefactordistinct_sub 428 43 150 ., nomem
-  TEXT      tx_h80 586 45 399 ., label("[, levels() levelvalues()]; dyad-dependent")
+  TEXT      tx_h93 586 45 399 ., label("[, levels() levelvalues()]; dyad-dependent")
   CHECKBOX  cx_nodeofactordistinct 10 64 190 ., label("nodeofactordistinct()") default(0) nomem
   VARLIST   f_nodeofactordistinct 208 64 200 ., label("vars") nomem
   TEXT      tx_nodeofactordistinct_c 416 66 8 ., label(",")
   EDIT      f_nodeofactordistinct_sub 428 64 150 ., nomem
-  TEXT      tx_h81 586 66 399 ., label("directed; dyad-dependent")
+  TEXT      tx_h94 586 66 399 ., label("directed; dyad-dependent")
   CHECKBOX  cx_nodeifactordistinct 10 85 190 ., label("nodeifactordistinct()") default(0) nomem
   VARLIST   f_nodeifactordistinct 208 85 200 ., label("vars") nomem
   TEXT      tx_nodeifactordistinct_c 416 87 8 ., label(",")
   EDIT      f_nodeifactordistinct_sub 428 85 150 ., nomem
-  TEXT      tx_h82 586 87 399 ., label("directed; dyad-dependent")
+  TEXT      tx_h95 586 87 399 ., label("directed; dyad-dependent")
   TEXT      tx_s73_cov2 10 108 960 ., label("== Dyadic covariates (networks or matrices) ==")
   CHECKBOX  cx_edgecov 10 127 190 ., label("edgecov()") default(0) nomem
   COMBOBOX  f_edgecov 208 127 170 ., dropdown contents(netlist) nomem
-  TEXT      tx_h83 386 129 599 ., label("a network or an n x n Stata matrix; also two-mode")
+  TEXT      tx_h96 386 129 599 ., label("a network or an n x n Stata matrix; also two-mode")
   CHECKBOX  cx_dyadcov 10 148 190 ., label("dyadcov()") default(0) nomem
   COMBOBOX  f_dyadcov 208 148 170 ., dropdown contents(netlist) nomem
-  TEXT      tx_h84 386 150 599 ., label("directed: 3 coefficients (mutual utri ltri)")
+  TEXT      tx_h97 386 150 599 ., label("directed: 3 coefficients (mutual utri ltri)")
   CHECKBOX  cx_hamming 10 169 190 ., label("hamming()") default(0) nomem
   COMBOBOX  f_hamming 208 169 170 ., dropdown contents(netlist) nomem
-  TEXT      tx_h85 386 171 599 ., label("Hamming distance to a reference network")
+  TEXT      tx_h98 386 171 599 ., label("Hamming distance to a reference network")
   CHECKBOX  cx_attrcov 10 190 190 ., label("attrcov(vars, mat())") default(0) nomem
   VARLIST   f_attrcov 208 190 200 ., label("vars") nomem
   TEXT      tx_attrcov_c 416 192 8 ., label(",")
   EDIT      f_attrcov_sub 428 190 150 ., nomem
-  TEXT      tx_h86 586 192 399 ., label("matrix per level")
+  TEXT      tx_h99 586 192 399 ., label("matrix per level")
 END
 
 DIALOG two, tabtitle("Two-mode")
@@ -2165,193 +2314,148 @@ BEGIN
   TEXT      tx_s10_two 10 45 960 ., label("== Two-mode terms (mode-1 / mode-2) ==")
   CHECKBOX  cx_bcov1 10 64 267 ., label("bcov1()  [b1cov]") default(0) nomem
   VARLIST   f_bcov1 285 64 200 ., label("vars") nomem
-  TEXT      tx_h87 493 66 492 ., label("two-mode only; node covariate")
+  TEXT      tx_h100 493 66 492 ., label("two-mode only; node covariate")
   CHECKBOX  cx_bfactor1 10 85 267 ., label("bfactor1()  [b1factor]") default(0) nomem
   VARLIST   f_bfactor1 285 85 200 ., label("vars") nomem
-  TEXT      tx_h88 493 87 492 ., label("two-mode only")
+  TEXT      tx_h101 493 87 492 ., label("two-mode only")
   CHECKBOX  cx_bdegree1 10 106 267 ., label("bdegree1()  [b1degree]") default(0) nomem
   EDIT      f_bdegree1 285 106 170 ., nomem
   TEXT      tx_bdegree1_c 463 108 8 ., label(",")
   EDIT      f_bdegree1_sub 475 106 150 ., nomem
-  TEXT      tx_h89 633 108 352 ., label("two-mode only; [, by() levels()]")
+  TEXT      tx_h102 633 108 352 ., label("two-mode only; [, by() levels()]")
   CHECKBOX  cx_bstar1 10 127 267 ., label("bstar1()  [b1star]") default(0) nomem
   EDIT      f_bstar1 285 127 170 ., nomem
   TEXT      tx_bstar1_c 463 129 8 ., label(",")
   EDIT      f_bstar1_sub 475 127 150 ., nomem
-  TEXT      tx_h90 633 129 352 ., label("two-mode only; [, attr() levels()]")
+  TEXT      tx_h103 633 129 352 ., label("two-mode only; [, attr() levels()]")
   CHECKBOX  cx_bnodematch1 10 148 267 ., label("bnodematch1()  [b1nodematch]") default(0) nomem
   VARLIST   f_bnodematch1 285 148 200 ., label("vars") nomem
   TEXT      tx_bnodematch1_c 493 150 8 ., label(",")
   EDIT      f_bnodematch1_sub 505 148 150 ., nomem
-  TEXT      tx_h91 663 150 322 ., label("two-mode only; [, diff alpha()]")
+  TEXT      tx_h104 663 150 322 ., label("two-mode only; [, diff alpha()]")
   CHECKBOX  cx_bgwdegree1 10 169 267 ., label("bgwdegree1()  [gwb1degree]") default(0) nomem
   EDIT      f_bgwdegree1 285 169 170 ., default("0.5") nomem
   TEXT      tx_bgwdegree1_c 463 171 8 ., label(",")
   EDIT      f_bgwdegree1_sub 475 169 150 ., nomem
-  TEXT      tx_h92 633 171 352 ., label("two-mode only; decay [, attr() levels()]")
+  TEXT      tx_h105 633 171 352 ., label("two-mode only; decay [, attr() levels()]")
   CHECKBOX  cx_bconcurrent1 10 190 267 ., label("bconcurrent1()  [b1concurrent]") default(0) nomem
   EDIT      f_bconcurrent1 285 190 170 ., default("all") nomem
-  TEXT      tx_h93 463 192 522 ., label("two-mode only; all  or  by(var) [levels()]")
+  TEXT      tx_h106 463 192 522 ., label("two-mode only; all  or  by(var) [levels()]")
   CHECKBOX  cx_bmindegree1 10 211 267 ., label("bmindegree1()  [b1mindegree]") default(0) nomem
   EDIT      f_bmindegree1 285 211 170 ., nomem
-  TEXT      tx_h94 463 213 522 ., label("two-mode only; numlist of d")
+  TEXT      tx_h107 463 213 522 ., label("two-mode only; numlist of d")
   CHECKBOX  cx_bdegrange1 10 232 267 ., label("bdegrange1()  [b1degrange]") default(0) nomem
   EDIT      f_bdegrange1 285 232 170 ., nomem
   TEXT      tx_bdegrange1_c 463 234 8 ., label(",")
   EDIT      f_bdegrange1_sub 475 232 150 ., nomem
-  TEXT      tx_h95 633 234 352 ., label("two-mode only; [, to() by()]")
+  TEXT      tx_h108 633 234 352 ., label("two-mode only; [, to() by()]")
   CHECKBOX  cx_bcovrange1 10 253 267 ., label("bcovrange1()  [b1covrange]") default(0) nomem
   VARLIST   f_bcovrange1 285 253 200 ., label("vars") nomem
-  TEXT      tx_h96 493 255 492 ., label("two-mode only; one variable")
+  TEXT      tx_h109 493 255 492 ., label("two-mode only; one variable")
   CHECKBOX  cx_bfactordistinct1 10 274 267 ., label("bfactordistinct1()  [b1factordistinct]") default(0) nomem
   VARLIST   f_bfactordistinct1 285 274 200 ., label("vars") nomem
   TEXT      tx_bfactordistinct1_c 493 276 8 ., label(",")
   EDIT      f_bfactordistinct1_sub 505 274 150 ., nomem
-  TEXT      tx_h97 663 276 322 ., label("two-mode only; [, levels()]")
+  TEXT      tx_h110 663 276 322 ., label("two-mode only; [, levels()]")
   CHECKBOX  cx_bsociality1 10 295 267 ., label("bsociality1()  [b1sociality]") default(0) nomem
   EDIT      f_bsociality1 285 295 170 ., default("-1") nomem
-  TEXT      tx_h98 463 297 522 ., label("two-mode only; node positions, -1 drops the first")
+  TEXT      tx_h111 463 297 522 ., label("two-mode only; node positions, -1 drops the first")
   CHECKBOX  cx_bstarmix1 10 316 267 ., label("bstarmix1()  [b1starmix]") default(0) nomem
   EDIT      f_bstarmix1 285 316 170 ., nomem
   TEXT      tx_bstarmix1_c 463 318 8 ., label(",")
   EDIT      f_bstarmix1_sub 475 316 150 ., nomem
-  TEXT      tx_h99 633 318 352 ., label("two-mode only; k [, attr() base()]")
+  TEXT      tx_h112 633 318 352 ., label("two-mode only; k [, attr() base()]")
   CHECKBOX  cx_btwostar1 10 337 267 ., label("btwostar1()  [b1twostar]") default(0) nomem
   VARLIST   f_btwostar1 285 337 200 ., label("vars") nomem
   TEXT      tx_btwostar1_c 493 339 8 ., label(",")
   EDIT      f_btwostar1_sub 505 337 150 ., nomem
-  TEXT      tx_h100 663 339 322 ., label("two-mode only; [, attr2()]")
+  TEXT      tx_h113 663 339 322 ., label("two-mode only; [, attr2()]")
   CHECKBOX  cx_bdsp1 10 358 267 ., label("bdsp1()  [b1dsp]") default(0) nomem
   EDIT      f_bdsp1 285 358 170 ., nomem
-  TEXT      tx_h101 463 360 522 ., label("two-mode only; numlist of d")
+  TEXT      tx_h114 463 360 522 ., label("two-mode only; numlist of d")
   CHECKBOX  cx_bgwdsp1 10 379 267 ., label("bgwdsp1()  [gwb1dsp]") default(0) nomem
   EDIT      f_bgwdsp1 285 379 170 ., default("0.5") nomem
-  TEXT      tx_h102 463 381 522 ., label("two-mode only; fixed decay")
+  TEXT      tx_h115 463 381 522 ., label("two-mode only; fixed decay")
   CHECKBOX  cx_bcov2 10 400 267 ., label("bcov2()  [b2cov]") default(0) nomem
   VARLIST   f_bcov2 285 400 200 ., label("vars") nomem
-  TEXT      tx_h103 493 402 492 ., label("two-mode only; node covariate")
+  TEXT      tx_h116 493 402 492 ., label("two-mode only; node covariate")
   CHECKBOX  cx_bfactor2 10 421 267 ., label("bfactor2()  [b2factor]") default(0) nomem
   VARLIST   f_bfactor2 285 421 200 ., label("vars") nomem
-  TEXT      tx_h104 493 423 492 ., label("two-mode only")
+  TEXT      tx_h117 493 423 492 ., label("two-mode only")
   CHECKBOX  cx_bdegree2 10 43 267 ., label("bdegree2()  [b2degree]") default(0) nomem
   EDIT      f_bdegree2 285 43 170 ., nomem
   TEXT      tx_bdegree2_c 463 45 8 ., label(",")
   EDIT      f_bdegree2_sub 475 43 150 ., nomem
-  TEXT      tx_h105 633 45 352 ., label("two-mode only; [, by() levels()]")
+  TEXT      tx_h118 633 45 352 ., label("two-mode only; [, by() levels()]")
   CHECKBOX  cx_bstar2 10 64 267 ., label("bstar2()  [b2star]") default(0) nomem
   EDIT      f_bstar2 285 64 170 ., nomem
   TEXT      tx_bstar2_c 463 66 8 ., label(",")
   EDIT      f_bstar2_sub 475 64 150 ., nomem
-  TEXT      tx_h106 633 66 352 ., label("two-mode only; [, attr() levels()]")
+  TEXT      tx_h119 633 66 352 ., label("two-mode only; [, attr() levels()]")
   CHECKBOX  cx_bnodematch2 10 85 267 ., label("bnodematch2()  [b2nodematch]") default(0) nomem
   VARLIST   f_bnodematch2 285 85 200 ., label("vars") nomem
   TEXT      tx_bnodematch2_c 493 87 8 ., label(",")
   EDIT      f_bnodematch2_sub 505 85 150 ., nomem
-  TEXT      tx_h107 663 87 322 ., label("two-mode only; [, diff alpha()]")
+  TEXT      tx_h120 663 87 322 ., label("two-mode only; [, diff alpha()]")
   CHECKBOX  cx_bgwdegree2 10 106 267 ., label("bgwdegree2()  [gwb2degree]") default(0) nomem
   EDIT      f_bgwdegree2 285 106 170 ., default("0.5") nomem
   TEXT      tx_bgwdegree2_c 463 108 8 ., label(",")
   EDIT      f_bgwdegree2_sub 475 106 150 ., nomem
-  TEXT      tx_h108 633 108 352 ., label("two-mode only; decay [, attr() levels()]")
+  TEXT      tx_h121 633 108 352 ., label("two-mode only; decay [, attr() levels()]")
   CHECKBOX  cx_bconcurrent2 10 127 267 ., label("bconcurrent2()  [b2concurrent]") default(0) nomem
   EDIT      f_bconcurrent2 285 127 170 ., default("all") nomem
-  TEXT      tx_h109 463 129 522 ., label("two-mode only; all  or  by(var) [levels()]")
+  TEXT      tx_h122 463 129 522 ., label("two-mode only; all  or  by(var) [levels()]")
   CHECKBOX  cx_bmindegree2 10 148 267 ., label("bmindegree2()  [b2mindegree]") default(0) nomem
   EDIT      f_bmindegree2 285 148 170 ., nomem
-  TEXT      tx_h110 463 150 522 ., label("two-mode only; numlist of d")
+  TEXT      tx_h123 463 150 522 ., label("two-mode only; numlist of d")
   CHECKBOX  cx_bdegrange2 10 169 267 ., label("bdegrange2()  [b2degrange]") default(0) nomem
   EDIT      f_bdegrange2 285 169 170 ., nomem
   TEXT      tx_bdegrange2_c 463 171 8 ., label(",")
   EDIT      f_bdegrange2_sub 475 169 150 ., nomem
-  TEXT      tx_h111 633 171 352 ., label("two-mode only; [, to() by()]")
+  TEXT      tx_h124 633 171 352 ., label("two-mode only; [, to() by()]")
   CHECKBOX  cx_bcovrange2 10 190 267 ., label("bcovrange2()  [b2covrange]") default(0) nomem
   VARLIST   f_bcovrange2 285 190 200 ., label("vars") nomem
-  TEXT      tx_h112 493 192 492 ., label("two-mode only; one variable")
+  TEXT      tx_h125 493 192 492 ., label("two-mode only; one variable")
   CHECKBOX  cx_bfactordistinct2 10 211 267 ., label("bfactordistinct2()  [b2factordistinct]") default(0) nomem
   VARLIST   f_bfactordistinct2 285 211 200 ., label("vars") nomem
   TEXT      tx_bfactordistinct2_c 493 213 8 ., label(",")
   EDIT      f_bfactordistinct2_sub 505 211 150 ., nomem
-  TEXT      tx_h113 663 213 322 ., label("two-mode only; [, levels()]")
+  TEXT      tx_h126 663 213 322 ., label("two-mode only; [, levels()]")
   CHECKBOX  cx_bsociality2 10 232 267 ., label("bsociality2()  [b2sociality]") default(0) nomem
   EDIT      f_bsociality2 285 232 170 ., default("-1") nomem
-  TEXT      tx_h114 463 234 522 ., label("two-mode only; node positions, -1 drops the first")
+  TEXT      tx_h127 463 234 522 ., label("two-mode only; node positions, -1 drops the first")
   CHECKBOX  cx_bstarmix2 10 253 267 ., label("bstarmix2()  [b2starmix]") default(0) nomem
   EDIT      f_bstarmix2 285 253 170 ., nomem
   TEXT      tx_bstarmix2_c 463 255 8 ., label(",")
   EDIT      f_bstarmix2_sub 475 253 150 ., nomem
-  TEXT      tx_h115 633 255 352 ., label("two-mode only; k [, attr() base()]")
+  TEXT      tx_h128 633 255 352 ., label("two-mode only; k [, attr() base()]")
   CHECKBOX  cx_btwostar2 10 274 267 ., label("btwostar2()  [b2twostar]") default(0) nomem
   VARLIST   f_btwostar2 285 274 200 ., label("vars") nomem
   TEXT      tx_btwostar2_c 493 276 8 ., label(",")
   EDIT      f_btwostar2_sub 505 274 150 ., nomem
-  TEXT      tx_h116 663 276 322 ., label("two-mode only; [, attr2()]")
+  TEXT      tx_h129 663 276 322 ., label("two-mode only; [, attr2()]")
   CHECKBOX  cx_bdsp2 10 295 267 ., label("bdsp2()  [b2dsp]") default(0) nomem
   EDIT      f_bdsp2 285 295 170 ., nomem
-  TEXT      tx_h117 463 297 522 ., label("two-mode only; numlist of d")
+  TEXT      tx_h130 463 297 522 ., label("two-mode only; numlist of d")
   CHECKBOX  cx_bgwdsp2 10 316 267 ., label("bgwdsp2()  [gwb2dsp]") default(0) nomem
   EDIT      f_bgwdsp2 285 316 170 ., default("0.5") nomem
-  TEXT      tx_h118 463 318 522 ., label("two-mode only; fixed decay")
+  TEXT      tx_h131 463 318 522 ., label("two-mode only; fixed decay")
   CHECKBOX  cx_coincidence 10 337 267 ., label("coincidence()") default(0) nomem
   EDIT      f_coincidence 285 337 170 ., default("all") nomem
-  TEXT      tx_h119 463 339 522 ., label("two-mode only; all  or  active(#)")
+  TEXT      tx_h132 463 339 522 ., label("two-mode only; all  or  active(#)")
   TEXT      tx_s325_two2 10 360 960 ., label("== Two-mode curved terms (estimated decay) ==")
   CHECKBOX  cx_bgwdegreefree1 10 379 267 ., label("bgwdegreefree1()  [gwb1degree, curved]") default(0) nomem
   EDIT      f_bgwdegreefree1 285 379 170 ., default("0.5") nomem
-  TEXT      tx_h120 463 381 522 ., label("two-mode only; start value of the decay (estimated)")
+  TEXT      tx_h133 463 381 522 ., label("two-mode only; start value of the decay (estimated)")
   CHECKBOX  cx_bgwdspfree1 10 400 267 ., label("bgwdspfree1()  [gwb1dsp, curved]") default(0) nomem
   EDIT      f_bgwdspfree1 285 400 170 ., default("0.5") nomem
-  TEXT      tx_h121 463 402 522 ., label("two-mode only; start value of the decay (estimated)")
+  TEXT      tx_h134 463 402 522 ., label("two-mode only; start value of the decay (estimated)")
   CHECKBOX  cx_bgwdegreefree2 10 421 267 ., label("bgwdegreefree2()  [gwb2degree, curved]") default(0) nomem
   EDIT      f_bgwdegreefree2 285 421 170 ., default("0.5") nomem
-  TEXT      tx_h122 463 423 522 ., label("two-mode only; start value of the decay (estimated)")
+  TEXT      tx_h135 463 423 522 ., label("two-mode only; start value of the decay (estimated)")
   CHECKBOX  cx_bgwdspfree2 10 43 267 ., label("bgwdspfree2()  [gwb2dsp, curved]") default(0) nomem
   EDIT      f_bgwdspfree2 285 43 170 ., default("0.5") nomem
-  TEXT      tx_h123 463 45 522 ., label("two-mode only; start value of the decay (estimated)")
-END
-
-DIALOG curved, tabtitle("Curved")
-BEGIN
-  TEXT      tx_s10_curved 10 12 960 ., label("== Geometrically weighted terms, fixed decay ==")
-  CHECKBOX  cx_gwesp 10 31 254 ., label("gwesp()") default(0) nomem
-  EDIT      f_gwesp 272 31 170 ., default("0.5") nomem
-  TEXT      tx_h124 450 33 535 ., label("decay; edgewise shared partners")
-  CHECKBOX  cx_gwdsp 10 52 254 ., label("gwdsp()") default(0) nomem
-  EDIT      f_gwdsp 272 52 170 ., default("0.5") nomem
-  TEXT      tx_h125 450 54 535 ., label("decay; dyadwise shared partners")
-  CHECKBOX  cx_gwnsp 10 73 254 ., label("gwnsp()") default(0) nomem
-  EDIT      f_gwnsp 272 73 170 ., default("0.5") nomem
-  TEXT      tx_h126 450 75 535 ., label("decay; non-edgewise shared partners")
-  CHECKBOX  cx_gwdegree 10 94 254 ., label("gwdegree()") default(0) nomem
-  EDIT      f_gwdegree 272 94 170 ., default("0.5") nomem
-  TEXT      tx_h127 450 96 535 ., label("decay; undirected only")
-  CHECKBOX  cx_gwodegree 10 115 254 ., label("gwodegree()") default(0) nomem
-  EDIT      f_gwodegree 272 115 170 ., default("0.5") nomem
-  TEXT      tx_h128 450 117 535 ., label("decay; directed only")
-  CHECKBOX  cx_gwidegree 10 136 254 ., label("gwidegree()") default(0) nomem
-  EDIT      f_gwidegree 272 136 170 ., default("0.5") nomem
-  TEXT      tx_h129 450 138 535 ., label("decay; directed only")
-  TEXT      tx_s157_curved 10 159 960 ., label("== Curved terms: decay is estimated (the value is the starting value) ==")
-  CHECKBOX  cx_gwespfree 10 178 254 ., label("gwespfree()  [gwesp, curved]") default(0) nomem
-  EDIT      f_gwespfree 272 178 170 ., default("0.5") nomem
-  TEXT      tx_h130 450 180 535 ., label("start value; method(mple) or mcmle")
-  CHECKBOX  cx_gwdspfree 10 199 254 ., label("gwdspfree()  [gwdsp, curved]") default(0) nomem
-  EDIT      f_gwdspfree 272 199 170 ., default("0.5") nomem
-  TEXT      tx_h131 450 201 535 ., label("start value; method(mple) or mcmle")
-  CHECKBOX  cx_gwnspfree 10 220 254 ., label("gwnspfree()  [gwnsp, curved]") default(0) nomem
-  EDIT      f_gwnspfree 272 220 170 ., default("0.5") nomem
-  TEXT      tx_h132 450 222 535 ., label("start value; method(mple) or mcmle")
-  CHECKBOX  cx_gwdegreefree 10 241 254 ., label("gwdegreefree()  [gwdegree, curved]") default(0) nomem
-  EDIT      f_gwdegreefree 272 241 170 ., default("0.5") nomem
-  TEXT      tx_h133 450 243 535 ., label("start value; method(mple) or mcmle")
-  CHECKBOX  cx_gwodegreefree 10 262 254 ., label("gwodegreefree()  [gwodegree, curved]") default(0) nomem
-  EDIT      f_gwodegreefree 272 262 170 ., default("0.5") nomem
-  TEXT      tx_h134 450 264 535 ., label("start value; method(mple) or mcmle")
-  CHECKBOX  cx_gwidegreefree 10 283 254 ., label("gwidegreefree()  [gwidegree, curved]") default(0) nomem
-  EDIT      f_gwidegreefree 272 283 170 ., default("0.5") nomem
-  TEXT      tx_h135 450 285 535 ., label("start value; method(mple) or mcmle")
-  TEXT      tx_type 10 306 200 ., label("type()  - directed shared partners")
-  COMBOBOX  f_type 215 304 100 ., dropdownlist contents(l_f_type) values(l_f_type_v) nomem
-  TEXT      tx_h136 325 306 660 ., label("applies to gwesp gwdsp gwnsp esp dsp (directed networks)")
+  TEXT      tx_h136 463 45 522 ., label("two-mode only; start value of the decay (estimated)")
 END
 
 DIALOG oper, tabtitle("Operators")
@@ -2654,26 +2758,6 @@ BEGIN
 	// filled in when the dialog opens (see PROGRAM initialize)
 END
 
-LIST l_f_nsp_type
-BEGIN
-	"(default)"
-	OTP
-	ITP
-	OSP
-	ISP
-	RTP
-END
-
-LIST l_f_nsp_type_v
-BEGIN
-	""
-	OTP
-	ITP
-	OSP
-	ISP
-	RTP
-END
-
 LIST l_f_type
 BEGIN
 	"(default)"
@@ -2685,6 +2769,26 @@ BEGIN
 END
 
 LIST l_f_type_v
+BEGIN
+	""
+	OTP
+	ITP
+	OSP
+	ISP
+	RTP
+END
+
+LIST l_f_nsp_type
+BEGIN
+	"(default)"
+	OTP
+	ITP
+	OSP
+	ISP
+	RTP
+END
+
+LIST l_f_nsp_type_v
 BEGIN
 	""
 	OTP
@@ -2977,6 +3081,36 @@ BEGIN
 	if main.cx_receiver {
 		put " receiver"
 	}
+	if deg.cx_gwdegree {
+		require deg.f_gwdegree
+		put " gwdegree(" deg.f_gwdegree
+		put ")"
+	}
+	if deg.cx_gwodegree {
+		require deg.f_gwodegree
+		put " gwodegree(" deg.f_gwodegree
+		put ")"
+	}
+	if deg.cx_gwidegree {
+		require deg.f_gwidegree
+		put " gwidegree(" deg.f_gwidegree
+		put ")"
+	}
+	if deg.cx_gwdegreefree {
+		require deg.f_gwdegreefree
+		put " gwdegreefree(" deg.f_gwdegreefree
+		put ")"
+	}
+	if deg.cx_gwodegreefree {
+		require deg.f_gwodegreefree
+		put " gwodegreefree(" deg.f_gwodegreefree
+		put ")"
+	}
+	if deg.cx_gwidegreefree {
+		require deg.f_gwidegreefree
+		put " gwidegreefree(" deg.f_gwidegreefree
+		put ")"
+	}
 	if deg.cx_degree {
 		require deg.f_degree
 		put " degree(" deg.f_degree
@@ -3023,6 +3157,10 @@ BEGIN
 			put " odegrangeto(" deg.f_odegrange_to ")"
 		}
 	}
+END
+
+PROGRAM o_plain2
+BEGIN
 	if deg.cx_idegrange {
 		require deg.f_idegrange
 		put " idegrange(" deg.f_idegrange
@@ -3041,6 +3179,39 @@ BEGIN
 		put " dsp(" tri.f_dsp
 		put ")"
 	}
+	if tri.f_type.isneq("") {
+		put " type(" tri.f_type ")"
+	}
+	if tri.cx_gwesp {
+		require tri.f_gwesp
+		put " gwesp(" tri.f_gwesp
+		put ")"
+	}
+	if tri.cx_gwdsp {
+		require tri.f_gwdsp
+		put " gwdsp(" tri.f_gwdsp
+		put ")"
+	}
+	if tri.cx_gwnsp {
+		require tri.f_gwnsp
+		put " gwnsp(" tri.f_gwnsp
+		put ")"
+	}
+	if tri.cx_gwespfree {
+		require tri.f_gwespfree
+		put " gwespfree(" tri.f_gwespfree
+		put ")"
+	}
+	if tri.cx_gwdspfree {
+		require tri.f_gwdspfree
+		put " gwdspfree(" tri.f_gwdspfree
+		put ")"
+	}
+	if tri.cx_gwnspfree {
+		require tri.f_gwnspfree
+		put " gwnspfree(" tri.f_gwnspfree
+		put ")"
+	}
 	if cov.cx_nodecov {
 		require cov.f_nodecov
 		put " nodecov(" cov.f_nodecov
@@ -3057,10 +3228,6 @@ BEGIN
 		}
 		put ")"
 	}
-END
-
-PROGRAM o_plain2
-BEGIN
 	if cov.cx_nodeocov {
 		require cov.f_nodeocov
 		put " nodeocov(" cov.f_nodeocov
@@ -3101,6 +3268,10 @@ BEGIN
 		}
 		put ")"
 	}
+END
+
+PROGRAM o_plain3
+BEGIN
 	if cov.cx_nodematchdiff {
 		require cov.f_nodematchdiff
 		put " nodematchdiff(" cov.f_nodematchdiff
@@ -3166,10 +3337,6 @@ BEGIN
 		}
 		put ")"
 	}
-END
-
-PROGRAM o_plain3
-BEGIN
 	if cov.cx_nodecovrange {
 		require cov.f_nodecovrange
 		put " nodecovrange(" cov.f_nodecovrange
@@ -3210,6 +3377,10 @@ BEGIN
 		}
 		put ")"
 	}
+END
+
+PROGRAM o_plain4
+BEGIN
 	if cov.cx_nodeifactordistinct {
 		require cov.f_nodeifactordistinct
 		put " nodeifactordistinct(" cov.f_nodeifactordistinct
@@ -3276,10 +3447,6 @@ BEGIN
 		}
 		put ")"
 	}
-END
-
-PROGRAM o_plain4
-BEGIN
 	if two.cx_bgwdegree1 {
 		require two.f_bgwdegree1
 		put " bgwdegree1(" two.f_bgwdegree1
@@ -3319,6 +3486,10 @@ BEGIN
 		}
 		put ")"
 	}
+END
+
+PROGRAM o_plain5
+BEGIN
 	if two.cx_bsociality1 {
 		require two.f_bsociality1
 		put " bsociality1(" two.f_bsociality1
@@ -3384,10 +3555,6 @@ BEGIN
 		}
 		put ")"
 	}
-END
-
-PROGRAM o_plain5
-BEGIN
 	if two.cx_bgwdegree2 {
 		require two.f_bgwdegree2
 		put " bgwdegree2(" two.f_bgwdegree2
@@ -3427,6 +3594,10 @@ BEGIN
 		}
 		put ")"
 	}
+END
+
+PROGRAM o_plain6
+BEGIN
 	if two.cx_bsociality2 {
 		require two.f_bsociality2
 		put " bsociality2(" two.f_bsociality2
@@ -3483,73 +3654,6 @@ BEGIN
 		put " bgwdspfree2(" two.f_bgwdspfree2
 		put ")"
 	}
-	if curved.cx_gwesp {
-		require curved.f_gwesp
-		put " gwesp(" curved.f_gwesp
-		put ")"
-	}
-END
-
-PROGRAM o_plain6
-BEGIN
-	if curved.cx_gwdsp {
-		require curved.f_gwdsp
-		put " gwdsp(" curved.f_gwdsp
-		put ")"
-	}
-	if curved.cx_gwnsp {
-		require curved.f_gwnsp
-		put " gwnsp(" curved.f_gwnsp
-		put ")"
-	}
-	if curved.cx_gwdegree {
-		require curved.f_gwdegree
-		put " gwdegree(" curved.f_gwdegree
-		put ")"
-	}
-	if curved.cx_gwodegree {
-		require curved.f_gwodegree
-		put " gwodegree(" curved.f_gwodegree
-		put ")"
-	}
-	if curved.cx_gwidegree {
-		require curved.f_gwidegree
-		put " gwidegree(" curved.f_gwidegree
-		put ")"
-	}
-	if curved.cx_gwespfree {
-		require curved.f_gwespfree
-		put " gwespfree(" curved.f_gwespfree
-		put ")"
-	}
-	if curved.cx_gwdspfree {
-		require curved.f_gwdspfree
-		put " gwdspfree(" curved.f_gwdspfree
-		put ")"
-	}
-	if curved.cx_gwnspfree {
-		require curved.f_gwnspfree
-		put " gwnspfree(" curved.f_gwnspfree
-		put ")"
-	}
-	if curved.cx_gwdegreefree {
-		require curved.f_gwdegreefree
-		put " gwdegreefree(" curved.f_gwdegreefree
-		put ")"
-	}
-	if curved.cx_gwodegreefree {
-		require curved.f_gwodegreefree
-		put " gwodegreefree(" curved.f_gwodegreefree
-		put ")"
-	}
-	if curved.cx_gwidegreefree {
-		require curved.f_gwidegreefree
-		put " gwidegreefree(" curved.f_gwidegreefree
-		put ")"
-	}
-	if curved.f_type.isneq("") {
-		put " type(" curved.f_type ")"
-	}
 	if cons.f_freedyads {
 		put " freedyads(" cons.f_freedyads ")"
 	}
@@ -3592,13 +3696,13 @@ BEGIN
 	if est.f_mcmleiterations {
 		put " mcmleiterations(" est.f_mcmleiterations ")"
 	}
+	if est.f_mcmleconfidence {
+		put " mcmleconfidence(" est.f_mcmleconfidence ")"
+	}
 END
 
 PROGRAM o_plain7
 BEGIN
-	if est.f_mcmleconfidence {
-		put " mcmleconfidence(" est.f_mcmleconfidence ")"
-	}
 	if est.f_mcmletermination.isneq("") {
 		put " mcmletermination(" est.f_mcmletermination ")"
 	}

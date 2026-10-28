@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.3.3  28oct2026 version 1.0.0  author: Thomas Grund}{...}
+{* *! version 1.3.4  28oct2026 version 1.0.0  author: Thomas Grund}{...}
 {title:Title}
 
 {p2colset 9 32 33 2}{...}
@@ -69,4 +69,4 @@ The curved (free-decay) pseudolikelihood fit follows R's trust-region algorithm,
 {helpb nwergm}, {helpb nwergm_estat}
 
 {hline}
-{pstd}{it:nwergm version 1.3.3, 28 October 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.3.4, 28 October 2026}{p_end}{* nwversion}

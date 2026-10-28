@@ -5,6 +5,14 @@ project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.3.4] - 2026-10-28
+
+Patch release. The Mata libraries and the plugin are unchanged.
+
+### Changed
+
+- Dialogs (nwergm and nwergm simulate): the geometrically weighted terms are easier to find. gwesp(), gwdsp(), gwnsp(), their decay-estimated versions gwespfree(), gwdspfree(), gwnspfree() and the type() box for directed shared partners moved from the Curved tab to the Triads tab. gwdegree(), gwodegree(), gwidegree() and their decay-estimated versions moved to the Degree tab. The Curved tab is gone because nothing was left on it. The commands the dialogs build are unchanged.
+
 ## [1.3.3] - 2026-10-28
 
 Patch release. The Mata libraries and the plugin are unchanged.
