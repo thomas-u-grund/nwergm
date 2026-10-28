@@ -426,7 +426,7 @@ def spec_words(which):
 
 def check_options(fname, which, words):
     exp, keys = spec_words(which)
-    extra_ok = {"nwergm", "simulate"} | keys
+    extra_ok = {"nwergm", "simulate", "burnin", "interval"} | keys   # burnin, interval: from-last-fit form
     # words written but not in the spec
     for w in sorted(words - exp - extra_ok):
         fail("%s: command writes %r which is not in the spec" % (fname, w))

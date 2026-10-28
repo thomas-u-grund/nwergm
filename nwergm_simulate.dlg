@@ -21,16 +21,22 @@ BEGIN
 	script hi_deg_1
 	script hi_tri_1
 	script hi_two_1
+	program postinit_fit
 END
 
 SCRIPT sh_main_0_0
 BEGIN
-	main.tx_n10_main.show
+	main.cx_fit.show
+	main.cb_fitflag.show
 	main.tx_n31_main.show
-	main.tx_s52_main.show
+	main.tx_type2.show
+	main.cb_type.show
+	main.tx_n73_main.show
+	main.tx_n94_main.show
+	main.tx_s115_main.show
 	main.cx_edges.show
 	main.tx_h1.show
-	main.tx_s94_main.show
+	main.tx_s157_main.show
 	main.cx_mutual.show
 	main.tx_h2.show
 	main.cx_triangle.show
@@ -43,20 +49,14 @@ BEGIN
 	main.tx_h6.show
 	main.cx_concurrent.show
 	main.tx_h7.show
-	main.tx_s241_main.show
+	main.tx_s304_main.show
 	main.cx_sender.show
 	main.tx_h8.show
 	main.cx_receiver.show
 	main.tx_h9.show
-	main.tx_s304_main.show
+	main.tx_s367_main.show
 	main.cx_density.show
 	main.tx_h10.show
-	main.cx_meandeg.show
-	main.tx_h11.show
-	main.cx_twopath.show
-	main.tx_h12.show
-	main.cx_isolates.show
-	main.tx_h13.show
 END
 
 SCRIPT sh_main_0
@@ -66,12 +66,17 @@ END
 
 SCRIPT hi_main_0_0
 BEGIN
-	main.tx_n10_main.hide
+	main.cx_fit.hide
+	main.cb_fitflag.hide
 	main.tx_n31_main.hide
-	main.tx_s52_main.hide
+	main.tx_type2.hide
+	main.cb_type.hide
+	main.tx_n73_main.hide
+	main.tx_n94_main.hide
+	main.tx_s115_main.hide
 	main.cx_edges.hide
 	main.tx_h1.hide
-	main.tx_s94_main.hide
+	main.tx_s157_main.hide
 	main.cx_mutual.hide
 	main.tx_h2.hide
 	main.cx_triangle.hide
@@ -84,20 +89,14 @@ BEGIN
 	main.tx_h6.hide
 	main.cx_concurrent.hide
 	main.tx_h7.hide
-	main.tx_s241_main.hide
+	main.tx_s304_main.hide
 	main.cx_sender.hide
 	main.tx_h8.hide
 	main.cx_receiver.hide
 	main.tx_h9.hide
-	main.tx_s304_main.hide
+	main.tx_s367_main.hide
 	main.cx_density.hide
 	main.tx_h10.hide
-	main.cx_meandeg.hide
-	main.tx_h11.hide
-	main.cx_twopath.hide
-	main.tx_h12.hide
-	main.cx_isolates.hide
-	main.tx_h13.hide
 END
 
 SCRIPT hi_main_0
@@ -107,6 +106,12 @@ END
 
 SCRIPT sh_main_1_0
 BEGIN
+	main.cx_meandeg.show
+	main.tx_h11.show
+	main.cx_twopath.show
+	main.tx_h12.show
+	main.cx_isolates.show
+	main.tx_h13.show
 	main.cx_isolatededges.show
 	main.tx_h14.show
 END
@@ -118,6 +123,12 @@ END
 
 SCRIPT hi_main_1_0
 BEGIN
+	main.cx_meandeg.hide
+	main.tx_h11.hide
+	main.cx_twopath.hide
+	main.tx_h12.hide
+	main.cx_isolates.hide
+	main.tx_h13.hide
 	main.cx_isolatededges.hide
 	main.tx_h14.hide
 END
@@ -1051,44 +1062,3255 @@ BEGIN
 	script sh_two_1
 END
 
+SCRIPT ty_auto_0
+BEGIN
+	main.cx_edges.enable
+	main.tx_h1.enable
+	main.cx_mutual.enable
+	main.tx_h2.enable
+	main.cx_triangle.enable
+	main.tx_h3.enable
+	main.cx_ctriple.enable
+	main.tx_h4.enable
+	main.cx_transitiveties.enable
+	main.tx_h5.enable
+	main.cx_cyclicalties.enable
+	main.tx_h6.enable
+	main.cx_concurrent.enable
+	main.tx_h7.enable
+	main.cx_sender.enable
+	main.tx_h8.enable
+	main.cx_receiver.enable
+	main.tx_h9.enable
+	main.cx_density.enable
+	main.tx_h10.enable
+	main.cx_meandeg.enable
+	main.tx_h11.enable
+	main.cx_twopath.enable
+	main.tx_h12.enable
+	main.cx_isolates.enable
+	main.tx_h13.enable
+	main.cx_isolatededges.enable
+	main.tx_h14.enable
+	deg.cx_gwdegree.enable
+	deg.f_gwdegree.enable
+	deg.tx_h15.enable
+	deg.cx_gwodegree.enable
+	deg.f_gwodegree.enable
+	deg.tx_h16.enable
+	deg.cx_gwidegree.enable
+	deg.f_gwidegree.enable
+	deg.tx_h17.enable
+	deg.cx_degree.enable
+	deg.f_degree.enable
+	deg.tx_h18.enable
+END
+
+SCRIPT ty_auto_1
+BEGIN
+	deg.cx_odegree.enable
+	deg.f_odegree.enable
+	deg.tx_h19.enable
+	deg.cx_idegree.enable
+	deg.f_idegree.enable
+	deg.tx_h20.enable
+	deg.cx_kstar.enable
+	deg.f_kstar.enable
+	deg.tx_h21.enable
+	deg.cx_ostar.enable
+	deg.f_ostar.enable
+	deg.tx_h22.enable
+	deg.cx_istar.enable
+	deg.f_istar.enable
+	deg.tx_h23.enable
+	deg.cx_degrange.enable
+	deg.f_degrange.enable
+	deg.tx_degrange_to.enable
+	deg.f_degrange_to.enable
+	deg.tx_h24.enable
+	deg.cx_odegrange.enable
+	deg.f_odegrange.enable
+	deg.tx_odegrange_to.enable
+	deg.f_odegrange_to.enable
+	deg.tx_h25.enable
+	deg.cx_idegrange.enable
+	deg.f_idegrange.enable
+	deg.tx_idegrange_to.enable
+	deg.f_idegrange_to.enable
+	deg.tx_h26.enable
+	deg.cx_s_degree.enable
+	deg.tx_s_degree_d.enable
+	deg.f_s_degree_d.enable
+	deg.tx_s_degree_by.enable
+	deg.f_s_degree_by.enable
+	deg.f_s_degree_homophily.enable
+	deg.tx_h27.enable
+	deg.cx_s_odegree.enable
+	deg.tx_s_odegree_d.enable
+	deg.f_s_odegree_d.enable
+END
+
+SCRIPT ty_auto_2
+BEGIN
+	deg.tx_s_odegree_by.enable
+	deg.f_s_odegree_by.enable
+	deg.f_s_odegree_homophily.enable
+	deg.tx_h28.enable
+	deg.cx_s_idegree.enable
+	deg.tx_s_idegree_d.enable
+	deg.f_s_idegree_d.enable
+	deg.tx_s_idegree_by.enable
+	deg.f_s_idegree_by.enable
+	deg.f_s_idegree_homophily.enable
+	deg.tx_h29.enable
+	deg.cx_s_degrange.enable
+	deg.tx_s_degrange_from.enable
+	deg.f_s_degrange_from.enable
+	deg.tx_s_degrange_to.enable
+	deg.f_s_degrange_to.enable
+	deg.tx_s_degrange_by.enable
+	deg.f_s_degrange_by.enable
+	deg.f_s_degrange_homophily.enable
+	deg.tx_h30.enable
+	deg.cx_s_odegrange.enable
+	deg.tx_s_odegrange_from.enable
+	deg.f_s_odegrange_from.enable
+	deg.tx_s_odegrange_to.enable
+	deg.f_s_odegrange_to.enable
+	deg.tx_s_odegrange_by.enable
+	deg.f_s_odegrange_by.enable
+	deg.f_s_odegrange_homophily.enable
+	deg.tx_h31.enable
+	deg.cx_s_idegrange.enable
+	deg.tx_s_idegrange_from.enable
+	deg.f_s_idegrange_from.enable
+	deg.tx_s_idegrange_to.enable
+	deg.f_s_idegrange_to.enable
+	deg.tx_s_idegrange_by.enable
+	deg.f_s_idegrange_by.enable
+	deg.f_s_idegrange_homophily.enable
+	deg.tx_h32.enable
+	deg.cx_s_kstar.enable
+	deg.tx_s_kstar_k.enable
+END
+
+SCRIPT ty_auto_3
+BEGIN
+	deg.f_s_kstar_k.enable
+	deg.tx_s_kstar_attr.enable
+	deg.f_s_kstar_attr.enable
+	deg.tx_h33.enable
+	deg.cx_s_ostar.enable
+	deg.tx_s_ostar_k.enable
+	deg.f_s_ostar_k.enable
+	deg.tx_s_ostar_attr.enable
+	deg.f_s_ostar_attr.enable
+	deg.tx_h34.enable
+	deg.cx_s_istar.enable
+	deg.tx_s_istar_k.enable
+	deg.f_s_istar_k.enable
+	deg.tx_s_istar_attr.enable
+	deg.f_s_istar_attr.enable
+	deg.tx_h35.enable
+	deg.cx_s_concurrent.enable
+	deg.tx_s_concurrent_by.enable
+	deg.f_s_concurrent_by.enable
+	deg.tx_h36.enable
+	deg.cx_concurrentties.enable
+	deg.tx_concurrentties_by.enable
+	deg.f_concurrentties_by.enable
+	deg.tx_h37.enable
+	deg.cx_degree1_5.enable
+	deg.tx_h38.enable
+	deg.cx_odegree1_5.enable
+	deg.tx_h39.enable
+	deg.cx_idegree1_5.enable
+	deg.tx_h40.enable
+	deg.cx_degcrossprod.enable
+	deg.tx_h41.enable
+	deg.cx_degcor.enable
+	deg.tx_h42.enable
+	deg.cx_m2star.enable
+	deg.tx_h43.enable
+	tri.cx_esp.enable
+	tri.f_esp.enable
+	tri.tx_h44.enable
+	tri.cx_dsp.enable
+END
+
+SCRIPT ty_auto_4
+BEGIN
+	tri.f_dsp.enable
+	tri.tx_h45.enable
+	tri.tx_type.enable
+	tri.f_type.enable
+	tri.tx_h46.enable
+	tri.cx_gwesp.enable
+	tri.f_gwesp.enable
+	tri.tx_h47.enable
+	tri.cx_gwdsp.enable
+	tri.f_gwdsp.enable
+	tri.tx_h48.enable
+	tri.cx_gwnsp.enable
+	tri.f_gwnsp.enable
+	tri.tx_h49.enable
+	tri.cx_s_triangle.enable
+	tri.tx_s_triangle_attr.enable
+	tri.f_s_triangle_attr.enable
+	tri.f_s_triangle_diff.enable
+	tri.tx_h50.enable
+	tri.cx_transitive.enable
+	tri.tx_h51.enable
+	tri.cx_intransitive.enable
+	tri.tx_h52.enable
+	tri.cx_ttriple.enable
+	tri.tx_ttriple_attr.enable
+	tri.f_ttriple_attr.enable
+	tri.f_ttriple_diff.enable
+	tri.tx_h53.enable
+	tri.cx_s_ctriple.enable
+	tri.tx_s_ctriple_attr.enable
+	tri.f_s_ctriple_attr.enable
+	tri.f_s_ctriple_diff.enable
+	tri.tx_h54.enable
+	tri.cx_cycle.enable
+	tri.tx_cycle_k.enable
+	tri.f_cycle_k.enable
+	tri.f_cycle_semi.enable
+	tri.tx_h55.enable
+	tri.cx_threetrail.enable
+	tri.tx_threetrail_keep.enable
+END
+
+SCRIPT ty_auto_5
+BEGIN
+	tri.f_threetrail_keep.enable
+	tri.tx_h56.enable
+	tri.cx_balance.enable
+	tri.tx_h57.enable
+	tri.cx_triadcensus.enable
+	tri.tx_triadcensus_levels.enable
+	tri.f_triadcensus_levels.enable
+	tri.tx_h58.enable
+	tri.cx_tripercent.enable
+	tri.tx_tripercent_attr.enable
+	tri.f_tripercent_attr.enable
+	tri.f_tripercent_diff.enable
+	tri.tx_h59.enable
+	tri.cx_nearsimmelian.enable
+	tri.tx_h60.enable
+	tri.cx_simmelian.enable
+	tri.tx_h61.enable
+	tri.cx_simmelianties.enable
+	tri.tx_h62.enable
+	tri.cx_asymmetric.enable
+	tri.tx_asymmetric_attr.enable
+	tri.f_asymmetric_attr.enable
+	tri.f_asymmetric_diff.enable
+	tri.tx_h63.enable
+	tri.cx_s_mutual.enable
+	tri.tx_s_mutual_same.enable
+	tri.f_s_mutual_same.enable
+	tri.f_s_mutual_diff.enable
+	tri.tx_s_mutual_by.enable
+	tri.f_s_mutual_by.enable
+	tri.tx_h64.enable
+	tri.cx_localtriangle.enable
+	tri.tx_localtriangle_x.enable
+	tri.f_localtriangle_x.enable
+	tri.tx_h65.enable
+	tri.cx_opentriad.enable
+	tri.tx_h66.enable
+	tri.cx_nsp.enable
+	tri.tx_nsp_d.enable
+	tri.f_nsp_d.enable
+END
+
+SCRIPT ty_auto_6
+BEGIN
+	tri.tx_nsp_type.enable
+	tri.f_nsp_type.enable
+	tri.tx_h67.enable
+	tri.cx_s_altkstar.enable
+	tri.tx_s_altkstar_lambda.enable
+	tri.f_s_altkstar_lambda.enable
+	tri.f_s_altkstar_fixed.enable
+	tri.tx_h68.enable
+	cov.cx_nodecov.enable
+	cov.f_nodecov.enable
+	cov.tx_nodecov_c.enable
+	cov.f_nodecov_sub.enable
+	cov.tx_h69.enable
+	cov.cx_nodeicov.enable
+	cov.f_nodeicov.enable
+	cov.tx_nodeicov_c.enable
+	cov.f_nodeicov_sub.enable
+	cov.tx_h70.enable
+	cov.cx_nodeocov.enable
+	cov.f_nodeocov.enable
+	cov.tx_nodeocov_c.enable
+	cov.f_nodeocov_sub.enable
+	cov.tx_h71.enable
+	cov.cx_nodefactor.enable
+	cov.f_nodefactor.enable
+	cov.tx_nodefactor_c.enable
+	cov.f_nodefactor_sub.enable
+	cov.tx_h72.enable
+	cov.cx_nodeofactor.enable
+	cov.f_nodeofactor.enable
+	cov.tx_nodeofactor_c.enable
+	cov.f_nodeofactor_sub.enable
+	cov.tx_h73.enable
+	cov.cx_nodeifactor.enable
+	cov.f_nodeifactor.enable
+	cov.tx_nodeifactor_c.enable
+	cov.f_nodeifactor_sub.enable
+	cov.tx_h74.enable
+	cov.cx_nodematch.enable
+	cov.f_nodematch.enable
+END
+
+SCRIPT ty_auto_7
+BEGIN
+	cov.tx_nodematch_c.enable
+	cov.f_nodematch_sub.enable
+	cov.tx_h75.enable
+	cov.cx_nodematchdiff.enable
+	cov.f_nodematchdiff.enable
+	cov.tx_nodematchdiff_c.enable
+	cov.f_nodematchdiff_sub.enable
+	cov.tx_h76.enable
+	cov.cx_nodemix.enable
+	cov.f_nodemix.enable
+	cov.tx_nodemix_c.enable
+	cov.f_nodemix_sub.enable
+	cov.tx_h77.enable
+	cov.cx_absdist.enable
+	cov.f_absdist.enable
+	cov.tx_absdist_c.enable
+	cov.f_absdist_sub.enable
+	cov.tx_h78.enable
+	cov.cx_edgecov.enable
+	cov.f_edgecov.enable
+	cov.tx_h79.enable
+	cov.cx_hamming.enable
+	cov.f_hamming.enable
+	cov.tx_h80.enable
+	two.cx_bcov1.enable
+	two.f_bcov1.enable
+	two.tx_h81.enable
+	two.cx_bfactor1.enable
+	two.f_bfactor1.enable
+	two.tx_h82.enable
+	two.cx_bdegree1.enable
+	two.f_bdegree1.enable
+	two.tx_bdegree1_c.enable
+	two.f_bdegree1_sub.enable
+	two.tx_h83.enable
+	two.cx_bstar1.enable
+	two.f_bstar1.enable
+	two.tx_bstar1_c.enable
+	two.f_bstar1_sub.enable
+	two.tx_h84.enable
+END
+
+SCRIPT ty_auto_8
+BEGIN
+	two.cx_bnodematch1.enable
+	two.f_bnodematch1.enable
+	two.tx_bnodematch1_c.enable
+	two.f_bnodematch1_sub.enable
+	two.tx_h85.enable
+	two.cx_bgwdegree1.enable
+	two.f_bgwdegree1.enable
+	two.tx_bgwdegree1_c.enable
+	two.f_bgwdegree1_sub.enable
+	two.tx_h86.enable
+	two.cx_bconcurrent1.enable
+	two.f_bconcurrent1.enable
+	two.tx_h87.enable
+	two.cx_bmindegree1.enable
+	two.f_bmindegree1.enable
+	two.tx_h88.enable
+	two.cx_bdegrange1.enable
+	two.f_bdegrange1.enable
+	two.tx_bdegrange1_c.enable
+	two.f_bdegrange1_sub.enable
+	two.tx_h89.enable
+	two.cx_bcovrange1.enable
+	two.f_bcovrange1.enable
+	two.tx_h90.enable
+	two.cx_bfactordistinct1.enable
+	two.f_bfactordistinct1.enable
+	two.tx_bfactordistinct1_c.enable
+	two.f_bfactordistinct1_sub.enable
+	two.tx_h91.enable
+	two.cx_bsociality1.enable
+	two.f_bsociality1.enable
+	two.tx_h92.enable
+	two.cx_bstarmix1.enable
+	two.f_bstarmix1.enable
+	two.tx_bstarmix1_c.enable
+	two.f_bstarmix1_sub.enable
+	two.tx_h93.enable
+	two.cx_btwostar1.enable
+	two.f_btwostar1.enable
+	two.tx_btwostar1_c.enable
+END
+
+SCRIPT ty_auto_9
+BEGIN
+	two.f_btwostar1_sub.enable
+	two.tx_h94.enable
+	two.cx_bdsp1.enable
+	two.f_bdsp1.enable
+	two.tx_h95.enable
+	two.cx_bgwdsp1.enable
+	two.f_bgwdsp1.enable
+	two.tx_h96.enable
+	two.cx_bcov2.enable
+	two.f_bcov2.enable
+	two.tx_h97.enable
+	two.cx_bfactor2.enable
+	two.f_bfactor2.enable
+	two.tx_h98.enable
+	two.cx_bdegree2.enable
+	two.f_bdegree2.enable
+	two.tx_bdegree2_c.enable
+	two.f_bdegree2_sub.enable
+	two.tx_h99.enable
+	two.cx_bstar2.enable
+	two.f_bstar2.enable
+	two.tx_bstar2_c.enable
+	two.f_bstar2_sub.enable
+	two.tx_h100.enable
+	two.cx_bnodematch2.enable
+	two.f_bnodematch2.enable
+	two.tx_bnodematch2_c.enable
+	two.f_bnodematch2_sub.enable
+	two.tx_h101.enable
+	two.cx_bgwdegree2.enable
+	two.f_bgwdegree2.enable
+	two.tx_bgwdegree2_c.enable
+	two.f_bgwdegree2_sub.enable
+	two.tx_h102.enable
+	two.cx_bconcurrent2.enable
+	two.f_bconcurrent2.enable
+	two.tx_h103.enable
+	two.cx_bmindegree2.enable
+	two.f_bmindegree2.enable
+	two.tx_h104.enable
+END
+
+SCRIPT ty_auto_10
+BEGIN
+	two.cx_bdegrange2.enable
+	two.f_bdegrange2.enable
+	two.tx_bdegrange2_c.enable
+	two.f_bdegrange2_sub.enable
+	two.tx_h105.enable
+	two.cx_bcovrange2.enable
+	two.f_bcovrange2.enable
+	two.tx_h106.enable
+	two.cx_bfactordistinct2.enable
+	two.f_bfactordistinct2.enable
+	two.tx_bfactordistinct2_c.enable
+	two.f_bfactordistinct2_sub.enable
+	two.tx_h107.enable
+	two.cx_bsociality2.enable
+	two.f_bsociality2.enable
+	two.tx_h108.enable
+	two.cx_bstarmix2.enable
+	two.f_bstarmix2.enable
+	two.tx_bstarmix2_c.enable
+	two.f_bstarmix2_sub.enable
+	two.tx_h109.enable
+	two.cx_btwostar2.enable
+	two.f_btwostar2.enable
+	two.tx_btwostar2_c.enable
+	two.f_btwostar2_sub.enable
+	two.tx_h110.enable
+	two.cx_bdsp2.enable
+	two.f_bdsp2.enable
+	two.tx_h111.enable
+	two.cx_bgwdsp2.enable
+	two.f_bgwdsp2.enable
+	two.tx_h112.enable
+	two.cx_coincidence.enable
+	two.f_coincidence.enable
+	two.tx_h113.enable
+	space.tx_constraints_extra.enable
+	space.f_constraints_extra.enable
+	space.tx_h114.enable
+	mcmc.tx_proposal.enable
+	mcmc.f_proposal.enable
+END
+
+SCRIPT ty_auto_11
+BEGIN
+	mcmc.tx_h115.enable
+	mcmc.tx_mcmcburnin.enable
+	mcmc.f_mcmcburnin.enable
+	mcmc.tx_h116.enable
+	mcmc.tx_mcmcinterval.enable
+	mcmc.f_mcmcinterval.enable
+	mcmc.tx_h117.enable
+	mcmc.tx_seed.enable
+	mcmc.f_seed.enable
+	mcmc.tx_h118.enable
+	mcmc.f_spcache.enable
+	mcmc.tx_h119.enable
+	simctl.tx_sim_nodes.enable
+	simctl.f_sim_nodes.enable
+	simctl.tx_h120.enable
+	simctl.tx_theta.enable
+	simctl.f_theta.enable
+	simctl.tx_h121.enable
+	simctl.tx_nsim.enable
+	simctl.f_nsim.enable
+	simctl.tx_h122.enable
+	simctl.tx_generate.enable
+	simctl.f_generate.enable
+	simctl.tx_h123.enable
+	simctl.f_sim_directed.enable
+	simctl.tx_h124.enable
+	simctl.tx_bipartite.enable
+	simctl.f_bipartite.enable
+	simctl.tx_h125.enable
+	simctl.tx_basis.enable
+	simctl.f_basis.enable
+	simctl.tx_h126.enable
+END
+
+SCRIPT ty_auto
+BEGIN
+	script ty_auto_0
+	script ty_auto_1
+	script ty_auto_2
+	script ty_auto_3
+	script ty_auto_4
+	script ty_auto_5
+	script ty_auto_6
+	script ty_auto_7
+	script ty_auto_8
+	script ty_auto_9
+	script ty_auto_10
+	script ty_auto_11
+END
+
+SCRIPT ty_u_0
+BEGIN
+	main.cx_edges.enable
+	main.tx_h1.enable
+	main.cx_mutual.disable
+	main.tx_h2.disable
+	main.cx_triangle.enable
+	main.tx_h3.enable
+	main.cx_ctriple.disable
+	main.tx_h4.disable
+	main.cx_transitiveties.disable
+	main.tx_h5.disable
+	main.cx_cyclicalties.disable
+	main.tx_h6.disable
+	main.cx_concurrent.enable
+	main.tx_h7.enable
+	main.cx_sender.disable
+	main.tx_h8.disable
+	main.cx_receiver.disable
+	main.tx_h9.disable
+	main.cx_density.enable
+	main.tx_h10.enable
+	main.cx_meandeg.enable
+	main.tx_h11.enable
+	main.cx_twopath.enable
+	main.tx_h12.enable
+	main.cx_isolates.enable
+	main.tx_h13.enable
+	main.cx_isolatededges.enable
+	main.tx_h14.enable
+	deg.cx_gwdegree.enable
+	deg.f_gwdegree.enable
+	deg.tx_h15.enable
+	deg.cx_gwodegree.disable
+	deg.f_gwodegree.disable
+	deg.tx_h16.disable
+	deg.cx_gwidegree.disable
+	deg.f_gwidegree.disable
+	deg.tx_h17.disable
+	deg.cx_degree.enable
+	deg.f_degree.enable
+	deg.tx_h18.enable
+END
+
+SCRIPT ty_u_1
+BEGIN
+	deg.cx_odegree.disable
+	deg.f_odegree.disable
+	deg.tx_h19.disable
+	deg.cx_idegree.disable
+	deg.f_idegree.disable
+	deg.tx_h20.disable
+	deg.cx_kstar.enable
+	deg.f_kstar.enable
+	deg.tx_h21.enable
+	deg.cx_ostar.disable
+	deg.f_ostar.disable
+	deg.tx_h22.disable
+	deg.cx_istar.disable
+	deg.f_istar.disable
+	deg.tx_h23.disable
+	deg.cx_degrange.enable
+	deg.f_degrange.enable
+	deg.tx_degrange_to.enable
+	deg.f_degrange_to.enable
+	deg.tx_h24.enable
+	deg.cx_odegrange.disable
+	deg.f_odegrange.disable
+	deg.tx_odegrange_to.disable
+	deg.f_odegrange_to.disable
+	deg.tx_h25.disable
+	deg.cx_idegrange.disable
+	deg.f_idegrange.disable
+	deg.tx_idegrange_to.disable
+	deg.f_idegrange_to.disable
+	deg.tx_h26.disable
+	deg.cx_s_degree.enable
+	deg.tx_s_degree_d.enable
+	deg.f_s_degree_d.enable
+	deg.tx_s_degree_by.enable
+	deg.f_s_degree_by.enable
+	deg.f_s_degree_homophily.enable
+	deg.tx_h27.enable
+	deg.cx_s_odegree.disable
+	deg.tx_s_odegree_d.disable
+	deg.f_s_odegree_d.disable
+END
+
+SCRIPT ty_u_2
+BEGIN
+	deg.tx_s_odegree_by.disable
+	deg.f_s_odegree_by.disable
+	deg.f_s_odegree_homophily.disable
+	deg.tx_h28.disable
+	deg.cx_s_idegree.disable
+	deg.tx_s_idegree_d.disable
+	deg.f_s_idegree_d.disable
+	deg.tx_s_idegree_by.disable
+	deg.f_s_idegree_by.disable
+	deg.f_s_idegree_homophily.disable
+	deg.tx_h29.disable
+	deg.cx_s_degrange.enable
+	deg.tx_s_degrange_from.enable
+	deg.f_s_degrange_from.enable
+	deg.tx_s_degrange_to.enable
+	deg.f_s_degrange_to.enable
+	deg.tx_s_degrange_by.enable
+	deg.f_s_degrange_by.enable
+	deg.f_s_degrange_homophily.enable
+	deg.tx_h30.enable
+	deg.cx_s_odegrange.disable
+	deg.tx_s_odegrange_from.disable
+	deg.f_s_odegrange_from.disable
+	deg.tx_s_odegrange_to.disable
+	deg.f_s_odegrange_to.disable
+	deg.tx_s_odegrange_by.disable
+	deg.f_s_odegrange_by.disable
+	deg.f_s_odegrange_homophily.disable
+	deg.tx_h31.disable
+	deg.cx_s_idegrange.disable
+	deg.tx_s_idegrange_from.disable
+	deg.f_s_idegrange_from.disable
+	deg.tx_s_idegrange_to.disable
+	deg.f_s_idegrange_to.disable
+	deg.tx_s_idegrange_by.disable
+	deg.f_s_idegrange_by.disable
+	deg.f_s_idegrange_homophily.disable
+	deg.tx_h32.disable
+	deg.cx_s_kstar.enable
+	deg.tx_s_kstar_k.enable
+END
+
+SCRIPT ty_u_3
+BEGIN
+	deg.f_s_kstar_k.enable
+	deg.tx_s_kstar_attr.enable
+	deg.f_s_kstar_attr.enable
+	deg.tx_h33.enable
+	deg.cx_s_ostar.disable
+	deg.tx_s_ostar_k.disable
+	deg.f_s_ostar_k.disable
+	deg.tx_s_ostar_attr.disable
+	deg.f_s_ostar_attr.disable
+	deg.tx_h34.disable
+	deg.cx_s_istar.disable
+	deg.tx_s_istar_k.disable
+	deg.f_s_istar_k.disable
+	deg.tx_s_istar_attr.disable
+	deg.f_s_istar_attr.disable
+	deg.tx_h35.disable
+	deg.cx_s_concurrent.enable
+	deg.tx_s_concurrent_by.enable
+	deg.f_s_concurrent_by.enable
+	deg.tx_h36.enable
+	deg.cx_concurrentties.enable
+	deg.tx_concurrentties_by.enable
+	deg.f_concurrentties_by.enable
+	deg.tx_h37.enable
+	deg.cx_degree1_5.enable
+	deg.tx_h38.enable
+	deg.cx_odegree1_5.disable
+	deg.tx_h39.disable
+	deg.cx_idegree1_5.disable
+	deg.tx_h40.disable
+	deg.cx_degcrossprod.enable
+	deg.tx_h41.enable
+	deg.cx_degcor.enable
+	deg.tx_h42.enable
+	deg.cx_m2star.disable
+	deg.tx_h43.disable
+	tri.cx_esp.enable
+	tri.f_esp.enable
+	tri.tx_h44.enable
+	tri.cx_dsp.enable
+END
+
+SCRIPT ty_u_4
+BEGIN
+	tri.f_dsp.enable
+	tri.tx_h45.enable
+	tri.tx_type.disable
+	tri.f_type.disable
+	tri.tx_h46.disable
+	tri.cx_gwesp.enable
+	tri.f_gwesp.enable
+	tri.tx_h47.enable
+	tri.cx_gwdsp.enable
+	tri.f_gwdsp.enable
+	tri.tx_h48.enable
+	tri.cx_gwnsp.enable
+	tri.f_gwnsp.enable
+	tri.tx_h49.enable
+	tri.cx_s_triangle.enable
+	tri.tx_s_triangle_attr.enable
+	tri.f_s_triangle_attr.enable
+	tri.f_s_triangle_diff.enable
+	tri.tx_h50.enable
+	tri.cx_transitive.disable
+	tri.tx_h51.disable
+	tri.cx_intransitive.disable
+	tri.tx_h52.disable
+	tri.cx_ttriple.disable
+	tri.tx_ttriple_attr.disable
+	tri.f_ttriple_attr.disable
+	tri.f_ttriple_diff.disable
+	tri.tx_h53.disable
+	tri.cx_s_ctriple.disable
+	tri.tx_s_ctriple_attr.disable
+	tri.f_s_ctriple_attr.disable
+	tri.f_s_ctriple_diff.disable
+	tri.tx_h54.disable
+	tri.cx_cycle.enable
+	tri.tx_cycle_k.enable
+	tri.f_cycle_k.enable
+	tri.f_cycle_semi.enable
+	tri.tx_h55.enable
+	tri.cx_threetrail.enable
+	tri.tx_threetrail_keep.enable
+END
+
+SCRIPT ty_u_5
+BEGIN
+	tri.f_threetrail_keep.enable
+	tri.tx_h56.enable
+	tri.cx_balance.enable
+	tri.tx_h57.enable
+	tri.cx_triadcensus.enable
+	tri.tx_triadcensus_levels.enable
+	tri.f_triadcensus_levels.enable
+	tri.tx_h58.enable
+	tri.cx_tripercent.enable
+	tri.tx_tripercent_attr.enable
+	tri.f_tripercent_attr.enable
+	tri.f_tripercent_diff.enable
+	tri.tx_h59.enable
+	tri.cx_nearsimmelian.disable
+	tri.tx_h60.disable
+	tri.cx_simmelian.disable
+	tri.tx_h61.disable
+	tri.cx_simmelianties.disable
+	tri.tx_h62.disable
+	tri.cx_asymmetric.disable
+	tri.tx_asymmetric_attr.disable
+	tri.f_asymmetric_attr.disable
+	tri.f_asymmetric_diff.disable
+	tri.tx_h63.disable
+	tri.cx_s_mutual.disable
+	tri.tx_s_mutual_same.disable
+	tri.f_s_mutual_same.disable
+	tri.f_s_mutual_diff.disable
+	tri.tx_s_mutual_by.disable
+	tri.f_s_mutual_by.disable
+	tri.tx_h64.disable
+	tri.cx_localtriangle.enable
+	tri.tx_localtriangle_x.enable
+	tri.f_localtriangle_x.enable
+	tri.tx_h65.enable
+	tri.cx_opentriad.enable
+	tri.tx_h66.enable
+	tri.cx_nsp.enable
+	tri.tx_nsp_d.enable
+	tri.f_nsp_d.enable
+END
+
+SCRIPT ty_u_6
+BEGIN
+	tri.tx_nsp_type.enable
+	tri.f_nsp_type.enable
+	tri.tx_h67.enable
+	tri.cx_s_altkstar.enable
+	tri.tx_s_altkstar_lambda.enable
+	tri.f_s_altkstar_lambda.enable
+	tri.f_s_altkstar_fixed.enable
+	tri.tx_h68.enable
+	cov.cx_nodecov.enable
+	cov.f_nodecov.enable
+	cov.tx_nodecov_c.enable
+	cov.f_nodecov_sub.enable
+	cov.tx_h69.enable
+	cov.cx_nodeicov.disable
+	cov.f_nodeicov.disable
+	cov.tx_nodeicov_c.disable
+	cov.f_nodeicov_sub.disable
+	cov.tx_h70.disable
+	cov.cx_nodeocov.disable
+	cov.f_nodeocov.disable
+	cov.tx_nodeocov_c.disable
+	cov.f_nodeocov_sub.disable
+	cov.tx_h71.disable
+	cov.cx_nodefactor.enable
+	cov.f_nodefactor.enable
+	cov.tx_nodefactor_c.enable
+	cov.f_nodefactor_sub.enable
+	cov.tx_h72.enable
+	cov.cx_nodeofactor.disable
+	cov.f_nodeofactor.disable
+	cov.tx_nodeofactor_c.disable
+	cov.f_nodeofactor_sub.disable
+	cov.tx_h73.disable
+	cov.cx_nodeifactor.disable
+	cov.f_nodeifactor.disable
+	cov.tx_nodeifactor_c.disable
+	cov.f_nodeifactor_sub.disable
+	cov.tx_h74.disable
+	cov.cx_nodematch.enable
+	cov.f_nodematch.enable
+END
+
+SCRIPT ty_u_7
+BEGIN
+	cov.tx_nodematch_c.enable
+	cov.f_nodematch_sub.enable
+	cov.tx_h75.enable
+	cov.cx_nodematchdiff.enable
+	cov.f_nodematchdiff.enable
+	cov.tx_nodematchdiff_c.enable
+	cov.f_nodematchdiff_sub.enable
+	cov.tx_h76.enable
+	cov.cx_nodemix.enable
+	cov.f_nodemix.enable
+	cov.tx_nodemix_c.enable
+	cov.f_nodemix_sub.enable
+	cov.tx_h77.enable
+	cov.cx_absdist.enable
+	cov.f_absdist.enable
+	cov.tx_absdist_c.enable
+	cov.f_absdist_sub.enable
+	cov.tx_h78.enable
+	cov.cx_edgecov.enable
+	cov.f_edgecov.enable
+	cov.tx_h79.enable
+	cov.cx_hamming.enable
+	cov.f_hamming.enable
+	cov.tx_h80.enable
+	two.cx_bcov1.disable
+	two.f_bcov1.disable
+	two.tx_h81.disable
+	two.cx_bfactor1.disable
+	two.f_bfactor1.disable
+	two.tx_h82.disable
+	two.cx_bdegree1.disable
+	two.f_bdegree1.disable
+	two.tx_bdegree1_c.disable
+	two.f_bdegree1_sub.disable
+	two.tx_h83.disable
+	two.cx_bstar1.disable
+	two.f_bstar1.disable
+	two.tx_bstar1_c.disable
+	two.f_bstar1_sub.disable
+	two.tx_h84.disable
+END
+
+SCRIPT ty_u_8
+BEGIN
+	two.cx_bnodematch1.disable
+	two.f_bnodematch1.disable
+	two.tx_bnodematch1_c.disable
+	two.f_bnodematch1_sub.disable
+	two.tx_h85.disable
+	two.cx_bgwdegree1.disable
+	two.f_bgwdegree1.disable
+	two.tx_bgwdegree1_c.disable
+	two.f_bgwdegree1_sub.disable
+	two.tx_h86.disable
+	two.cx_bconcurrent1.disable
+	two.f_bconcurrent1.disable
+	two.tx_h87.disable
+	two.cx_bmindegree1.disable
+	two.f_bmindegree1.disable
+	two.tx_h88.disable
+	two.cx_bdegrange1.disable
+	two.f_bdegrange1.disable
+	two.tx_bdegrange1_c.disable
+	two.f_bdegrange1_sub.disable
+	two.tx_h89.disable
+	two.cx_bcovrange1.disable
+	two.f_bcovrange1.disable
+	two.tx_h90.disable
+	two.cx_bfactordistinct1.disable
+	two.f_bfactordistinct1.disable
+	two.tx_bfactordistinct1_c.disable
+	two.f_bfactordistinct1_sub.disable
+	two.tx_h91.disable
+	two.cx_bsociality1.disable
+	two.f_bsociality1.disable
+	two.tx_h92.disable
+	two.cx_bstarmix1.disable
+	two.f_bstarmix1.disable
+	two.tx_bstarmix1_c.disable
+	two.f_bstarmix1_sub.disable
+	two.tx_h93.disable
+	two.cx_btwostar1.disable
+	two.f_btwostar1.disable
+	two.tx_btwostar1_c.disable
+END
+
+SCRIPT ty_u_9
+BEGIN
+	two.f_btwostar1_sub.disable
+	two.tx_h94.disable
+	two.cx_bdsp1.disable
+	two.f_bdsp1.disable
+	two.tx_h95.disable
+	two.cx_bgwdsp1.disable
+	two.f_bgwdsp1.disable
+	two.tx_h96.disable
+	two.cx_bcov2.disable
+	two.f_bcov2.disable
+	two.tx_h97.disable
+	two.cx_bfactor2.disable
+	two.f_bfactor2.disable
+	two.tx_h98.disable
+	two.cx_bdegree2.disable
+	two.f_bdegree2.disable
+	two.tx_bdegree2_c.disable
+	two.f_bdegree2_sub.disable
+	two.tx_h99.disable
+	two.cx_bstar2.disable
+	two.f_bstar2.disable
+	two.tx_bstar2_c.disable
+	two.f_bstar2_sub.disable
+	two.tx_h100.disable
+	two.cx_bnodematch2.disable
+	two.f_bnodematch2.disable
+	two.tx_bnodematch2_c.disable
+	two.f_bnodematch2_sub.disable
+	two.tx_h101.disable
+	two.cx_bgwdegree2.disable
+	two.f_bgwdegree2.disable
+	two.tx_bgwdegree2_c.disable
+	two.f_bgwdegree2_sub.disable
+	two.tx_h102.disable
+	two.cx_bconcurrent2.disable
+	two.f_bconcurrent2.disable
+	two.tx_h103.disable
+	two.cx_bmindegree2.disable
+	two.f_bmindegree2.disable
+	two.tx_h104.disable
+END
+
+SCRIPT ty_u_10
+BEGIN
+	two.cx_bdegrange2.disable
+	two.f_bdegrange2.disable
+	two.tx_bdegrange2_c.disable
+	two.f_bdegrange2_sub.disable
+	two.tx_h105.disable
+	two.cx_bcovrange2.disable
+	two.f_bcovrange2.disable
+	two.tx_h106.disable
+	two.cx_bfactordistinct2.disable
+	two.f_bfactordistinct2.disable
+	two.tx_bfactordistinct2_c.disable
+	two.f_bfactordistinct2_sub.disable
+	two.tx_h107.disable
+	two.cx_bsociality2.disable
+	two.f_bsociality2.disable
+	two.tx_h108.disable
+	two.cx_bstarmix2.disable
+	two.f_bstarmix2.disable
+	two.tx_bstarmix2_c.disable
+	two.f_bstarmix2_sub.disable
+	two.tx_h109.disable
+	two.cx_btwostar2.disable
+	two.f_btwostar2.disable
+	two.tx_btwostar2_c.disable
+	two.f_btwostar2_sub.disable
+	two.tx_h110.disable
+	two.cx_bdsp2.disable
+	two.f_bdsp2.disable
+	two.tx_h111.disable
+	two.cx_bgwdsp2.disable
+	two.f_bgwdsp2.disable
+	two.tx_h112.disable
+	two.cx_coincidence.disable
+	two.f_coincidence.disable
+	two.tx_h113.disable
+	space.tx_constraints_extra.enable
+	space.f_constraints_extra.enable
+	space.tx_h114.enable
+	mcmc.tx_proposal.enable
+	mcmc.f_proposal.enable
+END
+
+SCRIPT ty_u_11
+BEGIN
+	mcmc.tx_h115.enable
+	mcmc.tx_mcmcburnin.enable
+	mcmc.f_mcmcburnin.enable
+	mcmc.tx_h116.enable
+	mcmc.tx_mcmcinterval.enable
+	mcmc.f_mcmcinterval.enable
+	mcmc.tx_h117.enable
+	mcmc.tx_seed.enable
+	mcmc.f_seed.enable
+	mcmc.tx_h118.enable
+	mcmc.f_spcache.enable
+	mcmc.tx_h119.enable
+	simctl.tx_sim_nodes.enable
+	simctl.f_sim_nodes.enable
+	simctl.tx_h120.enable
+	simctl.tx_theta.enable
+	simctl.f_theta.enable
+	simctl.tx_h121.enable
+	simctl.tx_nsim.enable
+	simctl.f_nsim.enable
+	simctl.tx_h122.enable
+	simctl.tx_generate.enable
+	simctl.f_generate.enable
+	simctl.tx_h123.enable
+	simctl.f_sim_directed.enable
+	simctl.tx_h124.enable
+	simctl.tx_bipartite.enable
+	simctl.f_bipartite.enable
+	simctl.tx_h125.enable
+	simctl.tx_basis.enable
+	simctl.f_basis.enable
+	simctl.tx_h126.enable
+END
+
+SCRIPT ty_u
+BEGIN
+	script ty_u_0
+	script ty_u_1
+	script ty_u_2
+	script ty_u_3
+	script ty_u_4
+	script ty_u_5
+	script ty_u_6
+	script ty_u_7
+	script ty_u_8
+	script ty_u_9
+	script ty_u_10
+	script ty_u_11
+END
+
+SCRIPT ty_d_0
+BEGIN
+	main.cx_edges.enable
+	main.tx_h1.enable
+	main.cx_mutual.enable
+	main.tx_h2.enable
+	main.cx_triangle.disable
+	main.tx_h3.disable
+	main.cx_ctriple.enable
+	main.tx_h4.enable
+	main.cx_transitiveties.enable
+	main.tx_h5.enable
+	main.cx_cyclicalties.enable
+	main.tx_h6.enable
+	main.cx_concurrent.disable
+	main.tx_h7.disable
+	main.cx_sender.enable
+	main.tx_h8.enable
+	main.cx_receiver.enable
+	main.tx_h9.enable
+	main.cx_density.enable
+	main.tx_h10.enable
+	main.cx_meandeg.enable
+	main.tx_h11.enable
+	main.cx_twopath.enable
+	main.tx_h12.enable
+	main.cx_isolates.enable
+	main.tx_h13.enable
+	main.cx_isolatededges.disable
+	main.tx_h14.disable
+	deg.cx_gwdegree.disable
+	deg.f_gwdegree.disable
+	deg.tx_h15.disable
+	deg.cx_gwodegree.enable
+	deg.f_gwodegree.enable
+	deg.tx_h16.enable
+	deg.cx_gwidegree.enable
+	deg.f_gwidegree.enable
+	deg.tx_h17.enable
+	deg.cx_degree.disable
+	deg.f_degree.disable
+	deg.tx_h18.disable
+END
+
+SCRIPT ty_d_1
+BEGIN
+	deg.cx_odegree.enable
+	deg.f_odegree.enable
+	deg.tx_h19.enable
+	deg.cx_idegree.enable
+	deg.f_idegree.enable
+	deg.tx_h20.enable
+	deg.cx_kstar.disable
+	deg.f_kstar.disable
+	deg.tx_h21.disable
+	deg.cx_ostar.enable
+	deg.f_ostar.enable
+	deg.tx_h22.enable
+	deg.cx_istar.enable
+	deg.f_istar.enable
+	deg.tx_h23.enable
+	deg.cx_degrange.disable
+	deg.f_degrange.disable
+	deg.tx_degrange_to.disable
+	deg.f_degrange_to.disable
+	deg.tx_h24.disable
+	deg.cx_odegrange.enable
+	deg.f_odegrange.enable
+	deg.tx_odegrange_to.enable
+	deg.f_odegrange_to.enable
+	deg.tx_h25.enable
+	deg.cx_idegrange.enable
+	deg.f_idegrange.enable
+	deg.tx_idegrange_to.enable
+	deg.f_idegrange_to.enable
+	deg.tx_h26.enable
+	deg.cx_s_degree.disable
+	deg.tx_s_degree_d.disable
+	deg.f_s_degree_d.disable
+	deg.tx_s_degree_by.disable
+	deg.f_s_degree_by.disable
+	deg.f_s_degree_homophily.disable
+	deg.tx_h27.disable
+	deg.cx_s_odegree.enable
+	deg.tx_s_odegree_d.enable
+	deg.f_s_odegree_d.enable
+END
+
+SCRIPT ty_d_2
+BEGIN
+	deg.tx_s_odegree_by.enable
+	deg.f_s_odegree_by.enable
+	deg.f_s_odegree_homophily.enable
+	deg.tx_h28.enable
+	deg.cx_s_idegree.enable
+	deg.tx_s_idegree_d.enable
+	deg.f_s_idegree_d.enable
+	deg.tx_s_idegree_by.enable
+	deg.f_s_idegree_by.enable
+	deg.f_s_idegree_homophily.enable
+	deg.tx_h29.enable
+	deg.cx_s_degrange.disable
+	deg.tx_s_degrange_from.disable
+	deg.f_s_degrange_from.disable
+	deg.tx_s_degrange_to.disable
+	deg.f_s_degrange_to.disable
+	deg.tx_s_degrange_by.disable
+	deg.f_s_degrange_by.disable
+	deg.f_s_degrange_homophily.disable
+	deg.tx_h30.disable
+	deg.cx_s_odegrange.enable
+	deg.tx_s_odegrange_from.enable
+	deg.f_s_odegrange_from.enable
+	deg.tx_s_odegrange_to.enable
+	deg.f_s_odegrange_to.enable
+	deg.tx_s_odegrange_by.enable
+	deg.f_s_odegrange_by.enable
+	deg.f_s_odegrange_homophily.enable
+	deg.tx_h31.enable
+	deg.cx_s_idegrange.enable
+	deg.tx_s_idegrange_from.enable
+	deg.f_s_idegrange_from.enable
+	deg.tx_s_idegrange_to.enable
+	deg.f_s_idegrange_to.enable
+	deg.tx_s_idegrange_by.enable
+	deg.f_s_idegrange_by.enable
+	deg.f_s_idegrange_homophily.enable
+	deg.tx_h32.enable
+	deg.cx_s_kstar.disable
+	deg.tx_s_kstar_k.disable
+END
+
+SCRIPT ty_d_3
+BEGIN
+	deg.f_s_kstar_k.disable
+	deg.tx_s_kstar_attr.disable
+	deg.f_s_kstar_attr.disable
+	deg.tx_h33.disable
+	deg.cx_s_ostar.enable
+	deg.tx_s_ostar_k.enable
+	deg.f_s_ostar_k.enable
+	deg.tx_s_ostar_attr.enable
+	deg.f_s_ostar_attr.enable
+	deg.tx_h34.enable
+	deg.cx_s_istar.enable
+	deg.tx_s_istar_k.enable
+	deg.f_s_istar_k.enable
+	deg.tx_s_istar_attr.enable
+	deg.f_s_istar_attr.enable
+	deg.tx_h35.enable
+	deg.cx_s_concurrent.disable
+	deg.tx_s_concurrent_by.disable
+	deg.f_s_concurrent_by.disable
+	deg.tx_h36.disable
+	deg.cx_concurrentties.disable
+	deg.tx_concurrentties_by.disable
+	deg.f_concurrentties_by.disable
+	deg.tx_h37.disable
+	deg.cx_degree1_5.disable
+	deg.tx_h38.disable
+	deg.cx_odegree1_5.enable
+	deg.tx_h39.enable
+	deg.cx_idegree1_5.enable
+	deg.tx_h40.enable
+	deg.cx_degcrossprod.disable
+	deg.tx_h41.disable
+	deg.cx_degcor.disable
+	deg.tx_h42.disable
+	deg.cx_m2star.enable
+	deg.tx_h43.enable
+	tri.cx_esp.enable
+	tri.f_esp.enable
+	tri.tx_h44.enable
+	tri.cx_dsp.enable
+END
+
+SCRIPT ty_d_4
+BEGIN
+	tri.f_dsp.enable
+	tri.tx_h45.enable
+	tri.tx_type.enable
+	tri.f_type.enable
+	tri.tx_h46.enable
+	tri.cx_gwesp.enable
+	tri.f_gwesp.enable
+	tri.tx_h47.enable
+	tri.cx_gwdsp.enable
+	tri.f_gwdsp.enable
+	tri.tx_h48.enable
+	tri.cx_gwnsp.enable
+	tri.f_gwnsp.enable
+	tri.tx_h49.enable
+	tri.cx_s_triangle.enable
+	tri.tx_s_triangle_attr.enable
+	tri.f_s_triangle_attr.enable
+	tri.f_s_triangle_diff.enable
+	tri.tx_h50.enable
+	tri.cx_transitive.enable
+	tri.tx_h51.enable
+	tri.cx_intransitive.enable
+	tri.tx_h52.enable
+	tri.cx_ttriple.enable
+	tri.tx_ttriple_attr.enable
+	tri.f_ttriple_attr.enable
+	tri.f_ttriple_diff.enable
+	tri.tx_h53.enable
+	tri.cx_s_ctriple.enable
+	tri.tx_s_ctriple_attr.enable
+	tri.f_s_ctriple_attr.enable
+	tri.f_s_ctriple_diff.enable
+	tri.tx_h54.enable
+	tri.cx_cycle.enable
+	tri.tx_cycle_k.enable
+	tri.f_cycle_k.enable
+	tri.f_cycle_semi.enable
+	tri.tx_h55.enable
+	tri.cx_threetrail.enable
+	tri.tx_threetrail_keep.enable
+END
+
+SCRIPT ty_d_5
+BEGIN
+	tri.f_threetrail_keep.enable
+	tri.tx_h56.enable
+	tri.cx_balance.enable
+	tri.tx_h57.enable
+	tri.cx_triadcensus.enable
+	tri.tx_triadcensus_levels.enable
+	tri.f_triadcensus_levels.enable
+	tri.tx_h58.enable
+	tri.cx_tripercent.disable
+	tri.tx_tripercent_attr.disable
+	tri.f_tripercent_attr.disable
+	tri.f_tripercent_diff.disable
+	tri.tx_h59.disable
+	tri.cx_nearsimmelian.enable
+	tri.tx_h60.enable
+	tri.cx_simmelian.enable
+	tri.tx_h61.enable
+	tri.cx_simmelianties.enable
+	tri.tx_h62.enable
+	tri.cx_asymmetric.enable
+	tri.tx_asymmetric_attr.enable
+	tri.f_asymmetric_attr.enable
+	tri.f_asymmetric_diff.enable
+	tri.tx_h63.enable
+	tri.cx_s_mutual.enable
+	tri.tx_s_mutual_same.enable
+	tri.f_s_mutual_same.enable
+	tri.f_s_mutual_diff.enable
+	tri.tx_s_mutual_by.enable
+	tri.f_s_mutual_by.enable
+	tri.tx_h64.enable
+	tri.cx_localtriangle.enable
+	tri.tx_localtriangle_x.enable
+	tri.f_localtriangle_x.enable
+	tri.tx_h65.enable
+	tri.cx_opentriad.enable
+	tri.tx_h66.enable
+	tri.cx_nsp.enable
+	tri.tx_nsp_d.enable
+	tri.f_nsp_d.enable
+END
+
+SCRIPT ty_d_6
+BEGIN
+	tri.tx_nsp_type.enable
+	tri.f_nsp_type.enable
+	tri.tx_h67.enable
+	tri.cx_s_altkstar.disable
+	tri.tx_s_altkstar_lambda.disable
+	tri.f_s_altkstar_lambda.disable
+	tri.f_s_altkstar_fixed.disable
+	tri.tx_h68.disable
+	cov.cx_nodecov.enable
+	cov.f_nodecov.enable
+	cov.tx_nodecov_c.enable
+	cov.f_nodecov_sub.enable
+	cov.tx_h69.enable
+	cov.cx_nodeicov.enable
+	cov.f_nodeicov.enable
+	cov.tx_nodeicov_c.enable
+	cov.f_nodeicov_sub.enable
+	cov.tx_h70.enable
+	cov.cx_nodeocov.enable
+	cov.f_nodeocov.enable
+	cov.tx_nodeocov_c.enable
+	cov.f_nodeocov_sub.enable
+	cov.tx_h71.enable
+	cov.cx_nodefactor.enable
+	cov.f_nodefactor.enable
+	cov.tx_nodefactor_c.enable
+	cov.f_nodefactor_sub.enable
+	cov.tx_h72.enable
+	cov.cx_nodeofactor.enable
+	cov.f_nodeofactor.enable
+	cov.tx_nodeofactor_c.enable
+	cov.f_nodeofactor_sub.enable
+	cov.tx_h73.enable
+	cov.cx_nodeifactor.enable
+	cov.f_nodeifactor.enable
+	cov.tx_nodeifactor_c.enable
+	cov.f_nodeifactor_sub.enable
+	cov.tx_h74.enable
+	cov.cx_nodematch.enable
+	cov.f_nodematch.enable
+END
+
+SCRIPT ty_d_7
+BEGIN
+	cov.tx_nodematch_c.enable
+	cov.f_nodematch_sub.enable
+	cov.tx_h75.enable
+	cov.cx_nodematchdiff.enable
+	cov.f_nodematchdiff.enable
+	cov.tx_nodematchdiff_c.enable
+	cov.f_nodematchdiff_sub.enable
+	cov.tx_h76.enable
+	cov.cx_nodemix.enable
+	cov.f_nodemix.enable
+	cov.tx_nodemix_c.enable
+	cov.f_nodemix_sub.enable
+	cov.tx_h77.enable
+	cov.cx_absdist.enable
+	cov.f_absdist.enable
+	cov.tx_absdist_c.enable
+	cov.f_absdist_sub.enable
+	cov.tx_h78.enable
+	cov.cx_edgecov.enable
+	cov.f_edgecov.enable
+	cov.tx_h79.enable
+	cov.cx_hamming.enable
+	cov.f_hamming.enable
+	cov.tx_h80.enable
+	two.cx_bcov1.disable
+	two.f_bcov1.disable
+	two.tx_h81.disable
+	two.cx_bfactor1.disable
+	two.f_bfactor1.disable
+	two.tx_h82.disable
+	two.cx_bdegree1.disable
+	two.f_bdegree1.disable
+	two.tx_bdegree1_c.disable
+	two.f_bdegree1_sub.disable
+	two.tx_h83.disable
+	two.cx_bstar1.disable
+	two.f_bstar1.disable
+	two.tx_bstar1_c.disable
+	two.f_bstar1_sub.disable
+	two.tx_h84.disable
+END
+
+SCRIPT ty_d_8
+BEGIN
+	two.cx_bnodematch1.disable
+	two.f_bnodematch1.disable
+	two.tx_bnodematch1_c.disable
+	two.f_bnodematch1_sub.disable
+	two.tx_h85.disable
+	two.cx_bgwdegree1.disable
+	two.f_bgwdegree1.disable
+	two.tx_bgwdegree1_c.disable
+	two.f_bgwdegree1_sub.disable
+	two.tx_h86.disable
+	two.cx_bconcurrent1.disable
+	two.f_bconcurrent1.disable
+	two.tx_h87.disable
+	two.cx_bmindegree1.disable
+	two.f_bmindegree1.disable
+	two.tx_h88.disable
+	two.cx_bdegrange1.disable
+	two.f_bdegrange1.disable
+	two.tx_bdegrange1_c.disable
+	two.f_bdegrange1_sub.disable
+	two.tx_h89.disable
+	two.cx_bcovrange1.disable
+	two.f_bcovrange1.disable
+	two.tx_h90.disable
+	two.cx_bfactordistinct1.disable
+	two.f_bfactordistinct1.disable
+	two.tx_bfactordistinct1_c.disable
+	two.f_bfactordistinct1_sub.disable
+	two.tx_h91.disable
+	two.cx_bsociality1.disable
+	two.f_bsociality1.disable
+	two.tx_h92.disable
+	two.cx_bstarmix1.disable
+	two.f_bstarmix1.disable
+	two.tx_bstarmix1_c.disable
+	two.f_bstarmix1_sub.disable
+	two.tx_h93.disable
+	two.cx_btwostar1.disable
+	two.f_btwostar1.disable
+	two.tx_btwostar1_c.disable
+END
+
+SCRIPT ty_d_9
+BEGIN
+	two.f_btwostar1_sub.disable
+	two.tx_h94.disable
+	two.cx_bdsp1.disable
+	two.f_bdsp1.disable
+	two.tx_h95.disable
+	two.cx_bgwdsp1.disable
+	two.f_bgwdsp1.disable
+	two.tx_h96.disable
+	two.cx_bcov2.disable
+	two.f_bcov2.disable
+	two.tx_h97.disable
+	two.cx_bfactor2.disable
+	two.f_bfactor2.disable
+	two.tx_h98.disable
+	two.cx_bdegree2.disable
+	two.f_bdegree2.disable
+	two.tx_bdegree2_c.disable
+	two.f_bdegree2_sub.disable
+	two.tx_h99.disable
+	two.cx_bstar2.disable
+	two.f_bstar2.disable
+	two.tx_bstar2_c.disable
+	two.f_bstar2_sub.disable
+	two.tx_h100.disable
+	two.cx_bnodematch2.disable
+	two.f_bnodematch2.disable
+	two.tx_bnodematch2_c.disable
+	two.f_bnodematch2_sub.disable
+	two.tx_h101.disable
+	two.cx_bgwdegree2.disable
+	two.f_bgwdegree2.disable
+	two.tx_bgwdegree2_c.disable
+	two.f_bgwdegree2_sub.disable
+	two.tx_h102.disable
+	two.cx_bconcurrent2.disable
+	two.f_bconcurrent2.disable
+	two.tx_h103.disable
+	two.cx_bmindegree2.disable
+	two.f_bmindegree2.disable
+	two.tx_h104.disable
+END
+
+SCRIPT ty_d_10
+BEGIN
+	two.cx_bdegrange2.disable
+	two.f_bdegrange2.disable
+	two.tx_bdegrange2_c.disable
+	two.f_bdegrange2_sub.disable
+	two.tx_h105.disable
+	two.cx_bcovrange2.disable
+	two.f_bcovrange2.disable
+	two.tx_h106.disable
+	two.cx_bfactordistinct2.disable
+	two.f_bfactordistinct2.disable
+	two.tx_bfactordistinct2_c.disable
+	two.f_bfactordistinct2_sub.disable
+	two.tx_h107.disable
+	two.cx_bsociality2.disable
+	two.f_bsociality2.disable
+	two.tx_h108.disable
+	two.cx_bstarmix2.disable
+	two.f_bstarmix2.disable
+	two.tx_bstarmix2_c.disable
+	two.f_bstarmix2_sub.disable
+	two.tx_h109.disable
+	two.cx_btwostar2.disable
+	two.f_btwostar2.disable
+	two.tx_btwostar2_c.disable
+	two.f_btwostar2_sub.disable
+	two.tx_h110.disable
+	two.cx_bdsp2.disable
+	two.f_bdsp2.disable
+	two.tx_h111.disable
+	two.cx_bgwdsp2.disable
+	two.f_bgwdsp2.disable
+	two.tx_h112.disable
+	two.cx_coincidence.disable
+	two.f_coincidence.disable
+	two.tx_h113.disable
+	space.tx_constraints_extra.enable
+	space.f_constraints_extra.enable
+	space.tx_h114.enable
+	mcmc.tx_proposal.enable
+	mcmc.f_proposal.enable
+END
+
+SCRIPT ty_d_11
+BEGIN
+	mcmc.tx_h115.enable
+	mcmc.tx_mcmcburnin.enable
+	mcmc.f_mcmcburnin.enable
+	mcmc.tx_h116.enable
+	mcmc.tx_mcmcinterval.enable
+	mcmc.f_mcmcinterval.enable
+	mcmc.tx_h117.enable
+	mcmc.tx_seed.enable
+	mcmc.f_seed.enable
+	mcmc.tx_h118.enable
+	mcmc.f_spcache.enable
+	mcmc.tx_h119.enable
+	simctl.tx_sim_nodes.enable
+	simctl.f_sim_nodes.enable
+	simctl.tx_h120.enable
+	simctl.tx_theta.enable
+	simctl.f_theta.enable
+	simctl.tx_h121.enable
+	simctl.tx_nsim.enable
+	simctl.f_nsim.enable
+	simctl.tx_h122.enable
+	simctl.tx_generate.enable
+	simctl.f_generate.enable
+	simctl.tx_h123.enable
+	simctl.f_sim_directed.enable
+	simctl.tx_h124.enable
+	simctl.tx_bipartite.enable
+	simctl.f_bipartite.enable
+	simctl.tx_h125.enable
+	simctl.tx_basis.enable
+	simctl.f_basis.enable
+	simctl.tx_h126.enable
+END
+
+SCRIPT ty_d
+BEGIN
+	script ty_d_0
+	script ty_d_1
+	script ty_d_2
+	script ty_d_3
+	script ty_d_4
+	script ty_d_5
+	script ty_d_6
+	script ty_d_7
+	script ty_d_8
+	script ty_d_9
+	script ty_d_10
+	script ty_d_11
+END
+
+SCRIPT ty_b_0
+BEGIN
+	main.cx_edges.enable
+	main.tx_h1.enable
+	main.cx_mutual.disable
+	main.tx_h2.disable
+	main.cx_triangle.disable
+	main.tx_h3.disable
+	main.cx_ctriple.disable
+	main.tx_h4.disable
+	main.cx_transitiveties.disable
+	main.tx_h5.disable
+	main.cx_cyclicalties.disable
+	main.tx_h6.disable
+	main.cx_concurrent.disable
+	main.tx_h7.disable
+	main.cx_sender.disable
+	main.tx_h8.disable
+	main.cx_receiver.disable
+	main.tx_h9.disable
+	main.cx_density.disable
+	main.tx_h10.disable
+	main.cx_meandeg.disable
+	main.tx_h11.disable
+	main.cx_twopath.disable
+	main.tx_h12.disable
+	main.cx_isolates.disable
+	main.tx_h13.disable
+	main.cx_isolatededges.disable
+	main.tx_h14.disable
+	deg.cx_gwdegree.disable
+	deg.f_gwdegree.disable
+	deg.tx_h15.disable
+	deg.cx_gwodegree.disable
+	deg.f_gwodegree.disable
+	deg.tx_h16.disable
+	deg.cx_gwidegree.disable
+	deg.f_gwidegree.disable
+	deg.tx_h17.disable
+	deg.cx_degree.disable
+	deg.f_degree.disable
+	deg.tx_h18.disable
+END
+
+SCRIPT ty_b_1
+BEGIN
+	deg.cx_odegree.disable
+	deg.f_odegree.disable
+	deg.tx_h19.disable
+	deg.cx_idegree.disable
+	deg.f_idegree.disable
+	deg.tx_h20.disable
+	deg.cx_kstar.disable
+	deg.f_kstar.disable
+	deg.tx_h21.disable
+	deg.cx_ostar.disable
+	deg.f_ostar.disable
+	deg.tx_h22.disable
+	deg.cx_istar.disable
+	deg.f_istar.disable
+	deg.tx_h23.disable
+	deg.cx_degrange.disable
+	deg.f_degrange.disable
+	deg.tx_degrange_to.disable
+	deg.f_degrange_to.disable
+	deg.tx_h24.disable
+	deg.cx_odegrange.disable
+	deg.f_odegrange.disable
+	deg.tx_odegrange_to.disable
+	deg.f_odegrange_to.disable
+	deg.tx_h25.disable
+	deg.cx_idegrange.disable
+	deg.f_idegrange.disable
+	deg.tx_idegrange_to.disable
+	deg.f_idegrange_to.disable
+	deg.tx_h26.disable
+	deg.cx_s_degree.disable
+	deg.tx_s_degree_d.disable
+	deg.f_s_degree_d.disable
+	deg.tx_s_degree_by.disable
+	deg.f_s_degree_by.disable
+	deg.f_s_degree_homophily.disable
+	deg.tx_h27.disable
+	deg.cx_s_odegree.disable
+	deg.tx_s_odegree_d.disable
+	deg.f_s_odegree_d.disable
+END
+
+SCRIPT ty_b_2
+BEGIN
+	deg.tx_s_odegree_by.disable
+	deg.f_s_odegree_by.disable
+	deg.f_s_odegree_homophily.disable
+	deg.tx_h28.disable
+	deg.cx_s_idegree.disable
+	deg.tx_s_idegree_d.disable
+	deg.f_s_idegree_d.disable
+	deg.tx_s_idegree_by.disable
+	deg.f_s_idegree_by.disable
+	deg.f_s_idegree_homophily.disable
+	deg.tx_h29.disable
+	deg.cx_s_degrange.disable
+	deg.tx_s_degrange_from.disable
+	deg.f_s_degrange_from.disable
+	deg.tx_s_degrange_to.disable
+	deg.f_s_degrange_to.disable
+	deg.tx_s_degrange_by.disable
+	deg.f_s_degrange_by.disable
+	deg.f_s_degrange_homophily.disable
+	deg.tx_h30.disable
+	deg.cx_s_odegrange.disable
+	deg.tx_s_odegrange_from.disable
+	deg.f_s_odegrange_from.disable
+	deg.tx_s_odegrange_to.disable
+	deg.f_s_odegrange_to.disable
+	deg.tx_s_odegrange_by.disable
+	deg.f_s_odegrange_by.disable
+	deg.f_s_odegrange_homophily.disable
+	deg.tx_h31.disable
+	deg.cx_s_idegrange.disable
+	deg.tx_s_idegrange_from.disable
+	deg.f_s_idegrange_from.disable
+	deg.tx_s_idegrange_to.disable
+	deg.f_s_idegrange_to.disable
+	deg.tx_s_idegrange_by.disable
+	deg.f_s_idegrange_by.disable
+	deg.f_s_idegrange_homophily.disable
+	deg.tx_h32.disable
+	deg.cx_s_kstar.disable
+	deg.tx_s_kstar_k.disable
+END
+
+SCRIPT ty_b_3
+BEGIN
+	deg.f_s_kstar_k.disable
+	deg.tx_s_kstar_attr.disable
+	deg.f_s_kstar_attr.disable
+	deg.tx_h33.disable
+	deg.cx_s_ostar.disable
+	deg.tx_s_ostar_k.disable
+	deg.f_s_ostar_k.disable
+	deg.tx_s_ostar_attr.disable
+	deg.f_s_ostar_attr.disable
+	deg.tx_h34.disable
+	deg.cx_s_istar.disable
+	deg.tx_s_istar_k.disable
+	deg.f_s_istar_k.disable
+	deg.tx_s_istar_attr.disable
+	deg.f_s_istar_attr.disable
+	deg.tx_h35.disable
+	deg.cx_s_concurrent.disable
+	deg.tx_s_concurrent_by.disable
+	deg.f_s_concurrent_by.disable
+	deg.tx_h36.disable
+	deg.cx_concurrentties.disable
+	deg.tx_concurrentties_by.disable
+	deg.f_concurrentties_by.disable
+	deg.tx_h37.disable
+	deg.cx_degree1_5.disable
+	deg.tx_h38.disable
+	deg.cx_odegree1_5.disable
+	deg.tx_h39.disable
+	deg.cx_idegree1_5.disable
+	deg.tx_h40.disable
+	deg.cx_degcrossprod.disable
+	deg.tx_h41.disable
+	deg.cx_degcor.disable
+	deg.tx_h42.disable
+	deg.cx_m2star.disable
+	deg.tx_h43.disable
+	tri.cx_esp.disable
+	tri.f_esp.disable
+	tri.tx_h44.disable
+	tri.cx_dsp.disable
+END
+
+SCRIPT ty_b_4
+BEGIN
+	tri.f_dsp.disable
+	tri.tx_h45.disable
+	tri.tx_type.disable
+	tri.f_type.disable
+	tri.tx_h46.disable
+	tri.cx_gwesp.disable
+	tri.f_gwesp.disable
+	tri.tx_h47.disable
+	tri.cx_gwdsp.disable
+	tri.f_gwdsp.disable
+	tri.tx_h48.disable
+	tri.cx_gwnsp.disable
+	tri.f_gwnsp.disable
+	tri.tx_h49.disable
+	tri.cx_s_triangle.disable
+	tri.tx_s_triangle_attr.disable
+	tri.f_s_triangle_attr.disable
+	tri.f_s_triangle_diff.disable
+	tri.tx_h50.disable
+	tri.cx_transitive.disable
+	tri.tx_h51.disable
+	tri.cx_intransitive.disable
+	tri.tx_h52.disable
+	tri.cx_ttriple.disable
+	tri.tx_ttriple_attr.disable
+	tri.f_ttriple_attr.disable
+	tri.f_ttriple_diff.disable
+	tri.tx_h53.disable
+	tri.cx_s_ctriple.disable
+	tri.tx_s_ctriple_attr.disable
+	tri.f_s_ctriple_attr.disable
+	tri.f_s_ctriple_diff.disable
+	tri.tx_h54.disable
+	tri.cx_cycle.disable
+	tri.tx_cycle_k.disable
+	tri.f_cycle_k.disable
+	tri.f_cycle_semi.disable
+	tri.tx_h55.disable
+	tri.cx_threetrail.disable
+	tri.tx_threetrail_keep.disable
+END
+
+SCRIPT ty_b_5
+BEGIN
+	tri.f_threetrail_keep.disable
+	tri.tx_h56.disable
+	tri.cx_balance.disable
+	tri.tx_h57.disable
+	tri.cx_triadcensus.disable
+	tri.tx_triadcensus_levels.disable
+	tri.f_triadcensus_levels.disable
+	tri.tx_h58.disable
+	tri.cx_tripercent.disable
+	tri.tx_tripercent_attr.disable
+	tri.f_tripercent_attr.disable
+	tri.f_tripercent_diff.disable
+	tri.tx_h59.disable
+	tri.cx_nearsimmelian.disable
+	tri.tx_h60.disable
+	tri.cx_simmelian.disable
+	tri.tx_h61.disable
+	tri.cx_simmelianties.disable
+	tri.tx_h62.disable
+	tri.cx_asymmetric.disable
+	tri.tx_asymmetric_attr.disable
+	tri.f_asymmetric_attr.disable
+	tri.f_asymmetric_diff.disable
+	tri.tx_h63.disable
+	tri.cx_s_mutual.disable
+	tri.tx_s_mutual_same.disable
+	tri.f_s_mutual_same.disable
+	tri.f_s_mutual_diff.disable
+	tri.tx_s_mutual_by.disable
+	tri.f_s_mutual_by.disable
+	tri.tx_h64.disable
+	tri.cx_localtriangle.disable
+	tri.tx_localtriangle_x.disable
+	tri.f_localtriangle_x.disable
+	tri.tx_h65.disable
+	tri.cx_opentriad.disable
+	tri.tx_h66.disable
+	tri.cx_nsp.disable
+	tri.tx_nsp_d.disable
+	tri.f_nsp_d.disable
+END
+
+SCRIPT ty_b_6
+BEGIN
+	tri.tx_nsp_type.disable
+	tri.f_nsp_type.disable
+	tri.tx_h67.disable
+	tri.cx_s_altkstar.disable
+	tri.tx_s_altkstar_lambda.disable
+	tri.f_s_altkstar_lambda.disable
+	tri.f_s_altkstar_fixed.disable
+	tri.tx_h68.disable
+	cov.cx_nodecov.disable
+	cov.f_nodecov.disable
+	cov.tx_nodecov_c.disable
+	cov.f_nodecov_sub.disable
+	cov.tx_h69.disable
+	cov.cx_nodeicov.disable
+	cov.f_nodeicov.disable
+	cov.tx_nodeicov_c.disable
+	cov.f_nodeicov_sub.disable
+	cov.tx_h70.disable
+	cov.cx_nodeocov.disable
+	cov.f_nodeocov.disable
+	cov.tx_nodeocov_c.disable
+	cov.f_nodeocov_sub.disable
+	cov.tx_h71.disable
+	cov.cx_nodefactor.disable
+	cov.f_nodefactor.disable
+	cov.tx_nodefactor_c.disable
+	cov.f_nodefactor_sub.disable
+	cov.tx_h72.disable
+	cov.cx_nodeofactor.disable
+	cov.f_nodeofactor.disable
+	cov.tx_nodeofactor_c.disable
+	cov.f_nodeofactor_sub.disable
+	cov.tx_h73.disable
+	cov.cx_nodeifactor.disable
+	cov.f_nodeifactor.disable
+	cov.tx_nodeifactor_c.disable
+	cov.f_nodeifactor_sub.disable
+	cov.tx_h74.disable
+	cov.cx_nodematch.disable
+	cov.f_nodematch.disable
+END
+
+SCRIPT ty_b_7
+BEGIN
+	cov.tx_nodematch_c.disable
+	cov.f_nodematch_sub.disable
+	cov.tx_h75.disable
+	cov.cx_nodematchdiff.disable
+	cov.f_nodematchdiff.disable
+	cov.tx_nodematchdiff_c.disable
+	cov.f_nodematchdiff_sub.disable
+	cov.tx_h76.disable
+	cov.cx_nodemix.enable
+	cov.f_nodemix.enable
+	cov.tx_nodemix_c.enable
+	cov.f_nodemix_sub.enable
+	cov.tx_h77.enable
+	cov.cx_absdist.disable
+	cov.f_absdist.disable
+	cov.tx_absdist_c.disable
+	cov.f_absdist_sub.disable
+	cov.tx_h78.disable
+	cov.cx_edgecov.enable
+	cov.f_edgecov.enable
+	cov.tx_h79.enable
+	cov.cx_hamming.disable
+	cov.f_hamming.disable
+	cov.tx_h80.disable
+	two.cx_bcov1.enable
+	two.f_bcov1.enable
+	two.tx_h81.enable
+	two.cx_bfactor1.enable
+	two.f_bfactor1.enable
+	two.tx_h82.enable
+	two.cx_bdegree1.enable
+	two.f_bdegree1.enable
+	two.tx_bdegree1_c.enable
+	two.f_bdegree1_sub.enable
+	two.tx_h83.enable
+	two.cx_bstar1.enable
+	two.f_bstar1.enable
+	two.tx_bstar1_c.enable
+	two.f_bstar1_sub.enable
+	two.tx_h84.enable
+END
+
+SCRIPT ty_b_8
+BEGIN
+	two.cx_bnodematch1.enable
+	two.f_bnodematch1.enable
+	two.tx_bnodematch1_c.enable
+	two.f_bnodematch1_sub.enable
+	two.tx_h85.enable
+	two.cx_bgwdegree1.enable
+	two.f_bgwdegree1.enable
+	two.tx_bgwdegree1_c.enable
+	two.f_bgwdegree1_sub.enable
+	two.tx_h86.enable
+	two.cx_bconcurrent1.enable
+	two.f_bconcurrent1.enable
+	two.tx_h87.enable
+	two.cx_bmindegree1.enable
+	two.f_bmindegree1.enable
+	two.tx_h88.enable
+	two.cx_bdegrange1.enable
+	two.f_bdegrange1.enable
+	two.tx_bdegrange1_c.enable
+	two.f_bdegrange1_sub.enable
+	two.tx_h89.enable
+	two.cx_bcovrange1.enable
+	two.f_bcovrange1.enable
+	two.tx_h90.enable
+	two.cx_bfactordistinct1.enable
+	two.f_bfactordistinct1.enable
+	two.tx_bfactordistinct1_c.enable
+	two.f_bfactordistinct1_sub.enable
+	two.tx_h91.enable
+	two.cx_bsociality1.enable
+	two.f_bsociality1.enable
+	two.tx_h92.enable
+	two.cx_bstarmix1.enable
+	two.f_bstarmix1.enable
+	two.tx_bstarmix1_c.enable
+	two.f_bstarmix1_sub.enable
+	two.tx_h93.enable
+	two.cx_btwostar1.enable
+	two.f_btwostar1.enable
+	two.tx_btwostar1_c.enable
+END
+
+SCRIPT ty_b_9
+BEGIN
+	two.f_btwostar1_sub.enable
+	two.tx_h94.enable
+	two.cx_bdsp1.enable
+	two.f_bdsp1.enable
+	two.tx_h95.enable
+	two.cx_bgwdsp1.enable
+	two.f_bgwdsp1.enable
+	two.tx_h96.enable
+	two.cx_bcov2.enable
+	two.f_bcov2.enable
+	two.tx_h97.enable
+	two.cx_bfactor2.enable
+	two.f_bfactor2.enable
+	two.tx_h98.enable
+	two.cx_bdegree2.enable
+	two.f_bdegree2.enable
+	two.tx_bdegree2_c.enable
+	two.f_bdegree2_sub.enable
+	two.tx_h99.enable
+	two.cx_bstar2.enable
+	two.f_bstar2.enable
+	two.tx_bstar2_c.enable
+	two.f_bstar2_sub.enable
+	two.tx_h100.enable
+	two.cx_bnodematch2.enable
+	two.f_bnodematch2.enable
+	two.tx_bnodematch2_c.enable
+	two.f_bnodematch2_sub.enable
+	two.tx_h101.enable
+	two.cx_bgwdegree2.enable
+	two.f_bgwdegree2.enable
+	two.tx_bgwdegree2_c.enable
+	two.f_bgwdegree2_sub.enable
+	two.tx_h102.enable
+	two.cx_bconcurrent2.enable
+	two.f_bconcurrent2.enable
+	two.tx_h103.enable
+	two.cx_bmindegree2.enable
+	two.f_bmindegree2.enable
+	two.tx_h104.enable
+END
+
+SCRIPT ty_b_10
+BEGIN
+	two.cx_bdegrange2.enable
+	two.f_bdegrange2.enable
+	two.tx_bdegrange2_c.enable
+	two.f_bdegrange2_sub.enable
+	two.tx_h105.enable
+	two.cx_bcovrange2.enable
+	two.f_bcovrange2.enable
+	two.tx_h106.enable
+	two.cx_bfactordistinct2.enable
+	two.f_bfactordistinct2.enable
+	two.tx_bfactordistinct2_c.enable
+	two.f_bfactordistinct2_sub.enable
+	two.tx_h107.enable
+	two.cx_bsociality2.enable
+	two.f_bsociality2.enable
+	two.tx_h108.enable
+	two.cx_bstarmix2.enable
+	two.f_bstarmix2.enable
+	two.tx_bstarmix2_c.enable
+	two.f_bstarmix2_sub.enable
+	two.tx_h109.enable
+	two.cx_btwostar2.enable
+	two.f_btwostar2.enable
+	two.tx_btwostar2_c.enable
+	two.f_btwostar2_sub.enable
+	two.tx_h110.enable
+	two.cx_bdsp2.enable
+	two.f_bdsp2.enable
+	two.tx_h111.enable
+	two.cx_bgwdsp2.enable
+	two.f_bgwdsp2.enable
+	two.tx_h112.enable
+	two.cx_coincidence.enable
+	two.f_coincidence.enable
+	two.tx_h113.enable
+	space.tx_constraints_extra.enable
+	space.f_constraints_extra.enable
+	space.tx_h114.enable
+	mcmc.tx_proposal.enable
+	mcmc.f_proposal.enable
+END
+
+SCRIPT ty_b_11
+BEGIN
+	mcmc.tx_h115.enable
+	mcmc.tx_mcmcburnin.enable
+	mcmc.f_mcmcburnin.enable
+	mcmc.tx_h116.enable
+	mcmc.tx_mcmcinterval.enable
+	mcmc.f_mcmcinterval.enable
+	mcmc.tx_h117.enable
+	mcmc.tx_seed.enable
+	mcmc.f_seed.enable
+	mcmc.tx_h118.enable
+	mcmc.f_spcache.enable
+	mcmc.tx_h119.enable
+	simctl.tx_sim_nodes.enable
+	simctl.f_sim_nodes.enable
+	simctl.tx_h120.enable
+	simctl.tx_theta.enable
+	simctl.f_theta.enable
+	simctl.tx_h121.enable
+	simctl.tx_nsim.enable
+	simctl.f_nsim.enable
+	simctl.tx_h122.enable
+	simctl.tx_generate.enable
+	simctl.f_generate.enable
+	simctl.tx_h123.enable
+	simctl.f_sim_directed.enable
+	simctl.tx_h124.enable
+	simctl.tx_bipartite.enable
+	simctl.f_bipartite.enable
+	simctl.tx_h125.enable
+	simctl.tx_basis.enable
+	simctl.f_basis.enable
+	simctl.tx_h126.enable
+END
+
+SCRIPT ty_b
+BEGIN
+	script ty_b_0
+	script ty_b_1
+	script ty_b_2
+	script ty_b_3
+	script ty_b_4
+	script ty_b_5
+	script ty_b_6
+	script ty_b_7
+	script ty_b_8
+	script ty_b_9
+	script ty_b_10
+	script ty_b_11
+END
+
+SCRIPT nettype_auto
+BEGIN
+	main.cb_type.setvalue auto
+	program type_apply
+END
+
+SCRIPT nettype_u
+BEGIN
+	main.cb_type.setvalue undirected
+	program type_apply
+END
+
+SCRIPT nettype_d
+BEGIN
+	main.cb_type.setvalue directed
+	program type_apply
+END
+
+SCRIPT nettype_b
+BEGIN
+	main.cb_type.setvalue two-mode
+	program type_apply
+END
+
+SCRIPT fit_dis_0
+BEGIN
+	main.cx_edges.disable
+	main.tx_h1.disable
+	main.cx_mutual.disable
+	main.tx_h2.disable
+	main.cx_triangle.disable
+	main.tx_h3.disable
+	main.cx_ctriple.disable
+	main.tx_h4.disable
+	main.cx_transitiveties.disable
+	main.tx_h5.disable
+	main.cx_cyclicalties.disable
+	main.tx_h6.disable
+	main.cx_concurrent.disable
+	main.tx_h7.disable
+	main.cx_sender.disable
+	main.tx_h8.disable
+	main.cx_receiver.disable
+	main.tx_h9.disable
+	main.cx_density.disable
+	main.tx_h10.disable
+	main.cx_meandeg.disable
+	main.tx_h11.disable
+	main.cx_twopath.disable
+	main.tx_h12.disable
+	main.cx_isolates.disable
+	main.tx_h13.disable
+	main.cx_isolatededges.disable
+	main.tx_h14.disable
+	deg.cx_gwdegree.disable
+	deg.f_gwdegree.disable
+	deg.tx_h15.disable
+	deg.cx_gwodegree.disable
+	deg.f_gwodegree.disable
+	deg.tx_h16.disable
+	deg.cx_gwidegree.disable
+	deg.f_gwidegree.disable
+	deg.tx_h17.disable
+	deg.cx_degree.disable
+	deg.f_degree.disable
+	deg.tx_h18.disable
+END
+
+SCRIPT fit_dis_1
+BEGIN
+	deg.cx_odegree.disable
+	deg.f_odegree.disable
+	deg.tx_h19.disable
+	deg.cx_idegree.disable
+	deg.f_idegree.disable
+	deg.tx_h20.disable
+	deg.cx_kstar.disable
+	deg.f_kstar.disable
+	deg.tx_h21.disable
+	deg.cx_ostar.disable
+	deg.f_ostar.disable
+	deg.tx_h22.disable
+	deg.cx_istar.disable
+	deg.f_istar.disable
+	deg.tx_h23.disable
+	deg.cx_degrange.disable
+	deg.f_degrange.disable
+	deg.tx_degrange_to.disable
+	deg.f_degrange_to.disable
+	deg.tx_h24.disable
+	deg.cx_odegrange.disable
+	deg.f_odegrange.disable
+	deg.tx_odegrange_to.disable
+	deg.f_odegrange_to.disable
+	deg.tx_h25.disable
+	deg.cx_idegrange.disable
+	deg.f_idegrange.disable
+	deg.tx_idegrange_to.disable
+	deg.f_idegrange_to.disable
+	deg.tx_h26.disable
+	deg.cx_s_degree.disable
+	deg.tx_s_degree_d.disable
+	deg.f_s_degree_d.disable
+	deg.tx_s_degree_by.disable
+	deg.f_s_degree_by.disable
+	deg.f_s_degree_homophily.disable
+	deg.tx_h27.disable
+	deg.cx_s_odegree.disable
+	deg.tx_s_odegree_d.disable
+	deg.f_s_odegree_d.disable
+END
+
+SCRIPT fit_dis_2
+BEGIN
+	deg.tx_s_odegree_by.disable
+	deg.f_s_odegree_by.disable
+	deg.f_s_odegree_homophily.disable
+	deg.tx_h28.disable
+	deg.cx_s_idegree.disable
+	deg.tx_s_idegree_d.disable
+	deg.f_s_idegree_d.disable
+	deg.tx_s_idegree_by.disable
+	deg.f_s_idegree_by.disable
+	deg.f_s_idegree_homophily.disable
+	deg.tx_h29.disable
+	deg.cx_s_degrange.disable
+	deg.tx_s_degrange_from.disable
+	deg.f_s_degrange_from.disable
+	deg.tx_s_degrange_to.disable
+	deg.f_s_degrange_to.disable
+	deg.tx_s_degrange_by.disable
+	deg.f_s_degrange_by.disable
+	deg.f_s_degrange_homophily.disable
+	deg.tx_h30.disable
+	deg.cx_s_odegrange.disable
+	deg.tx_s_odegrange_from.disable
+	deg.f_s_odegrange_from.disable
+	deg.tx_s_odegrange_to.disable
+	deg.f_s_odegrange_to.disable
+	deg.tx_s_odegrange_by.disable
+	deg.f_s_odegrange_by.disable
+	deg.f_s_odegrange_homophily.disable
+	deg.tx_h31.disable
+	deg.cx_s_idegrange.disable
+	deg.tx_s_idegrange_from.disable
+	deg.f_s_idegrange_from.disable
+	deg.tx_s_idegrange_to.disable
+	deg.f_s_idegrange_to.disable
+	deg.tx_s_idegrange_by.disable
+	deg.f_s_idegrange_by.disable
+	deg.f_s_idegrange_homophily.disable
+	deg.tx_h32.disable
+	deg.cx_s_kstar.disable
+	deg.tx_s_kstar_k.disable
+END
+
+SCRIPT fit_dis_3
+BEGIN
+	deg.f_s_kstar_k.disable
+	deg.tx_s_kstar_attr.disable
+	deg.f_s_kstar_attr.disable
+	deg.tx_h33.disable
+	deg.cx_s_ostar.disable
+	deg.tx_s_ostar_k.disable
+	deg.f_s_ostar_k.disable
+	deg.tx_s_ostar_attr.disable
+	deg.f_s_ostar_attr.disable
+	deg.tx_h34.disable
+	deg.cx_s_istar.disable
+	deg.tx_s_istar_k.disable
+	deg.f_s_istar_k.disable
+	deg.tx_s_istar_attr.disable
+	deg.f_s_istar_attr.disable
+	deg.tx_h35.disable
+	deg.cx_s_concurrent.disable
+	deg.tx_s_concurrent_by.disable
+	deg.f_s_concurrent_by.disable
+	deg.tx_h36.disable
+	deg.cx_concurrentties.disable
+	deg.tx_concurrentties_by.disable
+	deg.f_concurrentties_by.disable
+	deg.tx_h37.disable
+	deg.cx_degree1_5.disable
+	deg.tx_h38.disable
+	deg.cx_odegree1_5.disable
+	deg.tx_h39.disable
+	deg.cx_idegree1_5.disable
+	deg.tx_h40.disable
+	deg.cx_degcrossprod.disable
+	deg.tx_h41.disable
+	deg.cx_degcor.disable
+	deg.tx_h42.disable
+	deg.cx_m2star.disable
+	deg.tx_h43.disable
+	tri.cx_esp.disable
+	tri.f_esp.disable
+	tri.tx_h44.disable
+	tri.cx_dsp.disable
+END
+
+SCRIPT fit_dis_4
+BEGIN
+	tri.f_dsp.disable
+	tri.tx_h45.disable
+	tri.tx_type.disable
+	tri.f_type.disable
+	tri.tx_h46.disable
+	tri.cx_gwesp.disable
+	tri.f_gwesp.disable
+	tri.tx_h47.disable
+	tri.cx_gwdsp.disable
+	tri.f_gwdsp.disable
+	tri.tx_h48.disable
+	tri.cx_gwnsp.disable
+	tri.f_gwnsp.disable
+	tri.tx_h49.disable
+	tri.cx_s_triangle.disable
+	tri.tx_s_triangle_attr.disable
+	tri.f_s_triangle_attr.disable
+	tri.f_s_triangle_diff.disable
+	tri.tx_h50.disable
+	tri.cx_transitive.disable
+	tri.tx_h51.disable
+	tri.cx_intransitive.disable
+	tri.tx_h52.disable
+	tri.cx_ttriple.disable
+	tri.tx_ttriple_attr.disable
+	tri.f_ttriple_attr.disable
+	tri.f_ttriple_diff.disable
+	tri.tx_h53.disable
+	tri.cx_s_ctriple.disable
+	tri.tx_s_ctriple_attr.disable
+	tri.f_s_ctriple_attr.disable
+	tri.f_s_ctriple_diff.disable
+	tri.tx_h54.disable
+	tri.cx_cycle.disable
+	tri.tx_cycle_k.disable
+	tri.f_cycle_k.disable
+	tri.f_cycle_semi.disable
+	tri.tx_h55.disable
+	tri.cx_threetrail.disable
+	tri.tx_threetrail_keep.disable
+END
+
+SCRIPT fit_dis_5
+BEGIN
+	tri.f_threetrail_keep.disable
+	tri.tx_h56.disable
+	tri.cx_balance.disable
+	tri.tx_h57.disable
+	tri.cx_triadcensus.disable
+	tri.tx_triadcensus_levels.disable
+	tri.f_triadcensus_levels.disable
+	tri.tx_h58.disable
+	tri.cx_tripercent.disable
+	tri.tx_tripercent_attr.disable
+	tri.f_tripercent_attr.disable
+	tri.f_tripercent_diff.disable
+	tri.tx_h59.disable
+	tri.cx_nearsimmelian.disable
+	tri.tx_h60.disable
+	tri.cx_simmelian.disable
+	tri.tx_h61.disable
+	tri.cx_simmelianties.disable
+	tri.tx_h62.disable
+	tri.cx_asymmetric.disable
+	tri.tx_asymmetric_attr.disable
+	tri.f_asymmetric_attr.disable
+	tri.f_asymmetric_diff.disable
+	tri.tx_h63.disable
+	tri.cx_s_mutual.disable
+	tri.tx_s_mutual_same.disable
+	tri.f_s_mutual_same.disable
+	tri.f_s_mutual_diff.disable
+	tri.tx_s_mutual_by.disable
+	tri.f_s_mutual_by.disable
+	tri.tx_h64.disable
+	tri.cx_localtriangle.disable
+	tri.tx_localtriangle_x.disable
+	tri.f_localtriangle_x.disable
+	tri.tx_h65.disable
+	tri.cx_opentriad.disable
+	tri.tx_h66.disable
+	tri.cx_nsp.disable
+	tri.tx_nsp_d.disable
+	tri.f_nsp_d.disable
+END
+
+SCRIPT fit_dis_6
+BEGIN
+	tri.tx_nsp_type.disable
+	tri.f_nsp_type.disable
+	tri.tx_h67.disable
+	tri.cx_s_altkstar.disable
+	tri.tx_s_altkstar_lambda.disable
+	tri.f_s_altkstar_lambda.disable
+	tri.f_s_altkstar_fixed.disable
+	tri.tx_h68.disable
+	cov.cx_nodecov.disable
+	cov.f_nodecov.disable
+	cov.tx_nodecov_c.disable
+	cov.f_nodecov_sub.disable
+	cov.tx_h69.disable
+	cov.cx_nodeicov.disable
+	cov.f_nodeicov.disable
+	cov.tx_nodeicov_c.disable
+	cov.f_nodeicov_sub.disable
+	cov.tx_h70.disable
+	cov.cx_nodeocov.disable
+	cov.f_nodeocov.disable
+	cov.tx_nodeocov_c.disable
+	cov.f_nodeocov_sub.disable
+	cov.tx_h71.disable
+	cov.cx_nodefactor.disable
+	cov.f_nodefactor.disable
+	cov.tx_nodefactor_c.disable
+	cov.f_nodefactor_sub.disable
+	cov.tx_h72.disable
+	cov.cx_nodeofactor.disable
+	cov.f_nodeofactor.disable
+	cov.tx_nodeofactor_c.disable
+	cov.f_nodeofactor_sub.disable
+	cov.tx_h73.disable
+	cov.cx_nodeifactor.disable
+	cov.f_nodeifactor.disable
+	cov.tx_nodeifactor_c.disable
+	cov.f_nodeifactor_sub.disable
+	cov.tx_h74.disable
+	cov.cx_nodematch.disable
+	cov.f_nodematch.disable
+END
+
+SCRIPT fit_dis_7
+BEGIN
+	cov.tx_nodematch_c.disable
+	cov.f_nodematch_sub.disable
+	cov.tx_h75.disable
+	cov.cx_nodematchdiff.disable
+	cov.f_nodematchdiff.disable
+	cov.tx_nodematchdiff_c.disable
+	cov.f_nodematchdiff_sub.disable
+	cov.tx_h76.disable
+	cov.cx_nodemix.disable
+	cov.f_nodemix.disable
+	cov.tx_nodemix_c.disable
+	cov.f_nodemix_sub.disable
+	cov.tx_h77.disable
+	cov.cx_absdist.disable
+	cov.f_absdist.disable
+	cov.tx_absdist_c.disable
+	cov.f_absdist_sub.disable
+	cov.tx_h78.disable
+	cov.cx_edgecov.disable
+	cov.f_edgecov.disable
+	cov.tx_h79.disable
+	cov.cx_hamming.disable
+	cov.f_hamming.disable
+	cov.tx_h80.disable
+	two.cx_bcov1.disable
+	two.f_bcov1.disable
+	two.tx_h81.disable
+	two.cx_bfactor1.disable
+	two.f_bfactor1.disable
+	two.tx_h82.disable
+	two.cx_bdegree1.disable
+	two.f_bdegree1.disable
+	two.tx_bdegree1_c.disable
+	two.f_bdegree1_sub.disable
+	two.tx_h83.disable
+	two.cx_bstar1.disable
+	two.f_bstar1.disable
+	two.tx_bstar1_c.disable
+	two.f_bstar1_sub.disable
+	two.tx_h84.disable
+END
+
+SCRIPT fit_dis_8
+BEGIN
+	two.cx_bnodematch1.disable
+	two.f_bnodematch1.disable
+	two.tx_bnodematch1_c.disable
+	two.f_bnodematch1_sub.disable
+	two.tx_h85.disable
+	two.cx_bgwdegree1.disable
+	two.f_bgwdegree1.disable
+	two.tx_bgwdegree1_c.disable
+	two.f_bgwdegree1_sub.disable
+	two.tx_h86.disable
+	two.cx_bconcurrent1.disable
+	two.f_bconcurrent1.disable
+	two.tx_h87.disable
+	two.cx_bmindegree1.disable
+	two.f_bmindegree1.disable
+	two.tx_h88.disable
+	two.cx_bdegrange1.disable
+	two.f_bdegrange1.disable
+	two.tx_bdegrange1_c.disable
+	two.f_bdegrange1_sub.disable
+	two.tx_h89.disable
+	two.cx_bcovrange1.disable
+	two.f_bcovrange1.disable
+	two.tx_h90.disable
+	two.cx_bfactordistinct1.disable
+	two.f_bfactordistinct1.disable
+	two.tx_bfactordistinct1_c.disable
+	two.f_bfactordistinct1_sub.disable
+	two.tx_h91.disable
+	two.cx_bsociality1.disable
+	two.f_bsociality1.disable
+	two.tx_h92.disable
+	two.cx_bstarmix1.disable
+	two.f_bstarmix1.disable
+	two.tx_bstarmix1_c.disable
+	two.f_bstarmix1_sub.disable
+	two.tx_h93.disable
+	two.cx_btwostar1.disable
+	two.f_btwostar1.disable
+	two.tx_btwostar1_c.disable
+END
+
+SCRIPT fit_dis_9
+BEGIN
+	two.f_btwostar1_sub.disable
+	two.tx_h94.disable
+	two.cx_bdsp1.disable
+	two.f_bdsp1.disable
+	two.tx_h95.disable
+	two.cx_bgwdsp1.disable
+	two.f_bgwdsp1.disable
+	two.tx_h96.disable
+	two.cx_bcov2.disable
+	two.f_bcov2.disable
+	two.tx_h97.disable
+	two.cx_bfactor2.disable
+	two.f_bfactor2.disable
+	two.tx_h98.disable
+	two.cx_bdegree2.disable
+	two.f_bdegree2.disable
+	two.tx_bdegree2_c.disable
+	two.f_bdegree2_sub.disable
+	two.tx_h99.disable
+	two.cx_bstar2.disable
+	two.f_bstar2.disable
+	two.tx_bstar2_c.disable
+	two.f_bstar2_sub.disable
+	two.tx_h100.disable
+	two.cx_bnodematch2.disable
+	two.f_bnodematch2.disable
+	two.tx_bnodematch2_c.disable
+	two.f_bnodematch2_sub.disable
+	two.tx_h101.disable
+	two.cx_bgwdegree2.disable
+	two.f_bgwdegree2.disable
+	two.tx_bgwdegree2_c.disable
+	two.f_bgwdegree2_sub.disable
+	two.tx_h102.disable
+	two.cx_bconcurrent2.disable
+	two.f_bconcurrent2.disable
+	two.tx_h103.disable
+	two.cx_bmindegree2.disable
+	two.f_bmindegree2.disable
+	two.tx_h104.disable
+END
+
+SCRIPT fit_dis_10
+BEGIN
+	two.cx_bdegrange2.disable
+	two.f_bdegrange2.disable
+	two.tx_bdegrange2_c.disable
+	two.f_bdegrange2_sub.disable
+	two.tx_h105.disable
+	two.cx_bcovrange2.disable
+	two.f_bcovrange2.disable
+	two.tx_h106.disable
+	two.cx_bfactordistinct2.disable
+	two.f_bfactordistinct2.disable
+	two.tx_bfactordistinct2_c.disable
+	two.f_bfactordistinct2_sub.disable
+	two.tx_h107.disable
+	two.cx_bsociality2.disable
+	two.f_bsociality2.disable
+	two.tx_h108.disable
+	two.cx_bstarmix2.disable
+	two.f_bstarmix2.disable
+	two.tx_bstarmix2_c.disable
+	two.f_bstarmix2_sub.disable
+	two.tx_h109.disable
+	two.cx_btwostar2.disable
+	two.f_btwostar2.disable
+	two.tx_btwostar2_c.disable
+	two.f_btwostar2_sub.disable
+	two.tx_h110.disable
+	two.cx_bdsp2.disable
+	two.f_bdsp2.disable
+	two.tx_h111.disable
+	two.cx_bgwdsp2.disable
+	two.f_bgwdsp2.disable
+	two.tx_h112.disable
+	two.cx_coincidence.disable
+	two.f_coincidence.disable
+	two.tx_h113.disable
+	space.tx_constraints_extra.disable
+	space.f_constraints_extra.disable
+	space.tx_h114.disable
+	mcmc.tx_proposal.disable
+	mcmc.f_proposal.disable
+END
+
+SCRIPT fit_dis_11
+BEGIN
+	mcmc.tx_h115.disable
+	mcmc.f_spcache.disable
+	mcmc.tx_h119.disable
+	simctl.tx_sim_nodes.disable
+	simctl.f_sim_nodes.disable
+	simctl.tx_h120.disable
+	simctl.tx_theta.disable
+	simctl.f_theta.disable
+	simctl.tx_h121.disable
+	simctl.f_sim_directed.disable
+	simctl.tx_h124.disable
+	simctl.tx_bipartite.disable
+	simctl.f_bipartite.disable
+	simctl.tx_h125.disable
+	main.cb_type.disable
+END
+
+SCRIPT fit_dis
+BEGIN
+	script fit_dis_0
+	script fit_dis_1
+	script fit_dis_2
+	script fit_dis_3
+	script fit_dis_4
+	script fit_dis_5
+	script fit_dis_6
+	script fit_dis_7
+	script fit_dis_8
+	script fit_dis_9
+	script fit_dis_10
+	script fit_dis_11
+END
+
+SCRIPT fit_en_0
+BEGIN
+	main.cx_edges.enable
+	main.tx_h1.enable
+	main.cx_mutual.enable
+	main.tx_h2.enable
+	main.cx_triangle.enable
+	main.tx_h3.enable
+	main.cx_ctriple.enable
+	main.tx_h4.enable
+	main.cx_transitiveties.enable
+	main.tx_h5.enable
+	main.cx_cyclicalties.enable
+	main.tx_h6.enable
+	main.cx_concurrent.enable
+	main.tx_h7.enable
+	main.cx_sender.enable
+	main.tx_h8.enable
+	main.cx_receiver.enable
+	main.tx_h9.enable
+	main.cx_density.enable
+	main.tx_h10.enable
+	main.cx_meandeg.enable
+	main.tx_h11.enable
+	main.cx_twopath.enable
+	main.tx_h12.enable
+	main.cx_isolates.enable
+	main.tx_h13.enable
+	main.cx_isolatededges.enable
+	main.tx_h14.enable
+	deg.cx_gwdegree.enable
+	deg.f_gwdegree.enable
+	deg.tx_h15.enable
+	deg.cx_gwodegree.enable
+	deg.f_gwodegree.enable
+	deg.tx_h16.enable
+	deg.cx_gwidegree.enable
+	deg.f_gwidegree.enable
+	deg.tx_h17.enable
+	deg.cx_degree.enable
+	deg.f_degree.enable
+	deg.tx_h18.enable
+END
+
+SCRIPT fit_en_1
+BEGIN
+	deg.cx_odegree.enable
+	deg.f_odegree.enable
+	deg.tx_h19.enable
+	deg.cx_idegree.enable
+	deg.f_idegree.enable
+	deg.tx_h20.enable
+	deg.cx_kstar.enable
+	deg.f_kstar.enable
+	deg.tx_h21.enable
+	deg.cx_ostar.enable
+	deg.f_ostar.enable
+	deg.tx_h22.enable
+	deg.cx_istar.enable
+	deg.f_istar.enable
+	deg.tx_h23.enable
+	deg.cx_degrange.enable
+	deg.f_degrange.enable
+	deg.tx_degrange_to.enable
+	deg.f_degrange_to.enable
+	deg.tx_h24.enable
+	deg.cx_odegrange.enable
+	deg.f_odegrange.enable
+	deg.tx_odegrange_to.enable
+	deg.f_odegrange_to.enable
+	deg.tx_h25.enable
+	deg.cx_idegrange.enable
+	deg.f_idegrange.enable
+	deg.tx_idegrange_to.enable
+	deg.f_idegrange_to.enable
+	deg.tx_h26.enable
+	deg.cx_s_degree.enable
+	deg.tx_s_degree_d.enable
+	deg.f_s_degree_d.enable
+	deg.tx_s_degree_by.enable
+	deg.f_s_degree_by.enable
+	deg.f_s_degree_homophily.enable
+	deg.tx_h27.enable
+	deg.cx_s_odegree.enable
+	deg.tx_s_odegree_d.enable
+	deg.f_s_odegree_d.enable
+END
+
+SCRIPT fit_en_2
+BEGIN
+	deg.tx_s_odegree_by.enable
+	deg.f_s_odegree_by.enable
+	deg.f_s_odegree_homophily.enable
+	deg.tx_h28.enable
+	deg.cx_s_idegree.enable
+	deg.tx_s_idegree_d.enable
+	deg.f_s_idegree_d.enable
+	deg.tx_s_idegree_by.enable
+	deg.f_s_idegree_by.enable
+	deg.f_s_idegree_homophily.enable
+	deg.tx_h29.enable
+	deg.cx_s_degrange.enable
+	deg.tx_s_degrange_from.enable
+	deg.f_s_degrange_from.enable
+	deg.tx_s_degrange_to.enable
+	deg.f_s_degrange_to.enable
+	deg.tx_s_degrange_by.enable
+	deg.f_s_degrange_by.enable
+	deg.f_s_degrange_homophily.enable
+	deg.tx_h30.enable
+	deg.cx_s_odegrange.enable
+	deg.tx_s_odegrange_from.enable
+	deg.f_s_odegrange_from.enable
+	deg.tx_s_odegrange_to.enable
+	deg.f_s_odegrange_to.enable
+	deg.tx_s_odegrange_by.enable
+	deg.f_s_odegrange_by.enable
+	deg.f_s_odegrange_homophily.enable
+	deg.tx_h31.enable
+	deg.cx_s_idegrange.enable
+	deg.tx_s_idegrange_from.enable
+	deg.f_s_idegrange_from.enable
+	deg.tx_s_idegrange_to.enable
+	deg.f_s_idegrange_to.enable
+	deg.tx_s_idegrange_by.enable
+	deg.f_s_idegrange_by.enable
+	deg.f_s_idegrange_homophily.enable
+	deg.tx_h32.enable
+	deg.cx_s_kstar.enable
+	deg.tx_s_kstar_k.enable
+END
+
+SCRIPT fit_en_3
+BEGIN
+	deg.f_s_kstar_k.enable
+	deg.tx_s_kstar_attr.enable
+	deg.f_s_kstar_attr.enable
+	deg.tx_h33.enable
+	deg.cx_s_ostar.enable
+	deg.tx_s_ostar_k.enable
+	deg.f_s_ostar_k.enable
+	deg.tx_s_ostar_attr.enable
+	deg.f_s_ostar_attr.enable
+	deg.tx_h34.enable
+	deg.cx_s_istar.enable
+	deg.tx_s_istar_k.enable
+	deg.f_s_istar_k.enable
+	deg.tx_s_istar_attr.enable
+	deg.f_s_istar_attr.enable
+	deg.tx_h35.enable
+	deg.cx_s_concurrent.enable
+	deg.tx_s_concurrent_by.enable
+	deg.f_s_concurrent_by.enable
+	deg.tx_h36.enable
+	deg.cx_concurrentties.enable
+	deg.tx_concurrentties_by.enable
+	deg.f_concurrentties_by.enable
+	deg.tx_h37.enable
+	deg.cx_degree1_5.enable
+	deg.tx_h38.enable
+	deg.cx_odegree1_5.enable
+	deg.tx_h39.enable
+	deg.cx_idegree1_5.enable
+	deg.tx_h40.enable
+	deg.cx_degcrossprod.enable
+	deg.tx_h41.enable
+	deg.cx_degcor.enable
+	deg.tx_h42.enable
+	deg.cx_m2star.enable
+	deg.tx_h43.enable
+	tri.cx_esp.enable
+	tri.f_esp.enable
+	tri.tx_h44.enable
+	tri.cx_dsp.enable
+END
+
+SCRIPT fit_en_4
+BEGIN
+	tri.f_dsp.enable
+	tri.tx_h45.enable
+	tri.tx_type.enable
+	tri.f_type.enable
+	tri.tx_h46.enable
+	tri.cx_gwesp.enable
+	tri.f_gwesp.enable
+	tri.tx_h47.enable
+	tri.cx_gwdsp.enable
+	tri.f_gwdsp.enable
+	tri.tx_h48.enable
+	tri.cx_gwnsp.enable
+	tri.f_gwnsp.enable
+	tri.tx_h49.enable
+	tri.cx_s_triangle.enable
+	tri.tx_s_triangle_attr.enable
+	tri.f_s_triangle_attr.enable
+	tri.f_s_triangle_diff.enable
+	tri.tx_h50.enable
+	tri.cx_transitive.enable
+	tri.tx_h51.enable
+	tri.cx_intransitive.enable
+	tri.tx_h52.enable
+	tri.cx_ttriple.enable
+	tri.tx_ttriple_attr.enable
+	tri.f_ttriple_attr.enable
+	tri.f_ttriple_diff.enable
+	tri.tx_h53.enable
+	tri.cx_s_ctriple.enable
+	tri.tx_s_ctriple_attr.enable
+	tri.f_s_ctriple_attr.enable
+	tri.f_s_ctriple_diff.enable
+	tri.tx_h54.enable
+	tri.cx_cycle.enable
+	tri.tx_cycle_k.enable
+	tri.f_cycle_k.enable
+	tri.f_cycle_semi.enable
+	tri.tx_h55.enable
+	tri.cx_threetrail.enable
+	tri.tx_threetrail_keep.enable
+END
+
+SCRIPT fit_en_5
+BEGIN
+	tri.f_threetrail_keep.enable
+	tri.tx_h56.enable
+	tri.cx_balance.enable
+	tri.tx_h57.enable
+	tri.cx_triadcensus.enable
+	tri.tx_triadcensus_levels.enable
+	tri.f_triadcensus_levels.enable
+	tri.tx_h58.enable
+	tri.cx_tripercent.enable
+	tri.tx_tripercent_attr.enable
+	tri.f_tripercent_attr.enable
+	tri.f_tripercent_diff.enable
+	tri.tx_h59.enable
+	tri.cx_nearsimmelian.enable
+	tri.tx_h60.enable
+	tri.cx_simmelian.enable
+	tri.tx_h61.enable
+	tri.cx_simmelianties.enable
+	tri.tx_h62.enable
+	tri.cx_asymmetric.enable
+	tri.tx_asymmetric_attr.enable
+	tri.f_asymmetric_attr.enable
+	tri.f_asymmetric_diff.enable
+	tri.tx_h63.enable
+	tri.cx_s_mutual.enable
+	tri.tx_s_mutual_same.enable
+	tri.f_s_mutual_same.enable
+	tri.f_s_mutual_diff.enable
+	tri.tx_s_mutual_by.enable
+	tri.f_s_mutual_by.enable
+	tri.tx_h64.enable
+	tri.cx_localtriangle.enable
+	tri.tx_localtriangle_x.enable
+	tri.f_localtriangle_x.enable
+	tri.tx_h65.enable
+	tri.cx_opentriad.enable
+	tri.tx_h66.enable
+	tri.cx_nsp.enable
+	tri.tx_nsp_d.enable
+	tri.f_nsp_d.enable
+END
+
+SCRIPT fit_en_6
+BEGIN
+	tri.tx_nsp_type.enable
+	tri.f_nsp_type.enable
+	tri.tx_h67.enable
+	tri.cx_s_altkstar.enable
+	tri.tx_s_altkstar_lambda.enable
+	tri.f_s_altkstar_lambda.enable
+	tri.f_s_altkstar_fixed.enable
+	tri.tx_h68.enable
+	cov.cx_nodecov.enable
+	cov.f_nodecov.enable
+	cov.tx_nodecov_c.enable
+	cov.f_nodecov_sub.enable
+	cov.tx_h69.enable
+	cov.cx_nodeicov.enable
+	cov.f_nodeicov.enable
+	cov.tx_nodeicov_c.enable
+	cov.f_nodeicov_sub.enable
+	cov.tx_h70.enable
+	cov.cx_nodeocov.enable
+	cov.f_nodeocov.enable
+	cov.tx_nodeocov_c.enable
+	cov.f_nodeocov_sub.enable
+	cov.tx_h71.enable
+	cov.cx_nodefactor.enable
+	cov.f_nodefactor.enable
+	cov.tx_nodefactor_c.enable
+	cov.f_nodefactor_sub.enable
+	cov.tx_h72.enable
+	cov.cx_nodeofactor.enable
+	cov.f_nodeofactor.enable
+	cov.tx_nodeofactor_c.enable
+	cov.f_nodeofactor_sub.enable
+	cov.tx_h73.enable
+	cov.cx_nodeifactor.enable
+	cov.f_nodeifactor.enable
+	cov.tx_nodeifactor_c.enable
+	cov.f_nodeifactor_sub.enable
+	cov.tx_h74.enable
+	cov.cx_nodematch.enable
+	cov.f_nodematch.enable
+END
+
+SCRIPT fit_en_7
+BEGIN
+	cov.tx_nodematch_c.enable
+	cov.f_nodematch_sub.enable
+	cov.tx_h75.enable
+	cov.cx_nodematchdiff.enable
+	cov.f_nodematchdiff.enable
+	cov.tx_nodematchdiff_c.enable
+	cov.f_nodematchdiff_sub.enable
+	cov.tx_h76.enable
+	cov.cx_nodemix.enable
+	cov.f_nodemix.enable
+	cov.tx_nodemix_c.enable
+	cov.f_nodemix_sub.enable
+	cov.tx_h77.enable
+	cov.cx_absdist.enable
+	cov.f_absdist.enable
+	cov.tx_absdist_c.enable
+	cov.f_absdist_sub.enable
+	cov.tx_h78.enable
+	cov.cx_edgecov.enable
+	cov.f_edgecov.enable
+	cov.tx_h79.enable
+	cov.cx_hamming.enable
+	cov.f_hamming.enable
+	cov.tx_h80.enable
+	two.cx_bcov1.enable
+	two.f_bcov1.enable
+	two.tx_h81.enable
+	two.cx_bfactor1.enable
+	two.f_bfactor1.enable
+	two.tx_h82.enable
+	two.cx_bdegree1.enable
+	two.f_bdegree1.enable
+	two.tx_bdegree1_c.enable
+	two.f_bdegree1_sub.enable
+	two.tx_h83.enable
+	two.cx_bstar1.enable
+	two.f_bstar1.enable
+	two.tx_bstar1_c.enable
+	two.f_bstar1_sub.enable
+	two.tx_h84.enable
+END
+
+SCRIPT fit_en_8
+BEGIN
+	two.cx_bnodematch1.enable
+	two.f_bnodematch1.enable
+	two.tx_bnodematch1_c.enable
+	two.f_bnodematch1_sub.enable
+	two.tx_h85.enable
+	two.cx_bgwdegree1.enable
+	two.f_bgwdegree1.enable
+	two.tx_bgwdegree1_c.enable
+	two.f_bgwdegree1_sub.enable
+	two.tx_h86.enable
+	two.cx_bconcurrent1.enable
+	two.f_bconcurrent1.enable
+	two.tx_h87.enable
+	two.cx_bmindegree1.enable
+	two.f_bmindegree1.enable
+	two.tx_h88.enable
+	two.cx_bdegrange1.enable
+	two.f_bdegrange1.enable
+	two.tx_bdegrange1_c.enable
+	two.f_bdegrange1_sub.enable
+	two.tx_h89.enable
+	two.cx_bcovrange1.enable
+	two.f_bcovrange1.enable
+	two.tx_h90.enable
+	two.cx_bfactordistinct1.enable
+	two.f_bfactordistinct1.enable
+	two.tx_bfactordistinct1_c.enable
+	two.f_bfactordistinct1_sub.enable
+	two.tx_h91.enable
+	two.cx_bsociality1.enable
+	two.f_bsociality1.enable
+	two.tx_h92.enable
+	two.cx_bstarmix1.enable
+	two.f_bstarmix1.enable
+	two.tx_bstarmix1_c.enable
+	two.f_bstarmix1_sub.enable
+	two.tx_h93.enable
+	two.cx_btwostar1.enable
+	two.f_btwostar1.enable
+	two.tx_btwostar1_c.enable
+END
+
+SCRIPT fit_en_9
+BEGIN
+	two.f_btwostar1_sub.enable
+	two.tx_h94.enable
+	two.cx_bdsp1.enable
+	two.f_bdsp1.enable
+	two.tx_h95.enable
+	two.cx_bgwdsp1.enable
+	two.f_bgwdsp1.enable
+	two.tx_h96.enable
+	two.cx_bcov2.enable
+	two.f_bcov2.enable
+	two.tx_h97.enable
+	two.cx_bfactor2.enable
+	two.f_bfactor2.enable
+	two.tx_h98.enable
+	two.cx_bdegree2.enable
+	two.f_bdegree2.enable
+	two.tx_bdegree2_c.enable
+	two.f_bdegree2_sub.enable
+	two.tx_h99.enable
+	two.cx_bstar2.enable
+	two.f_bstar2.enable
+	two.tx_bstar2_c.enable
+	two.f_bstar2_sub.enable
+	two.tx_h100.enable
+	two.cx_bnodematch2.enable
+	two.f_bnodematch2.enable
+	two.tx_bnodematch2_c.enable
+	two.f_bnodematch2_sub.enable
+	two.tx_h101.enable
+	two.cx_bgwdegree2.enable
+	two.f_bgwdegree2.enable
+	two.tx_bgwdegree2_c.enable
+	two.f_bgwdegree2_sub.enable
+	two.tx_h102.enable
+	two.cx_bconcurrent2.enable
+	two.f_bconcurrent2.enable
+	two.tx_h103.enable
+	two.cx_bmindegree2.enable
+	two.f_bmindegree2.enable
+	two.tx_h104.enable
+END
+
+SCRIPT fit_en_10
+BEGIN
+	two.cx_bdegrange2.enable
+	two.f_bdegrange2.enable
+	two.tx_bdegrange2_c.enable
+	two.f_bdegrange2_sub.enable
+	two.tx_h105.enable
+	two.cx_bcovrange2.enable
+	two.f_bcovrange2.enable
+	two.tx_h106.enable
+	two.cx_bfactordistinct2.enable
+	two.f_bfactordistinct2.enable
+	two.tx_bfactordistinct2_c.enable
+	two.f_bfactordistinct2_sub.enable
+	two.tx_h107.enable
+	two.cx_bsociality2.enable
+	two.f_bsociality2.enable
+	two.tx_h108.enable
+	two.cx_bstarmix2.enable
+	two.f_bstarmix2.enable
+	two.tx_bstarmix2_c.enable
+	two.f_bstarmix2_sub.enable
+	two.tx_h109.enable
+	two.cx_btwostar2.enable
+	two.f_btwostar2.enable
+	two.tx_btwostar2_c.enable
+	two.f_btwostar2_sub.enable
+	two.tx_h110.enable
+	two.cx_bdsp2.enable
+	two.f_bdsp2.enable
+	two.tx_h111.enable
+	two.cx_bgwdsp2.enable
+	two.f_bgwdsp2.enable
+	two.tx_h112.enable
+	two.cx_coincidence.enable
+	two.f_coincidence.enable
+	two.tx_h113.enable
+	space.tx_constraints_extra.enable
+	space.f_constraints_extra.enable
+	space.tx_h114.enable
+	mcmc.tx_proposal.enable
+	mcmc.f_proposal.enable
+END
+
+SCRIPT fit_en_11
+BEGIN
+	mcmc.tx_h115.enable
+	mcmc.f_spcache.enable
+	mcmc.tx_h119.enable
+	simctl.tx_sim_nodes.enable
+	simctl.f_sim_nodes.enable
+	simctl.tx_h120.enable
+	simctl.tx_theta.enable
+	simctl.f_theta.enable
+	simctl.tx_h121.enable
+	simctl.f_sim_directed.enable
+	simctl.tx_h124.enable
+	simctl.tx_bipartite.enable
+	simctl.f_bipartite.enable
+	simctl.tx_h125.enable
+	main.cb_type.enable
+END
+
+SCRIPT fit_en
+BEGIN
+	script fit_en_0
+	script fit_en_1
+	script fit_en_2
+	script fit_en_3
+	script fit_en_4
+	script fit_en_5
+	script fit_en_6
+	script fit_en_7
+	script fit_en_8
+	script fit_en_9
+	script fit_en_10
+	script fit_en_11
+END
+
 DIALOG main, label("nwergm simulate - draw networks from an ERGM") tabtitle("Basic")
 BEGIN
   TEXT      tx_sec_main 10 12 70 ., label("Section:")
   COMBOBOX  cb_sec_main 85 10 380 ., dropdownlist contents(l_sec_main) onselchangelist(l_sec_main_a) nomem
-  TEXT      tx_n10_main 10 45 960 ., label("nwergm simulate draws networks from a model with fixed coefficients (theta). The node variables used by a term must")
-  TEXT      tx_n31_main 10 66 960 ., label("already be in the data (one row per node). The number of nodes, theta() and the other settings are on the last tab.")
-  TEXT      tx_s52_main 10 87 960 ., label("== Required term ==")
-  CHECKBOX  cx_edges 10 106 190 ., label("edges") default(1) nomem
-  TEXT      tx_h1 208 108 777 ., label("required (intercept); may be omitted only with density or meandeg")
-  TEXT      tx_s94_main 10 129 960 ., label("== Reciprocity, triangles, concurrency ==")
-  CHECKBOX  cx_mutual 10 148 190 ., label("mutual") default(0) nomem
-  TEXT      tx_h2 208 150 777 ., label("directed only")
-  CHECKBOX  cx_triangle 10 169 190 ., label("triangle") default(0) nomem
-  TEXT      tx_h3 208 171 777 ., label("undirected only (R: triangle)")
-  CHECKBOX  cx_ctriple 10 190 190 ., label("ctriple") default(0) nomem
-  TEXT      tx_h4 208 192 777 ., label("directed only (cyclic triples)")
-  CHECKBOX  cx_transitiveties 10 211 190 ., label("transitiveties") default(0) nomem
-  TEXT      tx_h5 208 213 777 ., label("directed only")
-  CHECKBOX  cx_cyclicalties 10 232 190 ., label("cyclicalties") default(0) nomem
-  TEXT      tx_h6 208 234 777 ., label("directed only")
-  CHECKBOX  cx_concurrent 10 253 190 ., label("concurrent") default(0) nomem
-  TEXT      tx_h7 208 255 777 ., label("undirected only (degree 2 or more)")
-  TEXT      tx_s241_main 10 276 960 ., label("== Node-level effects ==")
-  CHECKBOX  cx_sender 10 295 190 ., label("sender") default(0) nomem
-  TEXT      tx_h8 208 297 777 ., label("directed only; one coefficient per node (out-degree)")
-  CHECKBOX  cx_receiver 10 316 190 ., label("receiver") default(0) nomem
-  TEXT      tx_h9 208 318 777 ., label("directed only; one coefficient per node (in-degree)")
-  TEXT      tx_s304_main 10 339 960 ., label("== Simple structural() terms (need the native plugin) ==")
-  CHECKBOX  cx_density 10 358 190 ., label("density") default(0) nomem
-  TEXT      tx_h10 208 360 777 ., label("structural(); collinear with edges")
-  CHECKBOX  cx_meandeg 10 379 190 ., label("meandeg") default(0) nomem
-  TEXT      tx_h11 208 381 777 ., label("structural(); collinear with edges")
-  CHECKBOX  cx_twopath 10 400 190 ., label("twopath") default(0) nomem
-  TEXT      tx_h12 208 402 777 ., label("structural(): two-paths")
-  CHECKBOX  cx_isolates 10 421 190 ., label("isolates") default(0) nomem
-  TEXT      tx_h13 208 423 777 ., label("structural(): isolated nodes")
-  CHECKBOX  cx_isolatededges 10 43 190 ., label("isolatededges") default(0) nomem
-  TEXT      tx_h14 208 45 777 ., label("structural(), undirected only")
+  CHECKBOX  cx_fit 10 43 560 ., label("Use the model of the last nwergm fit (greys out the model fields)") default(0) onclickon(program fit_changed) onclickoff(program fit_changed) nomem
+  COMBOBOX  cb_fitflag 600 43 60 ., dropdownlist contents(fitlist) values(fitlist) nomem
+  TEXT      tx_n31_main 10 66 960 ., label("Untick it to specify the model yourself: number of nodes, terms and theta() (nwergm simulate #nodes, edges ... theta()). The other tabs hold the terms.")
+  TEXT      tx_type2 10 87 120 ., label("Network type:")
+  COMBOBOX  cb_type 140 85 110 ., dropdownlist contents(l_type) values(l_type_v) onselchange(program type_apply) nomem
+  TEXT      tx_n73_main 10 108 960 ., label("nwergm simulate draws networks from a model with fixed coefficients (theta). The node variables used by a term must")
+  TEXT      tx_n94_main 10 129 960 ., label("already be in the data (one row per node). The number of nodes, theta() and the other settings are on the last tab.")
+  TEXT      tx_s115_main 10 150 960 ., label("== Required term ==")
+  CHECKBOX  cx_edges 10 169 190 ., label("edges") default(1) nomem
+  TEXT      tx_h1 208 171 777 ., label("required (intercept); may be omitted only with density or meandeg")
+  TEXT      tx_s157_main 10 192 960 ., label("== Reciprocity, triangles, concurrency ==")
+  CHECKBOX  cx_mutual 10 211 190 ., label("mutual") default(0) nomem
+  TEXT      tx_h2 208 213 777 ., label("directed only")
+  CHECKBOX  cx_triangle 10 232 190 ., label("triangle") default(0) nomem
+  TEXT      tx_h3 208 234 777 ., label("undirected only (R: triangle)")
+  CHECKBOX  cx_ctriple 10 253 190 ., label("ctriple") default(0) nomem
+  TEXT      tx_h4 208 255 777 ., label("directed only (cyclic triples)")
+  CHECKBOX  cx_transitiveties 10 274 190 ., label("transitiveties") default(0) nomem
+  TEXT      tx_h5 208 276 777 ., label("directed only")
+  CHECKBOX  cx_cyclicalties 10 295 190 ., label("cyclicalties") default(0) nomem
+  TEXT      tx_h6 208 297 777 ., label("directed only")
+  CHECKBOX  cx_concurrent 10 316 190 ., label("concurrent") default(0) nomem
+  TEXT      tx_h7 208 318 777 ., label("undirected only (degree 2 or more)")
+  TEXT      tx_s304_main 10 339 960 ., label("== Node-level effects ==")
+  CHECKBOX  cx_sender 10 358 190 ., label("sender") default(0) nomem
+  TEXT      tx_h8 208 360 777 ., label("directed only; one coefficient per node (out-degree)")
+  CHECKBOX  cx_receiver 10 379 190 ., label("receiver") default(0) nomem
+  TEXT      tx_h9 208 381 777 ., label("directed only; one coefficient per node (in-degree)")
+  TEXT      tx_s367_main 10 402 960 ., label("== Simple structural() terms (need the native plugin) ==")
+  CHECKBOX  cx_density 10 421 190 ., label("density") default(0) nomem
+  TEXT      tx_h10 208 423 777 ., label("structural(); collinear with edges")
+  CHECKBOX  cx_meandeg 10 43 190 ., label("meandeg") default(0) nomem
+  TEXT      tx_h11 208 45 777 ., label("structural(); collinear with edges")
+  CHECKBOX  cx_twopath 10 64 190 ., label("twopath") default(0) nomem
+  TEXT      tx_h12 208 66 777 ., label("structural(): two-paths")
+  CHECKBOX  cx_isolates 10 85 190 ., label("isolates") default(0) nomem
+  TEXT      tx_h13 208 87 777 ., label("structural(): isolated nodes")
+  CHECKBOX  cx_isolatededges 10 106 190 ., label("isolatededges") default(0) nomem
+  TEXT      tx_h14 208 108 777 ., label("structural(), undirected only")
 END
 
 DIALOG deg, tabtitle("Degree")
@@ -1581,7 +4803,17 @@ END
 
 LIST netlist
 BEGIN
-	// filled in when the dialog opens (see PROGRAM initialize)
+	// filled in when the dialog opens (see PROGRAM initialize, _nwergm_dlgprep.ado)
+END
+
+LIST netlist_a
+BEGIN
+	// filled in when the dialog opens (see PROGRAM initialize, _nwergm_dlgprep.ado)
+END
+
+LIST fitlist
+BEGIN
+	// filled in when the dialog opens (see PROGRAM initialize, _nwergm_dlgprep.ado)
 END
 
 LIST l_f_type
@@ -1688,9 +4920,25 @@ BEGIN
 	script sel_two_1
 END
 
+LIST l_type
+BEGIN
+	auto
+	undirected
+	directed
+	two-mode
+END
+
+LIST l_type_v
+BEGIN
+	auto
+	undirected
+	directed
+	two-mode
+END
+
 PROGRAM initialize
 BEGIN
-	put "_nwdialog nwergm_simulate"
+	put "_nwergm_dlgprep nwergm_simulate"
 	stata hidden immediate
 END
 
@@ -2624,47 +5872,107 @@ BEGIN
 	}
 END
 
+PROGRAM type_apply
+BEGIN
+	call script ty_auto
+	if main.cb_type.iseq("undirected") {
+		call script ty_u
+	}
+	if main.cb_type.iseq("directed") {
+		call script ty_d
+	}
+	if main.cb_type.iseq("two-mode") {
+		call script ty_b
+	}
+END
+
+PROGRAM fit_changed
+BEGIN
+	if main.cx_fit {
+		call script fit_dis
+	}
+	if !main.cx_fit {
+		call script fit_en
+		call program type_apply
+	}
+END
+
+PROGRAM postinit_fit
+BEGIN
+	if main.cb_fitflag.iseq("fit") {
+		call main.cx_fit.setvalue 1
+		call program fit_changed
+	}
+	call main.cb_fitflag.hide
+END
+
 PROGRAM command
 BEGIN
-	require simctl.f_sim_nodes
-	put "nwergm simulate " simctl.f_sim_nodes
-	beginoptions
-		put /program o_plain1
-		put " "
-		put /program o_plain2
-		put " "
-		put /program o_plain3
-		put " "
-		put /program o_plain4
-		put " "
-		put /program o_plain5
-		put " "
-		if main.cx_density | main.cx_meandeg | main.cx_twopath | main.cx_isolates | main.cx_isolatededges | deg.cx_s_degree | ///
+	if main.cx_fit {
+		put "nwergm simulate"
+		beginoptions
+		if simctl.f_nsim {
+			put " nsim(" simctl.f_nsim ")"
+		}
+		if mcmc.f_seed {
+			put " seed(" mcmc.f_seed ")"
+		}
+		if simctl.f_generate {
+			put " generate(" simctl.f_generate ")"
+		}
+		if simctl.f_basis {
+			put " basis(" simctl.f_basis ")"
+		}
+		if mcmc.f_mcmcburnin {
+			put " burnin(" mcmc.f_mcmcburnin ")"
+		}
+		if mcmc.f_mcmcinterval {
+			put " interval(" mcmc.f_mcmcinterval ")"
+		}
+		endoptions
+		stata
+	}
+	if !main.cx_fit {
+		require simctl.f_sim_nodes
+		put "nwergm simulate " simctl.f_sim_nodes
+		beginoptions
+			put /program o_plain1
+			put " "
+			put /program o_plain2
+			put " "
+			put /program o_plain3
+			put " "
+			put /program o_plain4
+			put " "
+			put /program o_plain5
+			put " "
+			if main.cx_density | main.cx_meandeg | main.cx_twopath | main.cx_isolates | main.cx_isolatededges | deg.cx_s_degree | ///
 			deg.cx_s_odegree | deg.cx_s_idegree | deg.cx_s_degrange | deg.cx_s_odegrange | deg.cx_s_idegrange | deg.cx_s_kstar | ///
 			deg.cx_s_ostar | deg.cx_s_istar | deg.cx_s_concurrent | deg.cx_concurrentties | deg.cx_degree1_5 | deg.cx_odegree1_5 | ///
 			deg.cx_idegree1_5 | deg.cx_degcrossprod | deg.cx_degcor | deg.cx_m2star | tri.cx_s_triangle | tri.cx_transitive | ///
 			tri.cx_intransitive | tri.cx_ttriple | tri.cx_s_ctriple | tri.cx_cycle | tri.cx_threetrail | tri.cx_balance | ///
 			tri.cx_triadcensus | tri.cx_tripercent | tri.cx_nearsimmelian | tri.cx_simmelian | tri.cx_simmelianties | ///
 			tri.cx_asymmetric | tri.cx_s_mutual | tri.cx_localtriangle | tri.cx_opentriad | tri.cx_nsp | tri.cx_s_altkstar {
-			put " structural("
-			put /program o_struct1
-			put " "
-			put /program o_struct2
-			put " "
-			put /program o_struct3
-			put " "
-			put /program o_struct4
-			put " "
-			put /program o_struct5
-			put " "
-			put ")"
-		}
-		if space.f_constraints_extra {
-			put " constraints("
-			put /program o_con_1
-			put " "
-			put ")"
-		}
-	endoptions
-	stata
+				put " structural("
+				put /program o_struct1
+				put " "
+				put /program o_struct2
+				put " "
+				put /program o_struct3
+				put " "
+				put /program o_struct4
+				put " "
+				put /program o_struct5
+				put " "
+				put ")"
+			}
+			if space.f_constraints_extra {
+				put " constraints("
+				put /program o_con_1
+				put " "
+				put ")"
+			}
+		endoptions
+		stata
+	}
 END

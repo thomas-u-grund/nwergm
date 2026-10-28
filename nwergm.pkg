@@ -4,12 +4,13 @@ d Thomas U. Grund, RWTH Aachen University, www.grund.co.uk
 d email: thomas.u.grund@gmail.com
 d GPL-3. Requires the core package nwcommands 3.6.0 or later.
 d Requires nwcommands (core), version 3.6.0 or later
-d Version: 1.3.4
+d Version: 1.3.5
 d Distribution-Date: 28oct2026
 f _nwergm_bip.ado
 f _nwergm_bip_curved.ado
 f _nwergm_bipgof.ado
 f _nwergm_coeflabel.ado
+f _nwergm_dlgprep.ado
 f _nwergm_constr.ado
 f _nwergm_cov.ado
 f _nwergm_est.ado

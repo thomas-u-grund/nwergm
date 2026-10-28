@@ -5,6 +5,15 @@ project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.3.5] - 2026-10-28
+
+Patch release (dialogs only; prototype to be tested in a real window). The Mata libraries and the plugin are unchanged.
+
+### Changed
+- The simulate dialog starts with the choice "Use the model of the last nwergm fit". It is on when the last estimation was nwergm; the command is then `nwergm simulate, nsim() ...` and all model fields (nodes, terms, theta) are greyed out. Untick it to specify the model yourself.
+- New drop-down "Type" (auto / undirected / directed / two-mode) in the nwergm dialog and "Network type" in the simulate dialog. It is set automatically when a network is chosen. Terms that do not apply to the type are greyed out (never hidden); "auto" switches everything on again.
+- New helper `_nwergm_dlgprep.ado` fills the network list and the types when a dialog opens (works with core 3.12.1).
+
 ## [1.3.4] - 2026-10-28
 
 Patch release. The Mata libraries and the plugin are unchanged.

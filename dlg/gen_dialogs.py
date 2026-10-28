@@ -82,6 +82,7 @@ class C:
     def __init__(self, kind, cid, x, y, w, h=None, **kw):
         self.kind, self.id, self.x, self.y, self.w, self.h = kind, cid, x, y, w, h
         self.kw = kw
+        self.ent = None
 
     def dlg(self):
         h = "." if self.h is None else str(self.h)
@@ -94,15 +95,23 @@ class C:
             parts.append('label("%s")' % k.get("label", "vars"))
         if self.kind == "CHECKBOX":
             parts.append("default(%d)" % (1 if k.get("default") else 0))
+            if k.get("onclick"):
+                parts.append("onclickon(%s) onclickoff(%s)" % (k["onclick"], k["onclick"]))
         if self.kind in ("EDIT", "COMBOBOX", "VARLIST", "VARNAME"):
             if k.get("default") not in (None, ""):
                 parts.append('default("%s")' % k["default"])
         if self.kind == "COMBOBOX":
             if k.get("choices"):
-                if k.get("onsel"):
+                if k.get("nolistv"):
+                    parts.append("dropdownlist contents(%s) values(%s)" % (k["lst"], k["lst"]))
+                elif k.get("onsel"):
                     parts.append("dropdownlist contents(%s) onselchangelist(%s)" % (k["lst"], k["onsel"]))
+                elif k.get("onselprog"):
+                    parts.append("dropdownlist contents(%s) values(%s) onselchange(program %s)" % (k["lst"], k["lst"] + "_v", k["onselprog"]))
                 else:
                     parts.append("dropdownlist contents(%s) values(%s)" % (k["lst"], k["lst"] + "_v"))
+            elif k.get("typed"):
+                parts.append("dropdownlist contents(netlist) values(netlist) onselchangelist(netlist_a)")
             else:
                 parts.append("dropdown contents(netlist)")
         if self.kind == "BUTTON":
@@ -137,6 +146,7 @@ class Builder:
         self.lists = {}             # name -> [labels], name_v -> [values]
         self.dlgof = {}             # control id -> dialog name
         self.scripts = []           # (name, [lines]) show/hide scripts of the section selectors
+        self.extra_progs = {}       # name -> text of PROGRAMs for the type/fit greying
         self.hidden_at_start = []   # script names to call in POSTINIT
         self.ent = {}               # control id -> (entry, fieldname)
 
@@ -286,11 +296,17 @@ class Builder:
                     ctls.append(C("TEXT", "tx_ch1_" + name, 10, y + 2, 270, label="constraints()  (tick the constraint terms)"))
                     ctls.append(C("TEXT", "tx_ch2_" + name, 290, y + 2, 270, label="obsconstraints()  (observation process)"))
                 elif r[0] == "cons":
-                    ctls += self.row_cons(r[1], y)
+                    new = self.row_cons(r[1], y)
+                    for c_ in new:
+                        c_.ent = r[1]["id"]
+                    ctls += new
                 elif r[0] == "raw":
                     ctls += r[1](y)
                 else:
-                    ctls += self.row_entry(r[1], y, cbw)
+                    new = self.row_entry(r[1], y, cbw)
+                    for c_ in new:
+                        c_.ent = r[1]["id"]
+                    ctls += new
                 y += RH
             self.pages.append(dict(name=name, title=title, ctls=ctls, key=tab["key"]))
         return pages
@@ -409,8 +425,22 @@ def assemble(b, plan):
 
 
 # related dialogs opened from the main dialog: (control id, x, width, label, dialog name)
-RELATED_BUTTONS = [("bt_simulate", 400, 190, "Simulate networks...", "nwergm_simulate"),
-                   ("bt_estat", 600, 300, "Postestimation and goodness of fit...", "nwergm_estat")]
+RELATED_BUTTONS = [("bt_simulate", 560, 170, "Simulate networks...", "nwergm_simulate"),
+                   ("bt_estat", 740, 250, "Postestimation and goodness of fit...", "nwergm_estat")]
+
+FIT_LABEL = "Use the model of the last nwergm fit (greys out the model fields)"
+FIT_NOTE = "Untick it to specify the model yourself: number of nodes, terms and theta() (nwergm simulate #nodes, edges ... theta()). The other tabs hold the terms."
+TYPE_CHOICES = ["auto", "undirected", "directed", "two-mode"]
+TYPE_LETTER = {"undirected": "U", "directed": "D", "two-mode": "B"}
+
+
+def type_controls(y, x, label=True):
+    ctls = []
+    if label:
+        ctls.append(C("TEXT", "tx_nettype", x, y + 2, 40, label="Type:"))
+        x += 42
+    ctls.append(C("COMBOBOX", "cb_type", x, y, 110, choices=TYPE_CHOICES, lst="l_type", onselprog="type_apply"))
+    return ctls
 
 
 def build_main(which):
@@ -423,8 +453,14 @@ def build_main(which):
         if first and which == "ergm":
             def netrow(y, b=b):
                 return [C("TEXT", "tx_net", X0, y + 2, 120, label="Network:"),
-                        C("COMBOBOX", "cb_net", 140, y, 220)]
+                        C("COMBOBOX", "cb_net", 140, y, 200, typed=True)] + type_controls(y, 350)
             rows.append(("raw", netrow))
+        if first and which == "sim":
+            rows.append(("raw", lambda y: [C("CHECKBOX", "cx_fit", X0, y, 560, label=FIT_LABEL, default=False),
+                                           C("COMBOBOX", "cb_fitflag", 600, y, 60, choices=["fit", "nofit"], lst="fitlist",
+                                             nolistv=True)]))
+            rows.append(("note", FIT_NOTE))
+            rows.append(("raw", lambda y: [C("TEXT", "tx_type2", X0, y + 2, 120, label="Network type:")] + type_controls(y, 140, label=False)))
         for n in NOTES.get((t["key"], which), []):
             rows.append(("note", n))
         if t["key"] == "cons":
@@ -448,7 +484,63 @@ def build_main(which):
         for cid, x, w, lab, dlgn in RELATED_BUTTONS:
             first["ctls"].append(C("BUTTON", cid, x, 9, w, 22, label=lab, prog="open_" + dlgn))
     b.register()
+    b.lists["l_type"] = list(TYPE_CHOICES)
+    b.lists["l_type_v"] = list(TYPE_CHOICES)
+    add_typing(b, ents, which)
     return b, ents
+
+
+FIT_KEEP = {"nsim": "nsim", "seed": "seed", "generate": "generate", "basis": "basis",
+            "mcmcburnin": "burnin", "mcmcinterval": "interval"}   # sim-dialog entry -> option of the from-fit form
+
+
+def _chunk_scripts(b, prefix, lines):
+    """Scripts of at most SCRIPT_CHUNK lines plus a master script `prefix` that calls them."""
+    n = 0
+    for i in range(0, len(lines), SCRIPT_CHUNK):
+        b.scripts.append(("%s_%d" % (prefix, n), lines[i:i + SCRIPT_CHUNK]))
+        n += 1
+    b.scripts.append((prefix, ["script %s_%d" % (prefix, k) for k in range(n)]))
+
+
+def add_typing(b, ents, which):
+    """Scripts that grey out (disable, never hide) the controls of terms that do not apply to the network type, and
+    (simulate dialog) those that do not apply to a simulation from the last fit. Generated from the nets metadata."""
+    byent = {}
+    for pg in b.pages:
+        for c in pg["ctls"]:
+            if c.ent:
+                byent.setdefault(c.ent, []).append("%s.%s" % (pg["name"], c.id))
+    nets = {e["id"]: e.get("nets", "UDB") for e in ents}
+    allids = [i for e in byent for i in byent[e]]
+    _chunk_scripts(b, "ty_auto", [i + ".enable" for i in allids])
+    for t, letter in TYPE_LETTER.items():
+        lines = []
+        for e, ids in byent.items():
+            verb = "enable" if letter in nets.get(e, "UDB") else "disable"
+            lines += ["%s.%s" % (i, verb) for i in ids]
+        _chunk_scripts(b, "ty_" + t[0] if t != "two-mode" else "ty_b", lines)
+    for sc, t in (("nettype_auto", "auto"), ("nettype_u", "undirected"), ("nettype_d", "directed"), ("nettype_b", "two-mode")):
+        b.scripts.append((sc, ["%s.setvalue %s" % (ref(b, "cb_type"), t), "program type_apply"]))
+    ty = ref(b, "cb_type")
+    P = ["\tcall script ty_auto"]
+    for t, sc in (("undirected", "ty_u"), ("directed", "ty_d"), ("two-mode", "ty_b")):
+        P += ["\tif %s.iseq(\"%s\") {" % (ty, t), "\t\tcall script " + sc, "\t}"]
+    b.extra_progs["type_apply"] = "\n".join(P).replace("\\t", "\t")
+    if which == "sim":
+        keep = set(FIT_KEEP)
+        off = [i for e, ids in byent.items() if e not in keep for i in ids] + [ty]
+        _chunk_scripts(b, "fit_dis", [i + ".disable" for i in off])
+        _chunk_scripts(b, "fit_en", [i + ".enable" for i in off])
+        fx = ref(b, "cx_fit")
+        b.extra_progs["fit_changed"] = "\n".join(["\tif %s {" % fx, "\t\tcall script fit_dis", "\t}",
+                                                 "\tif !%s {" % fx, "\t\tcall script fit_en", "\t\tcall program type_apply", "\t}"])
+        b.extra_progs["postinit_fit"] = "\n".join(["\tif %s.iseq(\"fit\") {" % ref(b, "cb_fitflag"), "\t\tcall %s.setvalue 1" % fx,
+                                                  "\t\tcall program fit_changed", "\t}", "\tcall %s.hide" % ref(b, "cb_fitflag")])
+        for c in [c for pg in b.pages for c in pg["ctls"] if c.id == "cx_fit"]:
+            c.kw["onclick"] = "program fit_changed"
+    else:
+        b.extra_progs["postinit_fit"] = "\tcall script ty_auto"
 
 
 # ---------------------------------------------------------------------------------------
@@ -671,6 +763,19 @@ def command_program(b, ents, which):
     if which == "ergm":
         out.w('put "nwergm " %s' % ref(b, "cb_net"))
     else:
+        # from the last fit: nwergm simulate, nsim() ... (no nodes, no terms, no theta)
+        out.open(ref(b, "cx_fit"))
+        out.w('put "nwergm simulate"')
+        out.w("beginoptions")
+        for eid, oname in FIT_KEEP.items():
+            r_ = ref(b, cid_f(S_by_id(eid)))
+            out.open(r_)
+            put(out, q(" %s(" % oname), r_, q(")"))
+            out.close()
+        out.w("endoptions")
+        out.w("stata")
+        out.close()
+        out.open("!" + ref(b, "cx_fit"))
         out.w("require %s" % ref(b, cid_f(S_by_id("sim_nodes"))))
         out.w('put "nwergm simulate " %s' % ref(b, cid_f(S_by_id("sim_nodes"))))
     out.w("beginoptions")
@@ -773,6 +878,8 @@ def command_program(b, ents, which):
     out.ind -= 1
     out.w("endoptions")
     out.w("stata")
+    if which == "sim":
+        out.close()
     return out.text()
 
 
@@ -806,11 +913,13 @@ def emit_file(b, ents, which, fname, label, help_cmd, dlgname, cmdprog):
     L.append("\tprogram initialize")
     L.append("END")
     L.append("")
-    if b.scripts:
+    if b.scripts or b.extra_progs:
         L.append("SCRIPT POSTINIT")
         L.append("BEGIN")
         for s_ in b.hidden_at_start:
             L.append("\tscript " + s_)
+        if "postinit_fit" in b.extra_progs:
+            L.append("\tprogram postinit_fit")
         L.append("END")
         L.append("")
         for sname, lines in b.scripts:
@@ -830,11 +939,8 @@ def emit_file(b, ents, which, fname, label, help_cmd, dlgname, cmdprog):
             L.append(c.dlg())
         L.append("END")
         L.append("")
-    L.append("LIST netlist")
-    L.append("BEGIN")
-    L.append("\t// filled in when the dialog opens (see PROGRAM initialize)")
-    L.append("END")
-    L.append("")
+    for ln_ in ("netlist", "netlist_a", "fitlist"):
+        L += ["LIST " + ln_, "BEGIN", "\t// filled in when the dialog opens (see PROGRAM initialize, _nwergm_dlgprep.ado)", "END", ""]
     for name, items in b.lists.items():
         L.append("LIST %s" % name)
         L.append("BEGIN")
@@ -844,7 +950,7 @@ def emit_file(b, ents, which, fname, label, help_cmd, dlgname, cmdprog):
         L.append("")
     L.append("PROGRAM initialize")
     L.append("BEGIN")
-    L.append('\tput "_nwdialog %s"' % dlgname)
+    L.append('\tput "_nwergm_dlgprep %s"' % dlgname if dlgname != "nwergm_estat" else '\tput "_nwdialog %s"' % dlgname)
     L.append("\tstata hidden immediate")
     L.append("END")
     L.append("")
@@ -854,6 +960,8 @@ def emit_file(b, ents, which, fname, label, help_cmd, dlgname, cmdprog):
         L.append(ptxt)
         L.append("END")
         L.append("")
+    for pn_, pt_ in b.extra_progs.items():
+        L += ["PROGRAM %s" % pn_, "BEGIN", pt_, "END", ""]
     if dlgname == "nwergm":
         for cid, x, w, lab, dn in RELATED_BUTTONS:
             L += ["PROGRAM open_%s" % dn, "BEGIN", '\tput "db %s"' % dn, "\tstata hidden queue", "END", ""]

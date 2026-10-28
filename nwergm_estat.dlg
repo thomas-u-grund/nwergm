@@ -114,7 +114,17 @@ END
 
 LIST netlist
 BEGIN
-	// filled in when the dialog opens (see PROGRAM initialize)
+	// filled in when the dialog opens (see PROGRAM initialize, _nwergm_dlgprep.ado)
+END
+
+LIST netlist_a
+BEGIN
+	// filled in when the dialog opens (see PROGRAM initialize, _nwergm_dlgprep.ado)
+END
+
+LIST fitlist
+BEGIN
+	// filled in when the dialog opens (see PROGRAM initialize, _nwergm_dlgprep.ado)
 END
 
 LIST l_which

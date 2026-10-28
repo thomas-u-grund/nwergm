@@ -167,6 +167,8 @@ def sim_cases():
     mk("gwesp", "und", {nodes: "20", th: "-2 0.1", G.cid_f(ent("gwesp")): "0.5"}, [G.cid_cx(ent("gwesp"))])
     mk("structural_twopath", "und", {nodes: "20", th: "-2 0.01"}, [G.cid_cx(ent("twopath"))])
     mk("constraints_observed", "und", {nodes: "24", th: "-2", G.cid_f(ent("constraints_extra")): "observed", G.cid_f(ent("basis")): "undm"})
+    mk("fromfit", "und", {G.cid_f(ent("nsim")): "2", G.cid_f(ent("seed")): "5", G.cid_f(ent("mcmcburnin")): "500", G.cid_f(ent("mcmcinterval")): "20"}, ["cx_fit"])
+    cases[-1]["pre"] = "quietly nwergm und, edges method(mple)"
     mk("nodecov", "und", {nodes: "24", th: "-2 0.01", G.cid_f(ent("nodecov")): "age"}, [G.cid_cx(ent("nodecov"))])
     cases[-1]["pre"] = "nwclear\nclear\nset obs 24\ngen age = 20 + mod(_n*7, 31)"
     return cases
