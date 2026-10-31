@@ -5,6 +5,9 @@ project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- The C source of the native plugin (`native/*.c`, `native/*.h`, the `Makefile`, StataCorp's plugin interface files and a build note `ergm_native_readme.txt`) is listed in `nwergm.pkg` as ancillary files: `net get nwergm, from(...)` copies it; `net install` still installs the compiled plugins only.
+
 ## [1.3.5] - 2026-10-28
 
 Patch release (dialogs only; includes the changes listed under 1.3.4, which was not released separately). The Mata libraries and the plugin are unchanged.

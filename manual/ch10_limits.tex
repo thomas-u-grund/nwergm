@@ -62,6 +62,12 @@ The native plugin is built for macOS (universal binary, compiled on the developm
 
 Two practical traps. A plugin in Stata's PLUS directory from an older installation shadows the plugin of a repository on the ado-path, so that a freshly built plugin can silently not be used; test it through a scratch ado-path. On macOS, overwriting a plugin that has already been loaded kills Stata without a message (the code signature is cached by the system); remove the old file first, then copy.
 
+\paragraph{The source of the plugin.} The C source of the plugin is part of the package. \texttt{net install} installs the compiled plugins only; the command
+\begin{lstlisting}
+. net get nwergm, from(https://raw.githubusercontent.com/thomas-u-grund/nwergm/main)
+\end{lstlisting}
+copies the source files, the build rules and a short build note into the current directory. The same files are in the folder \texttt{native/} of the repository (\url{https://github.com/thomas-u-grund/nwergm}). \nwergm{} is free software under the GNU General Public License, version 3; the plugin interface files in \texttt{native/spi/} are StataCorp's Stata Plugin Interface, redistributed unchanged.
+
 \section{Dialog boxes}
 
 The three dialogs are generated from one specification and checked automatically: a script builds the command that the dialog would build for every term and option and runs it in Stata. They were not tested by hand on Windows or Linux, and the screen layout was not tested on other platforms than macOS. A dialog builds a single command line; model specifications that are easier to write by hand (long operator formulas, \opt{For()} loops) are better typed in a do-file.

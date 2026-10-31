@@ -46,3 +46,10 @@ f lib/lnwergm.mlib
 f lib/plugins/macos/ergm_mcmc_macos.plugin
 f lib/plugins/windows/ergm_mcmc_windows.plugin
 f lib/plugins/unix/ergm_mcmc_unix.plugin
+f native/ergm_mcmc.c
+f native/ergm_mcmc_e6.h
+f native/ergm_struct.h
+f native/Makefile
+f native/spi/stplugin.c
+f native/spi/stplugin.h
+f native/ergm_native_readme.txt

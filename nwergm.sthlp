@@ -621,6 +621,11 @@ As in R's {cmd:simulate()}, {opt mcmcinterval()} defaults to 1,024 and {opt mcmc
 the interval (16,384). Versions before 1.2.0 used 50 and 3,000; {cmd:mcmcburnin(3000) mcmcinterval(50)}
 restores them.
 
+{pstd}
+The C source of the plugin comes with the package: {cmd:net get nwergm, from(https://raw.githubusercontent.com/thomas-u-grund/nwergm/main)}
+copies it into the current directory, together with a file that explains how to build the plugin; it is also in the folder
+{cmd:native/} of the repository at {browse "https://github.com/thomas-u-grund/nwergm"}. {cmd:net install} installs the compiled plugins only.
+
 {title:See also}
 
 	{help nwqap}, {help nwrandom}, {help nwcug}, {help nwintro##limits:feasible network sizes}

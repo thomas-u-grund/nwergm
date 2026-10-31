@@ -63,7 +63,7 @@ reference implementation are in `dev/`.
 
 ## Native plugin
 
-The package ships a native Stata plugin (ergm_mcmc.c) for macOS (universal), Linux and Windows (built by the GitHub Actions workflow `.github/workflows/build-plugins.yml`; the macOS build can be reproduced with `make -C native macos`). Platform without a plugin: see the help file.
+The package ships a native Stata plugin (ergm_mcmc.c) for macOS (universal), Linux and Windows (built by the GitHub Actions workflow `.github/workflows/build-plugins.yml`; the macOS build can be reproduced with `make -C native macos`). Platform without a plugin: see the help file. The C source is part of the package (`net get nwergm, from(https://raw.githubusercontent.com/thomas-u-grund/nwergm/main)` copies it into the current directory, with `ergm_native_readme.txt` explaining the build) and is in `native/` of this repository.
 
 ## Rebuilding the Mata library
 
