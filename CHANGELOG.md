@@ -7,6 +7,7 @@ project uses [Semantic Versioning](https://semver.org/).
 
 ### Added
 - The C source of the native plugin (`native/*.c`, `native/*.h`, the `Makefile`, StataCorp's plugin interface files and a build note `ergm_native_readme.txt`) is listed in `nwergm.pkg` as ancillary files: `net get nwergm, from(...)` copies it; `net install` still installs the compiled plugins only.
+- If the shipped plugin does not work on a computer, `nwinstall, buildplugin(nwergm)` (nwcommands 3.13.0 or later) fetches the source, compiles it there and installs the plugin (macOS and Linux).
 
 ## [1.3.5] - 2026-10-28
 

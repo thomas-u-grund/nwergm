@@ -68,6 +68,12 @@ Two practical traps. A plugin in Stata's PLUS directory from an older installati
 \end{lstlisting}
 copies the source files, the build rules and a short build note into the current directory. The same files are in the folder \texttt{native/} of the repository (\url{https://github.com/thomas-u-grund/nwergm}). \nwergm{} is free software under the GNU General Public License, version 3; the plugin interface files in \texttt{native/spi/} are StataCorp's Stata Plugin Interface, redistributed unchanged.
 
+\paragraph{Building the plugin on your computer.} If the plugin of your platform is missing or does not work on your computer, compile it there with
+\begin{lstlisting}
+. nwinstall, buildplugin(nwergm)
+\end{lstlisting}
+The command copies the source from the repository, compiles it with the compiler of your computer (a C compiler and \texttt{make} are needed: on macOS the command line tools of Xcode, on Linux \texttt{gcc} and \texttt{make}), and installs the plugin next to the one that \texttt{net install} put into the PLUS directory; an existing file is kept with the extension \texttt{.prev}. Restart Stata afterwards. The plugin depends on the operating system and the processor, not on the version or the flavour of Stata. The routine was tested on macOS; on Windows it stops with a message and the build note that comes with the source gives the command for the Visual Studio command line.
+
 \section{Dialog boxes}
 
 The three dialogs are generated from one specification and checked automatically: a script builds the command that the dialog would build for every term and option and runs it in Stata. They were not tested by hand on Windows or Linux, and the screen layout was not tested on other platforms than macOS. A dialog builds a single command line; model specifications that are easier to write by hand (long operator formulas, \opt{For()} loops) are better typed in a do-file.

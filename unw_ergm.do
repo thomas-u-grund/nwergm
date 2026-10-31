@@ -7438,7 +7438,7 @@ real rowvector ErgmNativeTermStat(class ErgmGraph scalar G, class ErgmTermData s
 	real rowvector out
 
 	if (!ErgmNativeAvailable()) {
-		errprintf("this term needs the native plugin (ergm_mcmc), which could not be loaded\n")
+		errprintf("this term needs the native plugin (ergm_mcmc), which could not be loaded; compile it on this computer with: nwinstall, buildplugin(nwergm)\n")
 		_error(198)
 	}
 	n = G.n
@@ -7557,7 +7557,7 @@ real rowvector stat_ns(class ErgmGraph scalar G, class ErgmTermData scalar td){
 	return(td.levelpairs[., 4]' + ErgmNativeTermStat(G, td))
 }
 real rowvector change_ns(class ErgmGraph scalar G, real scalar i, real scalar j, class ErgmTermData scalar td){
-	errprintf("this term runs only in the native plugin (ergm_mcmc): the plugin must be installed and the model may have at most 64 coefficients\n")
+	errprintf("this term runs only in the native plugin (ergm_mcmc): the plugin must be installed (if it does not work on your system, compile it on this computer with: nwinstall, buildplugin(nwergm)) and the model may have at most 64 coefficients\n")
 	_error(198)
 	return(J(1, rows(td.levelpairs), 0))
 }
@@ -7704,7 +7704,7 @@ real rowvector stat_op(class ErgmGraph scalar G, class ErgmTermData scalar td)
 }
 real rowvector change_op(class ErgmGraph scalar G, real scalar i, real scalar j, class ErgmTermData scalar td)
 {
-	errprintf("operator terms (Sum, Prod, S, F, NodematchFilter, Symmetrize, Project) run only in the native plugin (ergm_mcmc): the plugin must be installed and the model may have at most 64 coefficients\n")
+	errprintf("operator terms (Sum, Prod, S, F, NodematchFilter, Symmetrize, Project) run only in the native plugin (ergm_mcmc): the plugin must be installed (if it does not work on your system, compile it on this computer with: nwinstall, buildplugin(nwergm)) and the model may have at most 64 coefficients\n")
 	_error(198)
 	return(J(1, rows(td.opW) > 0 ? rows(td.opW) : 1, 0))
 }
@@ -10129,7 +10129,7 @@ real matrix ErgmMCMCSample(class ErgmModel scalar M, class ErgmGraph scalar G,
 	if (M.native_enabled_sample) {
 		return(ErgmNativeSampleCore(M, G, theta, burnin, interval, samplesize, cur))
 	}
-	if (cols(M.con_par) > 0) _error("constraints and proposals other than the default ones need the native plugin, which is not available for this model or platform")
+	if (cols(M.con_par) > 0) _error("constraints and proposals other than the default ones need the native plugin, which is not available for this model or platform (compile it on this computer with: nwinstall, buildplugin(nwergm))")
 
 	// Fixed-density Mata fallback (M.fixed_density, set in nwergm.ado
 	// only for a `fixdensity' model) - reached only when native is
@@ -10276,7 +10276,7 @@ struct ErgmMCMCDiag scalar ErgmMCMCSampleDiag(class ErgmModel scalar M, class Er
 		res.acceptrate = M.native_lastaccept
 		return(res)
 	}
-	if (cols(M.con_par) > 0) _error("constraints and proposals other than the default ones need the native plugin, which is not available for this model or platform")
+	if (cols(M.con_par) > 0) _error("constraints and proposals other than the default ones need the native plugin, which is not available for this model or platform (compile it on this computer with: nwinstall, buildplugin(nwergm))")
 
 	// Fixed-density Mata fallback - see ErgmMCMCSample()'s own identical
 	// branch for the full rationale.

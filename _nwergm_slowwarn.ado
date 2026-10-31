@@ -19,5 +19,5 @@ program _nwergm_slowwarn
 		if _rc local why "the plugin file ergm_mcmc_`os'.plugin was not found; reinstall the package with {bf:net install nwergm, replace}"
 		else local why "the model is outside the capacity of the plugin"
 	}
-	di as txt "(Warning: the compiled plugin is not used for `what' (`why'); the Mata fallback is much slower, possibly minutes to hours. See {help nwergm##native:Performance}.)"
+	di as txt "(Warning: the compiled plugin is not used for `what' (`why'); the Mata fallback is much slower, possibly minutes to hours. See {help nwergm##native:Performance}. If the plugin of your platform does not work, compile it on this computer: {cmd:nwinstall, buildplugin(nwergm)}.)"
 end
