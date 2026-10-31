@@ -4,8 +4,8 @@ d Thomas U. Grund, RWTH Aachen University, www.grund.co.uk
 d email: thomas.u.grund@gmail.com
 d GPL-3. Requires the core package nwcommands 3.6.0 or later.
 d Requires nwcommands (core), version 3.6.0 or later
-d Version: 1.3.5
-d Distribution-Date: 28oct2026
+d Version: 1.3.6
+d Distribution-Date: 31oct2026
 f _nwergm_bip.ado
 f _nwergm_bip_curved.ado
 f _nwergm_bipgof.ado
@@ -52,4 +52,4 @@ f native/ergm_struct.h
 f native/Makefile
 f native/spi/stplugin.c
 f native/spi/stplugin.h
-f native/ergm_native_readme.txt
+f ergm_native_readme.txt

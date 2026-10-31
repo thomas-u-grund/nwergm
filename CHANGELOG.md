@@ -3,7 +3,9 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.3.6] - 2026-10-31
+
+Patch release. The build routine `nwinstall, buildplugin(nwergm)` needs nwcommands 3.13.0; the package itself works with the core it worked with before. The compiled plugin is unchanged.
 
 ### Added
 - The C source of the native plugin (`native/*.c`, `native/*.h`, the `Makefile`, StataCorp's plugin interface files and a build note `ergm_native_readme.txt`) is listed in `nwergm.pkg` as ancillary files: `net get nwergm, from(...)` copies it; `net install` still installs the compiled plugins only.

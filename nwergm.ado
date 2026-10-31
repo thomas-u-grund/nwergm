@@ -1,4 +1,4 @@
-*! version 1.3.5  28oct2026 nwergm
+*! version 1.3.6  31oct2026 nwergm
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -2237,7 +2237,7 @@ program nwergm, eclass
 		}
 		ereturn post `__b_mple' `__V_mple', depname(`netname') obs(`__ergm_nrows')
 		ereturn local cmd "nwergm"
-		ereturn local version "1.3.5"
+		ereturn local version "1.3.6"
 		ereturn local title "Exponential-family random graph model (MPLE)"
 		ereturn local depvar "`netname'"
 		ereturn local method "mple"
@@ -2604,7 +2604,7 @@ program nwergm, eclass
 
 		ereturn post `__b_mcmle' `__V_mcmle', depname(`netname') obs(`__ergm_nrows')
 		ereturn local cmd "nwergm"
-		ereturn local version "1.3.5"
+		ereturn local version "1.3.6"
 		ereturn local title "Exponential-family random graph model (MCMLE)"
 		ereturn local depvar "`netname'"
 		ereturn local method "mcmle"
