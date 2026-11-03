@@ -267,6 +267,11 @@ coefficients may be fixed in one model: {bf:offset(mutual 2 gwesp_weight 0.5)}.
 
 {marker limitations}{...}
 
+{pstd}
+If the Mata library of nwergm (lnwergm.mlib) does not load in your Stata (for example r(3499) because it was built by a newer Stata than yours), build it with your own Stata:
+{cmd:nwinstall, buildmata(nwergm)} fetches the Mata source, compiles it and installs the library; restart Stata afterwards. The library of nwergm is compiled against the core library, so if the core library does not load either, use {cmd:nwinstall, buildmata(all)}, which rebuilds the core first and then the installed model packages.
+The build clears the data and the Mata objects in memory. See {help nwinstall##buildmata:nwinstall}.
+
 {title:Supported network types}
 
 {pstd}

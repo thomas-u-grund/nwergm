@@ -22,6 +22,7 @@ program _nwergm_libcheck
 	if inlist(`rc', 3021, 3260) {
 		di as err "The installed core nwcommands and nwergm were built for different versions (their Mata libraries do not match)."
 		di as err "Reinstall the package: {bf:nwinstall, models} or {bf:net install nwergm, from(https://raw.githubusercontent.com/thomas-u-grund/nwergm/main/) replace}."
+		di as err "Or build the libraries with your own Stata: {bf:nwinstall, buildmata(all)}."
 		exit `rc'
 	}
 end

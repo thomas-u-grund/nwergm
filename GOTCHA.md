@@ -259,3 +259,7 @@ Found while porting R's tolerance-region test (`ergm_ellipsoid_mahalanobis()`): 
 covariance matrix), and `symeigensystem()` returned all-missing eigenvalues for it even though the input was symmetric and finite (rounding noise in the off-diagonal, about 1e-16).
 `eigenvalues()` (general matrix, complex result) works; take `Re()`. Also: `symeigensystem(A, X, L)` needs `X` and `L` to exist when called from an interactive `mata:` block, and in a
 function `{ stmt; continue }` on one line is a syntax error (use separate lines).
+
+## `nwinstall, buildmata(nwergm)` compiles the source files listed in the core (2026-11-03)
+
+The user-side rebuild of lnwergm.mlib lives in the core (`nwinstall_buildmata.ado`, table `nwinstall_buildmata_tab`): it lists the source files of this package, the library names and the `mata mlib add` patterns copied from `lib/build.do`. If this package gets a new Mata source file (as nwsaom did with `unw_saom_struct.do`, included by `unw_saom.do`) or another library, the table must change, or the rebuild fails with "file ... not found" (r(601)) or leaves functions out. The sources fetched are those on `main`.

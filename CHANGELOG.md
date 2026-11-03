@@ -3,6 +3,11 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+- Documentation of `nwinstall, buildmata(nwergm)` (nwcommands 3.14 and later): a Mata library that does not load in the user's Stata (built by a newer Stata, r(3499)) is rebuilt from the source in this repository with the Stata that runs. README and help file describe it. No change of the Mata library, the plugin or the estimators.
+
 ## [1.3.6] - 2026-10-31
 
 Patch release. The build routine `nwinstall, buildplugin(nwergm)` needs nwcommands 3.13.0; the package itself works with the core it worked with before. The compiled plugin is unchanged.

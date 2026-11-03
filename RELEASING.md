@@ -28,6 +28,7 @@ major whose documented behaviour changed (master B.10; steps in `manual/ZENODO.m
 `NWCORE=/path/to/nwcommands "/Applications/Stata 17.0/StataBE.app/Contents/MacOS/StataBE" -e do lib/build.do`, then `NWCORE=/path/to/nwcommands python3 tools/record_core_lib.py`
 (writes `lib/core_mlib.sha256`). Whenever the core library changes, rebuild, record, test and release this package in the same batch as the core (master B.5, C3), core first.
 Without that, a fresh install fails with r(3021) "class compiled at different times".
+- `nwinstall, buildmata(nwergm)` (core `nwinstall_buildmata.ado`) rebuilds lnwergm.mlib on the user's computer from `unw_ergm.do` on `main`. A new or renamed Mata source file or library of this package must be added to `nwinstall_buildmata_tab` in the core (see its GOTCHA.md), and the `mata mlib add` patterns there must match `lib/build.do`.
 
 ## Tests
 
