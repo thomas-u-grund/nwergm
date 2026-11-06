@@ -3,7 +3,11 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.3.7] - 2026-11-06
+
+### Fixed
+- **Simulated networks had the wrong node names.** `nwergm simulate` named its draws n1, n2, ... in the order in which the starting network stores its nodes. That order is not always n1, n2, ...: the lawyers' networks (`lazega`) store n1, n10, n11, ..., n19, n2, ... So in `nwergm simulate 71, ... basis(lazega_adv) constraints(degrees)` the degrees of 70 of the 71 lawyers were attached to another lawyer's name. The draws now carry the node names of the basis network (or, after a fit, of the fitted network). Statistics of whole networks (transitivity, reciprocity, `output(stats)`) were not affected.
+- **`basis()` was ignored after a fit.** `nwergm simulate, basis(net)` (without a number of nodes) continued the chain from the fit's last network unless `nosequential` was given. It now starts at `basis()`, as R's `simulate(fit, basis = net)` does; the fit's own last network is kept for later simulations without `basis()`.
 
 ### Added
 - Documentation of `nwinstall, buildmata(nwergm)` (nwcommands 3.14 and later): a Mata library that does not load in the user's Stata (built by a newer Stata, r(3499)) is rebuilt from the source in this repository with the Stata that runs. README and help file describe it. No change of the Mata library, the plugin or the estimators.

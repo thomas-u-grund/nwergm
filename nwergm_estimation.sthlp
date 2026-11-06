@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.3.6  31oct2026 author: Thomas Grund}{...}
+{* *! version 1.3.7  06nov2026 author: Thomas Grund}{...}
 {vieweralsosee "nwergm" "help nwergm"}{...}
 {vieweralsosee "nwergm postestimation" "help nwergm_estat"}{...}
 {title:Title}
@@ -74,6 +74,8 @@ Without a number of nodes, {cmd:nwergm simulate} draws from the model of the las
 fitted coefficients or at {opt coef()}. The chain is sequential (burn-in once, {opt interval()} proposals between draws) unless {opt nosequential} restarts every draw from the starting network.
 {opt output(network)} creates networks {it:generate}_1, {it:generate}_2, ...; {opt output(stats)} returns the statistics in {cmd:r(stats)}; {opt output(edgelist)} replaces the data with
 variables {cmd:_sim _tail _head} (specify {opt clear}). The constraints of the fit (dyad restrictions, fixed density) stay in force.
+The simulated networks have the node names of the starting network ({opt basis()} or the fitted network), and node {it:i} of a draw is node {it:i} of that network;
+{cmd:_tail} and {cmd:_head} are these node positions.
 
 {title:estat gof}
 
@@ -100,4 +102,4 @@ Konis, K. 2007. {it:Linear Programming Algorithms for Detecting Separated Data i
 Snijders, T. A. B. 2002. Markov chain Monte Carlo estimation of exponential random graph models. {it:Journal of Social Structure} 3(2).{p_end}
 
 {hline}
-{pstd}{it:nwergm version 1.3.6, 31 October 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.3.7, 6 November 2026}{p_end}{* nwversion}

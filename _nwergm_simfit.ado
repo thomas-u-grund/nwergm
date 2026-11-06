@@ -1,4 +1,4 @@
-*! version 1.3.6  31oct2026 _nwergm_simfit.ado -- nwergm simulate from the last fit (R: simulate.ergm)
+*! version 1.3.7  06nov2026 _nwergm_simfit.ado -- nwergm simulate from the last fit (R: simulate.ergm)
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -61,7 +61,11 @@ program _nwergm_simfit, rclass
 	else matrix `bmat' = e(b)
 
 	// starting network: the fit's last network (R: newnetwork) unless basis() is given
-	tempname A0
+	// node names of the draws: node i of the chain is node i of the basis (or of the fitted network), in the order the
+	// network stores its nodes, which need not be n1, n2, ... (lazega: n1, n10, n11, ...); the draws get these names
+	tempname A0 Afit
+	local __namesrc "`e(depvar)'"
+	if "`basis'" != "" local __namesrc "`basis'"
 	if "`basis'" != "" {
 		capture _nwsyntax `basis', max(1)
 		if _rc {
@@ -80,6 +84,20 @@ program _nwergm_simfit, rclass
 		mata: mata drop `bG'
 	}
 	else mata: `A0' = __nwergm_last_G.to_dense()
+	local __simlabs ""
+	if "`__namesrc'" != "" {
+		capture _nwsyntax `__namesrc', max(1)
+		if !_rc & `nodes' == e(nodes) {
+			tempname NM
+			mata: `NM' = (`netobj'->get_nodenames())[1..`nodes']
+			// two-mode: nwset takes the first mode first
+			mata: `NM' = `NM'[__nwergm_last_G.bipartite ? (__nwergm_last_G.mode1nodes \ __nwergm_last_G.mode2nodes)' : (1..`nodes')]
+			mata: st_local("__simlabs", invtokens(`NM', ","))
+			mata: mata drop `NM'
+		}
+		// _nwsyntax resets the local nodes
+		local nodes = e(nodes)
+	}
 
 	mata: st_local("__hasmask", strofreal(__nwergm_last_G.has_dyadmask))
 	if `__hasmask' {
@@ -96,7 +114,17 @@ program _nwergm_simfit, rclass
 	mata: st_local("__snat", strofreal(__nwergm_last_M.native_enabled_sample))
 	if !`__snat' _nwergm_slowwarn "the simulation" "fit"
 	tempname nets
+	// with basis() the chain starts at the basis also when it is sequential (R: simulate(basis = ...)); the fit's own
+	// last network is put back afterwards, so that basis() does not change later simulations without it
+	if "`basis'" != "" {
+		mata: `Afit' = __nwergm_last_G.to_dense()
+		mata: ergm_reset_graph(__nwergm_last_G, `A0')
+	}
 	mata: `nets' = ergm_sim_run(__nwergm_last_M, __nwergm_last_G, `A0', st_matrix("`bmat'"), `nsim', `burnin', `interval', `propfn', `seq', `want', "__simE7")
+	if "`basis'" != "" {
+		mata: ergm_reset_graph(__nwergm_last_G, `Afit')
+		mata: mata drop `Afit'
+	}
 	tempname S
 	matrix `S' = __simE7_stats
 	matrix drop __simE7_stats
@@ -116,8 +144,9 @@ program _nwergm_simfit, rclass
 			preserve
 			qui drop _all
 			qui set obs `nodes'
-			if `__sbip' nwset, mat(`M1') bipartite name(`nm') nooutput
-			else nwset, mat(`M1') `=cond(`dir',"directed","undirected")' name(`nm') nooutput
+			local __lb = cond(`"`__simlabs'"' != "", `"labs(`__simlabs')"', "")
+			if `__sbip' nwset, mat(`M1') bipartite name(`nm') nooutput `__lb'
+			else nwset, mat(`M1') `=cond(`dir',"directed","undirected")' name(`nm') nooutput `__lb'
 			restore
 		}
 		di as txt "(`nsim' simulated network(s) created: `generate'" cond(`nsim' > 1, "_1 ... `generate'_`nsim'", "") ")"

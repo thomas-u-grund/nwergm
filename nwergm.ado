@@ -1,4 +1,4 @@
-*! version 1.3.6  31oct2026 nwergm
+*! version 1.3.7  06nov2026 nwergm
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -2237,7 +2237,7 @@ program nwergm, eclass
 		}
 		ereturn post `__b_mple' `__V_mple', depname(`netname') obs(`__ergm_nrows')
 		ereturn local cmd "nwergm"
-		ereturn local version "1.3.6"
+		ereturn local version "1.3.7"
 		ereturn local title "Exponential-family random graph model (MPLE)"
 		ereturn local depvar "`netname'"
 		ereturn local method "mple"
@@ -2604,7 +2604,7 @@ program nwergm, eclass
 
 		ereturn post `__b_mcmle' `__V_mcmle', depname(`netname') obs(`__ergm_nrows')
 		ereturn local cmd "nwergm"
-		ereturn local version "1.3.6"
+		ereturn local version "1.3.7"
 		ereturn local title "Exponential-family random graph model (MCMLE)"
 		ereturn local depvar "`netname'"
 		ereturn local method "mcmle"
@@ -3702,6 +3702,7 @@ program nwergm_simulate
 	// basis()/constraints(): R's simulate(basis=, constraints=) - one chain started from the basis
 	// network, burn-in once, `interval' steps between draws, all within the constrained sample space.
 	local __sim_con 0
+	local __simlabs ""
 	if "`basis'" != "" | `"`constraints'"' != "" {
 		if "`basis'" == "" {
 			di "{err}constraints() needs basis(): the network the constraints refer to."
@@ -3720,6 +3721,9 @@ program nwergm_simulate
 		mata: __nwergm_last_G = ErgmGraph()
 		mata: __nwergm_last_G.init(`nodes', ("`directed'"!=""))
 		mata: ergm_bridge_from_netobj(`bnetobj', __nwergm_last_G, ("`directed'"!=""))
+		// node i of the chain is node i of the basis, in the order the basis stores its nodes (which need not be
+		// n1, n2, ...: lazega has n1, n10, n11, ...): the draws get the basis's node names
+		mata: st_local("__simlabs", invtokens((`bnetobj'->get_nodenames())[1..`nodes'], ","))
 		if `"`constraints'"' != "" {
 			_nwergm_constr, spec(`constraints') nodes(`nodes') directed(`bdirected') twomode(false) matobj(`bnetobj') weights(`=cond("`proposal'"=="uniform","random","default")')
 			if `con_hasdyad' mata: __nwergm_last_G.set_dyadmask(__ncon_free)
@@ -3796,7 +3800,7 @@ program nwergm_simulate
 			nwset, mat(`__ergm_simmat_bip') bipartite name(`__ergm_simname')
 		}
 		else {
-			nwset, mat(`__ergm_simmat') `=cond("`directed'"!="","directed","undirected")' name(`__ergm_simname')
+			nwset, mat(`__ergm_simmat') `=cond("`directed'"!="","directed","undirected")' name(`__ergm_simname') `=cond(`"`__simlabs'"' != "", `"labs(`__simlabs')"', "")'
 		}
 	}
 

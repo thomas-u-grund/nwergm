@@ -263,3 +263,7 @@ function `{ stmt; continue }` on one line is a syntax error (use separate lines)
 ## `nwinstall, buildmata(nwergm)` compiles the source files listed in the core (2026-11-03)
 
 The user-side rebuild of lnwergm.mlib lives in the core (`nwinstall_buildmata.ado`, table `nwinstall_buildmata_tab`): it lists the source files of this package, the library names and the `mata mlib add` patterns copied from `lib/build.do`. If this package gets a new Mata source file (as nwsaom did with `unw_saom_struct.do`, included by `unw_saom.do`) or another library, the table must change, or the rebuild fails with "file ... not found" (r(601)) or leaves functions out. The sources fetched are those on `main`.
+
+## Node i of an ErgmGraph is node i of the network object, whose names need not be n1, n2, ... (2026-11-06)
+
+`ergm_bridge_obs()` and `ergm_bridge_from_netobj()` copy a network into an `ErgmGraph` by its internal node index. A network made from an edge list or loaded from a `.nwdta` file can store its nodes in another order than n1, n2, ... (lazega: n1, n10, n11, ..., n19, n2, ...). Any network written back with `nwset, mat()` must therefore get the names with `labs()` from `netobj->get_nodenames()`; without them it is named n1, n2, ... by position and node-level results are attached to the wrong nodes (`nwergm simulate` up to 1.3.6). `nwset, labsfromvar()` does not help: with `mat()` it falls back to the default names. Test node-level results with lazega, never only with networks whose names are already in natural order. `cscripts/test_nwergm_simnames.do`.
