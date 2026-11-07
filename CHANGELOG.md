@@ -3,6 +3,29 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+- **`estat gof` and `nwergm simulate` stopped with r(3200) after a curved fit** (`gwespfree()`, `gwdegreefree()` and the other terms with an estimated decay). They received the curved coefficients (weight, decay) where the sampler needs the natural parameters; these are now computed first.
+- **The Hummel step length was not computed for large models.** With many statistics (for example `sender receiver` on 100 nodes, 200 coefficients) the simplex reached its pivot limit and returned "no shrinkage", so every MCMLE step had length 1. Models with more than 64 statistics now use a revised simplex that solves the same linear program (same optimum) in a fraction of the time; smaller models keep the original solver and give identical results.
+- **Models with more than about 50 terms failed with r(1003)** ("too many options"): the term table of the plugin now travels in frame variables, and the plugin accepts up to 8,192 terms (generation 3). Models with more than 256 terms write their sample in one long variable.
+- `e(b)` and `e(V)` wider than `c(max_matdim)` (800 in Stata/BE) are copied through Mata (`_nwergm_getb`), so postestimation works for models with one coefficient per node on networks of more than about 400 nodes.
+
+### Changed (speed; same results unless stated)
+- **Sparse pseudolikelihood** for dyad-independent models with many coefficients (`sender`, `receiver`, factor terms with many levels): directed network of 400 nodes (800 coefficients) 504 s to 1.2 s; 1,000 nodes (2,000 coefficients) about 9 s in Stata/BE. Agrees with the dense fit to 1e-11.
+- **Factor terms in the sampler:** for a run of `nodefactor()`/`nodeofactor()`/`nodeifactor()` slots on one attribute only the slot of the node's level is updated. 200 slots: about 9.6 million proposals per second (was 0.38 million).
+- **Burn-in detection and effective sample size** of the adaptive MCMLE sampler are computed for all statistics at once (identical values).
+- **Observed statistics** of networks with 500 or more nodes are computed in the plugin (about 20 times faster). Integer-valued statistics are identical; sums over continuous covariates can differ in the last digits (summation order). The global `NWERGM_MATASTAT` (any value) switches back to Mata.
+- `estat gof`, `nwergm simulate`, stochastic approximation and the MPLE covariance continue from the statistics of the previous draw instead of recomputing them (identical draws; carried sums of continuous statistics can differ around 1e-11). SA on a 1,000-node network 108 s to 50 s.
+- **Triad census** of directed networks (`estat gof`, `triadcensus`) by the algorithm of Batagelj and Mrvar instead of a loop over all node triples: lazega `estat gof` with the triad census 10.6 s to 3.4 s (identical output); a directed network of 1,000 nodes takes 0.07 s.
+- Geodesic distances for `estat gof` by breadth-first search over neighbour lists (identical counts, about 8 times faster; `estat gof` on 1,000 nodes 76 s to 12 s).
+- **Dyadic covariates** (`edgecov()`, `hamming()`) are passed to the plugin as their nonzero entries (plugin generation 4): bit-identical chains, and no longer limited by the number of variables of Stata/BE (about 2,000 nodes). Older plugin binaries get the dense format.
+- Under `constraints()`, a rejected proposal of a single new tie is no longer added and removed (identical chains).
+- The existence check of the pseudolikelihood (a linear program) is skipped for models with more than 100 coefficients.
+
+### Added
+- Help file section "Models with one coefficient per node": what to expect from `method(mple)` and `method(mcmle)` with `sender`/`receiver` on larger networks.
+
 ## [1.3.7] - 2026-11-06
 
 ### Fixed

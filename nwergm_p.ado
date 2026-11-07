@@ -30,7 +30,7 @@ program nwergm_p
 		exit 498
 	}
 	tempname b
-	matrix `b' = e(b)
+	_nwergm_getb `b'
 	local cn : colnames `b'
 	if e(curved) {
 		di as err "predict is not available for models with a curved (free-decay) term"

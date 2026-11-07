@@ -2030,12 +2030,27 @@ program nwergm, eclass
 	// stays at its own default 0 - identical in effect to every other
 	// "native unavailable" case already handled below.
 	if `__obs_info' mata: __nwergm_last_G.set_dyadmask(__nwergm_info)
-	if "`nonative'" == "" {
+	// many per-node factor columns (sender/receiver/nodefactor with many levels): a sparse design instead of the
+	// dense one when the dense one would be large (ergm_sp_use()); same estimates, far less memory and time
+	local __ergm_sparse 0
+	// MPLE fits (whose covariance is the inverse Hessian) and the starting values of MCMLE fits
+	if !`__ergm_curved' & `__ergm_nmiss' == 0 & "`mpletype'" == "glm" & `"`init'"' == "" & ("`method'" == "mcmle" | ///
+		("`method'" == "mple" & (("`__ergm_dind'" == "1" & "`mplecovariance'" != "bootstrap") | "`mplecovariance'" == "invhess"))) {
+		mata: st_local("__ergm_has_offset", strofreal(sum(__nwergm_last_M.isfixed)>0))
+		// global NWERGM_NOSPARSE (certification scripts only): keep the dense design, to compare the two
+		if !`__ergm_has_offset' & "$NWERGM_NOSPARSE" == "" mata: st_local("__ergm_sparse", strofreal(ergm_sp_use(__nwergm_last_M, __nwergm_last_G)))
+	}
+	if "`nonative'" == "" & !`__ergm_sparse' {
 		mata: __ergm_mple_native_setup_rc = ErgmNativeSetup(__nwergm_last_M, 2, __nwergm_last_G)
 		mata: mata drop __ergm_mple_native_setup_rc
 	}
 	mata: st_local("__ergm_mple_native_used", strofreal(__nwergm_last_M.native_enabled))
-	if `__ergm_mple_native_used' {
+	if `__ergm_sparse' {
+		local __ergm_mple_native_used 0
+		mata: __nwergm_sp = ergm_sp_build(__nwergm_last_M, __nwergm_last_G)
+		mata: `__nw_D' = J(0, 0, .)
+	}
+	else if `__ergm_mple_native_used' {
 		mata: `__nw_D' = ErgmNativeBuildMPLEData(__nwergm_last_M, __nwergm_last_G)
 	}
 	else {
@@ -2055,8 +2070,14 @@ program nwergm, eclass
 		}
 	}
 	local __ergm_matatemps "`__ergm_matatemps' `__nw_D'"
-	mata: st_local("__ergm_nrows", strofreal(rows(`__nw_D'), "%18.0g"))
-	mata: st_local("__ergm_p", strofreal(cols(`__nw_D')-1, "%18.0g"))
+	if `__ergm_sparse' {
+		mata: st_local("__ergm_nrows", strofreal(sum(__nwergm_sp.wt), "%18.0g"))
+		mata: st_local("__ergm_p", strofreal(__nwergm_sp.p, "%18.0g"))
+	}
+	else {
+		mata: st_local("__ergm_nrows", strofreal(rows(`__nw_D'), "%18.0g"))
+		mata: st_local("__ergm_p", strofreal(cols(`__nw_D')-1, "%18.0g"))
+	}
 
 	tempname __ergm_coefnames
 	mata: st_local("__ergm_coefnames", invtokens(__nwergm_last_M.coefnames))
@@ -2084,7 +2105,13 @@ program nwergm, eclass
 	// starting theta of (0-vector, weight0=0, decay0=`__ergm_curved_start')
 	// is built directly rather than needing a general "find this term's
 	// own theta position" accessor.
-	if `__ergm_curved' {
+	if `__ergm_sparse' {
+		local __e7_ex 1
+		if "`mplecheck'" == "on" mata: st_local("__e7_ex", strofreal(ergm_sp_newton(__nwergm_sp, "`__b_mple'", "`__V_mple'")))
+		if !`__e7_ex' di "{err}Warning: The MPLE does not exist!"
+		if !`__e7_ex' | "`mplecheck'" != "on" mata: (void) ergm_sp_glm(__nwergm_sp, "`__b_mple'", "`__V_mple'")
+	}
+	else if `__ergm_curved' {
 		tempname __ergm_curvedconv
 		// Harmonisation unit 146: try the curved fit entirely natively
 		// first (design-matrix build AND Newton-Raphson, one plugin
@@ -2130,7 +2157,9 @@ program nwergm, eclass
 			else mata: st_local("__ergm_irls", strofreal(ergm_mple_irls(`__nw_D', "`__b_mple'", "`__V_mple'")))
 		}
 		// a separated pseudolikelihood goes through the existence check and R's glm iterate below
-		if `__ergm_irls' & "`mplecheck'" == "on" {
+		// the existence check is a simplex on the design; a strict Newton fit that converged (ergm_mple_irls()) already
+		// shows that the MPLE exists, so a model with many columns, where the simplex is slow, skips it
+		if `__ergm_irls' & "`mplecheck'" == "on" & `__ergm_p' <= 100 {
 			if `__ergm_dcomp' mata: st_local("__e7_ex", strofreal(ergm_mple_exists_c(`__nw_Dc')))
 			else mata: st_local("__e7_ex", strofreal(ergm_mple_exists(`__nw_D')))
 			if !`__e7_ex' local __ergm_irls 0
@@ -2200,8 +2229,8 @@ program nwergm, eclass
 			matrix `__V_mple_free' = `__e7_sV'
 		}
 		else {
-			matrix `__b_mple_free' = e(b)
-			matrix `__V_mple_free' = e(V)
+			_nwergm_getb `__b_mple_free'
+			mata: st_matrix("`__V_mple_free'", st_matrix("e(V)"))
 		}
 		restore
 		if `__ergm_has_offset' {
@@ -2249,7 +2278,7 @@ program nwergm, eclass
 		ereturn scalar nmissing = `__ergm_nmiss'
 		ereturn scalar curved = `__ergm_curved'
 		// observed model statistics (R: summary(formula)), one per eta-column
-		capture mata: st_matrix("e(obs_stats)", __nwergm_last_M.full_statistic(__nwergm_last_G))
+		capture mata: st_matrix("e(obs_stats)", ergm_full_stat(__nwergm_last_M, __nwergm_last_G))
 		// Harmonisation unit 145: report whether the design-matrix build
 		// itself used the native backend, mirroring e(native) on the
 		// MCMLE branch below - previously only ever set there, leaving
@@ -2258,7 +2287,12 @@ program nwergm, eclass
 		ereturn scalar native = `__ergm_mple_native_used'
 
 		nwergm_display "`netname'" "`nodes'" "`directed'" "MPLE" "" ""
-		_nwergm_fitstats, dmat(`__nw_D') method(mple) dind(`__ergm_dind') curved(`__ergm_curved')
+		if `__ergm_sparse' {
+			_nwergm_fitstats, dmat(__nwergm_sp) method(mple) dind(`__ergm_dind') curved(0) sparse
+			mata: st_local("__ergm_hassp", strofreal(findexternal("__nwergm_sp") != NULL))
+			if `__ergm_hassp' mata: mata drop __nwergm_sp
+		}
+		else _nwergm_fitstats, dmat(`__nw_D') method(mple) dind(`__ergm_dind') curved(`__ergm_curved')
 		if `__ergm_curved' {
 			di as text "(decay is an estimated curved parameter here - see {help nwergm##gw_effects:help nwergm, gw_effects} for how this differs from R ergm's own BFGS-based fit)"
 		}
@@ -2450,7 +2484,7 @@ program nwergm, eclass
 		mata: __nwergm_ties0 = __nwergm_last_G.all_ties()
 		capture mata: mata drop __ergm_obsstat
 		capture confirm number 0
-		mata: __ergm_obsstat = __nwergm_last_M.full_statistic(__nwergm_last_G)
+		mata: __ergm_obsstat = ergm_full_stat(__nwergm_last_M, __nwergm_last_G)
 		tempname __fit
 		if `__obs_active' {
 			mata: `__fit' = ErgmMCMLEObs(__nwergm_last_M, __nwergm_last_G, __nwergm_obs_G, __nwergm_obs_par, __nwergm_obs_cols, `__theta0', `mcmleiterations', `mcmcburnin', `mcmcinterval', `mcmcsamplesize', ("`verbose'"!=""))
@@ -2701,9 +2735,17 @@ program nwergm, eclass
 		if "`__ergm_dcomp'" == "1" local __dcname "`__nw_Dc'"
 		if `__ss_adapt' local __ergm_interval_bridge `__br_int'
 		else local __ergm_interval_bridge `__ergm_interval_final'
-		_nwergm_fitstats, dmat(`__nw_D') method(mcmle) propfn(`__ergm_propfn') mcmcburnin(`__br_burn') mcmcinterval(`__br_int') ///
+		local __sparseopt ""
+		local __dmatname "`__nw_D'"
+		if `__ergm_sparse' {
+			local __sparseopt "sparse"
+			local __dmatname "__nwergm_sp"
+		}
+		_nwergm_fitstats, dmat(`__dmatname') method(mcmle) propfn(`__ergm_propfn') mcmcburnin(`__br_burn') mcmcinterval(`__br_int') ///
 			mcmcsamplesize(`__br_ss') intervalfinal(`__ergm_interval_bridge') curved(`__ergm_curved') bridgesteps(`bridgesteps') ///
-			bridgesamplesize(`bridgesamplesize') bridgeinterval(`bridgeinterval') carry(`__ss_adapt') dcomp(`__dcname') `nologlik'
+			bridgesamplesize(`bridgesamplesize') bridgeinterval(`bridgeinterval') carry(`__ss_adapt') dcomp(`__dcname') `nologlik' `__sparseopt'
+		mata: st_local("__ergm_hassp", strofreal(findexternal("__nwergm_sp") != NULL))
+		if `__ergm_hassp' mata: mata drop __nwergm_sp
 		if `__ergm_curved' {
 			di as text "(decay is an estimated curved parameter here - see {help nwergm##gw_effects:help nwergm, gw_effects} for how this differs from R ergm's own curved-model machinery)"
 		}

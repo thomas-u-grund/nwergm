@@ -12,7 +12,7 @@ program _nwergm_bipgof, rclass
 	version 14
 	syntax , OBS(string) NSIM(integer) BURNIN(integer) INTERVAL(integer) N1(integer) N2(integer) NODES(integer)
 	tempname bmat sim
-	matrix `bmat' = e(b)
+	_nwergm_getb `bmat'
 	mata: st_local("__gof_hasmask", strofreal(__nwergm_last_G.has_dyadmask))
 	if `__gof_hasmask' {
 		if "`e(proposal)'" == "tnt" local __gof_propfn "&ergm_propose_tnt_masked()"

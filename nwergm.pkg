@@ -15,6 +15,7 @@ f _nwergm_constr.ado
 f _nwergm_cov.ado
 f _nwergm_est.ado
 f _nwergm_fitstats.ado
+f _nwergm_getb.ado
 f _nwergm_gof.ado
 f _nwergm_gofplot.ado
 f _nwergm_hints.ado

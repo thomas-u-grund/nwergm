@@ -394,12 +394,31 @@ static int e6_step(graph_t *g, rng_t *rng, e6con_t *c, long nterms, const int *t
 		const double *p1, const double *p2, const int *covidx, double **attrs, double **covmats, long n,
 		const double *theta, double *cur) {
 	e6prop_t P;
-	double chg[MAXTERMS], cutoff;
+	static double chg[MAXTERMS];
+	double cutoff;
 	long a, k;
 	if (e6_propose(g, rng, c, &P)) return -1;
 	if (P.m == 0) return 0;
 	if (c->bdK > 0 && !e6_bd_valid(g, c, &P)) return 0;
 	for (k = 0; k < nterms; k++) chg[k] = 0.0;
+	/* one proposed new tie: the change statistics are those of the network before the toggle, so the tie is only
+	   added when the proposal is accepted; adding and removing a tie at once leaves every list as it was, so this
+	   gives the same chain as toggling and undoing (not so with operator terms, whose derived networks change too) */
+	if (P.m == 1 && g_nctx == 0 && !has_edge(g, P.t[0], P.h[0])) {
+		for (k = 0; k < nterms; k++) {
+			double *at = (attridx[k] > 0) ? attrs[attridx[k] - 1] : NULL;
+			double *cmk = (covidx[k] > 0) ? covmats[covidx[k] - 1] : NULL;
+			chg[k] += change_any(k, g, termcodes[k], p1[k], p2[k], at, cmk, n, 1.0, P.t[0], P.h[0]);
+		}
+		cutoff = P.logratio;
+		for (k = 0; k < nterms; k++) cutoff += theta[k] * chg[k];
+		if (cutoff >= 0.0 || log(rng_unif(rng)) < cutoff) {
+			toggle(g, P.t[0], P.h[0]);
+			for (k = 0; k < nterms; k++) cur[k] += chg[k];
+			return 1;
+		}
+		return 0;
+	}
 	for (a = 0; a < P.m; a++) {
 		double delta = has_edge(g, P.t[a], P.h[a]) ? -1.0 : 1.0;
 		for (k = 0; k < nterms; k++) {

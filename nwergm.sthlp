@@ -439,6 +439,26 @@ with the size of the network, the terms and the number of iterations. Check the 
 against R before relying on either; the website {browse "https://nwcommands.org/nwergm/":nwcommands.org/nwergm} describes the
 comparison with R.
 
+{marker pernode}{...}
+{title:Models with one coefficient per node}
+
+{pstd}
+{opt sender} and {opt receiver}, and factor terms on an attribute with many levels, give one coefficient per
+node or level, so a model can have hundreds or thousands of coefficients. A dyad-independent model of this
+kind ({cmd:edges sender receiver}, possibly with node and dyadic covariates) is fitted by the pseudolikelihood,
+which then equals the likelihood; {cmd:nwergm} uses a sparse design for it, and a directed network of 1,000
+nodes (2,000 coefficients) takes a few seconds.
+
+{pstd}
+A dyad-dependent model with such terms (for example {cmd:edges mutual sender receiver}) needs
+{opt method(mcmle)}. As in R's {cmd:ergm}, every iteration draws a sample whose size grows with the number of
+coefficients (32 draws per coefficient), and the work of an iteration grows with the square of that number.
+Such fits are practical up to a few hundred nodes: {cmd:edges mutual sender receiver} on a directed network
+of 100 nodes (200 coefficients) converged after 15 iterations in about 20 minutes. For larger networks,
+replace the per-node terms with node covariates or degree terms ({opt gwodegree()}, {opt gwidegree()}), or
+use {opt method(mple)}; for a dyad-dependent model the pseudolikelihood estimate is only an approximation, and
+its standard errors are too small.
+
 {title:Postestimation}
 
 {pstd}

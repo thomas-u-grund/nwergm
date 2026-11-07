@@ -31,7 +31,7 @@ program _nwergm_mcdiag, rclass
 	mata: st_local("__isbip", strofreal(__nwergm_last_G.bipartite))
 	if `__isbip' mata: `obsG'.set_bipartite(__nwergm_last_G.mode)
 	mata: ergm_bridge_obs(`netobj', `obsG', `dir')
-	mata: `obsstat' = __nwergm_last_M.full_statistic(`obsG')
+	mata: `obsstat' = ergm_full_stat(__nwergm_last_M, `obsG')
 	mata: mata drop `obsG'
 	mata: `C' = st_matrix("e(mcmcsample)") :- `obsstat'
 	mata: `C' = `C'[., selectindex(__nwergm_last_M.isfixed :== 0)]

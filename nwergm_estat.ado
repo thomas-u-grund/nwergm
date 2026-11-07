@@ -69,7 +69,7 @@ program define nwergm_estat_mcmcdiag, rclass
 	}
 
 	tempname bmat
-	matrix `bmat' = e(b)
+	_nwergm_getb `bmat'
 	local p = colsof(`bmat')
 	local names : colnames `bmat'
 

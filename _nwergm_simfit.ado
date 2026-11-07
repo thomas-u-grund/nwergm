@@ -58,7 +58,7 @@ program _nwergm_simfit, rclass
 			exit 198
 		}
 	}
-	else matrix `bmat' = e(b)
+	else _nwergm_getb `bmat'
 
 	// starting network: the fit's last network (R: newnetwork) unless basis() is given
 	// node names of the draws: node i of the chain is node i of the basis (or of the fitted network), in the order the

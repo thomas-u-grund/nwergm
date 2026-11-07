@@ -177,7 +177,7 @@
    network only if it fits the frame the caller supplied (otherwise it reports the number of ties it needs in
    __ergm_native_nties_out and writes nothing), so that the caller need not allocate one row per dyad. A plugin of generation 1
    (no such scalar) is always given the frame of one row per dyad by the Mata caller. */
-#define ERGM_NATIVE_GEN 2
+#define ERGM_NATIVE_GEN 4  /* 3: wide models (more than 256 slots, term table in frame variables, long output); 4: sparse dyadic covariates */
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
@@ -2377,7 +2377,8 @@ static long next_long(void) {
 	return (long)next_double();
 }
 
-#define MAXTERMS 256  /* must match unw_ergm.do's own ErgmNativeSetup() maxcols */
+#define MAXTERMS 8192  /* must match unw_ergm.do's ErgmNativeSetup() maxcols for a plugin of generation >= 3 */
+#define MAXTERMS_NARROW 256  /* curved MPLE (mode 2) and the argument-string wire format: the limit of generation 2 */
 #define MAXATTR  64  /* must match unw_ergm.do's own ErgmNativeSetup() maxattr */
 #define MAXCOVMAT 8  /* must match unw_ergm.do's own ErgmNativeSetup() maxcovmat (harmonisation unit 160) - distinct dense n x n edgecov()/hamming() matrices are far heavier per slot (n^2 doubles, not n) than an attribute array, so this cap is deliberately much smaller than MAXATTR */
 
@@ -2631,7 +2632,7 @@ static void theta_to_eta_c(const double *theta, long ntheta, long nterms, long n
    search below exactly as it is there. */
 static double curved_loglik_c(const double *X, const double *y, long ndyads, long nterms,
 		long ntheta, long ncurved, const double *theta) {
-	double eta[MAXTERMS];
+	double eta[MAXTERMS_NARROW];
 	double ll = 0.0;
 	long i, k;
 	theta_to_eta_c(theta, ntheta, nterms, ncurved, eta);
@@ -2681,7 +2682,7 @@ typedef struct {
 static void curved_obj_c(cobj_t *o, const double *theta, double *val, double *grad, double *H) {
 	long nterms = o->nterms, ntheta = o->ntheta, ncurved = o->ncurved, nord = nterms - ncurved;
 	long i, j, k;
-	double eta[MAXTERMS], dw[MAXTERMS], dalpha[MAXTERMS];
+	double eta[MAXTERMS_NARROW], dw[MAXTERMS_NARROW], dalpha[MAXTERMS_NARROW];
 	double *Jac = (double *)calloc((size_t)nterms * (size_t)ntheta, sizeof(double));
 	double *XJ = (double *)malloc((size_t)ntheta * sizeof(double));
 	double ll = 0.0;
@@ -3013,6 +3014,7 @@ static void graph_unmake(graph_t *g) {
 	if (g->inadj) { for (q = 0; q <= g->n; q++) free(g->inadj[q].nb); free(g->inadj); }
 	memset(g, 0, sizeof(*g));
 }
+static void fb_free(void);
 static void ops_free(void) {
 	int q;
 	for (q = 0; q < g_nctx; q++) {
@@ -3022,6 +3024,114 @@ static void ops_free(void) {
 	free(g_ctx); g_ctx = NULL; g_nctx = 0;
 	free(g_con); g_con = NULL; g_ncon = 0;
 	g_main = NULL; g_attrp = NULL; g_covp = NULL;
+	fb_free();
+}
+
+/* ---- factor blocks (generation 3) ---------------------------------------
+   A run of consecutive nodefactor/nodeofactor/nodeifactor slots on the same
+   attribute (sender()/receiver(): one slot per node) changes in at most one
+   slot per end of the toggled dyad: the slot whose level is the end's
+   attribute value.  Such runs (FB_MIN slots or more, no operator) are held
+   as blocks with a node -> slot map, so that a proposal costs one lookup per
+   block instead of one change statistic per slot.  The values are the same
+   as change_slot()'s; only the order of the terms of the acceptance sum
+   differs.  The remaining slots are evaluated one by one as before. */
+#define FB_MIN 32
+typedef struct { long s, len; int code; long *map; } fblock_t;
+static fblock_t *g_fb = NULL;
+static long g_nfb = 0;
+static long *g_nbidx = NULL;	/* slots outside the blocks */
+static long g_nnb = 0;
+static long *g_tk1 = NULL, *g_tk2 = NULL;	/* touched block slots of a proposal (two lists: the swap proposal) */
+static double *g_tv1 = NULL, *g_tv2 = NULL;
+static double *g_fbchg1 = NULL, *g_fbchg2 = NULL;	/* change statistics, per call (not static arrays) */
+
+static void fb_free(void) {
+	long b;
+	for (b = 0; b < g_nfb; b++) free(g_fb[b].map);
+	free(g_fb); g_fb = NULL; g_nfb = 0;
+	free(g_nbidx); g_nbidx = NULL; g_nnb = 0;
+	free(g_tk1); free(g_tk2); free(g_tv1); free(g_tv2); g_tk1 = g_tk2 = NULL; g_tv1 = g_tv2 = NULL;
+	free(g_fbchg1); free(g_fbchg2); g_fbchg1 = g_fbchg2 = NULL;
+}
+
+static int fb_isfactor(int c) {
+	return c == TERMCODE_NODEFACTOR || c == TERMCODE_NODEOFACTOR || c == TERMCODE_NODEIFACTOR;
+}
+
+/* finds the blocks; returns the number of blocks (0: the ordinary slot loops are used) */
+static long fb_build(long nterms, const int *termcodes, const int *attridx, const double *p1, double **attrs, long n) {
+	long k, e, v, b, m;
+	fb_free();
+	g_fb = (fblock_t *)calloc((size_t)nterms + 1, sizeof(fblock_t));
+	g_nbidx = (long *)malloc(((size_t)nterms + 1) * sizeof(long));
+	k = 0;
+	while (k < nterms) {
+		e = k;
+		if (fb_isfactor(termcodes[k]) && attridx[k] > 0 && !g_opkind[k]) {
+			while (e + 1 < nterms && termcodes[e + 1] == termcodes[k] && attridx[e + 1] == attridx[k] && !g_opkind[e + 1]) e++;
+		}
+		if (e - k + 1 >= FB_MIN) {
+			fblock_t *fb = &g_fb[g_nfb++];
+			double *a = attrs[attridx[k] - 1];
+			fb->s = k; fb->len = e - k + 1; fb->code = termcodes[k];
+			fb->map = (long *)malloc(((size_t)n + 1) * sizeof(long));
+			for (v = 0; v <= n; v++) fb->map[v] = -1;
+			for (v = 1; v <= n; v++) {
+				for (m = k; m <= e; m++) if (a[v] == p1[m]) { fb->map[v] = m; break; }
+			}
+			k = e + 1;
+		}
+		else {
+			for (m = k; m <= e; m++) g_nbidx[g_nnb++] = m;
+			k = e + 1;
+		}
+	}
+	if (g_nfb == 0) { fb_free(); return 0; }
+	b = 2 * g_nfb + 2;
+	g_tk1 = (long *)malloc((size_t)b * sizeof(long)); g_tk2 = (long *)malloc((size_t)b * sizeof(long));
+	g_tv1 = (double *)malloc((size_t)b * sizeof(double)); g_tv2 = (double *)malloc((size_t)b * sizeof(double));
+	g_fbchg1 = (double *)calloc((size_t)nterms + 1, sizeof(double)); g_fbchg2 = (double *)calloc((size_t)nterms + 1, sizeof(double));
+	return g_nfb;
+}
+
+/* change statistics of toggling (i,j) with sign delta: the slots outside the blocks into chg[], the touched block
+   slots into (tk, tv, *nt); returns sum theta * change */
+static double fb_change(graph_t *g, const int *termcodes, const int *attridx, const double *p1, const double *p2, const int *covidx,
+		double **attrs, double **covmats, long n, const double *theta, double delta, long i, long j,
+		double *chg, long *tk, double *tv, int *nt) {
+	double cut = 0.0;
+	long q, k, b;
+	int t = 0;
+	for (q = 0; q < g_nnb; q++) {
+		double *a, *cmk;
+		k = g_nbidx[q];
+		a = (attridx[k] > 0) ? attrs[attridx[k] - 1] : NULL;
+		cmk = (covidx[k] > 0) ? covmats[covidx[k] - 1] : NULL;
+		chg[k] = change_slot(k, g, termcodes[k], p1[k], p2[k], a, cmk, n, delta, i, j);
+		cut += theta[k] * chg[k];
+	}
+	for (b = 0; b < g_nfb; b++) {
+		fblock_t *fb = &g_fb[b];
+		if (fb->code != TERMCODE_NODEIFACTOR) {
+			k = fb->map[i];
+			if (k >= 0) { tk[t] = k; tv[t] = delta; t++; cut += theta[k] * delta; }
+		}
+		if (fb->code != TERMCODE_NODEOFACTOR) {
+			k = fb->map[j];
+			if (k >= 0) { tk[t] = k; tv[t] = delta; t++; cut += theta[k] * delta; }
+		}
+	}
+	*nt = t;
+	return cut;
+}
+
+/* accepted toggle: the current statistics (and the raw statistics of transformed slots) move on */
+static void fb_accept(double *cur, const double *chg, const long *tk, const double *tv, int nt) {
+	long q, k;
+	int t;
+	for (q = 0; q < g_nnb; q++) { k = g_nbidx[q]; cur[k] += chg[k]; g_raw[k] += g_rawchg[k]; }
+	for (t = 0; t < nt; t++) cur[tk[t]] += tv[t];
 }
 
 #include "ergm_mcmc_e6.h"
@@ -3030,15 +3140,19 @@ STDLL stata_call(int argc, char *argv[]) {
 	char *argbuf;
 	long mode, n, directed, bipartite, nties_in, samplesize, burnin, interval, proposal_code, nattr, ncovmat, hasmask, fixed_density, nterms, i, k;
 	long attrcol_base, covmatcol_base, maskcol_base, outcol_base;
+	int sparsecov = 0;
+	long covnnz[MAXCOVMAT];
 	long ncurved;
 	double curved_decay_start;
+	int wide = 0, tablevars = 0;
+	long termcol_base = 0;
 	unsigned long long rngseed;
-	int termcodes[MAXTERMS];
-	int attridx[MAXTERMS];
-	int covidx[MAXTERMS];
-	double p1[MAXTERMS], p2[MAXTERMS];
-	double theta[MAXTERMS];
-	double obs[MAXTERMS];
+	static int termcodes[MAXTERMS];
+	static int attridx[MAXTERMS];
+	static int covidx[MAXTERMS];
+	static double p1[MAXTERMS], p2[MAXTERMS];
+	static double theta[MAXTERMS];
+	static double obs[MAXTERMS];
 	double *attrs[MAXATTR];
 	double *covmats[MAXCOVMAT];
 	graph_t g;
@@ -3083,6 +3197,15 @@ STDLL stata_call(int argc, char *argv[]) {
 	rngseed       = (unsigned long long)next_double();
 	nattr         = next_long();
 	ncovmat       = next_long();
+	/* generation 4: a negative count means that each dyadic covariate matrix comes as its nonzero entries (row,
+	   column, value; three frame variables per matrix, one entry per observation) instead of n columns; the next
+	   |ncovmat| fields give the number of entries of each matrix */
+	if (ncovmat < 0) {
+		sparsecov = 1;
+		ncovmat = -ncovmat;
+		if (ncovmat > MAXCOVMAT) { SF_error("ergm_mcmc: too many dyadic covariate matrices\n"); free(argbuf); return(198); }
+		for (k = 0; k < ncovmat; k++) covnnz[k] = next_long();
+	}
 	/* hasmask (harmonisation unit 168): inserted right after ncovmat, in
 	   ALL THREE Mata-side wire-format callers - unw_ergm.do's own
 	   ErgmNativeSampleCore() is the only one that ever sends 1;
@@ -3107,19 +3230,49 @@ STDLL stata_call(int argc, char *argv[]) {
 	   ErgmMCMCSampleSwap()/ErgmMCMCSampleDiagSwap() in unw_ergm.do. */
 	fixed_density = next_long();
 	nterms        = next_long();
+	/* generation 3: a negative count means that the term table (code, attribute, p1, p2, covariate, theta, obs; one
+	   row per slot) is in 7 frame variables starting at column termcol_base instead of the argument string (whose
+	   options Stata limits to about 4,000 characters, about 50 slots). The next field, wide, asks for the sample to be
+	   written long (one output variable, row draw*nterms+k+1), so that the number of variables does not grow with
+	   the slots either; a wide model may have up to MAXTERMS slots. */
+	if (nterms < 0) {
+		tablevars = 1;
+		nterms = -nterms;
+		termcol_base = next_long();
+		wide = (int)next_long();
+	}
 	if (nterms > MAXTERMS) { SF_error("ergm_mcmc: too many terms\n"); free(argbuf); return(198); }
 	if (nattr > MAXATTR) { SF_error("ergm_mcmc: too many attribute arrays\n"); free(argbuf); return(198); }
 	if (ncovmat > MAXCOVMAT) { SF_error("ergm_mcmc: too many dyadic covariate matrices\n"); free(argbuf); return(198); }
-	for (i = 0; i < nterms; i++) {
-		termcodes[i] = (int)next_long();
-		attridx[i] = (int)next_long();
-		p1[i] = next_double();
-		p2[i] = next_double();
-		covidx[i] = (int)next_long();
-		term_needs(termcodes[i], directed, &need_adj, &need_outin, &need_dirsp);
+	if (wide && mode != 0 && mode != 3) { SF_error("ergm_mcmc: a wide model is supported for sampling and observed statistics only\n"); free(argbuf); return(198); }
+	if (!wide && nterms > MAXTERMS_NARROW) { SF_error("ergm_mcmc: too many terms\n"); free(argbuf); return(198); }
+	if (tablevars) {
+		for (i = 0; i < nterms; i++) {
+			ST_double tv[7];
+			int c;
+			for (c = 0; c < 7; c++) SF_vdata((int)(termcol_base + c), (int)(i + 1), &tv[c]);
+			termcodes[i] = (int)tv[0];
+			attridx[i] = (int)tv[1];
+			p1[i] = tv[2];
+			p2[i] = tv[3];
+			covidx[i] = (int)tv[4];
+			theta[i] = tv[5];
+			obs[i] = tv[6];
+			term_needs(termcodes[i], directed, &need_adj, &need_outin, &need_dirsp);
+		}
 	}
-	for (i = 0; i < nterms; i++) theta[i] = next_double();
-	for (i = 0; i < nterms; i++) obs[i] = next_double();
+	else {
+		for (i = 0; i < nterms; i++) {
+			termcodes[i] = (int)next_long();
+			attridx[i] = (int)next_long();
+			p1[i] = next_double();
+			p2[i] = next_double();
+			covidx[i] = (int)next_long();
+			term_needs(termcodes[i], directed, &need_adj, &need_outin, &need_dirsp);
+		}
+		for (i = 0; i < nterms; i++) theta[i] = next_double();
+		for (i = 0; i < nterms; i++) obs[i] = next_double();
+	}
 	/* mode=2 only (harmonisation unit 146): how many of the LAST
 	   `nterms' eta-space slots belong to the curved term's own per-
 	   count block, and that block's own starting decay value - always
@@ -3287,10 +3440,24 @@ STDLL stata_call(int argc, char *argv[]) {
 	   (not the old hardcoded `attrcol_base+nattr' expression) is used at
 	   every one of those sites below so none of them silently shift. */
 	covmatcol_base = attrcol_base + nattr;
-	maskcol_base = covmatcol_base + ncovmat * n;
+	maskcol_base = covmatcol_base + (sparsecov ? 3 * ncovmat : ncovmat * n);
 	concol_base = maskcol_base + (hasmask ? n : 0);
 	outcol_base = concol_base + e6cols;
-	for (k = 0; k < ncovmat; k++) {
+	for (k = 0; k < ncovmat && sparsecov; k++) {
+		long e;
+		covmats[k] = (double *)calloc((size_t)n * (size_t)n, sizeof(double));
+		for (e = 1; e <= covnnz[k]; e++) {
+			ST_double vr, vc, v;
+			long r, c;
+			SF_vdata((int)(covmatcol_base + 3*k), e, &vr);
+			SF_vdata((int)(covmatcol_base + 3*k + 1), e, &vc);
+			SF_vdata((int)(covmatcol_base + 3*k + 2), e, &v);
+			r = (long)vr; c = (long)vc;
+			if (r < 1 || r > n || c < 1 || c > n) continue;
+			covmats[k][(c-1)*n + (r-1)] = SF_is_missing(v) ? 0.0 : v;
+		}
+	}
+	for (k = 0; k < ncovmat && !sparsecov; k++) {
 		long c, r;
 		covmats[k] = (double *)calloc((size_t)n * (size_t)n, sizeof(double));
 		for (c = 1; c <= n; c++) {
@@ -3520,7 +3687,7 @@ STDLL stata_call(int argc, char *argv[]) {
 		long ne = g.nties;
 		long *ti = (long *)malloc((size_t)(ne + 1) * sizeof(long));
 		long *tj = (long *)malloc((size_t)(ne + 1) * sizeof(long));
-		double acc[MAXTERMS];
+		static double acc[MAXTERMS];
 		long e;
 		for (e = 0; e < ne; e++) { ti[e] = g.elist_i[e]; tj[e] = g.elist_j[e]; }
 		for (e = 0; e < ne; e++) toggle(&g, ti[e], tj[e]);
@@ -3533,7 +3700,10 @@ STDLL stata_call(int argc, char *argv[]) {
 			}
 			toggle(&g, ti[e], tj[e]);
 		}
-		for (k = 0; k < nterms; k++) SF_vstore((int)(outcol_base + k), 1, acc[k]);
+		for (k = 0; k < nterms; k++) {
+			if (wide) SF_vstore((int)outcol_base, (int)(k + 1), acc[k]);
+			else SF_vstore((int)(outcol_base + k), 1, acc[k]);
+		}
 		free(ti); free(tj);
 		for (k = 0; k < nattr; k++) free(attrs[k]);
 		for (k = 0; k < ncovmat; k++) free(covmats[k]);
@@ -3566,7 +3736,7 @@ STDLL stata_call(int argc, char *argv[]) {
 		long ndyads = bipartite ? g.n1 * g.n2 : (directed ? n * (n - 1) : n * (n - 1) / 2);
 		long ntheta = (nterms - ncurved) + 2;
 		double *X, *Y;
-		double theta_out[MAXTERMS], V_out[MAXTERMS*MAXTERMS];
+		double theta_out[MAXTERMS_NARROW], V_out[MAXTERMS_NARROW*MAXTERMS_NARROW];
 		long converged_out = 0;
 		long pos = 0;
 		int fit_rc;
@@ -3661,10 +3831,14 @@ STDLL stata_call(int argc, char *argv[]) {
 		return(198);
 	}
 
+	/* factor blocks: ordinary single-dyad and swap proposals; constrained (e6) proposals keep the slot loops */
+	if (e6c.code == 0) fb_build(nterms, termcodes, attridx, p1, attrs, n);
+	else fb_free();
+
 	for (step = 0; step < burnin; step++) {
 		long pi, pj;
 		double logratio, cutoff = 0.0, delta;
-		double chg[MAXTERMS];
+		static double chg[MAXTERMS];
 		int propfail = 0;
 		if (e6c.code) {
 			if (e6_step(&g, &rng, &e6c, nterms, termcodes, attridx, p1, p2, covidx, attrs, covmats, n, theta, cur) < 0) { SF_error("ergm_mcmc: the Metropolis-Hastings proposal failed (no valid move for this constraint)\n"); return(198); }
@@ -3673,8 +3847,23 @@ STDLL stata_call(int argc, char *argv[]) {
 		}
 		if (fixed_density) {
 			long t1, h1, t2, h2;
-			double chg1[MAXTERMS], chg2[MAXTERMS];
+			static double chg1[MAXTERMS], chg2[MAXTERMS];
 			propose_swap(&g, &rng, &t1, &h1, &t2, &h2);
+			if (g_nfb) {
+				int nt1, nt2;
+				cutoff = fb_change(&g, termcodes, attridx, p1, p2, covidx, attrs, covmats, n, theta, -1.0, t1, h1, g_fbchg1, g_tk1, g_tv1, &nt1);
+				toggle(&g, t1, h1);
+				cutoff += fb_change(&g, termcodes, attridx, p1, p2, covidx, attrs, covmats, n, theta, 1.0, t2, h2, g_fbchg2, g_tk2, g_tv2, &nt2);
+				if (cutoff >= 0.0 || log(rng_unif(&rng)) < cutoff) {
+					long q;
+					toggle(&g, t2, h2);
+					for (q = 0; q < g_nnb; q++) { k = g_nbidx[q]; cur[k] += g_fbchg1[k] + g_fbchg2[k]; }
+					for (q = 0; q < nt1; q++) cur[g_tk1[q]] += g_tv1[q];
+					for (q = 0; q < nt2; q++) cur[g_tk2[q]] += g_tv2[q];
+				}
+				else toggle(&g, t1, h1);
+				continue;
+			}
 			for (k = 0; k < nterms; k++) {
 				double *a = (attridx[k] > 0) ? attrs[attridx[k] - 1] : NULL;
 				double *cmk = (covidx[k] > 0) ? covmats[covidx[k] - 1] : NULL;
@@ -3704,6 +3893,17 @@ STDLL stata_call(int argc, char *argv[]) {
 		else if (proposal_code == 2) propose_tnt(&g, &rng, &pi, &pj, &logratio);
 		else propose_uniform(&g, &rng, &pi, &pj, &logratio);
 		delta = has_edge(&g, pi, pj) ? -1.0 : 1.0;
+		if (g_nfb) {
+			int nt;
+			cutoff = fb_change(&g, termcodes, attridx, p1, p2, covidx, attrs, covmats, n, theta, delta, pi, pj, g_fbchg1, g_tk1, g_tv1, &nt);
+			cutoff += logratio;
+			if (cutoff >= 0.0 || log(rng_unif(&rng)) < cutoff) {
+				toggle(&g, pi, pj);
+				fb_accept(cur, g_fbchg1, g_tk1, g_tv1, nt);
+				comp_accept();
+			}
+			continue;
+		}
 		for (k = 0; k < nterms; k++) {
 			double *a = (attridx[k] > 0) ? attrs[attridx[k] - 1] : NULL;
 			double *cmk = (covidx[k] > 0) ? covmats[covidx[k] - 1] : NULL;
@@ -3722,7 +3922,7 @@ STDLL stata_call(int argc, char *argv[]) {
 		for (step = 0; step < interval; step++) {
 			long pi, pj;
 			double logratio, cutoff = 0.0, delta;
-			double chg[MAXTERMS];
+			static double chg[MAXTERMS];
 			int propfail = 0;
 			if (e6c.code) {
 				int e6r = e6_step(&g, &rng, &e6c, nterms, termcodes, attridx, p1, p2, covidx, attrs, covmats, n, theta, cur);
@@ -3733,8 +3933,25 @@ STDLL stata_call(int argc, char *argv[]) {
 			}
 			if (fixed_density) {
 				long t1, h1, t2, h2;
-				double chg1[MAXTERMS], chg2[MAXTERMS];
+				static double chg1[MAXTERMS], chg2[MAXTERMS];
 				propose_swap(&g, &rng, &t1, &h1, &t2, &h2);
+				if (g_nfb) {
+					int nt1, nt2;
+					cutoff = fb_change(&g, termcodes, attridx, p1, p2, covidx, attrs, covmats, n, theta, -1.0, t1, h1, g_fbchg1, g_tk1, g_tv1, &nt1);
+					toggle(&g, t1, h1);
+					cutoff += fb_change(&g, termcodes, attridx, p1, p2, covidx, attrs, covmats, n, theta, 1.0, t2, h2, g_fbchg2, g_tk2, g_tv2, &nt2);
+					ntried++;
+					if (cutoff >= 0.0 || log(rng_unif(&rng)) < cutoff) {
+						long q;
+						toggle(&g, t2, h2);
+						for (q = 0; q < g_nnb; q++) { k = g_nbidx[q]; cur[k] += g_fbchg1[k] + g_fbchg2[k]; }
+						for (q = 0; q < nt1; q++) cur[g_tk1[q]] += g_tv1[q];
+						for (q = 0; q < nt2; q++) cur[g_tk2[q]] += g_tv2[q];
+						naccept++;
+					}
+					else toggle(&g, t1, h1);
+					continue;
+				}
 				for (k = 0; k < nterms; k++) {
 					double *a = (attridx[k] > 0) ? attrs[attridx[k] - 1] : NULL;
 					double *cmk = (covidx[k] > 0) ? covmats[covidx[k] - 1] : NULL;
@@ -3766,6 +3983,19 @@ STDLL stata_call(int argc, char *argv[]) {
 			else if (proposal_code == 2) propose_tnt(&g, &rng, &pi, &pj, &logratio);
 			else propose_uniform(&g, &rng, &pi, &pj, &logratio);
 			delta = has_edge(&g, pi, pj) ? -1.0 : 1.0;
+			if (g_nfb) {
+				int nt;
+				cutoff = fb_change(&g, termcodes, attridx, p1, p2, covidx, attrs, covmats, n, theta, delta, pi, pj, g_fbchg1, g_tk1, g_tv1, &nt);
+				cutoff += logratio;
+				ntried++;
+				if (cutoff >= 0.0 || log(rng_unif(&rng)) < cutoff) {
+					toggle(&g, pi, pj);
+					fb_accept(cur, g_fbchg1, g_tk1, g_tv1, nt);
+					comp_accept();
+					naccept++;
+				}
+				continue;
+			}
 			for (k = 0; k < nterms; k++) {
 				double *a = (attridx[k] > 0) ? attrs[attridx[k] - 1] : NULL;
 				double *cmk = (covidx[k] > 0) ? covmats[covidx[k] - 1] : NULL;
@@ -3782,7 +4012,8 @@ STDLL stata_call(int argc, char *argv[]) {
 			}
 		}
 		if (e6maxedges > 0 && g.nties > e6maxedges) { SF_error("ergm_mcmc: the number of ties exceeded mcmcmaxedges()\n"); return(198); }
-		for (k = 0; k < nterms; k++) SF_vstore((int)(outcol_base + k), draw + 1, cur[k]);
+		if (wide) { for (k = 0; k < nterms; k++) SF_vstore((int)outcol_base, (int)(draw * nterms + k + 1), cur[k]); }
+		else for (k = 0; k < nterms; k++) SF_vstore((int)(outcol_base + k), draw + 1, cur[k]);
 	}
 
 	/* write back final edge list so the Mata caller can rebuild its own

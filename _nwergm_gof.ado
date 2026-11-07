@@ -131,7 +131,7 @@ program _nwergm_gof, rclass
 	if `__isbip' mata: `obsG'.set_bipartite(__nwergm_last_G.mode)
 	mata: ergm_bridge_obs(`netobj', `obsG', `dir')
 	mata: `obsmat' = `obsG'.to_dense()
-	mata: `obsstat' = __nwergm_last_M.full_statistic(`obsG')
+	mata: `obsstat' = ergm_full_stat(__nwergm_last_M, `obsG')
 	mata: mata drop `obsG'
 
 	// groups simulated: the requested ones plus what the summary returns need
@@ -166,7 +166,7 @@ program _nwergm_gof, rclass
 	mata: st_local("__gnat", strofreal(__nwergm_last_M.native_enabled_sample))
 	if !`__gnat' _nwergm_slowwarn "estat gof" "fit"
 	tempname bmat
-	matrix `bmat' = e(b)
+	_nwergm_getb `bmat'
 	mata: __gof_groups = tokens("`simgroups'")
 	mata: ergm_gof_run(__nwergm_last_M, __nwergm_last_G, `obsmat', `obsstat', st_matrix("`bmat'"), `nsim', `gofburnin', `gofinterval', `propfn', `dir', `n1', __gof_groups, "__gofE7")
 	mata: mata drop __gof_groups `obsmat' `obsstat'
