@@ -6041,14 +6041,19 @@ real scalar ergm_spec0_ar(real colvector x0){
 	return(varpred[1,1] / (1 - arsum[1,1])^2)
 }
 
-// R statnet.common/ergm spectrum0.mvar: spectral covariance matrix at zero of the (possibly NA-padded) series X; infl and rank returned
-real matrix ergm_spec0_mvar(real matrix Xfull, real scalar infl, real scalar rnk){
-	real scalar p, pv, k, ord, tol, ordsel, i, j, ok
+// R statnet.common/ergm spectrum0.mvar: spectral covariance matrix at zero of the (possibly NA-padded) series X; infl and rank returned.
+// With the optional argument rc, a series that R's spectrum0.mvar() would stop on (all variables constant, no AR fit) returns
+// rc != 0 (and infl missing) instead of an error, so that the caller can do what R does after a try-error.
+real matrix ergm_spec0_mvar(real matrix Xfull, real scalar infl, real scalar rnk, | real scalar rc){
+	real scalar p, pv, k, ord, tol, ordsel, i, j, ok, userc
 	real matrix x, xf, evec, xr, unmapper, indvar, v, vvar, adj, arsum, varpred
 	real rowvector xscl, ev, xrsd, xaic, d, keep, ind
 	real colvector rows_ok
 	real scalar ord_ar
 
+	userc = (args() == 4)
+	if (userc) rc = 0
+	infl = .
 	tol = sqrt(2.220446049250313e-16)
 	p = cols(Xfull)
 	rows_ok = (rowmissing(Xfull) :== 0)
@@ -6057,7 +6062,13 @@ real matrix ergm_spec0_mvar(real matrix Xfull, real scalar infl, real scalar rnk
 	xscl = sqrt(diagonal(variance(x)))'
 	keep = selectindex(xscl :>= tol)
 	pv = cols(keep)
-	if (pv == 0) _error(3498, "All variables are constant.")
+	if (pv == 0) {
+		if (userc) {
+			rc = 1
+			return(J(p, p, .))
+		}
+		_error(3498, "All variables are constant.")
+	}
 	x = x[., keep]
 	xf = Xfull[., keep]
 	xscl = xscl[keep]
@@ -6081,7 +6092,13 @@ real matrix ergm_spec0_mvar(real matrix Xfull, real scalar infl, real scalar rnk
 	ord = ord + 1
 	while (!ok & ord > 0) {
 		ord = ord - 1
-		if (ord <= 0) _error(3498, "Unable to fit ar() even with order 1; this is likely to be due to insufficient sample size or a trend in the data.")
+		if (ord <= 0) {
+			if (userc) {
+				rc = 2
+				return(J(p, p, .))
+			}
+			_error(3498, "Unable to fit ar() even with order 1; this is likely to be due to insufficient sample size or a trend in the data.")
+		}
 		ergm_ar_yw(xr, ord, 1, ord_ar, arsum, varpred, xaic)
 		ok = !hasmissing(varpred)
 		if (ok) {
@@ -6104,6 +6121,10 @@ real matrix ergm_spec0_mvar(real matrix Xfull, real scalar infl, real scalar rnk
 	adj = I(cols(xr)) - arsum
 	vvar = luinv(adj) * varpred * luinv(adj)'
 	infl = exp((ln(det(vvar)) - ln(det(indvar))) / cols(indvar))
+	if (userc & infl >= .) {
+		rc = 3
+		return(J(p, p, .))
+	}
 	vvar = unmapper * vvar * unmapper'
 	for (i=1; i<=pv; i++) for (j=1; j<=pv; j++) v[keep[i], keep[j]] = vvar[i, j]
 	return(v)
@@ -12008,10 +12029,11 @@ real matrix ergm_mple_cov(class ErgmModel scalar M, class ErgmGraph scalar G, re
 	MCMLE: MCMLE.effectiveSize = 64): sample in runs, find the burn-in from the sample itself, estimate the effective sample
 	size (ESS) of the estimating equations after the burn-in and keep sampling (with a predicted, dampened run length) until the
 	target ESS is reached with a trustworthy burn-in estimate; whenever the sample has become twice the base size it is thinned
-	by two and the interval doubled.  Differences from R, all in the statistics only: the ESS inflation is the geometric mean of
-	the univariate AR spectral inflations of the whitened estimating equations (R: determinant of the multivariate AR spectral
-	density), and the burn-in p-value is a Hotelling-type comparison of the first 10% and the last 50% of the post-burn-in
-	sample with AR-corrected covariances (R: approx.hotelling.diff.test with spectrum0.mvar).
+	by two and the interval doubled.  As in R, the ESS is n / attr(spectrum0.mvar(esteq), "infl") (ergm_spec0_mvar()), and the
+	burn-in p-value is geweke.diag.mv(): approx.hotelling.diff.test(var.equal = TRUE) of the first 10% and the last 50% of the
+	post-burn-in sample with the multivariate AR spectral density of the pool. Up to 1.5.0 both used a univariate shortcut
+	(ergm_geomean_infl(): one scalar inflation for all directions), which understated the variance along slowly mixing directions;
+	it remains only as the fallback where R's spectrum0.mvar() would stop.
 */
 
 // distance, in the metric W^-1, from y to the boundary of the ellipsoid {x: x' U^-1 x = 1} (y inside); R's .ellipsoid_mahalanobis().
@@ -12172,7 +12194,7 @@ real rowvector _ergm_burn_ssr_blk(real matrix Y, real rowvector decay, real colv
 real rowvector ergm_find_burnin(real matrix X)
 {
 	real scalar nit, bscl, k, gr, it, cnt, best, sc, nmax, n2, x1n, x2n, K, j, q
-	real scalar infl1, infl2, df, T2, F, p, pv
+	real scalar infl1, df, T2, F, p, pv, pad, rk1, rc1
 	real colvector y, t, bk, idx
 	real matrix W, W1, W2, Cm, Vm, Wp, Y
 	real rowvector A, L
@@ -12265,17 +12287,19 @@ real rowvector ergm_find_burnin(real matrix X)
 	W2 = W[(n2 - x2n + 1)::n2, .]
 	if (x1n < 3 | x2n < 3) return((best, 0))
 	p = cols(W)
-	// R (var.equal = TRUE): both parts are centred about their own means and pooled; one autocorrelation inflation for the pool
+	// R geweke.diag.mv -> approx.hotelling.diff.test(x1, x2, var.equal = TRUE): both parts are centred about their own means and
+	// joined with a gap of NA rows, and the multivariate AR spectral density at zero of the pool (spectrum0.mvar) gives the
+	// covariance of the difference of the means and the inflation of the degrees of freedom; R counts a failure as p = 0
 	dd = mean(W1) - mean(W2)
-	Wp = (W1 :- mean(W1)) \ (W2 :- mean(W2))
-	infl1 = ergm_geomean_infl(Wp)
-	infl2 = infl1
-	Vm = variance(Wp) * infl1 * (1 / x1n + 1 / x2n)
-	Vm = invsym(Vm)
-	if (missing(Vm) > 0) return((best, 0))
-	T2 = dd * Vm * dd'
-	df = x1n / infl1 + x2n / infl2 - 2
+	pad = ceil(10 * log10(x1n + x2n))
+	Wp = (W1 :- mean(W1)) \ J(pad, p, .) \ (W2 :- mean(W2))
+	Vm = ergm_spec0_mvar(Wp, infl1, rk1, rc1)
+	if (rc1 | infl1 >= . | infl1 <= 0) return((best, 0))
+	Vm = Vm * (1 / x1n + 1 / x2n)
+	df = x1n / infl1 + x2n / infl1 - 2
 	if (df <= p) return((best, 0))
+	T2 = ergm_xtax_seigen(dd', Vm)
+	if (T2 >= .) return((best, 0))
 	F = T2 * (df - p + 1) / (df * p)
 	pv = Ftail(p, df - p + 1, F)
 	if (pv >= .) pv = 0
@@ -12293,7 +12317,7 @@ real matrix ErgmMCMCSampleAdaptive(class ErgmModel scalar M, class ErgmGraph sca
 	real scalar lazy
 	real rowvector bp, cur
 	real colvector idx
-	real scalar interval, eS, bb, pv, run, ss, pred, damp, n, tgt, nrun
+	real scalar interval, eS, bb, pv, run, ss, pred, damp, n, tgt, nrun, einf, erk, erc
 	string scalar nofix
 
 	// lazy: the native runs carry the network as a tie list in `ties' (G is not touched; the caller reloads it at the end)
@@ -12348,7 +12372,11 @@ real matrix ErgmMCMCSampleAdaptive(class ErgmModel scalar M, class ErgmGraph sca
 			if (verbose) printf("{txt}  (adaptive MCMC run %g: burn-in estimate %g of %g rows, p = %g - not trustworthy, sampling on)\n", run, bb, rows(sms), pv)
 			continue
 		}
-		eS = rows(post) / ergm_geomean_infl(post)
+		// R: eS <- niter(postburnin) / attr(spectrum0.mvar(postburnin), "infl"); the univariate approximation only if R's
+		// function would stop
+		(void) ergm_spec0_mvar(post, einf, erk, erc)
+		if (erc | einf >= . | einf <= 0) einf = ergm_geomean_infl(post)
+		eS = rows(post) / einf
 		if (verbose) printf("{txt}  (adaptive MCMC run %g: ESS %g of target %g, burn-in %g of %g rows, p = %g)\n", run, eS, tgt, bb, rows(sms), pv)
 		if (eS >= tgt) break
 	}
@@ -12391,7 +12419,8 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 	real rowvector curstat
 	real matrix tiesc
 	real scalar lazy
-	real scalar rmode, rconv, rd2, rd2e, rT2, rcrit, rdf, rinfl, rboost, rd2prev, rpv
+	real scalar rmode, rconv, rd2, rd2e, rT2, rcrit, rdf, rinfl, rboost, rd2prev, rpv, rrk, rrc
+	real matrix rlrv
 	real rowvector estprev, vidx2
 	real colvector d2ni, yw
 	real matrix Vm, Vmi, Wc, Dv
@@ -12986,12 +13015,17 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 				}
 				estprev = Dtestbar
 				if (rd2 < 2) {
-					rinfl = ergm_geomean_infl(Dtest[., vidx2])
-					rdf = rows(Dtest) / rinfl - 1
+					// R: hotel <- approx.hotelling.diff.test(esteqs); estcov <- hotel$covariance.x * sum(w^2) * length(w), with
+					// covariance.x = spectrum0.mvar(esteqs) / n (the multivariate AR spectral density at zero, a full matrix) and
+					// df = n / infl - 1. A series that spectrum0.mvar() cannot handle leaves rdf missing: R's try-error ("Unable to
+					// test for convergence"), which raises the sample size by the maximum boost below.
+					rlrv = ergm_spec0_mvar(Dtest[., vidx2], rinfl, rrk, rrc)
+					rdf = ((rrc | rinfl >= . | rinfl <= 0) ? . : rows(Dtest) / rinfl - 1)
 					yw = Dtestbar_w[vidx2]'
 					rd2e = yw' * Vmi * yw
-					if (rd2e < 1 & rdf > rpv) {
-						Wc = Vtest[vidx2, vidx2] * rinfl * ess_factor / rows(Dtest)
+					if (rd2e < 1 & rdf >= .) rT2 = -1
+					else if (rd2e < 1 & rdf > rpv) {
+						Wc = rlrv * ess_factor / rows(Dtest)
 						rT2 = ergm_ellipsoid_mahalanobis(yw, Wc, Vm)
 						if (rT2 >= 0) {
 							rcrit = invF(rpv, rdf - rpv + 1, confidence) * rpv * rdf / (rdf - rpv + 1)

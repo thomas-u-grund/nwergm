@@ -3,6 +3,11 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [1.5.1] - 2026-11-08
+
+### Results that change (read before you re-run old analyses)
+- **The convergence test and the adaptive sample size of MCMLE now use R's multivariate autocorrelation correction.** The effective sample size, the burn-in test and the covariance in the Hotelling-type convergence test (`MCMLE.termination = "confidence"`, the default) now come from the multivariate AR spectral density at zero, as R's `spectrum0.mvar()`, `geweke.diag.mv()` and `approx.hotelling.diff.test()` compute them. Up to 1.5.0 they used one scalar inflation for all directions, which understated the Monte Carlo variance along slowly mixing combinations of the statistics by a factor of about 3 on the benchmark models; the convergence test then passed earlier than in R, after fewer boosts of the sample size. Fits now simulate about as much as R's: proposals per fit (mean of three seeds) Lazega 9.9 million (R 9.1, 1.5.0 5.3), Faux Mesa High 8.1 million (R 7.8, 1.5.0 5.2), and the final samples have about R's size. Estimates are the same in distribution; every MCMC result for a given `seed()` changes, and fits take longer.
+
 ## [1.5.0] - 2026-11-08
 
 ### Results that change (read before you re-run old analyses)
