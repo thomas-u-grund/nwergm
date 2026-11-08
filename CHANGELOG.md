@@ -3,7 +3,12 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.4.0] - 2026-11-08
+
+### Results that change (read before you re-run old analyses)
+- **Monte Carlo fits of models with more than 64 statistics** (for example `sender`/`receiver` with a dyad-dependent term) now get a real Hummel step length instead of the step length 1 of every earlier version. The estimates converge to the same maximum, but the iterations, the run time and the Monte Carlo noise of such fits differ from 1.3.7. Models with 64 statistics or fewer give the same results as 1.3.7 with the same seed.
+- **Observed statistics of networks with 500 or more nodes** are computed in the plugin. Sums over continuous covariates (`nodecov()`, `edgecov()` with non-integer values) can differ from 1.3.7 in the last digits; everything else is identical.
+- `estat gof` and `nwergm simulate` after a curved fit run (they stopped with r(3200) before).
 
 ### Fixed
 - **`estat gof` and `nwergm simulate` stopped with r(3200) after a curved fit** (`gwespfree()`, `gwdegreefree()` and the other terms with an estimated decay). They received the curved coefficients (weight, decay) where the sampler needs the natural parameters; these are now computed first.

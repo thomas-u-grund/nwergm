@@ -394,7 +394,7 @@ static int e6_step(graph_t *g, rng_t *rng, e6con_t *c, long nterms, const int *t
 		const double *p1, const double *p2, const int *covidx, double **attrs, double **covmats, long n,
 		const double *theta, double *cur) {
 	e6prop_t P;
-	static double chg[MAXTERMS];
+	double *chg = g_e6chg;
 	double cutoff;
 	long a, k;
 	if (e6_propose(g, rng, c, &P)) return -1;

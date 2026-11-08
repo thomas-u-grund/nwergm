@@ -1,19 +1,17 @@
 setting,seed,seconds,iterations
-default,1,     0.82,2
-default,2,     1.59,7
+default,1,     0.87,2
+default,2,     1.62,7
 default,3,     0.97,5
 default,4,     1.29,7
-default,5,     1.14,6
-fixed,1,     2.21,1
-fixed,2,     2.18,1
-fixed,3,     2.18,1
-fixed,4,     2.16,1
-fixed,5,     2.17,1
-old,1,     0.35,1
-old,2,     0.36,1
-old,3,     0.36,1
+default,5,     1.16,6
+fixed,1,     2.23,1
+fixed,2,     2.21,1
+fixed,3,     2.26,1
+fixed,4,     2.25,1
+fixed,5,     2.21,1
+old,1,     0.34,1
+old,2,     0.35,1
+old,3,     0.35,1
 old,4,     0.34,1
 old,5,     0.35,1
-default nonative,1,   233.42,4
-default nonative,2,   211.73,4
-default nonative,3,   429.94,7
+default nonative,1,   234.40,4

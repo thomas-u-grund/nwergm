@@ -2437,8 +2437,8 @@ static ctx_t *g_ctx = NULL;
 static int g_nctx = 0;
 static con_t *g_con = NULL;
 static long g_ncon = 0;
-static long g_cfirst[MAXTERMS], g_cn[MAXTERMS];
-static int g_ccomb[MAXTERMS];
+static long *g_cfirst = NULL, *g_cn = NULL;
+static int *g_ccomb = NULL;
 static double **g_attrp = NULL;
 static double **g_covp = NULL;
 
@@ -2595,8 +2595,59 @@ static double change_any(long k, graph_t *g, int termcode, double p1, double p2,
    f(raw statistic) using the raw statistic tracked in g_raw[] (kept in
    step on every accepted toggle).  kind 1 = log (value log0 at zero),
    2 = exp.  All other slots pass through untouched. */
-static int g_opkind[MAXTERMS];
-static double g_opparam[MAXTERMS], g_raw[MAXTERMS], g_rawchg[MAXTERMS];
+static int *g_opkind = NULL;
+static double *g_opparam = NULL, *g_raw = NULL, *g_rawchg = NULL;
+
+/* ---- per-slot arrays ------------------------------------------------------
+   All arrays with one entry per model slot live in one block sized to the
+   model, set up by slots_setup() once the number of slots is known (grown,
+   never shrunk; the plugin stays loaded).  Static arrays of MAXTERMS entries
+   each (64 KB apart) made the sampler of an ordinary model about 10% slower
+   than arrays of 256 entries (cache conflicts), and clearing them cost time
+   on every call. */
+static double *g_chg = NULL, *g_chg1 = NULL, *g_chg2 = NULL, *g_acc = NULL, *g_e6chg = NULL;
+static double *g_sp1 = NULL, *g_sp2 = NULL, *g_stheta = NULL, *g_sobs = NULL;
+static int *g_stermcodes = NULL, *g_sattridx = NULL, *g_scovidx = NULL;
+static void *g_slotblock = NULL;
+static long g_slotcap = 0;
+
+static int slots_setup(long nterms) {
+	long m = (nterms < 1) ? 1 : nterms;
+	const size_t per = 12 * sizeof(double) + 2 * sizeof(long) + 5 * sizeof(int);
+	char *b;
+	m = (m + 1) & ~1L;	/* even, so that every slice stays 8-byte aligned */
+	if (m > g_slotcap) {
+		void *nb = malloc((size_t)m * per);
+		if (nb == NULL) return 1;
+		free(g_slotblock);
+		g_slotblock = nb;
+		g_slotcap = m;
+	}
+	m = g_slotcap;
+	memset(g_slotblock, 0, (size_t)m * per);
+	b = (char *)g_slotblock;
+	/* the slices used on every proposal first */
+	g_stheta = (double *)b; b += m * sizeof(double);
+	g_chg = (double *)b; b += m * sizeof(double);
+	g_sp1 = (double *)b; b += m * sizeof(double);
+	g_sp2 = (double *)b; b += m * sizeof(double);
+	g_chg1 = (double *)b; b += m * sizeof(double);
+	g_chg2 = (double *)b; b += m * sizeof(double);
+	g_e6chg = (double *)b; b += m * sizeof(double);
+	g_opparam = (double *)b; b += m * sizeof(double);
+	g_raw = (double *)b; b += m * sizeof(double);
+	g_rawchg = (double *)b; b += m * sizeof(double);
+	g_acc = (double *)b; b += m * sizeof(double);
+	g_sobs = (double *)b; b += m * sizeof(double);
+	g_cfirst = (long *)b; b += m * sizeof(long);
+	g_cn = (long *)b; b += m * sizeof(long);
+	g_stermcodes = (int *)b; b += m * sizeof(int);
+	g_sattridx = (int *)b; b += m * sizeof(int);
+	g_scovidx = (int *)b; b += m * sizeof(int);
+	g_opkind = (int *)b; b += m * sizeof(int);
+	g_ccomb = (int *)b;
+	return 0;
+}
 
 static double op_f(int kind, double param, double x) {
 	if (kind == 1) return (x == 0.0) ? param : log(x);
@@ -3147,12 +3198,8 @@ STDLL stata_call(int argc, char *argv[]) {
 	int wide = 0, tablevars = 0;
 	long termcol_base = 0;
 	unsigned long long rngseed;
-	static int termcodes[MAXTERMS];
-	static int attridx[MAXTERMS];
-	static int covidx[MAXTERMS];
-	static double p1[MAXTERMS], p2[MAXTERMS];
-	static double theta[MAXTERMS];
-	static double obs[MAXTERMS];
+	int *termcodes, *attridx, *covidx;
+	double *p1, *p2, *theta, *obs;
 	double *attrs[MAXATTR];
 	double *covmats[MAXCOVMAT];
 	graph_t g;
@@ -3246,6 +3293,9 @@ STDLL stata_call(int argc, char *argv[]) {
 	if (ncovmat > MAXCOVMAT) { SF_error("ergm_mcmc: too many dyadic covariate matrices\n"); free(argbuf); return(198); }
 	if (wide && mode != 0 && mode != 3) { SF_error("ergm_mcmc: a wide model is supported for sampling and observed statistics only\n"); free(argbuf); return(198); }
 	if (!wide && nterms > MAXTERMS_NARROW) { SF_error("ergm_mcmc: too many terms\n"); free(argbuf); return(198); }
+	if (slots_setup(nterms)) { SF_error("ergm_mcmc: out of memory\n"); free(argbuf); return(909); }
+	termcodes = g_stermcodes; attridx = g_sattridx; covidx = g_scovidx;
+	p1 = g_sp1; p2 = g_sp2; theta = g_stheta; obs = g_sobs;
 	if (tablevars) {
 		for (i = 0; i < nterms; i++) {
 			ST_double tv[7];
@@ -3290,7 +3340,7 @@ STDLL stata_call(int argc, char *argv[]) {
 	ncurved = (long)next_double();
 	curved_decay_start = next_double();
 	/* optional trailing block (agent E4): nops, then per transformed slot: slot index (0-based), kind, parameter, raw observed statistic */
-	for (i = 0; i < MAXTERMS; i++) { g_opkind[i] = 0; g_opparam[i] = 0.0; g_raw[i] = 0.0; g_rawchg[i] = 0.0; }
+	for (i = 0; i < nterms; i++) { g_opkind[i] = 0; g_opparam[i] = 0.0; g_raw[i] = 0.0; g_rawchg[i] = 0.0; }
 	{
 		long nops = (long)next_double(), oi;
 		for (oi = 0; oi < nops; oi++) {
@@ -3330,13 +3380,13 @@ STDLL stata_call(int argc, char *argv[]) {
 		g_ncon = next_long();
 		if (g_ncon < 0 || g_ncon > 1000000) g_ncon = 0;
 		g_con = (con_t *)calloc((size_t)(g_ncon + 1), sizeof(con_t));
-		for (q = 0; q < MAXTERMS; q++) { g_cfirst[q] = 0; g_cn[q] = 0; g_ccomb[q] = 0; }
+		for (q = 0; q < nterms; q++) { g_cfirst[q] = 0; g_cn[q] = 0; g_ccomb[q] = 0; }
 		for (q = 0; q < g_ncon; q++) {
 			con_t *c = &g_con[q];
 			c->slot = (int)next_long(); c->comb = (int)next_long(); c->code = (int)next_long();
 			c->attr = (int)next_long(); c->cov = (int)next_long(); c->ctx = (int)next_long();
 			c->p1 = next_double(); c->p2 = next_double(); c->w = next_double(); c->raw = next_double();
-			if (c->slot < 0 || c->slot >= MAXTERMS) { SF_error("ergm_mcmc: bad operator block\n"); free(argbuf); ops_free(); return(198); }
+			if (c->slot < 0 || c->slot >= nterms) { SF_error("ergm_mcmc: bad operator block\n"); free(argbuf); ops_free(); return(198); }
 			if (g_cn[c->slot] == 0) g_cfirst[c->slot] = q;
 			g_cn[c->slot]++;
 			g_ccomb[c->slot] = c->comb;
@@ -3687,7 +3737,7 @@ STDLL stata_call(int argc, char *argv[]) {
 		long ne = g.nties;
 		long *ti = (long *)malloc((size_t)(ne + 1) * sizeof(long));
 		long *tj = (long *)malloc((size_t)(ne + 1) * sizeof(long));
-		static double acc[MAXTERMS];
+		double *acc = g_acc;
 		long e;
 		for (e = 0; e < ne; e++) { ti[e] = g.elist_i[e]; tj[e] = g.elist_j[e]; }
 		for (e = 0; e < ne; e++) toggle(&g, ti[e], tj[e]);
@@ -3838,7 +3888,7 @@ STDLL stata_call(int argc, char *argv[]) {
 	for (step = 0; step < burnin; step++) {
 		long pi, pj;
 		double logratio, cutoff = 0.0, delta;
-		static double chg[MAXTERMS];
+		double *chg = g_chg;
 		int propfail = 0;
 		if (e6c.code) {
 			if (e6_step(&g, &rng, &e6c, nterms, termcodes, attridx, p1, p2, covidx, attrs, covmats, n, theta, cur) < 0) { SF_error("ergm_mcmc: the Metropolis-Hastings proposal failed (no valid move for this constraint)\n"); return(198); }
@@ -3847,7 +3897,7 @@ STDLL stata_call(int argc, char *argv[]) {
 		}
 		if (fixed_density) {
 			long t1, h1, t2, h2;
-			static double chg1[MAXTERMS], chg2[MAXTERMS];
+			double *chg1 = g_chg1, *chg2 = g_chg2;
 			propose_swap(&g, &rng, &t1, &h1, &t2, &h2);
 			if (g_nfb) {
 				int nt1, nt2;
@@ -3922,7 +3972,7 @@ STDLL stata_call(int argc, char *argv[]) {
 		for (step = 0; step < interval; step++) {
 			long pi, pj;
 			double logratio, cutoff = 0.0, delta;
-			static double chg[MAXTERMS];
+			double *chg = g_chg;
 			int propfail = 0;
 			if (e6c.code) {
 				int e6r = e6_step(&g, &rng, &e6c, nterms, termcodes, attridx, p1, p2, covidx, attrs, covmats, n, theta, cur);
@@ -3933,7 +3983,7 @@ STDLL stata_call(int argc, char *argv[]) {
 			}
 			if (fixed_density) {
 				long t1, h1, t2, h2;
-				static double chg1[MAXTERMS], chg2[MAXTERMS];
+				double *chg1 = g_chg1, *chg2 = g_chg2;
 				propose_swap(&g, &rng, &t1, &h1, &t2, &h2);
 				if (g_nfb) {
 					int nt1, nt2;
