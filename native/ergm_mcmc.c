@@ -177,7 +177,7 @@
    network only if it fits the frame the caller supplied (otherwise it reports the number of ties it needs in
    __ergm_native_nties_out and writes nothing), so that the caller need not allocate one row per dyad. A plugin of generation 1
    (no such scalar) is always given the frame of one row per dyad by the Mata caller. */
-#define ERGM_NATIVE_GEN 4  /* 3: wide models (more than 256 slots, term table in frame variables, long output); 4: sparse dyadic covariates */
+#define ERGM_NATIVE_GEN 5  /* 5: the SPDyad proposal (proposal code 3); 3: wide models (more than 256 slots, term table in frame variables, long output); 4: sparse dyadic covariates */
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
@@ -429,6 +429,14 @@ typedef struct {
 	long *free_elist_i, *free_elist_j; /* live list of CURRENTLY TIED free dyads only - the elist_i/elist_j analogue restricted to the free subspace */
 	long free_ecap, n_free_ties;
 	double n_free_dyads;     /* total free-dyad count over the canonical dyad space - computed once at graph-build time, mirrors ergm_propose_tnt_masked()'s own G.nfreedyads */
+	/* shared-partner cache of the SPDyad proposal (R ergm's .spcache.net auxiliary): the dyads with at least one
+	   shared partner (undirected: UTP, key (min,max); directed: OTP two-paths a->k->b, key (a,b)) and their counts,
+	   as a dense list (uniform draws) with a hash table key -> position; kept up to date by toggle() on the main
+	   graph only, when spc_on */
+	int spc_on;
+	dyadht_t spc_ht;
+	long *spc_i, *spc_j, *spc_cnt;
+	long spc_n, spc_cap;
 } graph_t;
 
 static long dyadkey(graph_t *g, long i, long j) {
@@ -536,6 +544,73 @@ static long common_neighbors(graph_t *g, long i, long j) {
 		if (nb->nb[k] != b && has_edge(g, b, nb->nb[k])) cnt++;
 	}
 	return cnt;
+}
+
+/* ===================================================================
+   Shared-partner cache of the SPDyad proposal (port of R ergm 4.12.0's
+   src/changestats_spcache.c, u__utp_wtnet()/u__otp_wtnet()): the number
+   of shared partners of every dyad that has at least one. Undirected
+   (UTP): k is a shared partner of {a,b} if a-k and k-b. Directed (OTP,
+   the type R uses for a directed network): k is one if a->k->b.
+   =================================================================== */
+static long spc_get(graph_t *g, long a, long b) {
+	long idx;
+	if (!ht_get(&g->spc_ht, dyadkey(g, a, b), &idx)) return 0;
+	return g->spc_cnt[idx];
+}
+
+static void spc_inc(graph_t *g, long a, long b, int inc) {
+	long key = dyadkey(g, a, b), idx, dummy;
+	if (ht_get(&g->spc_ht, key, &idx)) {
+		g->spc_cnt[idx] += inc;
+		if (g->spc_cnt[idx] == 0) {
+			long last = g->spc_n - 1;
+			if (idx != last) {
+				g->spc_i[idx] = g->spc_i[last]; g->spc_j[idx] = g->spc_j[last]; g->spc_cnt[idx] = g->spc_cnt[last];
+				ht_update_val(&g->spc_ht, dyadkey(g, g->spc_i[idx], g->spc_j[idx]), idx);
+			}
+			ht_del(&g->spc_ht, key, &dummy);
+			g->spc_n--;
+		}
+		return;
+	}
+	if (inc <= 0) return;   /* cannot happen: a count never goes below zero */
+	if (g->spc_n >= g->spc_cap) {
+		g->spc_cap = g->spc_cap ? g->spc_cap * 2 : 64;
+		g->spc_i = (long *)realloc(g->spc_i, (size_t)g->spc_cap * sizeof(long));
+		g->spc_j = (long *)realloc(g->spc_j, (size_t)g->spc_cap * sizeof(long));
+		g->spc_cnt = (long *)realloc(g->spc_cnt, (size_t)g->spc_cap * sizeof(long));
+	}
+	if (!g->directed && a > b) { long t = a; a = b; b = t; }
+	g->spc_i[g->spc_n] = a; g->spc_j[g->spc_n] = b; g->spc_cnt[g->spc_n] = inc;
+	ht_put(&g->spc_ht, key, g->spc_n);
+	g->spc_n++;
+}
+
+/* update the cache for a toggle of (t,h), called before the toggle */
+static void spc_update(graph_t *g, long t, long h) {
+	int e = has_edge(g, t, h) ? -1 : 1;
+	long q;
+	if (!g->directed) {
+		adjlist_t *a = &g->adj[t];
+		for (q = 0; q < a->len; q++) if (a->nb[q] != h) spc_inc(g, h, a->nb[q], e);   /* h-t-k */
+		a = &g->adj[h];
+		for (q = 0; q < a->len; q++) if (a->nb[q] != t) spc_inc(g, t, a->nb[q], e);   /* t-h-k */
+	}
+	else {
+		adjlist_t *a = &g->outadj[h];
+		for (q = 0; q < a->len; q++) if (a->nb[q] != t) spc_inc(g, t, a->nb[q], e);   /* t->h->k */
+		a = &g->inadj[t];
+		for (q = 0; q < a->len; q++) if (a->nb[q] != h) spc_inc(g, a->nb[q], h, e);   /* k->t->h */
+	}
+}
+
+static void spc_free(graph_t *g) {
+	if (!g->spc_on) return;
+	ht_free(&g->spc_ht);
+	free(g->spc_i); free(g->spc_j); free(g->spc_cnt);
+	g->spc_i = NULL; g->spc_j = NULL; g->spc_cnt = NULL;
+	g->spc_n = 0; g->spc_cap = 0; g->spc_on = 0;
 }
 
 static double gw_kernel_raw(double d, double decay) {
@@ -2355,6 +2430,57 @@ static int propose_tnt_masked(graph_t *g, rng_t *rng, long *pi, long *pj, double
 	return 0;
 }
 
+/* SPDyad (R ergm 4.12.0's default proposal, MCMC.prop = ~sparse + .triadic; port of Mp_SPDyad() in
+   src/MHproposals_triadic.cpp). With probability 1 - triFocus a TNT step; otherwise a dyad drawn uniformly from the
+   dyads with at least one shared partner (the cache above), toggled with the Hastings ratio TD(y)/TD(y*), where TD is
+   the number of such dyads before and after the toggle. As in R:
+     - when it is the triadic branch's turn and no dyad has a shared partner, no toggle is proposed (the step counts);
+     - with fixed dyads, up to 4 draws are made from the cache; if all are fixed, the step falls back to TNT;
+     - TD counts the fixed dyads too.
+   Returns 0 with a proposal, 2 for no toggle, 1 if the masked TNT step finds no free dyad (fatal). */
+static double g_spd_focus = -1.0;   /* triFocus; < 0: SPDyad is off */
+#define SPD_TRIES 4
+
+static int propose_spdyad(graph_t *g, rng_t *rng, long *pi, long *pj, double *logratio) {
+	long i = 0, j = 0, q, tries;
+	double oldtd, newtd;
+	int e;
+	adjlist_t *a;
+	if (rng_unif(rng) > g_spd_focus) {
+		if (g->has_mask) return propose_tnt_masked(g, rng, pi, pj, logratio);
+		propose_tnt(g, rng, pi, pj, logratio);
+		return 0;
+	}
+	if (g->spc_n == 0) return 2;
+	for (tries = 0; tries < SPD_TRIES; tries++) {
+		long r = rng_below(rng, g->spc_n);
+		i = g->spc_i[r]; j = g->spc_j[r];
+		if (!g->has_mask || mask_free(g, i, j)) break;
+	}
+	if (tries == SPD_TRIES) {
+		if (g->has_mask) return propose_tnt_masked(g, rng, pi, pj, logratio);
+		propose_tnt(g, rng, pi, pj, logratio);
+		return 0;
+	}
+	oldtd = newtd = (double)g->spc_n;
+	e = has_edge(g, i, j) ? -1 : 1;
+	if (!g->directed) {
+		a = &g->adj[j];
+		for (q = 0; q < a->len; q++) if (a->nb[q] != i) { long L = spc_get(g, i, a->nb[q]); newtd += (double)((L + e != 0) - (L != 0)); }
+		a = &g->adj[i];
+		for (q = 0; q < a->len; q++) if (a->nb[q] != j) { long L = spc_get(g, a->nb[q], j); newtd += (double)((L + e != 0) - (L != 0)); }
+	}
+	else {
+		a = &g->outadj[j];
+		for (q = 0; q < a->len; q++) if (a->nb[q] != i) { long L = spc_get(g, i, a->nb[q]); newtd += (double)((L + e != 0) - (L != 0)); }
+		a = &g->inadj[i];
+		for (q = 0; q < a->len; q++) if (a->nb[q] != j) { long L = spc_get(g, a->nb[q], j); newtd += (double)((L + e != 0) - (L != 0)); }
+	}
+	*logratio = log(oldtd) - log(newtd);
+	*pi = i; *pj = j;
+	return 0;
+}
+
 /* ===================================================================
    Small string-token reader over the single args string Stata hands
    the plugin in argv[0] (empirically confirmed NOT pre-tokenized by
@@ -2445,6 +2571,7 @@ static double **g_covp = NULL;
 static void ctx_commit(int parent, graph_t *gp, long pi, long pj);
 
 static int toggle(graph_t *g, long i, long j) {
+	if (g == g_main && g->spc_on) spc_update(g, i, j);
 	if (g == g_main && g_nctx > 0) ctx_commit(0, g, i, j);
 	return toggle_core(g, i, j);
 }
@@ -3240,7 +3367,12 @@ STDLL stata_call(int argc, char *argv[]) {
 	samplesize    = next_long();
 	burnin        = next_long();
 	interval      = next_long();
-	proposal_code = next_long();
+	/* proposal code: 1 uniform, 2 TNT, 3 SPDyad; for SPDyad the fraction carries triFocus / 2 (3.125 = triFocus 0.25) */
+	{
+		double pc = next_double();
+		proposal_code = (long)pc;
+		g_spd_focus = (proposal_code == 3) ? (pc - 3.0) * 2.0 : -1.0;
+	}
 	rngseed       = (unsigned long long)next_double();
 	nattr         = next_long();
 	ncovmat       = next_long();
@@ -3369,6 +3501,16 @@ STDLL stata_call(int argc, char *argv[]) {
 	if (e6c.code != 0 || e6c.bdK > 0) {
 		/* the constraint proposals need neighbour lists and in/out degrees */
 		if (directed) { need_dirsp = 1; need_outin = 1; }
+		else need_adj = 1;
+	}
+	/* SPDyad only where R uses it: one-mode networks, the single-toggle proposal (plain, masked or with degree
+	   bounds); the caller sends code 3 only then, this is a guard */
+	if (proposal_code == 3 && !(mode == 0 && !bipartite && !fixed_density && (e6c.code == 0 || e6c.code == E6_TNT) && e6c.dn_mode == 0 && !(e6c.bdK > 0 && e6c.bd_maxonly))) {
+		proposal_code = 2;
+		g_spd_focus = -1.0;
+	}
+	if (proposal_code == 3) {
+		if (directed) need_dirsp = 1;
 		else need_adj = 1;
 	}
 	/* operator block (composite columns and derived-network contexts), see the comment above TERMCODE_COMP:
@@ -3646,6 +3788,11 @@ STDLL stata_call(int argc, char *argv[]) {
 			c->tbj = (long *)calloc((size_t)c->tcap, sizeof(long));
 		}
 	}
+	/* the shared-partner cache is built by toggle() as the initial ties are added */
+	g.spc_on = (proposal_code == 3);
+	g.spc_i = NULL; g.spc_j = NULL; g.spc_cnt = NULL; g.spc_n = 0; g.spc_cap = 0;
+	memset(&g.spc_ht, 0, sizeof(g.spc_ht));
+	if (g.spc_on) ht_alloc(&g.spc_ht, ht_next_pow2(nties_in * 4 + 64));
 	for (i = 1; i <= nties_in; i++) {
 		ST_double vi, vj;
 		SF_vdata(1, i, &vi);
@@ -3712,7 +3859,7 @@ STDLL stata_call(int argc, char *argv[]) {
 		free(g.outdeg); free(g.indeg);
 		ht_free(&g.ht);
 		free(g.elist_i); free(g.elist_j);
-	free(g.mask); free(g.free_pos); free(g.free_elist_i); free(g.free_elist_j);
+	free(g.mask); free(g.free_pos); free(g.free_elist_i); free(g.free_elist_j); spc_free(&g);
 		if (g.adj) {
 			for (i = 0; i <= n; i++) free(g.adj[i].nb);
 			free(g.adj);
@@ -3761,7 +3908,7 @@ STDLL stata_call(int argc, char *argv[]) {
 		free(g.deg); free(g.outdeg); free(g.indeg);
 		ht_free(&g.ht);
 		free(g.elist_i); free(g.elist_j);
-		free(g.mask); free(g.free_pos); free(g.free_elist_i); free(g.free_elist_j);
+		free(g.mask); free(g.free_pos); free(g.free_elist_i); free(g.free_elist_j); spc_free(&g);
 		if (g.adj) { for (i = 0; i <= n; i++) free(g.adj[i].nb); free(g.adj); }
 		if (g.outadj) { for (i = 0; i <= n; i++) free(g.outadj[i].nb); free(g.outadj); }
 		if (g.inadj) { for (i = 0; i <= n; i++) free(g.inadj[i].nb); free(g.inadj); }
@@ -3844,7 +3991,7 @@ STDLL stata_call(int argc, char *argv[]) {
 		free(g.outdeg); free(g.indeg);
 		ht_free(&g.ht);
 		free(g.elist_i); free(g.elist_j);
-	free(g.mask); free(g.free_pos); free(g.free_elist_i); free(g.free_elist_j);
+	free(g.mask); free(g.free_pos); free(g.free_elist_i); free(g.free_elist_j); spc_free(&g);
 		if (g.adj) {
 			for (i = 0; i <= n; i++) free(g.adj[i].nb);
 			free(g.adj);
@@ -3935,7 +4082,12 @@ STDLL stata_call(int argc, char *argv[]) {
 			}
 			continue;
 		}
-		if (g.has_mask) {
+		if (proposal_code == 3) {
+			propfail = propose_spdyad(&g, &rng, &pi, &pj, &logratio);
+			if (propfail == 1) { SF_error("ergm_mcmc: freedyads() mask has no free dyad to propose after 1,000,000 draws\n"); return(198); }
+			if (propfail == 2) continue;
+		}
+		else if (g.has_mask) {
 			if (proposal_code == 2) propfail = propose_tnt_masked(&g, &rng, &pi, &pj, &logratio);
 			else propfail = propose_uniform_masked(&g, &rng, &pi, &pj, &logratio);
 			if (propfail) { SF_error("ergm_mcmc: freedyads() mask has no free dyad to propose after 1,000,000 draws\n"); return(198); }
@@ -4025,7 +4177,12 @@ STDLL stata_call(int argc, char *argv[]) {
 				}
 				continue;
 			}
-			if (g.has_mask) {
+			if (proposal_code == 3) {
+				propfail = propose_spdyad(&g, &rng, &pi, &pj, &logratio);
+				if (propfail == 1) { SF_error("ergm_mcmc: freedyads() mask has no free dyad to propose after 1,000,000 draws\n"); return(198); }
+				if (propfail == 2) { ntried++; continue; }
+			}
+			else if (g.has_mask) {
 				if (proposal_code == 2) propfail = propose_tnt_masked(&g, &rng, &pi, &pj, &logratio);
 				else propfail = propose_uniform_masked(&g, &rng, &pi, &pj, &logratio);
 				if (propfail) { SF_error("ergm_mcmc: freedyads() mask has no free dyad to propose after 1,000,000 draws\n"); return(198); }
@@ -4076,6 +4233,23 @@ STDLL stata_call(int argc, char *argv[]) {
 		}
 	}
 
+#ifdef SPC_CHECK
+	/* debug build only: recount the shared partners of every dyad and compare with the cache */
+	if (g.spc_on) {
+		long a, b, q, bad = 0, nz = 0;
+		for (a = 1; a <= n; a++) for (b = 1; b <= n; b++) {
+			long c = 0;
+			if (a == b || (!g.directed && b < a)) continue;
+			if (!g.directed) { adjlist_t *x = &g.adj[a]; for (q = 0; q < x->len; q++) if (x->nb[q] != b && has_edge(&g, x->nb[q], b)) c++; }
+			else { adjlist_t *x = &g.outadj[a]; for (q = 0; q < x->len; q++) if (x->nb[q] != b && has_edge(&g, x->nb[q], b)) c++; }
+			if (c > 0) nz++;
+			if (c != spc_get(&g, a, b)) bad++;
+		}
+		SF_scal_save("__ergm_spc_bad", (ST_double)bad);
+		SF_scal_save("__ergm_spc_nz", (ST_double)nz);
+		SF_scal_save("__ergm_spc_n", (ST_double)g.spc_n);
+	}
+#endif
 	SF_scal_save("__ergm_native_nties_out", (ST_double)g.nties);
 	SF_scal_save("__ergm_native_naccept", (ST_double)naccept);
 	SF_scal_save("__ergm_native_ntried", (ST_double)ntried);
@@ -4089,7 +4263,7 @@ STDLL stata_call(int argc, char *argv[]) {
 	free(g.outdeg); free(g.indeg);
 	ht_free(&g.ht);
 	free(g.elist_i); free(g.elist_j);
-	free(g.mask); free(g.free_pos); free(g.free_elist_i); free(g.free_elist_j);
+	free(g.mask); free(g.free_pos); free(g.free_elist_i); free(g.free_elist_j); spc_free(&g);
 	if (g.adj) {
 		for (i = 0; i <= n; i++) free(g.adj[i].nb);
 		free(g.adj);

@@ -1,4 +1,4 @@
-*! version 1.4.0  08nov2026 nwergm
+*! version 1.5.0  08nov2026 nwergm
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -133,7 +133,7 @@ program nwergm, eclass
 	if "`proposal'" == "" local proposal "tnt"
 	_opts_oneof "uniform random tnt" "proposal" "`proposal'" 6556
 	if "`proposal'" == "random" local proposal "uniform"
-	if `"`mcmcprop'"' != "" _nwergm_hints, spec(`mcmcprop')
+	_nwergm_hints, spec(`mcmcprop')
 	if "`method'" != "" {
 		_opts_oneof "mple mcmle cd" "method" "`method'" 6556
 	}
@@ -705,6 +705,20 @@ program nwergm, eclass
 		mata: __nwergm_c1_free = __ncon_free
 		local __c1_hasdyad `con_hasdyad'
 	}
+	// the SPDyad proposal (R's default hint .triadic) where R uses it: a one-mode network and the tie/no-tie
+	// weighting, without a constraint or with dyad constraints and degree bounds that are not maximum-only bounds
+	// (R: SPDyad; with maximum-only bounds BDStratTNT, with the other constraints their own proposals)
+	if `__spdstrict' & "`is2mode'" == "true" {
+		di as err "The triadic() hint cannot be used with a bipartite network (use .triadic, which R skips on a bipartite network)."
+		error 198
+	}
+	local __spd 0
+	if `__spdfocus' >= 0 & "`proposal'" == "tnt" & "`is2mode'" != "true" & "`fixdensity'" == "" {
+		if !`__con_active' local __spd 1
+		else if "`con_code'" == "10" & "`con_maxonly'" != "1" local __spd 1
+	}
+	local __spdcode = cond(`__spd', 3 + `__spdfocus' / 2, cond("`proposal'" == "tnt", 2, 1))
+	if `__spd' mata: __nwergm_last_G.spd_focus = `__spdfocus'
 	local __obs_active 0
 	local __obs_info 0
 	if `__con_active' == 0 local __c1_hasdyad 0
@@ -2041,7 +2055,7 @@ program nwergm, eclass
 		if !`__ergm_has_offset' & "$NWERGM_NOSPARSE" == "" mata: st_local("__ergm_sparse", strofreal(ergm_sp_use(__nwergm_last_M, __nwergm_last_G)))
 	}
 	if "`nonative'" == "" & !`__ergm_sparse' {
-		mata: __ergm_mple_native_setup_rc = ErgmNativeSetup(__nwergm_last_M, 2, __nwergm_last_G)
+		mata: __ergm_mple_native_setup_rc = ErgmNativeSetup(__nwergm_last_M, `__spdcode', __nwergm_last_G)
 		mata: mata drop __ergm_mple_native_setup_rc
 	}
 	mata: st_local("__ergm_mple_native_used", strofreal(__nwergm_last_M.native_enabled))
@@ -2262,15 +2276,17 @@ program nwergm, eclass
 		matrix colnames `__V_mple' = `__ergm_coefnames'
 
 		if "`mplecovariance'" != "invhess" & ("`mplecovariance'" == "bootstrap" | !`__ergm_dind') & !`__ergm_curved' {
-			_nwergm_est mplecov `__b_mple' `__V_mple' "`mplecovariance'" "`proposal'"
+			_nwergm_est mplecov `__b_mple' `__V_mple' "`mplecovariance'" "`=cond(`__spd', "spdyad", "`proposal'")'"
 		}
 		ereturn post `__b_mple' `__V_mple', depname(`netname') obs(`__ergm_nrows')
 		ereturn local cmd "nwergm"
-		ereturn local version "1.4.0"
+		ereturn local version "1.5.0"
 		ereturn local title "Exponential-family random graph model (MPLE)"
 		ereturn local depvar "`netname'"
 		ereturn local method "mple"
 		ereturn local directed "`directed'"
+		ereturn local proposal "`proposal'"
+		if `__spd' ereturn scalar trifocus = `__spdfocus'
 		ereturn local estat_cmd "nwergm_estat"
 		ereturn scalar N = `__ergm_nrows'
 		ereturn scalar nodes = `nodes'
@@ -2347,7 +2363,11 @@ program nwergm, eclass
 		// UNMASKED proposal for a blockdiag()-only model, completely
 		// ignoring the constraint during MCMC despite G.has_dyadmask
 		// being correctly set. Caught before shipping, not after.
-		if "`freedyads'" != "" | "`blockdiag'" != "" {
+		if `__spd' {
+			local __ergm_propfn "&ergm_propose_spdyad()"
+			local __ergm_propcode `__spdcode'
+		}
+		else if "`freedyads'" != "" | "`blockdiag'" != "" {
 			// BUGFIX (harmonisation unit 168): __ergm_propcode was
 			// hardcoded to 1 (uniform) on this branch regardless of
 			// which masked proposal was actually picked just above -
@@ -2469,7 +2489,8 @@ program nwergm, eclass
 			mata: __nwergm_last_Gobs.set_dyadmask(__nwergm_missmat)
 			mata: __nwergm_last_M.obs_G = &__nwergm_last_Gobs
 			mata: __nwergm_last_M.obs_mask = __nwergm_missmat
-			if "`proposal'" == "tnt" mata: __nwergm_last_M.obs_propfn = &ergm_propose_tnt_masked()
+			if `__spd' mata: __nwergm_last_M.obs_propfn = &ergm_propose_spdyad()
+			else if "`proposal'" == "tnt" mata: __nwergm_last_M.obs_propfn = &ergm_propose_tnt_masked()
 			else mata: __nwergm_last_M.obs_propfn = &ergm_propose_uniform_masked()
 			mata: __nwergm_last_M.obs_active = 1
 		}
@@ -2638,13 +2659,14 @@ program nwergm, eclass
 
 		ereturn post `__b_mcmle' `__V_mcmle', depname(`netname') obs(`__ergm_nrows')
 		ereturn local cmd "nwergm"
-		ereturn local version "1.4.0"
+		ereturn local version "1.5.0"
 		ereturn local title "Exponential-family random graph model (MCMLE)"
 		ereturn local depvar "`netname'"
 		ereturn local method "mcmle"
 		ereturn local estimate "`=cond("`method'"=="cd","CD",cond("`mainmethod'"=="sa","SA","MLE"))'"
 		ereturn local directed "`directed'"
 		ereturn local proposal "`proposal'"
+		if `__spd' ereturn scalar trifocus = `__spdfocus'
 		if `__con_active' ereturn local constraints `"`constraints'"'
 		if `__obs_active' ereturn local obsconstraints `"`obsconstraints'"'
 		ereturn local estat_cmd "nwergm_estat"
@@ -2827,7 +2849,7 @@ program nwergm_simulate
 		BIPARTITE(integer 0) ///
 		THETA(numlist) directed NSIM(integer 1) MCMCBURNIN(integer -1) ///
 		MCMCINTERVAL(integer 1024) PROPOSAL(string) SEED(integer -1) GENERATE(string) SPCACHE ///
-		BASIS(string) CONSTRAINTS(string asis) ]
+		BASIS(string) CONSTRAINTS(string asis) MCMCPROP(string asis) ]
 
 	foreach __ergm_o in degree odegree idegree kstar ostar istar degrange degrangeto odegrange odegrangeto idegrange idegrangeto esp dsp bdegree1 bdegree2 bstar1 bstar2 {
 		if `"``__ergm_o''"' != "" & strpos(`"``__ergm_o''"', ",") == 0 {
@@ -2969,6 +2991,11 @@ program nwergm_simulate
 	}
 	if "`proposal'" == "" local proposal "tnt"
 	_opts_oneof "uniform tnt" "proposal" "`proposal'" 6556
+	_nwergm_hints, spec(`mcmcprop')
+	if `__spdstrict' & `bipartite' != 0 {
+		di as err "The triadic() hint cannot be used with a bipartite network (use .triadic, which R skips on a bipartite network)."
+		error 198
+	}
 	if "`generate'" == "" local generate "ergmsim"
 	if `seed' != -1 {
 		set seed `seed'
@@ -3743,6 +3770,8 @@ program nwergm_simulate
 	tempname __ergm_simmat_bip
 	// basis()/constraints(): R's simulate(basis=, constraints=) - one chain started from the basis
 	// network, burn-in once, `interval' steps between draws, all within the constrained sample space.
+	// the SPDyad proposal (R's default hint .triadic) on a one-mode network with the tie/no-tie weighting
+	local __spd = (`__spdfocus' >= 0 & "`proposal'" == "tnt" & `bipartite' == 0)
 	local __sim_con 0
 	local __simlabs ""
 	if "`basis'" != "" | `"`constraints'"' != "" {
@@ -3769,8 +3798,10 @@ program nwergm_simulate
 		if `"`constraints'"' != "" {
 			_nwergm_constr, spec(`constraints') nodes(`nodes') directed(`bdirected') twomode(false) matobj(`bnetobj') weights(`=cond("`proposal'"=="uniform","random","default")')
 			if `con_hasdyad' mata: __nwergm_last_G.set_dyadmask(__ncon_free)
+			if "`con_code'" != "10" | "`con_maxonly'" == "1" local __spd 0
 		}
-		mata: __sim_rc = ErgmNativeSetup(__nwergm_last_M, 2, __nwergm_last_G)
+		mata: __nwergm_last_G.spd_focus = `__spdfocus'
+		mata: __sim_rc = ErgmNativeSetup(__nwergm_last_M, `=cond(`__spd', 3 + `__spdfocus' / 2, 2)', __nwergm_last_G)
 		mata: mata drop __sim_rc
 		mata: st_local("__sim_ok", strofreal(__nwergm_last_M.native_enabled_sample))
 		if `__sim_ok' != 1 {
@@ -3815,12 +3846,13 @@ program nwergm_simulate
 		// therefore simply stays at its ErgmModel::init() default of 0
 		// here, so every draw runs on the unmodified Mata sampler.
 		// structural() terms have no Mata change statistic: they need the native sampler
+		if `__spd' mata: __nwergm_last_G.spd_focus = `__spdfocus'
 		if !`__sim_con' {
-		mata: ns_native_setup(__nwergm_last_M, `=cond("`proposal'"=="tnt",2,1)', __nwergm_last_G)
+		mata: ns_native_setup(__nwergm_last_M, `=cond(`__spd', 3 + `__spdfocus' / 2, cond("`proposal'"=="tnt",2,1))', __nwergm_last_G)
 		}
 		}
 		local __sim_burn = cond(`__sim_con' & `__s' > 1, 0, `mcmcburnin')
-		mata: __gof_discard = ErgmMCMCSample(__nwergm_last_M, __nwergm_last_G, st_matrix("`thetamat'"), `__sim_burn', `mcmcinterval', 1, `=cond("`proposal'"=="tnt","&ergm_propose_tnt()","&ergm_propose_uniform()")')
+		mata: __gof_discard = ErgmMCMCSample(__nwergm_last_M, __nwergm_last_G, st_matrix("`thetamat'"), `__sim_burn', `mcmcinterval', 1, `=cond(`__spd', "&ergm_propose_spdyad()", cond("`proposal'"=="tnt","&ergm_propose_tnt()","&ergm_propose_uniform()"))')
 		mata: `__ergm_simmat' = __nwergm_last_G.to_dense()
 
 		local __ergm_simname = cond(`nsim'==1, "`generate'", "`generate'_`__s'")

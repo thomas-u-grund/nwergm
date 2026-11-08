@@ -1,4 +1,4 @@
-*! version 1.4.0  08nov2026 _nwergm_simfit.ado -- nwergm simulate from the last fit (R: simulate.ergm)
+*! version 1.5.0  08nov2026 _nwergm_simfit.ado -- nwergm simulate from the last fit (R: simulate.ergm)
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -100,7 +100,11 @@ program _nwergm_simfit, rclass
 	}
 
 	mata: st_local("__hasmask", strofreal(__nwergm_last_G.has_dyadmask))
-	if `__hasmask' {
+	if e(trifocus) < . {
+		local propfn "&ergm_propose_spdyad()"
+		mata: __nwergm_last_G.spd_focus = `=e(trifocus)'
+	}
+	else if `__hasmask' {
 		if "`e(proposal)'" == "tnt" local propfn "&ergm_propose_tnt_masked()"
 		else local propfn "&ergm_propose_uniform_masked()"
 	}
@@ -114,17 +118,15 @@ program _nwergm_simfit, rclass
 	mata: st_local("__snat", strofreal(__nwergm_last_M.native_enabled_sample))
 	if !`__snat' _nwergm_slowwarn "the simulation" "fit"
 	tempname nets
-	// with basis() the chain starts at the basis also when it is sequential (R: simulate(basis = ...)); the fit's own
-	// last network is put back afterwards, so that basis() does not change later simulations without it
-	if "`basis'" != "" {
-		mata: `Afit' = __nwergm_last_G.to_dense()
-		mata: ergm_reset_graph(__nwergm_last_G, `A0')
-	}
+	// the chain starts at the basis (R: simulate(basis = ...)) or at the fit's last network (R: the fit's newnetwork).
+	// Afterwards the fit's network is put back exactly, tie order included: the chain changes the network the fit
+	// leaves behind, and the order of its ties steers the TNT proposal, so without this a second simulation with the
+	// same seed() gave other draws (and, without basis(), continued from where the first one ended)
+	mata: `Afit' = __nwergm_last_G.all_ties()
+	if "`basis'" != "" mata: ergm_reset_graph(__nwergm_last_G, `A0')
 	mata: `nets' = ergm_sim_run(__nwergm_last_M, __nwergm_last_G, `A0', st_matrix("`bmat'"), `nsim', `burnin', `interval', `propfn', `seq', `want', "__simE7")
-	if "`basis'" != "" {
-		mata: ergm_reset_graph(__nwergm_last_G, `Afit')
-		mata: mata drop `Afit'
-	}
+	mata: ergm_graph_set_ties(__nwergm_last_G, `Afit')
+	mata: mata drop `Afit'
 	tempname S
 	matrix `S' = __simE7_stats
 	matrix drop __simE7_stats

@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.4.0  08nov2026 author: Thomas Grund}{...}
+{* *! version 1.5.0  08nov2026 author: Thomas Grund}{...}
 {vieweralsosee "nwergm" "help nwergm"}{...}
 {vieweralsosee "nwergm postestimation" "help nwergm_estat"}{...}
 {title:Title}
@@ -76,6 +76,9 @@ fitted coefficients or at {opt coef()}. The chain is sequential (burn-in once, {
 variables {cmd:_sim _tail _head} (specify {opt clear}). The constraints of the fit (dyad restrictions, fixed density) stay in force.
 The simulated networks have the node names of the starting network ({opt basis()} or the fitted network), and node {it:i} of a draw is node {it:i} of that network;
 {cmd:_tail} and {cmd:_head} are these node positions.
+Every simulation starts from the same network: the fit's last network is not changed by {cmd:nwergm simulate}, so the same {opt seed()} gives the same draws however often it is run.
+A sequential chain with {opt output(stats)} is drawn in one pass of the sampler; {opt output(network)} and {opt output(edgelist)} keep every network and call the sampler once per draw.
+The two follow the same chain rules but use the random numbers differently, so the same {opt seed()} gives different (equally distributed) draws with {opt output(stats)} and with {opt output(network)}.
 
 {title:estat gof}
 
@@ -102,4 +105,4 @@ Konis, K. 2007. {it:Linear Programming Algorithms for Detecting Separated Data i
 Snijders, T. A. B. 2002. Markov chain Monte Carlo estimation of exponential random graph models. {it:Journal of Social Structure} 3(2).{p_end}
 
 {hline}
-{pstd}{it:nwergm version 1.4.0, 8 November 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.5.0, 8 November 2026}{p_end}{* nwversion}

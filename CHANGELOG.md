@@ -3,6 +3,22 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [1.5.0] - 2026-11-08
+
+### Results that change (read before you re-run old analyses)
+- **The default Metropolis-Hastings proposal is now R's default, SPDyad** (`MCMC.prop = ~sparse + .triadic`): on a one-mode network a quarter of the steps toggle a dyad drawn from the dyads whose nodes share a partner, the rest are tie/no-tie steps. Up to 1.4.0 nwergm used tie/no-tie steps alone (R's `MCMC.prop = ~sparse`). Estimates are the same in distribution, but every MCMC result for a given `seed()` changes. `mcmcprop(sparse)` gives the tie/no-tie proposal of 1.4.0.
+- **`nwergm simulate, output(stats)` after a fit draws its sequential chain in one pass of the sampler**, so the same `seed()` gives other (equally distributed) draws than in 1.4.0. `output(network)` and `output(edgelist)` give the same draws as 1.4.0 for the first simulation after a fit.
+
+### Added
+- **The SPDyad proposal** (native and Mata samplers), with `mcmcprop(triadic(triFocus=#))` for another share of triadic steps, `e(trifocus)`, and `mcmcprop()` for `nwergm simulate` with a number of nodes. It mixes much better on models with strong triadic effects: on the Faux Mesa High benchmark model the effective sample size per 1,000 draws is 74 (R's SPDyad: 76) against 17 with tie/no-tie steps. Test: `cscripts/test_nwergm_spdyad.do`.
+
+### Fixed
+- **Simulations after a pseudolikelihood fit with `proposal(uniform)` used the tie/no-tie proposal** on the native sampler (and the Mata sampler); they now use the fit's proposal.
+- **`nwergm simulate` after a fit did not reproduce its seed.** The chain changed the network the fit leaves behind: without `basis()` the next simulation continued from where the previous one ended (R's `simulate(fit)` starts every time from the fit's network), and with `basis()` the order of the fit's ties changed, which steers the TNT proposal. So the same call with the same `seed()` gave other draws the second time in a session. The fit's network is now restored exactly after every simulation. Test: `cscripts/test_nwergm_simrepro.do`.
+
+### Changed (speed)
+- **`nwergm simulate, output(stats)` after a fit** called the native sampler once per draw, and each call set up the sampler anew (data frame, model, network), which cost far more than the draw. A sequential chain whose networks are not kept is now one call: 1,000 draws (interval 1,024) on a 500-node network 8.3 s to 0.16 s, on the Lazega advice model 4.7 s to 0.62 s.
+
 ## [1.4.0] - 2026-11-08
 
 ### Results that change (read before you re-run old analyses)

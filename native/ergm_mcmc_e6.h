@@ -145,7 +145,15 @@ static int e6_bd_initial_ok(graph_t *g, e6con_t *c) {
 /* --- single-dyad proposals with optional dyad mask --- */
 static int e6_p_tnt(graph_t *g, rng_t *rng, e6prop_t *P) {
 	long i, j; double lr;
-	int rc = g->has_mask ? propose_tnt_masked(g, rng, &i, &j, &lr) : (propose_tnt(g, rng, &i, &j, &lr), 0);
+	int rc;
+	if (g->spc_on) {   /* SPDyad with degree bounds (R: SPDyad, the bound checked after the proposal) */
+		rc = propose_spdyad(g, rng, &i, &j, &lr);
+		if (rc == 1) return 1;
+		if (rc == 2) return 0;   /* no toggle: P->m stays 0 */
+		P->m = 1; P->t[0] = i; P->h[0] = j; P->logratio = lr;
+		return 0;
+	}
+	rc = g->has_mask ? propose_tnt_masked(g, rng, &i, &j, &lr) : (propose_tnt(g, rng, &i, &j, &lr), 0);
 	if (rc) return 1;
 	P->m = 1; P->t[0] = i; P->h[0] = j; P->logratio = lr;
 	return 0;

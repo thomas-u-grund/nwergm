@@ -1,4 +1,4 @@
-*! version 1.4.0  08nov2026 _nwergm_est.ado -- estimation-method helpers for nwergm (MPLE variants, starting values, control options)
+*! version 1.5.0  08nov2026 _nwergm_est.ado -- estimation-method helpers for nwergm (MPLE variants, starting values, control options)
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -186,6 +186,7 @@ program _nwergm_est_mplecov
 		if "`proposal'" == "tnt" local pf "&ergm_propose_tnt_masked()"
 		else local pf "&ergm_propose_uniform_masked()"
 	}
+	if "`proposal'" == "spdyad" local pf "&ergm_propose_spdyad()"
 	di as txt "(estimating the " cond("`kind'" == "godambe", "Godambe", "bootstrap") " covariance from 500 simulated networks)"
 	mata: __e7_fi = __nwergm_last_M.freeidx()
 	mata: __e7_V = st_matrix("`vmat'")

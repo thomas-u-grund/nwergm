@@ -180,6 +180,18 @@ class ErgmGraph {
 	real scalar common_neighbors_in()
 	real scalar shared_partners_rtp()
 	real rowvector mutual_neighbors()
+	// shared-partner cache of the SPDyad proposal (R ergm's .spcache.net): the dyads with at least one shared
+	// partner (undirected UTP; directed OTP, a->k->b) and their counts; built on the first SPDyad proposal and
+	// then kept up to date by toggle()
+	real scalar spd_on
+	real scalar spd_focus		// triFocus of the SPDyad proposal (R default 0.25)
+	pointer scalar spd_pos		// asarray("real",2): (a,b) -> row of spd_list (0 if absent)
+	real matrix spd_list		// rows 1..spd_n: a, b, number of shared partners
+	real scalar spd_n
+	void spd_enable()
+	void spd_inc()
+	real scalar spd_get()
+	void spd_update()
 }
 
 void ErgmGraph::init(real scalar n0, real scalar directed0){
@@ -193,6 +205,9 @@ void ErgmGraph::init(real scalar n0, real scalar directed0){
 	elist = J(8, 2, 0)
 	edgepos = &(asarray_create("real", 2))
 	sp_cache_enabled = 0
+	spd_on = 0
+	spd_n = 0
+	spd_focus = 0.25
 	bipartite = 0
 	has_dyadmask = 0
 	nfreedyads = 0
@@ -374,6 +389,7 @@ void ErgmGraph::toggle(real scalar i, real scalar j){
 	ci = directed ? i : min((i,j))
 	cj = directed ? j : max((i,j))
 	was_edge = has_edge(i, j)
+	if (spd_on) spd_update(i, j)
 
 	// Shared-partner cache bookkeeping needs i's and j's own neighbor
 	// sets exactly as they stand BEFORE this toggle mutates anything
@@ -481,6 +497,81 @@ real rowvector ErgmGraph::neighbors_out(real scalar i){
 real rowvector ErgmGraph::neighbors_in(real scalar i){
 	if (directed) return(asarray_keys(*adjin[i])')
 	return(asarray_keys(*adjout[i])')
+}
+
+// SPDyad shared-partner cache (port of R ergm 4.12.0's src/changestats_spcache.c, _utp_wtnet and _otp_wtnet)
+void ErgmGraph::spd_enable(){
+	real scalar k, x, y
+	real rowvector a, b
+	spd_pos = &(asarray_create("real", 2))
+	asarray_notfound(*spd_pos, 0)
+	spd_list = J(64, 3, 0)
+	spd_n = 0
+	for (k=1; k<=n; k++) {
+		if (directed) {
+			a = neighbors_in(k)
+			b = neighbors_out(k)
+			for (x=1; x<=cols(a); x++) for (y=1; y<=cols(b); y++) if (a[x] != b[y]) spd_inc(a[x], b[y], 1)
+		}
+		else {
+			a = neighbors_out(k)
+			for (x=1; x<=cols(a); x++) for (y=x+1; y<=cols(a); y++) spd_inc(a[x], a[y], 1)
+		}
+	}
+	spd_on = 1
+}
+
+void ErgmGraph::spd_inc(real scalar a0, real scalar b0, real scalar inc){
+	real scalar a, b, k
+	a = a0
+	b = b0
+	if (!directed & a > b) {
+		a = b0
+		b = a0
+	}
+	k = asarray(*spd_pos, (a, b))
+	if (k > 0) {
+		spd_list[k, 3] = spd_list[k, 3] + inc
+		if (spd_list[k, 3] == 0) {
+			if (k != spd_n) {
+				spd_list[k, .] = spd_list[spd_n, .]
+				asarray(*spd_pos, spd_list[k, 1..2], k)
+			}
+			asarray_remove(*spd_pos, (a, b))
+			spd_n = spd_n - 1
+		}
+	}
+	else if (inc > 0) {
+		if (spd_n >= rows(spd_list)) spd_list = spd_list \ J(rows(spd_list), 3, 0)
+		spd_n = spd_n + 1
+		spd_list[spd_n, .] = (a, b, inc)
+		asarray(*spd_pos, (a, b), spd_n)
+	}
+}
+
+real scalar ErgmGraph::spd_get(real scalar a, real scalar b){
+	real scalar k
+	k = (!directed & a > b) ? asarray(*spd_pos, (b, a)) : asarray(*spd_pos, (a, b))
+	return(k > 0 ? spd_list[k, 3] : 0)
+}
+
+// cache update for a toggle of (t,h), called before the toggle
+void ErgmGraph::spd_update(real scalar t, real scalar h){
+	real scalar e, x
+	real rowvector nb
+	e = has_edge(t, h) ? -1 : 1
+	if (!directed) {
+		nb = neighbors_out(t)
+		for (x=1; x<=cols(nb); x++) if (nb[x] != h) spd_inc(h, nb[x], e)
+		nb = neighbors_out(h)
+		for (x=1; x<=cols(nb); x++) if (nb[x] != t) spd_inc(t, nb[x], e)
+	}
+	else {
+		nb = neighbors_out(h)
+		for (x=1; x<=cols(nb); x++) if (nb[x] != t) spd_inc(t, nb[x], e)
+		nb = neighbors_in(t)
+		for (x=1; x<=cols(nb); x++) if (nb[x] != h) spd_inc(nb[x], h, e)
+	}
 }
 
 real scalar ErgmGraph::degree_out(real scalar i){
@@ -5785,6 +5876,23 @@ void ergm_reset_graph(class ErgmGraph scalar G, real matrix A0){
 	}
 }
 
+// removes every tie of G
+void ergm_graph_clear(class ErgmGraph scalar G){
+	real scalar k
+	real matrix T
+	T = G.all_ties()
+	for (k=rows(T); k>=1; k--) G.toggle(T[k,1], T[k,2])
+}
+
+// sets G to the ties T, in the order of T (T as returned by G.all_ties(): restores a graph exactly, tie order
+// included). The order matters: the TNT proposal draws ties by their position in G's tie list, so the same ties in
+// another order give another chain, and seed() would not reproduce a simulation
+void ergm_graph_set_ties(class ErgmGraph scalar G, real matrix T){
+	real scalar k
+	ergm_graph_clear(G)
+	for (k=1; k<=rows(T); k++) G.toggle(T[k,1], T[k,2])
+}
+
 /*
 	simulate from a fitted model (R simulate.ergm): nsim draws at theta starting from the network A0 held in G.
 	sequential: one chain (burnin once, `interval' steps between draws); otherwise every draw restarts from A0
@@ -5808,6 +5916,14 @@ transmorphic scalar ergm_sim_run(class ErgmModel scalar M, class ErgmGraph scala
 	// statistics of the starting network, computed once: every draw of a sequential chain starts from the previous draw,
 	// every other draw from A0
 	cur0 = ergm_full_stat(M, G)
+	// one sequential chain whose networks are not kept: one call of the sampler for all draws (burn-in once, then
+	// `interval' steps before each draw - the same chain as one call per draw, without the cost of setting up the
+	// native sampler once per draw)
+	if (sequential & !wantnet) {
+		S = ErgmMCMCSample(M, G, theta, burnin, interval, nsim, proposalfn, cur0)
+		st_matrix(prefix + "_stats", S)
+		return(nets)
+	}
 	for (s=1; s<=nsim; s++) {
 		if (!sequential & s > 1) ergm_reset_graph(G, A0)
 		S[s, .] = ErgmMCMCSample(M, G, theta, (s == 1 | !sequential ? burnin : 0), interval, 1, proposalfn, (sequential & s > 1 ? S[s-1, .] : cur0))
@@ -9143,6 +9259,9 @@ real scalar ErgmNativeSetup(class ErgmModel scalar M, real scalar proposal_code,
 	M.native_covidx = covidxs
 	M.native_covmatstack = covmatstack
 	M.native_proposal = proposal_code
+	// a plugin older than generation 5 does not know the SPDyad proposal (code 3) and would sample uniformly: the
+	// model then stays on the Mata sampler, which has it
+	if (proposal_code >= 3 & ergm_native_gen() < 5) return(0)
 
 	// harmonisation unit 168: every term passed the SAME eligibility
 	// check either way (masking never rejected anything above) - a
@@ -10158,6 +10277,60 @@ real rowvector ergm_propose_tnt_masked(class ErgmGraph scalar G){
 }
 
 /*
+	SPDyad proposal, R ergm 4.12.0's default (MCMC.prop = ~sparse + .triadic; port of Mp_SPDyad() in
+	src/MHproposals_triadic.cpp). With probability 1 - triFocus a TNT step (masked when the graph has a dyad mask);
+	otherwise a dyad drawn uniformly from the dyads with at least one shared partner, with the Hastings ratio
+	TD(y)/TD(y*), TD the number of such dyads before and after the toggle. As in R: when no dyad has a shared
+	partner, no toggle is proposed (returned as a missing tail; the step counts); with fixed dyads, up to 4 draws are
+	made from the cache and the step falls back to TNT if all are fixed; TD counts the fixed dyads too. The same
+	algorithm as propose_spdyad() in native/ergm_mcmc.c.
+*/
+real rowvector ergm_propose_spdyad(class ErgmGraph scalar G){
+	real scalar i, j, r, tries, oldtd, newtd, e, x, L
+	real rowvector nb
+
+	if (!G.spd_on) G.spd_enable()
+	if (runiform(1,1) > G.spd_focus) return(G.has_dyadmask ? ergm_propose_tnt_masked(G) : ergm_propose_tnt(G))
+	if (G.spd_n == 0) return((., ., 0))
+	for (tries=1; tries<=4; tries++) {
+		r = ceil(runiform(1,1) * G.spd_n)
+		i = G.spd_list[r, 1]
+		j = G.spd_list[r, 2]
+		if (!G.has_dyadmask) break
+		if (G.freedyadmat[i, j]) break
+	}
+	if (tries > 4) return(G.has_dyadmask ? ergm_propose_tnt_masked(G) : ergm_propose_tnt(G))
+	oldtd = G.spd_n
+	newtd = oldtd
+	e = G.has_edge(i, j) ? -1 : 1
+	if (!G.directed) {
+		nb = G.neighbors_out(j)
+		for (x=1; x<=cols(nb); x++) if (nb[x] != i) {
+			L = G.spd_get(i, nb[x])
+			newtd = newtd + ((L + e) != 0) - (L != 0)
+		}
+		nb = G.neighbors_out(i)
+		for (x=1; x<=cols(nb); x++) if (nb[x] != j) {
+			L = G.spd_get(nb[x], j)
+			newtd = newtd + ((L + e) != 0) - (L != 0)
+		}
+	}
+	else {
+		nb = G.neighbors_out(j)
+		for (x=1; x<=cols(nb); x++) if (nb[x] != i) {
+			L = G.spd_get(i, nb[x])
+			newtd = newtd + ((L + e) != 0) - (L != 0)
+		}
+		nb = G.neighbors_in(i)
+		for (x=1; x<=cols(nb); x++) if (nb[x] != j) {
+			L = G.spd_get(nb[x], j)
+			newtd = newtd + ((L + e) != 0) - (L != 0)
+		}
+	}
+	return((i, j, (newtd > 0 ? ln(oldtd) - ln(newtd) : maxdouble())))
+}
+
+/*
 	Fixed-density ("constraints=~edges" in R ergm) tie-swap proposal -
 	NOT a filtered/masked single-toggle proposal like
 	ergm_propose_uniform_masked()/ergm_propose_tnt_masked() above (those
@@ -10368,6 +10541,7 @@ real matrix ErgmMCMCSample(class ErgmModel scalar M, class ErgmGraph scalar G,
 
 	for (step=1; step<=burnin; step++) {
 		prop = (*proposalfn)(G)
+		if (prop[1] >= .) continue
 		tail = prop[1]
 		head = prop[2]
 		logratio = prop[3]
@@ -10382,6 +10556,7 @@ real matrix ErgmMCMCSample(class ErgmModel scalar M, class ErgmGraph scalar G,
 	for (draw=1; draw<=samplesize; draw++) {
 		for (step=1; step<=interval; step++) {
 			prop = (*proposalfn)(G)
+			if (prop[1] >= .) continue
 			tail = prop[1]
 			head = prop[2]
 			logratio = prop[3]
@@ -10512,6 +10687,7 @@ struct ErgmMCMCDiag scalar ErgmMCMCSampleDiag(class ErgmModel scalar M, class Er
 
 	for (step=1; step<=burnin; step++) {
 		prop = (*proposalfn)(G)
+		if (prop[1] >= .) continue
 		tail = prop[1]
 		head = prop[2]
 		logratio = prop[3]
@@ -10528,6 +10704,7 @@ struct ErgmMCMCDiag scalar ErgmMCMCSampleDiag(class ErgmModel scalar M, class Er
 	for (draw=1; draw<=samplesize; draw++) {
 		for (step=1; step<=interval; step++) {
 			prop = (*proposalfn)(G)
+			if (prop[1] >= .) continue
 			tail = prop[1]
 			head = prop[2]
 			logratio = prop[3]
@@ -11519,6 +11696,7 @@ real matrix ergm_cd_sample(class ErgmModel scalar M, class ErgmGraph scalar G, r
 		ntog = 0
 		for (step=1; step<=nsteps; step++) {
 			prop = (*proposalfn)(G)
+			if (prop[1] >= .) continue
 			tail = prop[1]
 			head = prop[2]
 			logratio = prop[3]
@@ -14158,6 +14336,7 @@ class ErgmGraph scalar ergm_graph_clone(class ErgmGraph scalar G)
 	G2 = ErgmGraph()
 	G2.init(G.n, G.directed)
 	if (G.bipartite) G2.set_bipartite(G.mode)
+	G2.spd_focus = G.spd_focus
 	t = G.all_ties()
 	for (k=1; k<=rows(t); k++) G2.toggle(t[k,1], t[k,2])
 	return(G2)

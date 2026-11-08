@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.4.0  08nov2026 author: Thomas Grund}{...}
+{* *! version 1.5.0  08nov2026 author: Thomas Grund}{...}
 {marker topic}
 {helpb nwtopical##analysis_statmodels:[NW-2.6.6] Statistical Estimation of Networks}
 
@@ -158,7 +158,7 @@ Estimation methods (MPLE variants, contrastive divergence, stochastic approximat
 {synopt:{opt mcmcsamplesize(int)}}Number of recorded MCMC draws per MCMLE iteration. Default as in R ({cmd:MCMLE.samplesize}): the larger of 256 and 32 times the number of parameters, as the base size of an adaptive sample that is extended until the effective sample size reaches {opt mcmleeffectivesize()} (the number of draws kept, {cmd:e(mcmc_samplesize)}, is then usually larger). With {cmd:mcmleeffectivesize(0)} every iteration records exactly this many draws; default 3,000. Versions before 1.3.0 always recorded 3,000{p_end}
 {synopt:{opt mcmleeffectivesize(#)}}Target effective sample size of the adaptive MCMLE sample (R's {cmd:MCMLE.effectiveSize}); default 64. {cmd:0} switches the adaptive sample off and uses fixed-size samples (R: {cmd:MCMLE.effectiveSize=NULL}), with the interval grown when the effective size stays low{p_end}
 {synopt:{opt mcmleiterations(int)}}Maximum MCMLE outer iterations (R's {cmd:MCMLE.maxit}); default 60. When the limit is reached without convergence the fit is reported with a warning and {cmd:e(converged)} = 0{p_end}
-{synopt:{opt proposal(uniform|random|tnt)}}Metropolis-Hastings proposal weights (R's {cmd:MCMC.prop.weights}); default {it:tnt}. Both have a masked variant when {opt freedyads()} or {opt blockdiag()} is given{p_end}
+{synopt:{opt proposal(uniform|random|tnt)}}Metropolis-Hastings proposal weights (R's {cmd:MCMC.prop.weights}); default {it:tnt}, which on a one-mode network is R's default SPDyad proposal (tie/no-tie steps mixed with steps on dyads that have a shared partner; {opt mcmcprop(sparse)} gives tie/no-tie steps alone, see {help nwergm_constraints}). All have a masked variant when {opt freedyads()} or {opt blockdiag()} is given{p_end}
 {synopt:{opt constraints(formula)}}Sample-space constraints written as in R's {cmd:constraints=} (edges, degrees, odegrees, idegrees, bd, blocks, blockdiag, fixedas, fixallbut, ...), several at once; see {help nwergm_constraints}{p_end}
 {synopt:{opt obsconstraints(formula)}}Observation-process constraints (R's {cmd:obs.constraints}); see {help nwergm_constraints}{p_end}
 {synopt:{opt mcmcprop(hints)}}R's {cmd:MCMC.prop} hint formula, for example {cmd:sparse}{p_end}
@@ -486,6 +486,7 @@ also explains how missing dyads and missing covariate values are handled.
 	  {bf:e(ll)}, {bf:e(ll_0)}	log-likelihood and null-model log-likelihood; see {help nwergm_fit}
 	  {bf:e(df_m)}, {bf:e(aic)}, {bf:e(bic)}, {bf:e(deviance)}, {bf:e(ll_se)}	see {help nwergm_fit}
 	  {bf:e(nodes)}			number of nodes
+	  {bf:e(trifocus)}		share of triadic steps of the SPDyad proposal (missing when it is not used)
 	  {bf:e(ties)}			number of observed ties
 	  {bf:e(converged)}		1 if MCMLE's own convergence test was satisfied (method(mcmle) only)
 	  {bf:e(mcmle_iterations)}	number of MCMLE outer iterations run (method(mcmle) only)
@@ -507,7 +508,7 @@ also explains how missing dyads and missing covariate values are handled.
 	  {bf:e(depvar)}		name of the estimated network
 	  {bf:e(method)}		{bf:mple} or {bf:mcmle}
 	  {bf:e(directed)}		{bf:true}/{bf:false}
-	  {bf:e(proposal)}		Metropolis-Hastings proposal used (method(mcmle) only)
+	  {bf:e(proposal)}		Metropolis-Hastings proposal weights ({bf:tnt} or {bf:uniform}), also used by {cmd:nwergm simulate} and {cmd:estat gof}
 	  {bf:e(estat_cmd)}		{bf:nwergm_estat} (postestimation dispatch)
 
 	Matrices
@@ -543,6 +544,11 @@ Graph Models: Terms and Computational Aspects. {it:Journal of Statistical Softwa
 1-24. (TNT proposal)
 
 {pstd}
+Wang, J., Atchade, Y.F. (2014). Approximate Bayesian computation for exponential random graph models for large
+social networks. {it:Communications in Statistics - Simulation and Computation}, 43(2), 359-377. (triad-focused
+proposal, adapted in R's SPDyad)
+
+{pstd}
 Hummel, R.M., Hunter, D.R., Handcock, M.S. (2012). Improving Simulation-Based Algorithms for
 Fitting ERGMs. {it:Journal of Computational and Graphical Statistics}, 21(4), 920-939. (MCMLE
 step length)
@@ -570,6 +576,7 @@ License, version 3. It is not affiliated with or endorsed by the Statnet project
 {opt mcmcburnin(int)}
 {opt mcmcinterval(int)}
 {opt proposal(uniform|tnt)}
+{opt mcmcprop(hints)}
 {opt seed(int)}
 {opt generate(string)}
 {opt spcache}]
@@ -662,4 +669,4 @@ If the plugin of your platform is missing, older than the {cmd:.ado} files or do
 	{help nwqap}, {help nwrandom}, {help nwcug}, {help nwintro##limits:feasible network sizes}
 
 {hline}
-{pstd}{it:nwergm version 1.4.0, 8 November 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.5.0, 8 November 2026}{p_end}{* nwversion}

@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.4.0  08nov2026 author: Thomas Grund}{...}
+{* *! version 1.5.0  08nov2026 author: Thomas Grund}{...}
 {vieweralsosee "nwergm" "help nwergm"}{...}
 {title:Title}
 
@@ -57,7 +57,9 @@ or their positions {cmd:c(1,2)}, {cmd:-c(1,2)} in R's ordering{p_end}
 {title:Proposals}
 
 {pstd}
-The proposal is chosen from the constraints with R's rules. No constraint, dyad constraints and {cmd:bd}: toggle one dyad (tie/no-tie weighted, {opt proposal(tnt)}, default; or uniform, {opt proposal(uniform)} or {opt proposal(random)}).
+The proposal is chosen from the constraints and {opt mcmcprop()} with R's rules. No constraint, dyad constraints and {cmd:bd}: toggle one dyad. By default this is R's SPDyad proposal on a one-mode network: with
+probability 0.75 a tie/no-tie step, otherwise a dyad drawn from the dyads whose two nodes have a shared partner (for a directed network: a two-path i->k->j), which helps a model with many triangles to mix;
+{opt mcmcprop(sparse)} uses the tie/no-tie step alone (R's TNT), as do two-mode networks and {cmd:bd} with only maximum bounds. {opt proposal(uniform)} or {opt proposal(random)}: a uniformly drawn dyad.
 {cmd:edges}: swap a tie with a non-tie, also with dyad constraints and {cmd:bd}. {cmd:degrees} (or {cmd:idegrees} with {cmd:odegrees}, or {cmd:b1degrees} with {cmd:b2degrees}): tetrad moves, plus hexad moves for directed networks.
 {cmd:odegrees}, {cmd:idegrees}, {cmd:b1degrees}, {cmd:b2degrees}: move one end of a tie. {cmd:degreedist}, {cmd:idegreedist}: exchange the ends of a tie between nodes whose degrees differ by one. {cmd:dyadnoise}: tie/no-tie
 proposal with the noise likelihood in the acceptance ratio. Other combinations stop with the message R gives. {cmd:odegreedist} and the degree-distribution constraints on two-mode networks are refused (R's released proposals for them fail).
@@ -75,7 +77,8 @@ covariances. Requires {cmd:method(mcmle)}.
 {p2col :{opt mcmcburnin()}}R's {cmd:MCMC.burnin}{p_end}
 {p2col :{opt mcmcinterval()}}R's {cmd:MCMC.interval}{p_end}
 {p2col :{opt mcmcsamplesize()}}R's {cmd:MCMC.samplesize}{p_end}
-{p2col :{opt mcmcprop(hints)}}R's {cmd:MCMC.prop}: {cmd:sparse} (default); {cmd:triadic} and {cmd:strat} are accepted but the tie/no-tie proposal is used, with a note, as R does when no proposal can use a hint{p_end}
+{p2col :{opt mcmcprop(hints)}}R's {cmd:MCMC.prop}: {cmd:sparse + .triadic} (default; the SPDyad proposal), {cmd:sparse} (the tie/no-tie proposal), {cmd:triadic(}{it:#}{cmd:)} or {cmd:triadic(triFocus=}{it:#}{cmd:)} for another share
+of triadic steps than 0.25 (shared partners of type OTP on a directed network, as R's default; {cmd:.triadic} is skipped on a two-mode network, {cmd:triadic} is refused there); {cmd:strat} is accepted but not used, with R's note{p_end}
 {p2col :{opt proposal()}}R's {cmd:MCMC.prop.weights}: {cmd:tnt} (default) or {cmd:uniform} ({cmd:random}){p_end}
 {p2col :{opt mcmcmaxedges(#)}}R's {cmd:MCMC.maxedges}: stop sampling if the network gets more ties than this{p_end}
 {p2col :{opt seed(#)}}R's {cmd:seed}{p_end}
@@ -98,4 +101,4 @@ simulates under the constraints of the fit.
 {pstd}Thomas Grund, RWTH Aachen University{p_end}
 
 {hline}
-{pstd}{it:nwergm version 1.4.0, 8 November 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.5.0, 8 November 2026}{p_end}{* nwversion}
