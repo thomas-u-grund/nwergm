@@ -3,6 +3,11 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [1.5.2] - 2026-11-08
+
+### Changed (speed)
+- **The SPDyad proposal (the default since 1.5.0) is faster, with the same draws.** SPDyad keeps a count of the shared partners of every dyad; this cache was a hash table, and the shared-partner terms counted the same partners again on every proposal. For networks of up to 2,048 nodes the cache is now two arrays, and `gwesp`, `gwdsp`, `esp` and `dsp` (undirected, or directed with the default type OTP, and ITP) read their counts from it, as R's `ergm` does. Every result for a given `seed()` is the same as in 1.5.1. Default fits (seed 1): the Lazega advice model 5.1 s to 2.0 s, Faux Mesa High 1.5 s to 0.9 s, a 500-node network with gwesp 0.58 s to 0.32 s.
+
 ## [1.5.1] - 2026-11-08
 
 ### Results that change (read before you re-run old analyses)

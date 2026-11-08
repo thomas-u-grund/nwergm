@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.5.1  08nov2026 author: Thomas Grund}{...}
+{* *! version 1.5.2  08nov2026 author: Thomas Grund}{...}
 {marker topic}
 {helpb nwtopical##analysis_statmodels:[NW-2.6.6] Statistical Estimation of Networks}
 
@@ -669,4 +669,4 @@ If the plugin of your platform is missing, older than the {cmd:.ado} files or do
 	{help nwqap}, {help nwrandom}, {help nwcug}, {help nwintro##limits:feasible network sizes}
 
 {hline}
-{pstd}{it:nwergm version 1.5.1, 8 November 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.5.2, 8 November 2026}{p_end}{* nwversion}

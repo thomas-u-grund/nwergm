@@ -1,5 +1,5 @@
 . nwergm version
-nwergm version 1.5.1, 08nov2026
+nwergm version 1.5.2, 08nov2026
   core package nwcommands : installed (development copy, no distribution date)
   native plugin           : /Users/tgrund/FILES_NEW/SOFTWARE/nwergm/lib/plugins/macos/ergm_mcmc_macos.plugin (ships with the package, no separate 
 > version number)
@@ -14,4 +14,4 @@ macros:
              r(plugin) : "/Users/tgrund/FILES_NEW/SOFTWARE/nwergm/lib/plugins/macos/ergm_mcmc_macos.plugin (ships wit.."
                r(core) : "installed (development copy, no distribution date)"
                r(date) : "08nov2026"
-            r(version) : "1.5.1"
+            r(version) : "1.5.2"

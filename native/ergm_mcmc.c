@@ -437,7 +437,13 @@ typedef struct {
 	dyadht_t spc_ht;
 	long *spc_i, *spc_j, *spc_cnt;
 	long spc_n, spc_cap;
+	/* dense form of the cache (speed only; the list above and every draw are the same): for n <= SPC_DENSE_MAX the
+	   counts and list positions are kept in two arrays indexed by dyadkey() instead of the hash table */
+	int *spc_dcnt, *spc_dpos;
 } graph_t;
+#ifndef SPC_DENSE_MAX
+#define SPC_DENSE_MAX 2048
+#endif
 
 static long dyadkey(graph_t *g, long i, long j) {
 	long a = i, b = j;
@@ -532,12 +538,15 @@ static int toggle_core(graph_t *g, long i, long j) {
 static long degree_out_of(graph_t *g, long i) { return g->directed ? g->outdeg[i] : g->deg[i]; }
 static long degree_in_of(graph_t *g, long i)  { return g->directed ? g->indeg[i]  : g->deg[i]; }
 
+static long spc_get(graph_t *g, long a, long b);
+
 /* number of common neighbors of i and j (undirected sense - the shared-
    partner count GWESP needs), via the smaller-degree side, exactly
    mirroring ErgmGraph::common_neighbors() in unw_ergm.do */
 static long common_neighbors(graph_t *g, long i, long j) {
 	long a = i, b = j, k, cnt = 0;
 	adjlist_t *nb;
+	if (g->spc_on && !g->directed) return spc_get(g, i, j);   /* the SPDyad cache holds this count (UTP) */
 	if (g->deg[i] > g->deg[j]) { a = j; b = i; }
 	nb = &g->adj[a];
 	for (k = 0; k < nb->len; k++) {
@@ -555,13 +564,32 @@ static long common_neighbors(graph_t *g, long i, long j) {
    =================================================================== */
 static long spc_get(graph_t *g, long a, long b) {
 	long idx;
+	if (g->spc_dcnt) return g->spc_dcnt[dyadkey(g, a, b)];
 	if (!ht_get(&g->spc_ht, dyadkey(g, a, b), &idx)) return 0;
 	return g->spc_cnt[idx];
 }
 
 static void spc_inc(graph_t *g, long a, long b, int inc) {
 	long key = dyadkey(g, a, b), idx, dummy;
-	if (ht_get(&g->spc_ht, key, &idx)) {
+	if (g->spc_dcnt) {
+		int *c = &g->spc_dcnt[key];
+		if (*c > 0) {
+			*c += inc;
+			if (*c == 0) {
+				long last = g->spc_n - 1;
+				idx = g->spc_dpos[key];
+				if (idx != last) {
+					g->spc_i[idx] = g->spc_i[last]; g->spc_j[idx] = g->spc_j[last]; g->spc_cnt[idx] = g->spc_cnt[last];
+					g->spc_dpos[dyadkey(g, g->spc_i[idx], g->spc_j[idx])] = (int)idx;
+				}
+				g->spc_n--;
+			}
+			else g->spc_cnt[g->spc_dpos[key]] = *c;
+			return;
+		}
+		if (inc <= 0) return;
+	}
+	else if (ht_get(&g->spc_ht, key, &idx)) {
 		g->spc_cnt[idx] += inc;
 		if (g->spc_cnt[idx] == 0) {
 			long last = g->spc_n - 1;
@@ -583,7 +611,8 @@ static void spc_inc(graph_t *g, long a, long b, int inc) {
 	}
 	if (!g->directed && a > b) { long t = a; a = b; b = t; }
 	g->spc_i[g->spc_n] = a; g->spc_j[g->spc_n] = b; g->spc_cnt[g->spc_n] = inc;
-	ht_put(&g->spc_ht, key, g->spc_n);
+	if (g->spc_dcnt) { g->spc_dcnt[key] = inc; g->spc_dpos[key] = (int)g->spc_n; }
+	else ht_put(&g->spc_ht, key, g->spc_n);
 	g->spc_n++;
 }
 
@@ -607,7 +636,8 @@ static void spc_update(graph_t *g, long t, long h) {
 
 static void spc_free(graph_t *g) {
 	if (!g->spc_on) return;
-	ht_free(&g->spc_ht);
+	if (g->spc_dcnt) { free(g->spc_dcnt); free(g->spc_dpos); g->spc_dcnt = NULL; g->spc_dpos = NULL; }
+	else ht_free(&g->spc_ht);
 	free(g->spc_i); free(g->spc_j); free(g->spc_cnt);
 	g->spc_i = NULL; g->spc_j = NULL; g->spc_cnt = NULL;
 	g->spc_n = 0; g->spc_cap = 0; g->spc_on = 0;
@@ -791,6 +821,7 @@ static int invert_matrix(double *A, long p) {
 static long common_neighbors_otp(graph_t *g, long i, long j) {
 	adjlist_t *nb = &g->outadj[i];
 	long k, m, cnt = 0;
+	if (g->spc_on && g->directed) return spc_get(g, i, j);    /* the SPDyad cache holds this count (OTP) */
 	for (m = 0; m < nb->len; m++) {
 		k = nb->nb[m];
 		if (k == j) continue;
@@ -3792,7 +3823,13 @@ STDLL stata_call(int argc, char *argv[]) {
 	g.spc_on = (proposal_code == 3);
 	g.spc_i = NULL; g.spc_j = NULL; g.spc_cnt = NULL; g.spc_n = 0; g.spc_cap = 0;
 	memset(&g.spc_ht, 0, sizeof(g.spc_ht));
-	if (g.spc_on) ht_alloc(&g.spc_ht, ht_next_pow2(nties_in * 4 + 64));
+	g.spc_dcnt = NULL; g.spc_dpos = NULL;
+	if (g.spc_on && n <= SPC_DENSE_MAX) {
+		g.spc_dcnt = (int *)calloc((size_t)(n + 1) * (size_t)(n + 1), sizeof(int));
+		g.spc_dpos = (int *)malloc((size_t)(n + 1) * (size_t)(n + 1) * sizeof(int));
+		if (!g.spc_dcnt || !g.spc_dpos) { free(g.spc_dcnt); free(g.spc_dpos); g.spc_dcnt = NULL; g.spc_dpos = NULL; }
+	}
+	if (g.spc_on && !g.spc_dcnt) ht_alloc(&g.spc_ht, ht_next_pow2(nties_in * 4 + 64));
 	for (i = 1; i <= nties_in; i++) {
 		ST_double vi, vj;
 		SF_vdata(1, i, &vi);
