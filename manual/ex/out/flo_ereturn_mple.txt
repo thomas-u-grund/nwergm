@@ -3,6 +3,7 @@
 . ereturn list
 
 scalars:
+           e(trifocus) =  .25
                   e(N) =  120
               e(nodes) =  16
                e(ties) =  20
@@ -24,11 +25,12 @@ macros:
             e(predict) : "nwergm_p"
           e(ll_method) : "exact"
           e(estat_cmd) : "nwergm_estat"
+           e(proposal) : "tnt"
            e(directed) : "false"
              e(method) : "mple"
              e(depvar) : "flomarriage"
               e(title) : "Exponential-family random graph model (MPLE)"
-            e(version) : "1.3.0"
+            e(version) : "1.5.1"
                 e(cmd) : "nwergm"
          e(properties) : "b V"
 

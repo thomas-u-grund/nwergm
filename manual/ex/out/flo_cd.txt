@@ -11,15 +11,15 @@ Estimation:            =  Contrastive divergence
 --------------------------------------------------------------------------------
    flomarriage | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
 ---------------+----------------------------------------------------------------
-         edges |   -2.62966   .9936225    -2.65   0.008    -4.577124   -.6821957
-nodecov_wealth |   .0120663   .0102898     1.17   0.241    -.0081013    .0322339
-     gwesp_0.5 |  -.0737422   .3694516    -0.20   0.842     -.797854    .6503697
+         edges |  -2.672972   1.037071    -2.58   0.010    -4.705594   -.6403512
+nodecov_wealth |   .0122082   .0101107     1.21   0.227    -.0076085    .0320249
+     gwesp_0.5 |  -.0278411   .4066446    -0.07   0.945    -.8248499    .7691676
 --------------------------------------------------------------------------------
 
-Contrastive divergence estimate (5 iteration(s)); standard errors come from the covariance of the short-run CD sample.
+Contrastive divergence estimate (6 iteration(s)); standard errors come from the covariance of the short-run CD sample.
 Evaluating log-likelihood at the estimate (bridge sampling with 16 bridges) ...
 
              Null Deviance:     166.4  on 120 degrees of freedom
          Residual Deviance:     103.2  on 117 degrees of freedom
 
-Log-likelihood:   -51.6222 (df = 3)   AIC:     109.2   BIC:     117.6   (MC std. err. =  .01229)
+Log-likelihood:   -51.6057 (df = 3)   AIC:     109.2   BIC:     117.6   (MC std. err. =  .01698)

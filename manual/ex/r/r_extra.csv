@@ -1,6 +1,6 @@
 "fit","kind","term","value","se"
 "attrcov(prac; mat(AM))","coef","edges",-2.21127353203989,0.0785687514014854
-"attrcov(prac; mat(AM))","coef","attrcov.prac",0.166214442758262,0.0587458180562433
+"attrcov(prac; mat(AM))","coef","attrcov.prac",0.166214442758261,0.0587458180562433
 "attrcov(prac; mat(AM))","obs","edges",575,NA
 "attrcov(prac; mat(AM))","obs","attrcov.prac",641,NA
 "dyadcov(lazega_cow)","coef","edges",-2.56826427762352,0.0622326622857177

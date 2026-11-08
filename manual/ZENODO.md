@@ -6,13 +6,13 @@ Metadata ready to paste into a new Zenodo upload. Nothing has been uploaded.
 
 **Labelling.** The title and the citation of the manual contain no version number. The Zenodo version label is the series "X.Y" (for example "1.3"; internal to Zenodo, not part of the citation), and the description says that the manual describes nwergm X.Y.x. The PDF title page has one line saying which series it describes (`\manualseries`); the exact package version of the examples is `\pkgversion`. The software version is cited separately, as printed by `nwergm version`. A patch release of the package (1.3.1, ...) does not get a new Zenodo version.
 
-**Patch releases.** The manual of the series 1.3 holds for 1.3.x; a patch release changes no documented option or number. Title and citation stay unchanged; no new Zenodo version is needed for a patch.
+**Patch releases.** The manual of the series 1.5 holds for 1.5.x; a patch release changes no documented option or number. Title and citation stay unchanged; no new Zenodo version is needed for a patch.
 
 ## Metadata
 
 **Title.** nwergm: Exponential random graph models in Stata. Manual
 
-**Version.** 1.3 (the series label, internal to Zenodo: the manual describes nwergm 1.3.x; not part of the citation)
+**Version.** 1.5 (the series label, internal to Zenodo: the manual describes nwergm 1.5.x; not part of the citation)
 
 **Publication date.** 2026-10-26 (or the day of the upload)
 
@@ -47,7 +47,7 @@ Confirm that the GitHub release v1.3.0 is published before the upload, because t
 
 ## Steps for the owner
 
-0. This file describes the manual for the series 1.3 (the first manual of nwergm on Zenodo). The listings, comparison tables and run times were regenerated with nwergm 1.3.0 and nwcommands 3.10.0. The run-time tables were remeasured on 27 October 2026 on an idle machine (R and nwergm in turn, median of seven fits): nwergm is 2.9 to 9.4 times faster than ergm 4.12.0 on the eight benchmark models; the description above carries no timing numbers and needs no change.
+0. Series 1.5 (8 November 2026): a new Zenodo version is needed, because the documented behaviour changed. Since 1.5.0 the default proposal is R's SPDyad; since 1.5.1 the effective sample size, the burn-in test and the convergence test are computed with R's multivariate autocorrelation correction. Chapters 1, 2, 4, 7 and 9 describe both; Section 9.3 (new) documents the checks against ergm. The listings and comparison tables were regenerated with nwergm 1.5.1. In the description below, "series 1.3 (examples produced with version 1.3.0 and the nwcommands core 3.10.0)" becomes "series 1.5 (examples produced with version 1.5.1 and the nwcommands core 3.17.2)", and "(interval and burn-in as in ergm, ...)" gains "ergm's default proposal SPDyad". Earlier: the series 1.3 was the first manual of nwergm on Zenodo. The listings, comparison tables and run times were regenerated with nwergm 1.3.0 and nwcommands 3.10.0. The run-time tables were remeasured on 27 October 2026 on an idle machine (R and nwergm in turn, median of seven fits): nwergm is 2.9 to 9.4 times faster than ergm 4.12.0 on the eight benchmark models; the description above carries no timing numbers and needs no change.
 1. For a later patch release (1.3.1, ...) nothing is uploaded: only `\pkgversion` and `\pkgdate` change (`tools/set_version.py`), the examples are rerun if their output changes, and the PDF is committed. A new Zenodo version only for 1.4 or 2.0 with changed documented behaviour: then change `\manualseries` too.
 2. On zenodo.org upload `manual/nwergm_manual.pdf` to the reserved record (DOI above), fill the fields above, and publish.
 3. Check that the all-versions DOI of the record is 10.5281/zenodo.23661331 (it is already in `\manualdoi`).

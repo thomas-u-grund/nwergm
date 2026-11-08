@@ -7,22 +7,22 @@ Nodes:                 =  71
 Ties:                  =  575
 Directed:              =  Yes
 Estimation:            =  MCMLE
-MCMC sample size:      =  381
+MCMC sample size:      =  525
 
 --------------------------------------------------------------------------------
      lazega_fr | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
 ---------------+----------------------------------------------------------------
-         edges |  -3.096826   .2475739   -12.51   0.000    -3.582062    -2.61159
-        mutual |   .9837978   .1620768     6.07   0.000      .666133    1.301463
-nodematch_prac |   .8669472   .0983344     8.82   0.000     .6742153    1.059679
-       twopath |   .0190121   .0174107     1.09   0.275    -.0151122    .0531364
-        cycle3 |   .0706525   .0878951     0.80   0.421    -.1016189    .2429238
+         edges |  -3.109937   .2456087   -12.66   0.000    -3.591321   -2.628552
+        mutual |   .9958499   .1661045     6.00   0.000      .670291    1.321409
+nodematch_prac |   .8724326   .0982727     8.88   0.000     .6798216    1.065044
+       twopath |   .0195593   .0171992     1.14   0.255    -.0141504     .053269
+        cycle3 |   .0695876   .0893497     0.78   0.436    -.1055345    .2447097
 --------------------------------------------------------------------------------
 
-MCMLE converged after 3 iteration(s).
+MCMLE converged after 6 iteration(s).
 Evaluating log-likelihood at the estimate (bridge sampling with 16 bridges) ...
 
              Null Deviance:    6889.9  on 4970 degrees of freedom
-         Residual Deviance:    3399.3  on 4965 degrees of freedom
+         Residual Deviance:    3400.2  on 4965 degrees of freedom
 
-Log-likelihood: -1699.6587 (df = 5)   AIC:    3409.3   BIC:    3441.9   (MC std. err. =   .0827)
+Log-likelihood: -1700.1227 (df = 5)   AIC:    3410.2   BIC:    3442.8   (MC std. err. =  .10035)

@@ -19,7 +19,7 @@ Where the two programs differ in a way that matters to a user, this manual says 
   \item Terms are chosen by Stata options (for example \opt{nodematch(sex)}, \opt{gwesp(0.5)}), not by a model formula. The option name is R's term name; where R's name has a digit followed by a letter, the digit moves to the end (\texttt{b1degree} is \opt{bdegree1()}), because Stata does not allow the other spelling in an option name.
   \item Node attributes must be \emph{numeric} variables of the current dataset (encode strings first), and networks that serve as dyadic covariates are networks in memory.
   \item \opt{gwesp(\#)} and the other geometrically weighted terms with a number in the option have a \emph{fixed} decay; the curved form with an estimated decay is a separate option (\opt{gwespfree(\#)}). In \ergm{} the default of \texttt{gwesp()} is the curved form.
-  \item The Monte Carlo sampler follows \ergm{}'s \texttt{control.ergm()}: interval 1024, burn-in 16 times the interval (16384), and an adaptive sample size (a base sample of at least 256 draws, extended until the effective sample size of the estimating equations reaches 64) with \ergm{}'s convergence test (Section~\ref{sec:mcmcopts}). The random-number streams differ, so Monte Carlo results match \ergm{} within simulation noise, not to the last digit.
+  \item The Monte Carlo sampler follows \ergm{}'s \texttt{control.ergm()}: R's default proposal SPDyad on one-mode networks (since version 1.5.0), interval 1024, burn-in 16 times the interval (16384), and an adaptive sample size (a base sample of at least 256 draws, extended until the effective sample size of the estimating equations reaches 64) with \ergm{}'s convergence test, computed with \ergm{}'s multivariate autocorrelation correction (since version 1.5.1; Section~\ref{sec:mcmcopts}). The random-number streams differ, so Monte Carlo results match \ergm{} within simulation noise, not to the last digit.
 \end{itemize}
 
 \section{What is covered}
@@ -58,7 +58,7 @@ The core must be version 3.6.0 or later (the examples of this manual were run wi
 
 \paragraph{Versions.} \texttt{net install nwergm} installs the state of the main branch. A specific release is installed from its tag, for example
 \begin{lstlisting}
-. net install nwergm, from(https://raw.githubusercontent.com/thomas-u-grund/nwergm/v1.3.0/) replace
+. net install nwergm, from(https://raw.githubusercontent.com/thomas-u-grund/nwergm/v1.5.1/) replace
 \end{lstlisting}
 Use a tagged release when an analysis has to be reproducible. \texttt{net describe nwergm} shows the installed version and distribution date. \texttt{nwergm version} reports the installed release of \nwergm{}, the version of the core, the native plugin in use, the version of \ergm{} that the results were compared with and the license, and stores them in \texttt{r(version)}, \texttt{r(date)}, \texttt{r(core)}, \texttt{r(plugin)}, \texttt{r(reference)} and \texttt{r(license)}. After estimation the release that produced the results is in \texttt{e(version)}; quote it when you report an analysis. \texttt{nwversion} lists the core and all installed model packages.
 

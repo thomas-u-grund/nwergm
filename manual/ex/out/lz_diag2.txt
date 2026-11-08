@@ -4,27 +4,27 @@ MCMC diagnostics for the final simulation (nwergm, method(mcmle))
 Sample size:         =    3000
 Burn-in:             =    3000
 Thinning interval:   =      50
-Acceptance rate:     =  0.6694
+Acceptance rate:     =  0.5716
 
 ------------------------------------------------------------
 Statistic       |      Mean         SD    Autocorr      ESS
 ----------------+-------------------------------------------
-edges           |  578.0303    45.5309      0.9921     13.7
-mutual          |   74.7633    11.5793      0.9850     18.8
-nodematch_prac  |  407.8230    34.4362      0.9920     13.7
-nodeicov_seniority|19478.4000  1781.8600      0.9913     15.1
-gwesp_0.5       |  561.3006    86.7234      0.9913     14.6
+edges           |  579.8833    37.8010      0.9896     16.0
+mutual          |   75.9640    11.2073      0.9836     22.7
+nodematch_prac  |  416.3750    32.7571      0.9914     13.0
+nodeicov_seniority|19186.3100  1434.3840      0.9886     17.5
+gwesp_0.5       |  568.8043    73.5510      0.9883     20.0
 ------------------------------------------------------------
 
 Geweke diagnostic (first 10% vs. last 50% of the retained sample):
 ---------------------------------------
 Statistic       |         z   p-value
 ----------------+----------------------
-edges           |     4.066    0.0000  *
-mutual          |     3.279    0.0010  *
-nodematch_prac  |     3.428    0.0006  *
-nodeicov_seniority|     5.118    0.0000  *
-gwesp_0.5       |     3.957    0.0001  *
+edges           |     1.158    0.2470
+mutual          |     1.302    0.1929
+nodematch_prac  |     1.358    0.1746
+nodeicov_seniority|     1.766    0.0774
+gwesp_0.5       |     1.365    0.1723
 ---------------------------------------
 Note: |z| > 1.96 (flagged *) rejects convergence of that parameter's own chain at the 5% level (Geweke 1992) - a large sy
 > stematic difference between the retained sample's own early and late portions, not proof either way for a borderline z.
@@ -33,11 +33,11 @@ Heidelberger-Welch stationarity + halfwidth test (pvalue=.05, eps=.1):
 --------------------------------------------------------------
 Statistic       | Stationary    Start  Halfwidth   HW test
 ----------------+---------------------------------------------
-edges           |     passed        1    24.1402    passed
-mutual          |     passed        1     5.2340    passed
-nodematch_prac  |     passed        1    18.2623    passed
-nodeicov_seniority|     passed      301   658.1714    passed
-gwesp_0.5       |     passed        1    44.4853    passed
+edges           |     passed        1    18.5450    passed
+mutual          |     passed        1     4.6130    passed
+nodematch_prac  |     passed        1    17.8244    passed
+nodeicov_seniority|     passed        1   671.9527    passed
+gwesp_0.5       |     passed        1    32.2476    passed
 --------------------------------------------------------------
 Note: Stationary = passed a Cramer-von-Mises test on the chain's own cumulative-sum path (Heidelberger & Welch 1983), dis
 > carding an increasing initial fraction (up to 50%) until it does - Start is the first retained iteration once it passes
@@ -57,46 +57,46 @@ Sample statistics summary (centered at the observed statistics):
    plus standard error of the mean:
 
                         Mean          SD    Naive SE  Time-series SE
-edges                 3.0303      45.531      .83128          12.321
-mutual                .76333      11.579      .21141          2.6727
-nodematch_prac        -4.177      34.436      .62872          9.3206
-nodeicov_senio~y      99.402      1781.9      32.532          458.57
-gwesp_0.5             5.6815      86.723      1.5833          22.704
+edges                 4.8833      37.801      .69015          9.4649
+mutual                 1.964      11.207      .20462          2.3552
+nodematch_prac         4.375      32.757      .59806          9.0971
+nodeicov_senio~y     -192.69      1434.4      26.188          342.95
+gwesp_0.5             13.185      73.551      1.3429          16.469
 
 2. Quantiles for each variable:
 
                         2.5%         25%         50%         75%       97.5%
-edges                    -90      -23.25           4          30         101
-mutual                   -22          -7           0           9          24
-nodematch_prac           -76         -24          -2          16          68
-nodeicov_senio~y     -3245.3     -1050.5          75        1189        4136
-gwesp_0.5               -172     -43.098      6.4661       57.39      190.71
+edges                -68.025         -22           8          31          76
+mutual                   -17          -7           2          11          22
+nodematch_prac           -60         -17         5.5          25          65
+nodeicov_senio~y     -3043.1     -1108.3       -39.5       835.5        2261
+gwesp_0.5            -124.46      -39.55      21.863      66.258      145.32
 
 Are sample statistics significantly different from observed?
 
                          edges          mutual  nodematch_prac  nodeicov_sen~y       gwesp_0.5          (Omni)
-diff.                   3.0303          .76333          -4.177          99.402          5.6815              NA
-test stat.              .24596          .28561         -.44815          .21677          .25024          17.149
-P-val.                  .80571          .77518          .65405          .82839           .8024         .017808
+diff.                   4.8833           1.964           4.375         -192.69          13.185              NA
+test stat.              .51594          .83391          .48092         -.56188          .80059          18.218
+P-val.                  .60589          .40433          .63057           .5742          .42337         .016204
 
 Sample statistics cross-correlations:
 
                            edges          mutual  nodematch_prac  nodeicov_sen~y       gwesp_0.5
-edges                  1.0000000       0.8271945       0.9363273       0.9605527       0.9815277
-mutual                 0.8271945       1.0000000       0.8181614       0.7958244       0.8318259
-nodematch_prac         0.9363273       0.8181614       1.0000000       0.9043872       0.9372578
-nodeicov_senio~y       0.9605527       0.7958244       0.9043872       1.0000000       0.9443242
-gwesp_0.5              0.9815277       0.8318259       0.9372578       0.9443242       1.0000000
+edges                  1.0000000       0.7451897       0.9141937       0.9340396       0.9718410
+mutual                 0.7451897       1.0000000       0.7721929       0.6609470       0.7715969
+nodematch_prac         0.9141937       0.7721929       1.0000000       0.8424445       0.9124839
+nodeicov_senio~y       0.9340396       0.6609470       0.8424445       1.0000000       0.8854111
+gwesp_0.5              0.9718410       0.7715969       0.9124839       0.8854111       1.0000000
 
 Sample statistics auto-correlation:
 Chain 1
                            edges          mutual  nodematch_prac  nodeicov_sen~y       gwesp_0.5
 Lag 0                  1.0000000       1.0000000       1.0000000       1.0000000       1.0000000
-Lag 50                 0.9909336       0.9847219       0.9909380       0.9899812       0.9903170
-Lag 100                0.9820540       0.9706894       0.9822828       0.9801249       0.9812110
-Lag 150                0.9732507       0.9573892       0.9734945       0.9705890       0.9724443
-Lag 200                0.9647549       0.9457720       0.9647575       0.9612061       0.9642691
-Lag 250                0.9561144       0.9346162       0.9559702       0.9513154       0.9559531
+Lag 50                 0.9894190       0.9834834       0.9913904       0.9884015       0.9881943
+Lag 100                0.9791389       0.9671396       0.9830790       0.9767931       0.9764486
+Lag 150                0.9692634       0.9527579       0.9749848       0.9658721       0.9653836
+Lag 200                0.9592431       0.9385889       0.9665027       0.9545564       0.9534254
+Lag 250                0.9484894       0.9254314       0.9581822       0.9429285       0.9408123
 
 Sample statistics burn-in diagnostic (Geweke):
 Chain 1
@@ -105,12 +105,12 @@ Fraction in 1st window = 0.1
 Fraction in 2nd window = 0.5
 
                          z-score    Individual P-value
-edges                  3.5560406             0.0003765
-mutual                 3.2698161             0.0010762
-nodematch_prac         3.1562684             0.0015980
-nodeicov_senio~y       4.6906069             0.0000027
-gwesp_0.5              3.6125794             0.0003032
-Joint P-value (lower = worse):  0.0180385
+edges                  1.1367746             0.2556325
+mutual                 0.8865825             0.3753037
+nodematch_prac         0.9435259             0.3454120
+nodeicov_senio~y       1.7603724             0.0783447
+gwesp_0.5              1.0230553             0.3062817
+Joint P-value (lower = worse):  0.2464620
 
 Note: MCMC diagnostics shown here are from the last round of simulation, prior to computation of final parameter estimate
 > s. Because the final estimates are refinements of those used for this simulation run, these diagnostics may understate 

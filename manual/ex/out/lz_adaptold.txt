@@ -5,10 +5,10 @@
 
 . display "adaptive sample, starting interval 50: " e(mcmle_iterations) " iterations, " e(mcmc_samplesize) " draws, inter
 > val of the last sample " e(mcmc_interval_final)
-adaptive sample, starting interval 50: 4 iterations, 362 draws, interval of the last sample 6400
+adaptive sample, starting interval 50: 10 iterations, 948 draws, interval of the last sample 3200
 
 . matrix list r(ess), format(%9.1f)
 
 r(ess)[1,5]
            edges        mutual  nodematch_~c  nodeicov_s~y     gwesp_0.5
-r1         205.9         183.9         189.1         214.8         196.7
+r1         280.7         396.4         284.2         305.3         261.7

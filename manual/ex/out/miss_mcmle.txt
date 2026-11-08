@@ -9,14 +9,14 @@ Nodes:                 =  16
 Ties:                  =  19
 Directed:              =  No
 Estimation:            =  MCMLE
-MCMC sample size:      =  243
+MCMC sample size:      =  486
 
 --------------------------------------------------------------------------------
        flomiss | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
 ---------------+----------------------------------------------------------------
-         edges |  -2.695761   .5798708    -4.65   0.000    -3.832287   -1.559235
-nodecov_wealth |   .0110237   .0055696     1.98   0.048     .0001075    .0219399
-     gwesp_0.5 |   .0274984   .2881655     0.10   0.924    -.5372955    .5922923
+         edges |  -2.678908   .5691385    -4.71   0.000    -3.794399   -1.563417
+nodecov_wealth |   .0105619   .0054018     1.96   0.051    -.0000255    .0211493
+     gwesp_0.5 |   .0452257   .2927755     0.15   0.877    -.5286037    .6190551
 --------------------------------------------------------------------------------
 
 MCMLE converged after 1 iteration(s).
@@ -25,7 +25,7 @@ Evaluating log-likelihood at the estimate (bridge sampling with 16 bridges) ...
              Null Deviance:     162.2  on 117 degrees of freedom
          Residual Deviance:      98.3  on 114 degrees of freedom
 
-Log-likelihood:   -49.1563 (df = 3)   AIC:     104.3   BIC:     112.6   (MC std. err. =  .00172)
+Log-likelihood:   -49.1518 (df = 3)   AIC:     104.3   BIC:     112.6   (MC std. err. =  .00288)
 
 . display "missing dyads: " e(nmissing) "   informative dyads: " e(N)
 missing dyads: 3   informative dyads: 117

@@ -5,10 +5,10 @@ converged: 1   iterations: 1   native: 1
 sample size: 243   burn-in: 16384   interval: 1024
 
 . display "version: " e(version)
-version: 1.3.0
+version: 1.5.1
 
 . matrix list e(b)
 
 e(b)[1,3]
            edges  nodecov_we~h     gwesp_0.5
-y1    -2.5997724     .01079529    -.01706384
+y1    -2.5769751     .01044623    -.00450087

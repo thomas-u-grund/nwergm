@@ -1,6 +1,6 @@
 \chapter{Worked examples}\label{ch:examples}
 
-All output in this chapter was produced by the do-files in the directory \texttt{manual/ex} of the repository, run with \nwergm{}~\pkgversion{} and the \texttt{nwcommands} core~3.10.0 in Stata/BE~18 on macOS, with the native plugin. Every Monte Carlo fit has a \opt{seed()}, so that the output can be reproduced on the same platform. The data are example networks of \texttt{nwcommands}, which are loaded from the web with \texttt{nwwebuse}; the Florentine marriage network, the Mesa High School network and the second Kapferer network are the networks \texttt{flomarriage}, \texttt{faux.mesa.high} and \texttt{kapferer2} of \ergm{}. Nothing in this chapter is a substantive analysis; the models are chosen to show the commands.
+All output in this chapter was produced by the do-files in the directory \texttt{manual/ex} of the repository, run with \nwergm{}~\pkgversion{} and the \texttt{nwcommands} core~3.17.2 in Stata/BE~18 on macOS, with the native plugin. Every Monte Carlo fit has a \opt{seed()}, so that the output can be reproduced on the same platform. The data are example networks of \texttt{nwcommands}, which are loaded from the web with \texttt{nwwebuse}; the Florentine marriage network, the Mesa High School network and the second Kapferer network are the networks \texttt{flomarriage}, \texttt{faux.mesa.high} and \texttt{kapferer2} of \ergm{}. Nothing in this chapter is a substantive analysis; the models are chosen to show the commands.
 
 \section{The Florentine families: estimation methods and stored results}\label{sec:florentine}
 
@@ -10,11 +10,11 @@ Chapter~\ref{ch:start} fitted \opt{edges nodecov(wealth)} by pseudolikelihood (e
 
 The pseudolikelihood fit of the dyad-dependent model, with \opt{estimate(mple)}, is a starting value and not a maximum likelihood estimate; \nwergm{} says so and labels the deviances ``pseudo-deviance'':
 \showlog{flo_pl}
-Contrastive divergence (\opt{estimate(cd)}) is the cheap estimator for starting values; it ran five iterations here and reports the covariance of the short-run sample:
+Contrastive divergence (\opt{estimate(cd)}) is the cheap estimator for starting values; it ran six iterations here and reports the covariance of the short-run sample:
 \showlog{flo_cd}
-Stochastic approximation (\opt{mainmethod(sa)}) is the alternative to Monte Carlo maximum likelihood (469 phase-2 iterations here):
+Stochastic approximation (\opt{mainmethod(sa)}) is the alternative to Monte Carlo maximum likelihood (462 phase-2 iterations here):
 \showlog{flo_sa}
-All three agree with the Monte Carlo maximum likelihood fit of Chapter~\ref{ch:start} within what the standard errors allow: the edges coefficient is $-2.61$ (pseudolikelihood), $-2.63$ (contrastive divergence) and $-2.60$ (stochastic approximation) against $-2.60$, and the wealth coefficient is $0.0104$, $0.0121$ and $0.0106$ against $0.0108$. The Firth-penalized pseudolikelihood (\opt{mpletype(penalized)}) shrinks the coefficients slightly; on this network, where the ordinary estimate exists, the difference is small:
+All three agree with the Monte Carlo maximum likelihood fit of Chapter~\ref{ch:start} within what the standard errors allow: the edges coefficient is $-2.61$ (pseudolikelihood), $-2.67$ (contrastive divergence) and $-2.61$ (stochastic approximation) against $-2.58$, and the wealth coefficient is $0.0104$, $0.0122$ and $0.0109$ against $0.0104$. The Firth-penalized pseudolikelihood (\opt{mpletype(penalized)}) shrinks the coefficients slightly; on this network, where the ordinary estimate exists, the difference is small:
 \showlog{flo_pen}
 A coefficient can be fixed with \opt{offset()}; the fixed coefficient is reported at its value with no standard error, and the rest of the model adapts:
 \showlog{flo_offset}
@@ -27,7 +27,7 @@ Finally the curved form of the shared-partner term, \opt{gwespfree(0.5)}, estima
 
 The same call with the same seed gives the same coefficients; a different seed gives a different, statistically equivalent fit. Below the model is fitted twice with \texttt{seed(7)} and once with \texttt{seed(8)}:
 \showlog{flo_seed}
-The first two coefficient vectors are identical to the digit; the third differs by $0.007$ in the edges coefficient and by $0.046$ in the shared-partner coefficient, which is the Monte Carlo error of this fit (on a network of 16 nodes and 20 ties, where the sample of an iteration has a few hundred draws). Reporting two or three seeds is a cheap way to judge the size of that error; Chapter~\ref{ch:validation} does this for a larger model.
+The first two coefficient vectors are identical to the digit; the third differs by $0.003$ in the edges coefficient and by $0.047$ in the shared-partner coefficient, which is the Monte Carlo error of this fit (on a network of 16 nodes and 20 ties, where the sample of an iteration has a few hundred draws). Reporting two or three seeds is a cheap way to judge the size of that error; Chapter~\ref{ch:validation} does this for a larger model.
 
 \subsection{Stored results}\label{sec:flo_ereturn}
 
@@ -60,30 +60,30 @@ The practice is encoded before it is used in \opt{nodematch()}:
 \showlog{lz_encode}
 The model has the density (\opt{edges}), reciprocity (\opt{mutual}), homophily on the practice (\opt{nodematch(prac)}), a main effect of the seniority of the receiver (\opt{nodeicov(seniority)}) and a geometrically weighted shared-partner term (\opt{gwesp(0.5)}), which captures transitive closure. The model is dyad-dependent, so that the Monte Carlo maximum likelihood estimator is used:
 \showlog{lz_fit}
-Friendship ties are reciprocated (\opt{mutual} is $0.80$, so that a tie that reciprocates an existing one has about 2.2 times the odds), among lawyers of the same practice (the odds are $\exp(0.72)\approx2$ times higher), and cluster (the shared-partner coefficient is $0.49$, with a standard error of $0.06$). The coefficient of the seniority of the receiver is small and negative ($-0.005$ per unit of a variable that runs from 1 to 71).
+Friendship ties are reciprocated (\opt{mutual} is $0.81$, so that a tie that reciprocates an existing one has about 2.2 times the odds), among lawyers of the same practice (the odds are $\exp(0.71)\approx2$ times higher), and cluster (the shared-partner coefficient is $0.49$, with a standard error of $0.06$). The coefficient of the seniority of the receiver is small and negative ($-0.004$ per unit of a variable that runs from 1 to 71).
 
 \subsection{Is the chain trustworthy?}
 
-The fit says it converged after two iterations. The default sample is adaptive (Section~\ref{sec:adaptive}): the last iteration kept 486 draws, and the interval of that sample is not the requested interval of 1024 but the one that the sampler arrived at (\texttt{e(mcmc\_interval\_final)}); the header of \texttt{estat mcmcdiag} shows the interval of the final sample and names the requested one when the two differ:
+The fit says it converged after six iterations. The default sample is adaptive (Section~\ref{sec:adaptive}): the last iteration kept 593 draws, and the interval of that sample is not the requested interval of 1024 but the one that the sampler arrived at (\texttt{e(mcmc\_interval\_final)}); the header of \texttt{estat mcmcdiag} shows the interval of the final sample and names the requested one when the two differ:
 \showlog{lz_interval}
 \texttt{estat mcmcdiag} looks at the final sample (the first part of its output is shown; the rest is the report of \texttt{mcmc.diagnostics()}). Its end note advises a higher target effective sample size (\opt{mcmleeffectivesize()}) for an adaptive fit and a larger \opt{mcmcsamplesize()} or \opt{mcmcinterval()} for a fit with fixed-size samples:
 \showlogpart{lz_diag}{1}{48}
-With the default settings, which are those of \ergm{}, the chain mixes acceptably: the lag-1 autocorrelation of the five statistics is $0.55$ to $0.67$, and the effective sample size is between 74 and 120 out of 486 draws, a little above the target of 64 for the estimating equations. Geweke's test does not reject stationarity for four statistics (the smallest $p$-value is $0.11$) and rejects it narrowly for \texttt{mutual} ($p=0.049$, a rejection to expect once in twenty tests of a stationary chain), and the Heidelberger--Welch test passes. A fit with a burn-in of 3000, an interval of 50 proposals and fixed-size samples of 3000 draws (\opt{mcmleeffectivesize(0) mcmcburnin(3000) mcmcinterval(50)}) shows what a chain that is too short looks like:
+With the default settings, which are those of \ergm{}, the chain mixes acceptably: the lag-1 autocorrelation of the five statistics is $0.37$ to $0.50$, and the effective sample size is between 185 and 232 out of 593 draws. That is well above the target of 64, which refers to the estimating equations jointly (a smaller number than that of any single statistic) and which the iterations whose convergence test failed had raised. Geweke's test does not reject stationarity for any statistic (the smallest $p$-value is $0.74$), and the Heidelberger--Welch test passes. A fit with a burn-in of 3000, an interval of 50 proposals and fixed-size samples of 3000 draws (\opt{mcmleeffectivesize(0) mcmcburnin(3000) mcmcinterval(50)}) shows what a chain that is too short looks like:
 \showlog{lz_fit2}
 The coefficients move by less than their standard errors, and the standard errors are of the same size. The diagnostics of the short chain:
 \showlogpart{lz_diag2}{1}{28}
-With the short chain the lag-1 autocorrelation of every statistic is $0.99$, the effective sample size is between 14 and 19 out of 3000 draws, and Geweke's test rejects stationarity for all five statistics, although the Heidelberger--Welch test passes: the coefficients carry a large Monte Carlo error. The adaptive sample is protected against this. With the short interval and burn-in as starting values, but the adaptive sample of the default, the fit does not stay at the short interval; it thins the sample until the effective sample size is reached:
+With the short chain the lag-1 autocorrelation of every statistic is $0.98$ to $0.99$ and the effective sample size is between 13 and 23 out of 3000 draws, whereas Geweke's test does not reject stationarity (the smallest $p$-value is $0.077$) and the Heidelberger--Welch test passes. The stationarity tests do not reveal the problem here; the autocorrelation and the effective sample size do, and the coefficients carry a large Monte Carlo error. The adaptive sample is protected against this. With the short interval and burn-in as starting values, but the adaptive sample of the default, the fit does not stay at the short interval; it thins the sample until the effective sample size is reached:
 \showlog{lz_adaptold}
-The interval of the last sample is 6400 proposals, and the effective sample size of the 362 draws kept is between 184 and 215. These settings are a bad choice for the \emph{fixed} chain, not of the starting values of the adaptive one. The rest of the output of the default fit reports whether the sample statistics differ from the observed ones, with Hotelling's omnibus test:
+The fit takes ten iterations, the interval of the last sample is 3200 proposals, and the effective sample size of the 948 draws kept is between 262 and 396. These settings are a bad choice for the \emph{fixed} chain, not of the starting values of the adaptive one. The rest of the output of the default fit reports whether the sample statistics differ from the observed ones, with Hotelling's omnibus test:
 \showlogpart{lz_diag}{76}{81}
-None of the five individual tests rejects (the smallest $p$-value is 0.064), but Hotelling's omnibus test, which takes the very high cross-correlations of the five statistics into account, does ($p=0.0019$). The omnibus test is sensitive to a small joint displacement along the direction in which the statistics move together, and the sample was drawn at the coefficients before the last update of the iteration (the note under the output; Section~\ref{sec:mcmcdiag}). It is a reason for caution, for example refitting from the estimate with \opt{init()} and a larger \opt{mcmleeffectivesize()}, and not a verdict on the final model, whose check is \texttt{estat gof}.
+None of the five individual tests rejects (the smallest $p$-value is 0.056), but Hotelling's omnibus test, which takes the very high cross-correlations of the five statistics into account, does ($p=0.017$). The omnibus test is sensitive to a small joint displacement along the direction in which the statistics move together, and the sample was drawn at the coefficients before the last update of the iteration (the note under the output; Section~\ref{sec:mcmcdiag}). It is a reason for caution, for example refitting from the estimate with \opt{init()} and a larger \opt{mcmleeffectivesize()}, and not a verdict on the final model, whose check is \texttt{estat gof}.
 Figure~\ref{fig:mcmcdiag} shows the trace and density plots of this sample.
 
 \subsection{Goodness of fit}
 
 \texttt{estat gof} compares the observed network with 100 networks simulated from the fitted model. For a directed network the default statistics are the model statistics, the geodesic distances, the out-degrees, the in-degrees and the edgewise shared partners; the first three blocks are shown:
 \showlogpart{lz_gof}{1}{48}
-The model statistics are reproduced (the observed value is inside the range of the simulations, with $p$-values between 0.94 and 1.00). The geodesic distances show a hint of a discrepancy: in the observed network 140 ordered pairs of lawyers cannot reach each other (distance \texttt{Inf}), whereas the simulated networks have 27 such pairs on average (Monte Carlo $p=0.08$ on that row). A few small $p$-values among some eighty rows, which are not independent, are not surprising (the smallest in the blocks shown is 0.04, for an out-degree of 22), but this row points to a feature, a few lawyers who are reached by few others, that the model may not capture. Figure~\ref{fig:gof} shows the same comparison as a plot. The tables are matrices; for example the edgewise shared partners, with the statistics chosen explicitly:
+The model statistics are reproduced (the observed value is inside the range of the simulations, with $p$-values between 0.94 and 1.00). The geodesic distances show a hint of a discrepancy: in the observed network 140 ordered pairs of lawyers cannot reach each other (distance \texttt{Inf}), whereas the simulated networks have 29 such pairs on average (Monte Carlo $p=0.12$ on that row). A few small $p$-values among some eighty rows, which are not independent, are not surprising (the smallest in the blocks shown is 0.04, for an out-degree of 22), but this row points to a feature, a few lawyers who are reached by few others, that the model may not capture. Figure~\ref{fig:gof} shows the same comparison as a plot. The tables are matrices; for example the edgewise shared partners, with the statistics chosen explicitly:
 \showlog{lz_gof2}
 \showlog{lz_gofmat}
 
@@ -102,7 +102,7 @@ The network is the tailor-shop network of Kapferer~\cite{kapferer1972} at the se
 \showlog{kap_tri}
 The message \emph{unconstrained MCMC sampling did not mix at all} is the error of \ergm{} for this situation, and the return code is 498. The remedy is the geometrically weighted version of the triangle term, which discounts additional shared partners:
 \showlog{kap_gw}
-The model converges (after four iterations). The goodness-of-fit table shows, however, that the fitted model is not far from the degenerate region: the simulated networks range from 126 to 238 ties against the observed 190, and many simulated networks leave pairs unconnected (46 pairs on average), which the observed network does not.
+The model converges (after six iterations). The goodness-of-fit table shows, however, that the fitted model is not far from the degenerate region: the simulated networks range from 135 to 227 ties against the observed 190, and many simulated networks leave pairs unconnected (49 pairs on average), which the observed network does not.
 \showlogpart{kap_gof}{1}{21}
 Such a model should be checked with a longer chain and with the diagnostics before it is interpreted.
 
@@ -125,7 +125,7 @@ Two models of the Lazega network, with and without the shared-partner term, are 
 \texttt{estimates stats} and \texttt{lrtest} compare them:
 \showlog{cmp_ic}
 \showlog{cmp_lr}
-The shared-partner term improves the log-likelihood by 31.8, so that the likelihood-ratio statistic is 63.6 on one degree of freedom; AIC and BIC both prefer the model with \opt{gwesp(0.5)}. \texttt{predict} gives the conditional probability of each dyad, as a frame (one row per dyad) or a matrix:
+The shared-partner term improves the log-likelihood by 30.2, so that the likelihood-ratio statistic is 60.5 on one degree of freedom; AIC and BIC both prefer the model with \opt{gwesp(0.5)}. \texttt{predict} gives the conditional probability of each dyad, as a frame (one row per dyad) or a matrix:
 \showlog{cmp_pred}
 \showlog{cmp_predm}
 The average predicted probability, 0.115, is close to the density of the network, 0.116.
@@ -148,7 +148,7 @@ The number of informative dyads is $48\times47=2256$.
 \opt{obsconstraints()} describes how the network was observed. The three Florentine marriages of Section~\ref{sec:missingex} are now declared as unobserved by a network \texttt{unobs} that has a tie for each of the three pairs, and the observed network \texttt{flo0} has a 0 there:
 \showlog{obs_prep}
 \showlog{obs_fit}
-The result agrees with the missing-dyad fit of Section~\ref{sec:missingex} (edges $-2.6958$ against $-2.7080$, wealth $0.0110$ against $0.0110$, shared partners $0.0275$ against $0.0384$, with standard errors of the same size; the difference is Monte Carlo error: the missing-dyad fit uses the adaptive sample, whereas a fit with \opt{obsconstraints()} draws fixed samples of 3000, as the sample-size line of the listing shows): in both cases the likelihood of the network is the sum over the values of the three unobserved dyads, which \texttt{obsconstraints(fixallbut(unobs))} expresses directly.
+The result agrees with the missing-dyad fit of Section~\ref{sec:missingex} (edges $-2.6956$ against $-2.6789$, wealth $0.0109$ against $0.0106$, shared partners $0.0363$ against $0.0452$, with standard errors of the same size; the difference is Monte Carlo error: the missing-dyad fit uses the adaptive sample, whereas a fit with \opt{obsconstraints()} draws fixed samples of 3000, as the sample-size line of the listing shows): in both cases the likelihood of the network is the sum over the values of the three unobserved dyads, which \texttt{obsconstraints(fixallbut(unobs))} expresses directly.
 
 \section{A two-mode network, structural terms, operators and labels}\label{sec:twomode}
 

@@ -7,23 +7,23 @@ Nodes:                 =  42
 Ties:                  =  71
 Directed:              =  No
 Estimation:            =  MCMLE
-MCMC sample size:      =  503
+MCMC sample size:      =  509
 
 ----------------------------------------------------------------------------------
            clubs | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
 -----------------+----------------------------------------------------------------
-           edges |  -1.103858   .3445076    -3.20   0.001     -1.77908   -.4286353
-nodemix_kind_2_1 |  -1.775325   .5405127    -3.28   0.001    -2.834711   -.7159399
-nodemix_kind_1_2 |  -2.355423   .6577301    -3.58   0.000     -3.64455   -1.066296
-nodemix_kind_2_2 |  -.3295673   .4577906    -0.72   0.472     -1.22682    .5676857
-     Proj1~edges |   .1847007    .198093     0.93   0.351    -.2035545    .5729559
-  Proj1~triangle |   -.012532   .0275408    -0.46   0.649    -.0665108    .0414469
+           edges |  -1.105045   .3662216    -3.02   0.003    -1.822826   -.3872639
+nodemix_kind_2_1 |  -1.776232   .5313858    -3.34   0.001    -2.817729   -.7347348
+nodemix_kind_1_2 |   -2.40565   .6836645    -3.52   0.000    -3.745607   -1.065692
+nodemix_kind_2_2 |  -.2850296    .459771    -0.62   0.535    -1.186164     .616105
+     Proj1~edges |   .1944617   .1914415     1.02   0.310    -.1807567    .5696801
+  Proj1~triangle |  -.0139922   .0263967    -0.53   0.596    -.0657289    .0377444
 ----------------------------------------------------------------------------------
 
 MCMLE converged after 3 iteration(s).
 Evaluating log-likelihood at the estimate (bridge sampling with 16 bridges) ...
 
              Null Deviance:     499.1  on 360 degrees of freedom
-         Residual Deviance:     317.8  on 354 degrees of freedom
+         Residual Deviance:     319.0  on 354 degrees of freedom
 
-Log-likelihood:  -158.9038 (df = 6)   AIC:     329.8   BIC:     353.1   (MC std. err. =  .09301)
+Log-likelihood:  -159.5072 (df = 6)   AIC:     331.0   BIC:     354.3   (MC std. err. =  .16144)

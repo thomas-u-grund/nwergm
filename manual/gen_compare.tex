@@ -36,18 +36,18 @@ fit and term & & nwergm & ergm & $|\Delta|$ & SE nwergm & SE ergm\\\midrule
 \begin{tabular}{@{}lrrrrrr@{}}\toprule
  & \multicolumn{2}{c}{nwergm, default} & \multicolumn{2}{c}{nwergm, short fixed chain} & \multicolumn{2}{c}{ergm}\\\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
 term & mean (sd) & SE & mean (sd) & SE & mean (sd) & SE\\\midrule
-\opt{edges} & -3.318 (0.010) & 0.133 & -3.332 (0.009) & 0.138 & -3.315 (0.003) & 0.136\\
-\opt{mutual} & 0.804 (0.008) & 0.160 & 0.817 (0.033) & 0.174 & 0.804 (0.006) & 0.161\\
-\opt{nodematch\_prac} & 0.714 (0.007) & 0.081 & 0.714 (0.029) & 0.087 & 0.715 (0.004) & 0.081\\
-\opt{nodeicov\_seniority} & -0.004 (0.000) & 0.002 & -0.004 (0.001) & 0.002 & -0.005 (0.000) & 0.002\\
-\opt{gwesp\_0.5} & 0.488 (0.004) & 0.064 & 0.495 (0.009) & 0.064 & 0.488 (0.002) & 0.065\\
+\opt{edges} & -3.312 (0.006) & 0.131 & -3.330 (0.053) & 0.148 & -3.315 (0.003) & 0.136\\
+\opt{mutual} & 0.806 (0.003) & 0.161 & 0.804 (0.036) & 0.161 & 0.804 (0.006) & 0.161\\
+\opt{nodematch\_prac} & 0.715 (0.004) & 0.081 & 0.710 (0.014) & 0.085 & 0.715 (0.004) & 0.081\\
+\opt{nodeicov\_seniority} & -0.005 (0.000) & 0.002 & -0.004 (0.001) & 0.002 & -0.005 (0.000) & 0.002\\
+\opt{gwesp\_0.5} & 0.488 (0.003) & 0.063 & 0.495 (0.015) & 0.067 & 0.488 (0.002) & 0.065\\
 \bottomrule\end{tabular}\end{table}
 \begin{table}[ht]\centering\small\caption{Simulation at given coefficients (the coefficients of the Lazega fit): mean and standard deviation of the model statistics over three chains of 4000 draws, nwergm (\texttt{nwergm simulate} at the fitted coefficients with \texttt{burnin(20000) interval(1000)}) and ergm (\texttt{simulate()} with its default burn-in 16384 and interval 1024).}\label{tab:cmpsim}
 \begin{tabular}{@{}lrrrr@{}}\toprule
 term & mean nwergm & mean ergm & sd nwergm & sd ergm\\\midrule
-\opt{edges} & 578.6 & 579.9 & 40.3 & 39.5\\
-\opt{mutual} & 74.8 & 75.1 & 10.5 & 10.5\\
-\opt{nodematch\_prac} & 416.1 & 416.8 & 31.2 & 30.2\\
-\opt{nodeicov\_seniority} & 19464.5 & 19521.3 & 1497.4 & 1466.7\\
-\opt{gwesp\_0.5} & 564.6 & 566.9 & 76.1 & 74.8\\
+\opt{edges} & 575.0 & 576.4 & 40.3 & 39.6\\
+\opt{mutual} & 73.9 & 74.4 & 10.6 & 10.5\\
+\opt{nodematch\_prac} & 411.7 & 412.3 & 30.7 & 30.2\\
+\opt{nodeicov\_seniority} & 19389.1 & 19465.8 & 1488.2 & 1473.9\\
+\opt{gwesp\_0.5} & 556.3 & 558.8 & 75.6 & 74.5\\
 \bottomrule\end{tabular}\end{table}

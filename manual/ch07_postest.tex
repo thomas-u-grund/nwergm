@@ -103,7 +103,8 @@ After a fit \texttt{nwergm} stores the following in \texttt{e()}. The listings i
 \texttt{e(method)} & \texttt{mple} or \texttt{mcmle} (the simulation-based estimators share \texttt{mcmle}).\\
 \texttt{e(estimate)} & \texttt{MLE}, \texttt{CD} or \texttt{SA} for a simulation-based fit (empty after a pseudolikelihood fit).\\
 \texttt{e(directed)} & \texttt{true} or \texttt{false}.\\
-\texttt{e(proposal)} & Proposal used (simulation-based fits).\\
+\texttt{e(proposal)} & Proposal weights used (simulation-based fits).\\
+\texttt{e(trifocus)} & Share of triadic steps of the SPDyad proposal (0.25 by default; missing when SPDyad was not used, for example with \opt{mcmcprop(sparse)} or on a two-mode network).\\
 \texttt{e(ll\_method)} & How \texttt{e(ll)} was obtained: \texttt{exact}, \texttt{pseudolikelihood} or \texttt{bridge sampling}.\\
 \texttt{e(version)} & The release of \nwergm{} that produced the results.\\
 \texttt{e(predict)}, \texttt{e(estat\_cmd)}, \texttt{e(properties)} & Postestimation dispatch.\\
