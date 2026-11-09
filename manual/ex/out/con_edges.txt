@@ -25,11 +25,11 @@ Evaluating log-likelihood at the estimate (bridge sampling with 16 bridges) ...
              Null Deviance:     166.4  on 120 degrees of freedom
          Residual Deviance:     103.1  on 117 degrees of freedom
 
-Log-likelihood:   -51.5534 (df = 3)   AIC:     109.1   BIC:     117.5   (MC std. err. =  .00086)
+Log-likelihood:   -51.5534 (df = 3)   AIC:     109.1   BIC:     117.5
+Monte Carlo standard error of the log-likelihood:  .00086
 
 . nwergm flomarriage, edges nodecov(wealth) gwesp(0.5) constraints(edges) seed(1)
-Note: the specified model's sample space constraint holds statistic(s) edges constant. They will
->  be ignored.
+Note: the constraints hold edges constant; they are dropped from the model.
 
 Exponential-family random graph model
 
@@ -54,4 +54,5 @@ Evaluating log-likelihood at the estimate (bridge sampling with 16 bridges) ...
              Null Deviance:     166.4  on 120 degrees of freedom
          Residual Deviance:     110.9  on 118 degrees of freedom
 
-Log-likelihood:   -55.4304 (df = 2)   AIC:     114.9   BIC:     120.4   (MC std. err. =  .19034)
+Log-likelihood:   -55.4304 (df = 2)   AIC:     114.9   BIC:     120.4
+Monte Carlo standard error of the log-likelihood:  .19034

@@ -17,9 +17,9 @@ nodematch_race_n |   .4331562   .1429951     3.03   0.002     .1528911    .71342
  nodematch_sex_n |   .6447389    .149475     4.31   0.000     .3517733    .9377045
 ----------------------------------------------------------------------------------
 
-Maximum pseudolikelihood estimate (not full ERGM maximum likelihood unless the model is dyad-independent).
+Maximum pseudolikelihood estimate; this is the maximum likelihood estimate only if the model is dyad-independent.
 
              Null Deviance:   28987.4  on 20910 degrees of freedom
          Residual Deviance:    1911.2  on 20906 degrees of freedom
 
-Log-likelihood:  -955.5870 (df = 4)   AIC:    1919.2   BIC:    1951.0   (MC std. err. =       0)
+Log-likelihood:  -955.5870 (df = 4)   AIC:    1919.2   BIC:    1951.0

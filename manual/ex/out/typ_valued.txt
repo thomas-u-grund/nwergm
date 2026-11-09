@@ -32,9 +32,9 @@ Estimation:            =  MPLE
        edges |   -1.57296   .0949246   -16.57   0.000    -1.759008   -1.386911
 ------------------------------------------------------------------------------
 
-Maximum pseudolikelihood estimate (not full ERGM maximum likelihood unless the model is dyad-independent).
+Maximum pseudolikelihood estimate; this is the maximum likelihood estimate only if the model is dyad-independent.
 
              Null Deviance:    1081.3  on 780 degrees of freedom
          Residual Deviance:     715.6  on 779 degrees of freedom
 
-Log-likelihood:  -357.8022 (df = 1)   AIC:     717.6   BIC:     722.3   (MC std. err. =       0)
+Log-likelihood:  -357.8022 (df = 1)   AIC:     717.6   BIC:     722.3

@@ -1,4 +1,4 @@
-*! version 1.5.6  09nov2026 _nwergm_miss: missing-dyad (NA tie) handling for nwergm
+*! version 1.5.7  09nov2026 _nwergm_miss: missing-dyad (NA tie) handling for nwergm
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -20,7 +20,7 @@ program _nwergm_miss, rclass
 		mata: st_numscalar("`nm'", ergm_count_missing(__nwergm_missmat, ("`directed'"=="true")))
 		return scalar nmiss = scalar(`nm')
 		if scalar(`nm') > 0 {
-			di as txt "Note: network {bf:`netname'} has " as res scalar(`nm') as txt " missing dyad(s); they are excluded from the (pseudo)likelihood and handled as in R's ergm (missing-data MCMLE)."
+			di as txt "{p 0 6 2}Note: network {bf:`netname'} has " as res scalar(`nm') as txt " missing dyad(s); they are left out of the likelihood, as in ergm.{p_end}"
 			mata: ergm_impute_missing(__nwergm_last_G, __nwergm_missmat)
 		}
 		else {

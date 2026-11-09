@@ -1,4 +1,4 @@
-*! version 1.5.6  09nov2026 _nwergm_fitstats: log-likelihood, deviance, AIC/BIC of an nwergm fit (R: logLik.ergm, summary.ergm)
+*! version 1.5.7  09nov2026 _nwergm_fitstats: log-likelihood, deviance, AIC/BIC of an nwergm fit (R: logLik.ergm, summary.ergm)
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -72,10 +72,12 @@ program _nwergm_fitstats, eclass
 		di as txt %28s "Null `pd'`=cond("`pd'"=="","D","d")'eviance: " as res %9.1f e(deviance_0) as txt "  on " as res `N' as txt " degrees of freedom"
 		di as txt %28s "Residual `pd'`=cond("`pd'"=="","D","d")'eviance: " as res %9.1f e(deviance) as txt "  on " as res `N' - `k' as txt " degrees of freedom"
 		di
-		di as txt "Log-likelihood: " as res %10.4f e(ll) as txt " (df = `k')   AIC: " as res %9.1f e(aic) as txt "   BIC: " as res %9.1f e(bic) ///
-			as txt "   (MC std. err. = " as res %7.5g e(ll_se) as txt ")"
+		di as txt "Log-likelihood: " as res %10.4f e(ll) as txt " (df = `k')   AIC: " as res %9.1f e(aic) as txt "   BIC: " as res %9.1f e(bic)
+		if e(ll_se) > 0 & e(ll_se) < . {
+			di as txt "Monte Carlo standard error of the log-likelihood: " as res %7.5g e(ll_se)
+		}
 		if "`method'" == "mple" & "`how'" != "exact" {
-			di as txt "(For a dyad-dependent model fitted by MPLE this is the pseudolikelihood, as in R.)"
+			di as txt "(For a dyad-dependent model fitted by MPLE, this is the pseudolikelihood.)"
 		}
 	}
 end

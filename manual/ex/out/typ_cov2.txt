@@ -15,9 +15,9 @@ Estimation:            =  MPLE
 edgecov_visits |   .0307848   .2770268     0.11   0.912    -.5121777    .5737473
 --------------------------------------------------------------------------------
 
-Maximum pseudolikelihood estimate (not full ERGM maximum likelihood unless the model is dyad-independent).
+Maximum pseudolikelihood estimate; this is the maximum likelihood estimate only if the model is dyad-independent.
 
              Null Deviance:     499.1  on 360 degrees of freedom
          Residual Deviance:     360.3  on 358 degrees of freedom
 
-Log-likelihood:  -180.1387 (df = 2)   AIC:     364.3   BIC:     372.0   (MC std. err. =       0)
+Log-likelihood:  -180.1387 (df = 2)   AIC:     364.3   BIC:     372.0

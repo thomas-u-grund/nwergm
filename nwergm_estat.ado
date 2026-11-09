@@ -1,4 +1,4 @@
-*! version 1.5.6  09nov2026 nwergm_estat
+*! version 1.5.7  09nov2026 nwergm_estat
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -427,6 +427,9 @@ program define nwergm_estat_ic, rclass
 	di as txt "{hline 13}{c +}{hline 63}"
 	di as txt %12s abbrev("`e(depvar)'", 12) " {c |}" as res %9.0g e(N) %13.5g e(ll_0) %13.5g e(ll) %6.0f e(df_m) %10.5g e(aic) %10.5g e(bic)
 	di as txt "{hline 13}{c BT}{hline 63}"
-	di as txt "Note: BIC uses N = number of informative dyads; MC std. err. of the log-likelihood = " as res %7.5g e(ll_se)
+	di as txt "Note: BIC uses N = number of informative dyads."
+	if e(ll_se) > 0 & e(ll_se) < . {
+		di as txt "Monte Carlo standard error of the log-likelihood: " as res %7.5g e(ll_se)
+	}
 	return matrix S = `M'
 end

@@ -3,6 +3,11 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [1.5.7] - 2026-11-09
+
+### Fixed
+- **The notes printed after a fit stay within 80 columns.** The Monte Carlo standard error of the log-likelihood is on a line of its own below the log-likelihood, AIC and BIC, and is shown only when there is one; the same applies to the note under `estat ic`. The notes on pseudolikelihood estimates, on contrastive divergence, on curved terms, on statistics held constant by a constraint and on missing dyads are shorter and wrap at word boundaries instead of breaking mid-word. Estimates and stored results are unchanged.
+
 ## [1.5.6] - 2026-11-09
 
 ### Fixed

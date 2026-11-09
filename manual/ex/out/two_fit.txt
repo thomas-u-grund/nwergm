@@ -17,10 +17,10 @@ nodemix_kind_1_2 |  -2.379168   .6162542    -3.86   0.000    -3.587004   -1.1713
 nodemix_kind_2_2 |  -.2340726   .3707259    -0.63   0.528    -.9606821    .4925369
 ----------------------------------------------------------------------------------
 
-Maximum pseudolikelihood estimate (not full ERGM maximum likelihood unless the model is dyad-ind
-> ependent).
+Maximum pseudolikelihood estimate; this is the maximum likelihood estimate only if the model
+is dyad-independent.
 
              Null Deviance:     499.1  on 360 degrees of freedom
          Residual Deviance:     321.2  on 356 degrees of freedom
 
-Log-likelihood:  -160.5841 (df = 4)   AIC:     329.2   BIC:     344.7   (MC std. err. =       0)
+Log-likelihood:  -160.5841 (df = 4)   AIC:     329.2   BIC:     344.7

@@ -1,4 +1,4 @@
-*! version 1.5.6  09nov2026 nwergm
+*! version 1.5.7  09nov2026 nwergm
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -1957,9 +1957,7 @@ program nwergm, eclass
 				local __con_confnames "`__con_confnames' `__con_cn'"
 				mata: __nwergm_last_M.mark_fixed(`__c', 0)
 			}
-			di "{txt}Note: the specified model's sample space constraint holds statistic(s)" _c
-			di "{res}`__con_confnames'" _c
-			di "{txt} constant. They will be ignored."
+			di "{txt}{p 0 6 2}Note: the constraints hold{res}`__con_confnames'{txt} constant; they are dropped from the model.{p_end}"
 			mata: st_local("__ergm_nfree", strofreal(cols(__nwergm_last_M.freeidx())))
 			if `__ergm_nfree' == 0 {
 				di "{err}all terms are either offsets or held constant by the constraints; there is nothing to estimate."
@@ -2279,7 +2277,7 @@ program nwergm, eclass
 		}
 		ereturn post `__b_mple' `__V_mple', depname(`netname') obs(`__ergm_nrows')
 		ereturn local cmd "nwergm"
-		ereturn local version "1.5.6"
+		ereturn local version "1.5.7"
 		ereturn local title "Exponential-family random graph model (MPLE)"
 		ereturn local depvar "`netname'"
 		ereturn local method "mple"
@@ -2663,7 +2661,7 @@ program nwergm, eclass
 
 		ereturn post `__b_mcmle' `__V_mcmle', depname(`netname') obs(`__ergm_nrows')
 		ereturn local cmd "nwergm"
-		ereturn local version "1.5.6"
+		ereturn local version "1.5.7"
 		ereturn local title "Exponential-family random graph model (MCMLE)"
 		ereturn local depvar "`netname'"
 		ereturn local method "mcmle"
@@ -2773,7 +2771,7 @@ program nwergm, eclass
 		mata: st_local("__ergm_hassp", strofreal(findexternal("__nwergm_sp") != NULL))
 		if `__ergm_hassp' mata: mata drop __nwergm_sp
 		if `__ergm_curved' {
-			di as text "(decay is an estimated curved parameter here - see {help nwergm##gw_effects:help nwergm, gw_effects} for how this differs from R ergm's own curved-model machinery)"
+			di as text "{p 0 1 2}(The decay of the curved term is estimated; see {help nwergm##gw_effects:help nwergm, gw_effects}.){p_end}"
 		}
 	}
 
@@ -2799,7 +2797,7 @@ program nwergm_display
 	ereturn display
 	di
 	if "`method'" == "CD" {
-		di "{txt}Contrastive divergence estimate (`niter' iteration(s)); standard errors come from the covariance of the short-run CD sample."
+		di "{txt}{p 0 0 2}Contrastive divergence estimate (`niter' iteration(s)); standard errors come from the covariance of the short-run CD sample.{p_end}"
 	}
 	else if "`method'" == "SA" {
 		di "{txt}Stochastic approximation estimate (`niter' phase-2 iteration(s))."
@@ -2813,7 +2811,7 @@ program nwergm_display
 		}
 	}
 	else {
-		di "{txt}Maximum pseudolikelihood estimate (not full ERGM maximum likelihood unless the model is dyad-independent)."
+		di "{txt}{p 0 0 2}Maximum pseudolikelihood estimate; this is the maximum likelihood estimate only if the model is dyad-independent.{p_end}"
 	}
 end
 

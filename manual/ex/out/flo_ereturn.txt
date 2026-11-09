@@ -38,7 +38,7 @@ macros:
              e(method) : "mcmle"
              e(depvar) : "flomarriage"
               e(title) : "Exponential-family random graph model (MCMLE)"
-            e(version) : "1.5.4"
+            e(version) : "1.5.7"
                 e(cmd) : "nwergm"
          e(properties) : "b V"
 

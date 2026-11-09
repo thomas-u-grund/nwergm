@@ -1,5 +1,5 @@
 . nwergm lazega_fr, edges mutual nodematch(prac) constraints(odegrees) seed(1)
-Note: the specified model's sample space constraint holds statistic(s) edges constant. They will be ignored.
+Note: the constraints hold edges constant; they are dropped from the model.
 
 Exponential-family random graph model
 
@@ -24,4 +24,5 @@ Evaluating log-likelihood at the estimate (bridge sampling with 16 bridges) ...
              Null Deviance:    6889.9  on 4970 degrees of freedom
          Residual Deviance:    4783.1  on 4968 degrees of freedom
 
-Log-likelihood: -2391.5270 (df = 2)   AIC:    4787.1   BIC:    4800.1   (MC std. err. =  .38296)
+Log-likelihood: -2391.5270 (df = 2)   AIC:    4787.1   BIC:    4800.1
+Monte Carlo standard error of the log-likelihood:  .38296
