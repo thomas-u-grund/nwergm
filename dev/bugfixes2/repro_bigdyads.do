@@ -1,6 +1,6 @@
 * usage: stata -e do dev/bugfixes2/repro_bigdyads.do   with global NBIG set via a wrapper (default 5000)
 do dev/bugfixes2/pre.do
-local nwcore "/Users/tgrund/FILES_NEW/SOFTWARE/nwcommands_main"
+local nwcore "<nwcommands>"
 adopath ++ `"`nwcore'"'
 adopath ++ `"`c(pwd)'"'
 quietly do `"`nwcore'/unw_core.do"'

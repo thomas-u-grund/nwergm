@@ -1,5 +1,5 @@
 do dev/bugfixes2/pre.do
-local nwcore "/Users/tgrund/FILES_NEW/SOFTWARE/nwcommands_main"
+local nwcore "<nwcommands>"
 adopath ++ `"`nwcore'"'
 quietly do `"`nwcore'/unw_core.do"'
 do unw_ergm.do

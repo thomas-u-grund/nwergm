@@ -2,7 +2,7 @@
 # network, edges + b1cov(age), estimate="MPLE" (no MCMC at all).
 suppressMessages(library(ergm))
 
-d <- "/Users/tgrund/FILES_NEW/SOFTWARE/nwcommands/dev/ergm_benchmark_bipartite"
+d <- "<nwergm>/dev/ergm_benchmark_bipartite"
 el <- read.csv(file.path(d, "bipnet.csv"))
 n1 <- 60; n2 <- 40; n <- n1 + n2
 

@@ -19,7 +19,7 @@
 	comparison caught by comparing `e(nodes)'/`network.size()' before
 	trusting any timing number.
 */
-local ddir "/Users/tgrund/FILES_NEW/SOFTWARE/nwcommands/dev/ergm_benchmark_bipartite"
+local ddir "<nwergm>/dev/ergm_benchmark_bipartite"
 
 mata:
 mata set matastrict off

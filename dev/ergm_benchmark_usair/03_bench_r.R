@@ -4,7 +4,7 @@
 
 suppressMessages(library(ergm))
 
-d <- "/Users/tgrund/FILES_NEW/SOFTWARE/nwcommands/dev/ergm_benchmark_usair"
+d <- "<nwergm>/dev/ergm_benchmark_usair"
 el <- read.csv(file.path(d, "usair_edgelist.csv"), header = FALSE)
 stopifnot(ncol(el) == 2)
 

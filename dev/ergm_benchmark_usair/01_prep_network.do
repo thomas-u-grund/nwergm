@@ -10,8 +10,8 @@
 	byte-for-byte, matching this suite's own established
 	generate-once/export-identically convention.
 */
-adopath + "/Users/tgrund/FILES_NEW/SOFTWARE/nwcommands/lib"
-adopath + "/Users/tgrund/FILES_NEW/SOFTWARE/nwcommands"
+adopath + "<nwcommands>/lib"
+adopath + "<nwcommands>"
 * The core package nwcommands is found through the environment variable NWCORE (path of the core checkout).
 local nwcore : env NWCORE
 if `"`nwcore'"' == "" {
@@ -22,9 +22,9 @@ adopath ++ `"`nwcore'"'
 adopath ++ `"`c(pwd)'"'
 quietly do `"`nwcore'/unw_core.do"'
 do unw_ergm.do
-run "/Users/tgrund/FILES_NEW/SOFTWARE/nwcommands/nwergm.ado"
+run "<nwergm>/nwergm.ado"
 
-local ddir "/Users/tgrund/FILES_NEW/SOFTWARE/nwcommands/dev/ergm_benchmark_usair"
+local ddir "<nwergm>/dev/ergm_benchmark_usair"
 
 nwclear
 import delimited "`ddir'/usair_full_edges.csv", clear varnames(1) stringcols(_all)

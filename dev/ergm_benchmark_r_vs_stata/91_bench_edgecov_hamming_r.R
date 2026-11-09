@@ -6,7 +6,7 @@
 
 suppressMessages(library(ergm))
 
-d <- "/Users/tgrund/FILES_NEW/SOFTWARE/nwcommands/dev/ergm_benchmark_r_vs_stata"
+d <- "<nwergm>/dev/ergm_benchmark_r_vs_stata"
 mat_main <- as.matrix(read.csv(file.path(d, "bench_ech_main.csv"), header = FALSE))
 mat_cov  <- as.matrix(read.csv(file.path(d, "bench_ech_cov.csv"), header = FALSE))
 mat_ref  <- as.matrix(read.csv(file.path(d, "bench_ech_ref.csv"), header = FALSE))

@@ -18,9 +18,9 @@ adopath ++ `"`nwcore'"'
 adopath ++ `"`c(pwd)'"'
 quietly do `"`nwcore'/unw_core.do"'
 do unw_ergm.do
-run "/Users/tgrund/FILES_NEW/SOFTWARE/nwcommands/nwergm.ado"
+run "<nwergm>/nwergm.ado"
 
-local ddir "/Users/tgrund/FILES_NEW/SOFTWARE/nwcommands/dev/ergm_benchmark_r_vs_stata"
+local ddir "<nwergm>/dev/ergm_benchmark_r_vs_stata"
 
 set seed 20260901
 nwclear

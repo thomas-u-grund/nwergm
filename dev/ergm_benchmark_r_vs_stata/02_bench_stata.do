@@ -7,8 +7,8 @@
 	benchmark. Times the WHOLE nwergm call (MPLE starting value + full
 	MCMLE outer loop) with Stata's own timer.
 */
-adopath + "/Users/tgrund/FILES_NEW/SOFTWARE/nwcommands/lib"
-adopath + "/Users/tgrund/FILES_NEW/SOFTWARE/nwcommands"
+adopath + "<nwcommands>/lib"
+adopath + "<nwcommands>"
 * The core package nwcommands is found through the environment variable NWCORE (path of the core checkout).
 local nwcore : env NWCORE
 if `"`nwcore'"' == "" {
@@ -19,7 +19,7 @@ adopath ++ `"`nwcore'"'
 adopath ++ `"`c(pwd)'"'
 quietly do `"`nwcore'/unw_core.do"'
 do unw_ergm.do
-run "/Users/tgrund/FILES_NEW/SOFTWARE/nwcommands/nwergm.ado"
+run "<nwergm>/nwergm.ado"
 
 // nwset's own mat() option cannot accept a bare Stata matrix NAME, only
 // a literal parenthesized expression - and at n=30 (900 cells) that
@@ -32,7 +32,7 @@ run "/Users/tgrund/FILES_NEW/SOFTWARE/nwcommands/nwergm.ado"
 // nwset's OTHER input path entirely: a full dyad-census edgelist
 // (every ordered pair, value 0/1), which every other cscripts/ test in
 // this package already uses successfully at small scale.
-import delimited using "/Users/tgrund/FILES_NEW/SOFTWARE/nwcommands/dev/ergm_benchmark_r_vs_stata/bench_net.csv", clear varnames(nonames)
+import delimited using "<nwergm>/dev/ergm_benchmark_r_vs_stata/bench_net.csv", clear varnames(nonames)
 gen ego = _n
 reshape long v, i(ego) j(alter)
 rename v value

@@ -70,7 +70,7 @@ readable level names in `nodefactor`/`nodemix` coefficient names) would be a fea
 
 ## `lib/build.do` and `deploy_nw_build.do` hardcode the checkout path
 
-Both `cd` into `/Users/tgrund/FILES_NEW/SOFTWARE/nwcommands` by absolute path. Run from a git
+Both `cd` into a fixed checkout of nwcommands by absolute path. Run from a git
 worktree or any other copy, they silently rebuild the *main checkout's* mlib instead of the one
 you are working on. From a worktree, build with a copy of `lib/build.do` whose paths point at the
 worktree.

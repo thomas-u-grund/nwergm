@@ -12,7 +12,7 @@ quietly do `"`nwcore'/unw_core.do"'
 do unw_ergm.do
 
 * Certifies harmonisation unit 155 Stage 1 (bipartite/two-mode ERGM
-* foundation, /Users/tgrund/.claude/plans/dreamy-popping-deer.md): the
+* foundation): the
 * dyad-space/proposal/MPLE-enumeration/ErgmCertifyChangeStat mechanics
 * every bipartite term family builds on, plus the .ado-level edges-only
 * end-to-end smoke test. Also certifies unit 156 (Stage 2: bcov1()/

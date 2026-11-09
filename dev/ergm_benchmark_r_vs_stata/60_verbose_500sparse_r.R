@@ -16,7 +16,7 @@
 # before this unit's fix.
 
 suppressMessages(library(ergm))
-d <- "/Users/tgrund/FILES_NEW/SOFTWARE/nwcommands/dev/ergm_benchmark_r_vs_stata"
+d <- "<nwergm>/dev/ergm_benchmark_r_vs_stata"
 mat <- as.matrix(read.csv(file.path(d, "net500.csv"), header = FALSE))
 grp <- read.csv(file.path(d, "attr500.csv"), header = FALSE)[[1]]
 net <- network(mat, directed = FALSE, matrix.type = "adjacency")

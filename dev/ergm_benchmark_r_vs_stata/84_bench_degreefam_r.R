@@ -5,7 +5,7 @@
 
 suppressMessages(library(ergm))
 
-d <- "/Users/tgrund/FILES_NEW/SOFTWARE/nwcommands/dev/ergm_benchmark_r_vs_stata"
+d <- "<nwergm>/dev/ergm_benchmark_r_vs_stata"
 mat <- as.matrix(read.csv(file.path(d, "net_degfam.csv"), header = FALSE))
 grp <- read.csv(file.path(d, "attr_degfam.csv"), header = FALSE)[[1]]
 stopifnot(dim(mat) == c(2000, 2000), length(grp) == 2000)

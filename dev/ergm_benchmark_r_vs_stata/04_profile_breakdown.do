@@ -26,7 +26,7 @@ mata set matastrict off
 gD = ErgmGraph()
 gD.init(30, 1)
 
-fh = fopen("/Users/tgrund/FILES_NEW/SOFTWARE/nwcommands/dev/ergm_benchmark_r_vs_stata/bench_net.csv", "r")
+fh = fopen("<nwergm>/dev/ergm_benchmark_r_vs_stata/bench_net.csv", "r")
 for (i=1; i<=30; i++) {
 	line = fget(fh)
 	row = strtoreal(tokens(subinstr(line, ",", " ", .)))

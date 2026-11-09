@@ -20,7 +20,7 @@ Notes:
       2. Unicode is supported; see help unicode_advice.
 
 
-Running /Users/tgrund/FILES_NEW/RESEARCH/nwcommands_2016/profile.do ...
+Running <old nwcommands>/profile.do ...
 
 . do dev/ergm_benchmark_r_vs_stata/85_bench_sharedpartner_stata.do 
 
@@ -46,7 +46,7 @@ Running /Users/tgrund/FILES_NEW/RESEARCH/nwcommands_2016/profile.do ...
 >         dispatch path (gwnsp = gwdsp - gwesp) in native/ergm_mcmc.c. Not
 >         exhaustive - one example, per the user's own explicit instruction.
 > */
-. do "/Users/tgrund/FILES_NEW/RESEARCH/nwcommands_2016/unw_core.do"
+. do "<old nwcommands>/unw_core.do"
 
 . clear mata
 
@@ -8695,7 +8695,7 @@ note: variable v set but not used.
 . 
 end of do-file
 
-. do "/Users/tgrund/FILES_NEW/RESEARCH/nwcommands_2016/unw_ergm.do"
+. do "<old nwcommands>/unw_ergm.do"
 
 . /*
 >         unw_ergm.do -- native ERGM estimation core for nwcommands (nwergm).
@@ -14517,10 +14517,10 @@ note: variable rho unused.
 . 
 end of do-file
 
-. run "/Users/tgrund/FILES_NEW/RESEARCH/nwcommands_2016/nwergm.ado"
+. run "<old nwcommands>/nwergm.ado"
 
 . 
-. local ddir "/Users/tgrund/FILES_NEW/RESEARCH/nwcommands_2016/dev/ergm_benchmark_r_vs_stata"
+. local ddir "<old nwcommands>/dev/ergm_benchmark_r_vs_stata"
 
 . 
 . set seed 20260903

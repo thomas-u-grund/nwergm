@@ -30,26 +30,26 @@ Notes:
 >         benchmark. Times the WHOLE nwergm call (MPLE starting value + full
 >         MCMLE outer loop) with Stata's own timer.
 > */
-. adopath + "/Users/tgrund/FILES_NEW/RESEARCH/nwcommands_2016/lib"
+. adopath + "<old nwcommands>/lib"
   [1]  (BASE)      "/Applications/Stata/ado/base/"
   [2]  (SITE)      "/Applications/Stata/ado/site/"
   [3]              "."
-  [4]  (PERSONAL)  "/Users/tgrund/Documents/Stata/ado/personal/"
-  [5]  (PLUS)      "/Users/tgrund/Library/Application Support/Stata/ado/plus/"
+  [4]  (PERSONAL)  "<PERSONAL>/"
+  [5]  (PLUS)      "<PLUS>/"
   [6]  (OLDPLACE)  "~/ado/"
-  [7]              "/Users/tgrund/FILES_NEW/RESEARCH/nwcommands_2016/lib"
+  [7]              "<old nwcommands>/lib"
 
-. adopath + "/Users/tgrund/FILES_NEW/RESEARCH/nwcommands_2016"
+. adopath + "<old nwcommands>"
   [1]  (BASE)      "/Applications/Stata/ado/base/"
   [2]  (SITE)      "/Applications/Stata/ado/site/"
   [3]              "."
-  [4]  (PERSONAL)  "/Users/tgrund/Documents/Stata/ado/personal/"
-  [5]  (PLUS)      "/Users/tgrund/Library/Application Support/Stata/ado/plus/"
+  [4]  (PERSONAL)  "<PERSONAL>/"
+  [5]  (PLUS)      "<PLUS>/"
   [6]  (OLDPLACE)  "~/ado/"
-  [7]              "/Users/tgrund/FILES_NEW/RESEARCH/nwcommands_2016/lib"
-  [8]              "/Users/tgrund/FILES_NEW/RESEARCH/nwcommands_2016"
+  [7]              "<old nwcommands>/lib"
+  [8]              "<old nwcommands>"
 
-. do "/Users/tgrund/FILES_NEW/RESEARCH/nwcommands_2016/unw_core.do"
+. do "<old nwcommands>/unw_core.do"
 
 . clear mata
 
@@ -8698,7 +8698,7 @@ note: variable v set but not used.
 . 
 end of do-file
 
-. do "/Users/tgrund/FILES_NEW/RESEARCH/nwcommands_2016/unw_ergm.do"
+. do "<old nwcommands>/unw_ergm.do"
 
 . /*
 >         unw_ergm.do -- native ERGM estimation core for nwcommands (nwergm).
@@ -14608,7 +14608,7 @@ note: variable rho unused.
 . 
 end of do-file
 
-. run "/Users/tgrund/FILES_NEW/RESEARCH/nwcommands_2016/nwergm.ado"
+. run "<old nwcommands>/nwergm.ado"
 
 . 
 . // nwset's own mat() option cannot accept a bare Stata matrix NAME, only
@@ -14622,7 +14622,7 @@ end of do-file
 . // nwset's OTHER input path entirely: a full dyad-census edgelist
 . // (every ordered pair, value 0/1), which every other cscripts/ test in
 . // this package already uses successfully at small scale.
-. import delimited using "/Users/tgrund/FILES_NEW/RESEARCH/nwcommands_2016/dev/ergm_benchmark_r_vs_stata/
+. import delimited using "<old nwcommands>/dev/ergm_benchmark_r_vs_stata/
 > bench_net.csv", clear varnames(nonames)
 (encoding automatically selected: UTF-8)
 (30 vars, 30 obs)

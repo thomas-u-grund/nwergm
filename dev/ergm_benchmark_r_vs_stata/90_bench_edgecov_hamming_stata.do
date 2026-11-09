@@ -9,8 +9,8 @@
 	the rest of this directory (generate once, export identically for
 	both tools, time each tool's own default settings).
 */
-adopath + "/Users/tgrund/FILES_NEW/SOFTWARE/nwcommands/lib"
-adopath + "/Users/tgrund/FILES_NEW/SOFTWARE/nwcommands"
+adopath + "<nwcommands>/lib"
+adopath + "<nwcommands>"
 * The core package nwcommands is found through the environment variable NWCORE (path of the core checkout).
 local nwcore : env NWCORE
 if `"`nwcore'"' == "" {
@@ -21,9 +21,9 @@ adopath ++ `"`nwcore'"'
 adopath ++ `"`c(pwd)'"'
 quietly do `"`nwcore'/unw_core.do"'
 do unw_ergm.do
-run "/Users/tgrund/FILES_NEW/SOFTWARE/nwcommands/nwergm.ado"
+run "<nwergm>/nwergm.ado"
 
-local ddir "/Users/tgrund/FILES_NEW/SOFTWARE/nwcommands/dev/ergm_benchmark_r_vs_stata"
+local ddir "<nwergm>/dev/ergm_benchmark_r_vs_stata"
 
 // Main network to fit on.
 set seed 20260829

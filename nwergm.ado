@@ -164,8 +164,7 @@ program nwergm, eclass
 	// never silently reinterpret.
 	//
 	// Bipartite (two-mode) support (harmonisation unit 155 Stage 1 +
-	// unit 156 Stage 2, per
-	// /Users/tgrund/.claude/plans/dreamy-popping-deer.md): R's own ergm
+	// unit 156 Stage 2): R's own ergm
 	// package requires bipartite networks to be undirected
 	// (the development notes:401) - a real modeling constraint (a
 	// directed two-mode dyad space has no standard ERGM treatment in

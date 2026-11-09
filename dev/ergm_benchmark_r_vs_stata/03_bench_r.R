@@ -8,7 +8,7 @@
 suppressMessages(library(ergm))
 
 mat <- as.matrix(read.csv(
-  "/Users/tgrund/FILES_NEW/SOFTWARE/nwcommands/dev/ergm_benchmark_r_vs_stata/bench_net.csv",
+  "<nwergm>/dev/ergm_benchmark_r_vs_stata/bench_net.csv",
   header = FALSE
 ))
 stopifnot(dim(mat) == c(30, 30))

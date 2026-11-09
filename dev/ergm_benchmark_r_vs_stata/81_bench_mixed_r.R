@@ -6,7 +6,7 @@
 
 suppressMessages(library(ergm))
 
-d <- "/Users/tgrund/FILES_NEW/SOFTWARE/nwcommands/dev/ergm_benchmark_r_vs_stata"
+d <- "<nwergm>/dev/ergm_benchmark_r_vs_stata"
 mat <- as.matrix(read.csv(file.path(d, "net_mixed.csv"), header = FALSE))
 attr <- read.csv(file.path(d, "attr_mixed.csv"), header = FALSE)
 grp <- attr[[1]]

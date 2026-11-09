@@ -24,7 +24,7 @@ mata:
 mata set matastrict off
 M = *`netobj'->get_matrix_mod(1,1)
 _editmissing(M, 0)
-fh = fopen("/Users/tgrund/FILES_NEW/SOFTWARE/nwcommands/dev/ergm_benchmark_r_vs_stata/bench_net.csv", "w")
+fh = fopen("<nwergm>/dev/ergm_benchmark_r_vs_stata/bench_net.csv", "w")
 for (i=1; i<=rows(M); i++) {
 	fput(fh, invtokens(strofreal(M[i,.]), ","))
 }

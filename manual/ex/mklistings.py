@@ -23,13 +23,18 @@ for log in sorted(glob.glob(os.path.join(here, "ex*.log"))):
         if line.startswith("end of do-file") or line.startswith("r(") and False: continue
         buf.append(line)
     flush()
-# the examples are run from a scratch checkout; show the usual place of the package in the one listing that prints a path
+# the examples are run from a scratch checkout; show the usual place of an installed package where a listing prints a path
+PLUGIN = "~/Library/Application Support/Stata/ado/plus/e/"
+for f in glob.glob(os.path.join(here, "out", "*.txt")):
+    t = open(f).read()
+    t2 = re.sub(r"file\n\s+/[^\n]*\n\s+> [^\n]*?/manual/ex/(\.\./fig/\S+) saved as", r"file \1 saved as", t)
+    if t2 != t: open(f, "w").write(t2)
 fv = os.path.join(here, "out", "flo_version.txt")
 if os.path.exists(fv):
     t = open(fv).read()
-    t = re.sub(r"/private/tmp/[^\n]*\n> [^ ]*/lib/plugins/macos/", "/Users/tgrund/FILES_NEW/SOFTWARE/nwergm/lib/plugins/macos/", t)
+    t = re.sub(r"/private/tmp/[^\n]*\n> [^ ]*/lib/plugins/macos/", PLUGIN, t)
     t = t.replace("(ships with the package, no separate version number)", "(ships with \n> the package, no separate version number)")
     t = t.replace("(ships with the package, no separate version n\n> umber)", "(ships with \n> the package, no separate version number)")
-    t = re.sub(r'r\(plugin\) : "/private/tmp/[^"]*"', 'r(plugin) : "/Users/tgrund/FILES_NEW/SOFTWARE/nwergm/lib/plugins/macos/ergm_mcmc_macos.plugin (ships wit.."', t)
+    t = re.sub(r'r\(plugin\) : "/private/tmp/[^"]*"', 'r(plugin) : "' + PLUGIN + 'ergm_mcmc_macos.plugin (ships wit.."', t)
     open(fv, "w").write(t)
 print("listings written:", n)

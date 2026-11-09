@@ -65,6 +65,4 @@ Goodness-of-fit for edgewise shared partner
 (plot saved as gof; box and whiskers summarize the simulated draws, the dashed line is the observed network)
 
 . graph export "../fig/gof.pdf", name(gof) replace
-file
-    /private/tmp/claude-501/-Users-tgrund-FILES-NEW-RESEARCH-2026-Book-StataPress/8c93580e-0799-4722-a963-2a400bbb6864/
-    > scratchpad/ergm_wt/manual/ex/../fig/gof.pdf saved as PDF format
+file ../fig/gof.pdf saved as PDF format

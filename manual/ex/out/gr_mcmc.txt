@@ -121,6 +121,4 @@ Note: MCMC diagnostics shown here are from the last round of simulation, prior t
 . graph display mcmcdiag, xsize(6.5) ysize(7.5)
 
 . graph export "../fig/mcmcdiag.pdf", name(mcmcdiag) replace
-file
-    /private/tmp/claude-501/-Users-tgrund-FILES-NEW-RESEARCH-2026-Book-StataPress/8c93580e-0799-4722-a963-2a400bbb6864/
-    > scratchpad/ergm_wt/manual/ex/../fig/mcmcdiag.pdf saved as PDF format
+file ../fig/mcmcdiag.pdf saved as PDF format
