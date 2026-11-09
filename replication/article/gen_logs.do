@@ -1,6 +1,6 @@
 * =====================================================================
 * gen_logs.do: regenerates every log and figure of the nwergm article
-* from the RELEASED software: nwcommands (core) 3.17.2 and nwergm 1.5.6.
+* from the RELEASED software: nwcommands (core) 3.17.2 and nwergm 1.5.7.
 * Run from the paper folder with Stata 18 (the Mata libraries are built with Stata 17):
 *   /Applications/Stata/StataBE.app/Contents/MacOS/StataBE -e do gen_logs.do
 * hdr_local.do (this folder) uses the installed packages, or source trees named by globals
@@ -75,7 +75,8 @@ nwdyads lazega_adv
 sjlog close, replace
 
 sjlog using lazega_m1, replace
-nwergm lazega_adv, edges nodematch(officen practicen) nodeofactor(statusn) nodeifactor(statusn)
+nwergm lazega_adv, edges nodematch(officen practicen) ///
+    nodeofactor(statusn) nodeifactor(statusn)
 estimates store m1
 sjlog close, replace
 
@@ -85,7 +86,8 @@ estimates store m2
 timer clear 1
 timer on 1
 sjlog using lazega_m3, replace
-nwergm lazega_adv, edges mutual nodematch(officen practicen) nodeofactor(statusn) nodeifactor(statusn) gwesp(.5) seed(12345)
+nwergm lazega_adv, edges mutual nodematch(officen practicen) ///
+    nodeofactor(statusn) nodeifactor(statusn) gwesp(.5) seed(12345)
 estimates store m3
 sjlog close, replace
 timer off 1
@@ -140,11 +142,13 @@ sjlog close, replace
 * ---------------------------------------------------------------------
 * Example 3: a two-mode network, Davis's southern women (18 women, 14 events)
 * ---------------------------------------------------------------------
+sjlog using davis_load, replace
 nwwebuse davis, nwclear
 encode title, generate(titlen)
-nwergm davis, edges bfactor1(titlen)
+sjlog close, replace
+quietly nwergm davis, edges bfactor1(titlen)
 estimates store d1
-nwergm davis, edges bfactor1(titlen) bgwdegree2(1) seed(1)
+quietly nwergm davis, edges bfactor1(titlen) bgwdegree2(1) seed(1)
 estimates store d2
 sjlog using davis_fit, replace
 nwergm davis, edges bfactor1(titlen) bgwdsp1(.5) seed(1)
@@ -170,7 +174,8 @@ nwwebuse lazega, nwclear
 foreach v in office practice status {
     encode `v', generate(`v'n)
 }
-nwergm lazega_fr, edges mutual nodematch(practicen) operators(Symmetrize(triangle, rule(strong))) seed(1)
+nwergm lazega_fr, edges mutual nodematch(practicen) ///
+    operators(Symmetrize(triangle, rule(strong))) seed(1)
 sjlog close, replace
 
 * ---------------------------------------------------------------------

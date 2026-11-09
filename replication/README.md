@@ -15,14 +15,14 @@ All commands below are run from this folder, the folder that holds this README.
 | ergm | 4.12.0 (with network 1.20.0, statnet.common 4.13.0) | `Rscript R/00_install.R` |
 | Stata | 18 (BE); also tested with 17 and 19 | |
 | nwcommands | 3.17.2 | see below |
-| nwergm | 1.5.6 (Tables 2 and 3, Figure 6: 1.5.4, with the same estimation code) | see below |
+| nwergm | 1.5.7 (Table 2, Figure 5: 1.5.4, with the same estimation code) | see below |
 
 The versions used in the article are installed in Stata from their release tags on GitHub:
 
 ```
 . net install nwcommands, replace from(https://raw.githubusercontent.com/thomas-u-grund/nwcommands/v3.17.2/)
 . nwinstall, all from(https://raw.githubusercontent.com/thomas-u-grund/nwcommands/v3.17.2)
-. nwinstall, modelpkg(nwergm) release(v1.5.6)
+. nwinstall, modelpkg(nwergm) release(v1.5.7)
 ```
 
 `ergm` 4.12.0 is the version that `nwergm` was compared with, and on 8 November 2026 it was also the newest
@@ -30,16 +30,17 @@ release on CRAN. We also ran all R scripts with the development version of `ergm
 r-universe (4.13.0-8272, with network 1.20.0-784 and statnet.common 4.14.0-526). The results did not change in
 substance: the mean estimates of Table 2 moved by at most 0.12 of `ergm`'s standard errors and differed from those
 of `nwergm` by at most 0.10; the effective sample sizes of `R/02_effective_size.R` were 180 to 440; and the
-per-node model again agreed with `nwergm` to 1.44e-6. We did not time the development version under the controlled conditions of Table 3.
+per-node model again agreed with `nwergm` to 1.44e-6. We did not time the development version under the controlled conditions of Figure 5.
 
 ## What reproduces what
 
 | Article | R | Stata | Result files | What to expect |
 |---|---|---|---|---|
 | Table 2, estimates of both programs | `R/01_compare_estimates.R` | `stata/01_compare_estimates.do` | `results/cmp_ergm.csv`, `results/cmp_nwergm.csv`, `results/tab_compare.tex` | see below |
-| Effective sample size (Sections 7.2 and 9.3) | `R/02_effective_size.R` | `article/gen_logs.do` (listing of `estat mcmcdiag`) | | about 215 to 315 for `nwergm`, 240 to 500 for `ergm` |
-| Table 3 and Figure 6, speed | `R/03_benchmark_fit.R` | `stata/03_benchmark_fit.do` | `results/benchmark_raw.txt`, `results/tab_bench.tex`, `results/fig_speed_bench.csv` | ratios of the medians 2.1 to 4.1 on our machine |
+| Effective sample size (Section 7.1 and the manual) | `R/02_effective_size.R` | `article/gen_logs.do` (listing of `estat mcmcdiag`) | | about 215 to 315 for `nwergm`, 240 to 500 for `ergm` |
+| Figure 5, speed (median times in `results/tab_bench.tex`) | `R/03_benchmark_fit.R` | `stata/03_benchmark_fit.do` | `results/benchmark_raw.txt`, `results/tab_bench.tex`, `results/fig_speed_bench.csv` | ratios of the medians 2.1 to 4.1 on our machine |
 | Models with one coefficient per node (Section 9.3) | `R/04_per_node.R` | `stata/04_per_node.do` | `results/per_node_ergm.csv`, `results/per_node_nwergm.csv` | identical estimates up to about 1e-6 |
+| `opentriad`: change statistics of `ergm` against the differences of its `summary()` (Section 9.1 and the manual) | `R/09_opentriad_check.R` | | (printed) | the two differ for 18 of 66 dyads, by 2^32 each; the pseudolikelihood estimate of `opentriad` is 0 |
 | All listings and figures of the article | | `article/gen_logs.do`, `article/plot_networks.do`, `article/fig_speed.do` | | identical output on the same platform |
 | Manual, Appendix C: proposals per fit | `R/08_count_proposals.R` | (counter, see below) | `results/proposal_counts.txt` | |
 | Manual, Appendix C: time for a fixed amount of work | `R/07_fixed_workload.R` | `stata/07_fixed_workload.do` | `results/fixed_workload.txt` | `nwergm` 2.1 to 4.4 times faster per proposal |
