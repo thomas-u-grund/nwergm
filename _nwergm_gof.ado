@@ -1,4 +1,4 @@
-*! version 1.5.4  09nov2026 _nwergm_gof.ado -- estat gof after nwergm, following R's gof.ergm(): observed values against simulations from the fitted model
+*! version 1.5.5  09nov2026 _nwergm_gof.ado -- estat gof after nwergm, following R's gof.ergm(): observed values against simulations from the fitted model
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -211,15 +211,32 @@ program _nwergm_gof, rclass
 		}
 		matrix colnames `P' = obs min mean max MC_p-value
 		matrix rownames `P' = `labs'
+		// header of the first column, and its width: the longest label, 12 to 28 characters
+		local hd "Statistic"
+		if inlist("`t'", "degree", "idegree", "odegree") local hd = cond("`t'"=="idegree", "In-degree", cond("`t'"=="odegree", "Out-degree", "Degree"))
+		else if inlist("`t'", "b1degree", "b2degree") local hd "Degree"
+		else if "`t'" == "espartners" local hd "ESP"
+		else if "`t'" == "dspartners" local hd "DSP"
+		else if "`t'" == "distance" local hd "Distance"
+		else if "`t'" == "triadcensus" local hd "Triad type"
+		local w = 12
+		foreach lb of local labs {
+			local w = max(`w', min(28, udstrlen("`lb'")))
+		}
 		di
-		di as txt "Goodness-of-fit for `desc_`t''"
-		di
-		di as txt %-16s "" %10s "obs" %10s "min" %10s "mean" %10s "max" %12s "MC p-value"
+		di as txt "Goodness of fit: `desc_`t''{col 50}Simulations{col 67}= " as res %10.0fc `nsim'
+		di as txt "{hline `=`w'+1'}{c TT}{hline 52}"
+		di as txt %`w's "`hd'" " {c |}" %10s "Observed" %10s "Min" %10s "Mean" %10s "Max" %12s "MC p-value"
+		di as txt "{hline `=`w'+1'}{c +}{hline 52}"
 		forvalues i = 1/`k' {
 			if `P'[`i',1] == 0 & `P'[`i',2] == 0 & `P'[`i',4] == 0 continue
 			local lb : word `i' of `labs'
-			di as txt %-16s abbrev("`lb'", 16) as res %10.0g `P'[`i',1] %10.0g `P'[`i',2] %10.2f `P'[`i',3] %10.0g `P'[`i',4] %12.2f `P'[`i',5]
+			// counts print as integers; a row with a non-integer value (gwesp and other weighted terms) prints with two decimals
+			local fm "%10.0f"
+			if `P'[`i',1] != floor(`P'[`i',1]) | `P'[`i',2] != floor(`P'[`i',2]) | `P'[`i',4] != floor(`P'[`i',4]) local fm "%10.2f"
+			di as txt %`w's abbrev("`lb'", `w') " {c |}" as res `fm' `P'[`i',1] `fm' `P'[`i',2] %10.2f `P'[`i',3] `fm' `P'[`i',4] %12.2f `P'[`i',5]
 		}
+		di as txt "{hline `=`w'+1'}{c BT}{hline 52}"
 		return matrix gof_`t' = `P'
 	}
 

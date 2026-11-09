@@ -38,9 +38,9 @@ forvalues s = 1/10 {
 * --- Florentine ---
 nwwebuse florentine, nwclear
 forvalues s = 1/10 {
-    runfit `ph' flo_gwesp `s' "nwergm flomarriage, edges nodematch(seat) gwesp(.5)"
+    runfit `ph' flo_gwesp `s' "nwergm flomarriage, edges nodecov(wealth) gwesp(.5)"
 }
-runfit `ph' flo_mple 1 "nwergm flomarriage, edges nodecov(wealth) nodematch(seat)"
+runfit `ph' flo_mple 1 "nwergm flomarriage, edges nodecov(wealth)"
 * --- Lazega ---
 nwwebuse lazega, nwclear
 foreach v in office practice status {

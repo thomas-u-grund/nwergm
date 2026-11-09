@@ -1,4 +1,4 @@
-*! version 1.5.4  09nov2026 _nwergm_mcdiag.ado -- the report of R's mcmc.diagnostics() for the final MCMC sample of an nwergm fit
+*! version 1.5.5  09nov2026 _nwergm_mcdiag.ado -- the report of R's mcmc.diagnostics() for the final MCMC sample of an nwergm fit
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -46,117 +46,71 @@ program _nwergm_mcdiag, rclass
 		exit
 	}
 
+	// The tables are printed with matlist, which splits wide tables into panels that
+	// fit the line size. The numbers are those of R's mcmc.diagnostics().
+	local w = 12
+	foreach nm of local keepnames {
+		local w = max(`w', min(28, udstrlen("`nm'")))
+	}
+
 	// ---- 1. summary (coda)
 	tempname SUM Q
 	mata: ergm_mcdiag_summary(`C', "`SUM'", "`Q'")
 	matrix rownames `SUM' = `keepnames'
 	matrix rownames `Q' = `keepnames'
+	matrix colnames `SUM' = Mean SD "Naive SE" "TS SE"
+	matrix colnames `Q' = 2.5% 25% 50% 75% 97.5%
 	di
-	di as txt "Sample statistics summary (centered at the observed statistics):"
+	di as txt "{p 0 0 2}Report of mcmc.diagnostics() in R for the final sample, centered at the observed statistics{p_end}"
 	di
-	di as txt "1. Empirical mean and standard deviation for each variable,"
-	di as txt "   plus standard error of the mean:"
+	di as txt "Mean and standard deviation, standard error of the mean (naive and time series)"
+	matlist `SUM', format(%9.4g) twidth(`w') rowtitle("Statistic") border(top bottom)
 	di
-	di as txt %-16s "" %12s "Mean" %12s "SD" %12s "Naive SE" %16s "Time-series SE"
-	local k 0
-	foreach nm of local keepnames {
-		local ++k
-		di as txt %-16s abbrev("`nm'", 16) as res %12.5g `SUM'[`k',1] %12.5g `SUM'[`k',2] %12.5g `SUM'[`k',3] %16.5g `SUM'[`k',4]
-	}
-	di
-	di as txt "2. Quantiles for each variable:"
-	di
-	di as txt %-16s "" %12s "2.5%" %12s "25%" %12s "50%" %12s "75%" %12s "97.5%"
-	local k 0
-	foreach nm of local keepnames {
-		local ++k
-		di as txt %-16s abbrev("`nm'", 16) as res %12.5g `Q'[`k',1] %12.5g `Q'[`k',2] %12.5g `Q'[`k',3] %12.5g `Q'[`k',4] %12.5g `Q'[`k',5]
-	}
+	di as txt "Quantiles"
+	matlist `Q', format(%9.4g) twidth(`w') rowtitle("Statistic") border(top bottom)
 
 	// ---- 2. are the sample statistics different from observed?
-	tempname DT
+	tempname DT DTt
 	mata: ergm_mcdiag_obstest(`C', "`DT'")
 	matrix rownames `DT' = diff. test_stat. P-val.
-	local cn "`keepnames' (Omni)"
+	matrix `DTt' = `DT''
+	matrix colnames `DTt' = Diff. Test p-value
+	matrix rownames `DTt' = `keepnames' Omnibus
 	di
-	di as txt "Are sample statistics significantly different from observed?"
-	di
-	di as txt %-14s "" _c
-	foreach nm of local keepnames {
-		di as txt %16s abbrev("`nm'", 14) _c
-	}
-	di as txt %16s "(Omni)"
-	local rows "diff. test_stat. P-val."
-	local lbl1 "diff."
-	local lbl2 "test stat."
-	local lbl3 "P-val."
-	forvalues r = 1/3 {
-		di as txt %-14s "`lbl`r''" _c
-		forvalues k = 1/`=`p'+1' {
-			if `DT'[`r',`k'] >= . di as txt %16s "NA" _c
-			else di as res %16.5g `DT'[`r',`k'] _c
-		}
-		di
-	}
+	di as txt "Difference between the sample and the observed statistics"
+	matlist `DTt', format(%9.4g) twidth(`w') rowtitle("Statistic") border(top bottom)
 
 	// ---- 3. cross-correlations and autocorrelation
-	tempname XC AC
+	tempname XC AC ACt
 	mata: ergm_mcdiag_corr(`C', "`XC'", "`AC'")
 	matrix colnames `XC' = `keepnames'
 	matrix rownames `XC' = `keepnames'
 	di
-	di as txt "Sample statistics cross-correlations:"
-	di
-	di as txt %-16s "" _c
-	foreach nm of local keepnames {
-		di as txt %16s abbrev("`nm'", 14) _c
-	}
-	di
-	local k 0
-	foreach nm of local keepnames {
-		local ++k
-		di as txt %-16s abbrev("`nm'", 16) _c
-		forvalues j = 1/`p' {
-			di as res %16.7f `XC'[`k',`j'] _c
-		}
-		di
-	}
+	di as txt "Cross-correlations"
+	matlist `XC', format(%9.3f) twidth(`w') border(top bottom) lines(oneline)
 	matrix colnames `AC' = `keepnames'
-	di
-	di as txt "Sample statistics auto-correlation:"
-	di as txt "Chain 1"
-	di as txt %-16s "" _c
-	foreach nm of local keepnames {
-		di as txt %16s abbrev("`nm'", 14) _c
-	}
-	di
+	local lags ""
 	forvalues l = 0/5 {
-		di as txt %-16s "Lag `=`l'*`thin''" _c
-		forvalues j = 1/`p' {
-			di as res %16.7f `AC'[`=`l'+1',`j'] _c
-		}
-		di
+		local lags "`lags' `=`l'*`thin''"
 	}
+	matrix rownames `AC' = `lags'
+	matrix `ACt' = `AC'[2..6, 1...]'
+	di
+	di as txt "Autocorrelation at lag (in proposals)"
+	matlist `ACt', format(%9.3f) twidth(`w') rowtitle("Statistic") border(top bottom)
 
 	// ---- 4. Geweke burn-in diagnostic
-	tempname GW
+	tempname GW GWt
 	mata: ergm_mcdiag_geweke(`C', "`GW'")
+	matrix `GWt' = `GW'[1..2, 1..`p']'
+	matrix rownames `GWt' = `keepnames'
+	matrix colnames `GWt' = z p-value
 	di
-	di as txt "Sample statistics burn-in diagnostic (Geweke):"
-	di as txt "Chain 1"
+	di as txt "Geweke test (first 10% against last 50% of the sample)"
+	matlist `GWt', format(%9.3f) twidth(`w') rowtitle("Statistic") border(top bottom)
+	di as txt "Joint p-value = " as res %5.3f `GW'[2,`p'+1]
 	di
-	di as txt "Fraction in 1st window = 0.1"
-	di as txt "Fraction in 2nd window = 0.5"
-	di
-	di as txt %-16s "" %16s "z-score" %22s "Individual P-value"
-	local k 0
-	foreach nm of local keepnames {
-		local ++k
-		di as txt %-16s abbrev("`nm'", 16) as res %16.7f `GW'[1,`k'] %22.7f `GW'[2,`k']
-	}
-	di as txt "Joint P-value (lower = worse):  " as res %9.7f `GW'[2,`p'+1]
-	di
-	di as txt "Note: MCMC diagnostics shown here are from the last round of simulation, prior to computation of final parameter estimates. Because the final estimates are refinements of those used for this simulation run, these diagnostics may understate model performance. To directly assess the performance of the final model on in-model statistics, please use {bf:estat gof}."
+	di as txt "{p 0 0 2}Note: the sample comes from the last simulation, run before the final estimates were computed, so these diagnostics may understate how well the final model fits its statistics; {cmd:estat gof} assesses the final model directly.{p_end}"
 
 	return matrix mc_summary = `SUM'
 	return matrix mc_quantiles = `Q'

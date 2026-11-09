@@ -10,12 +10,14 @@ adopath ++ "$NWC/lib/plugins/macos"
 capture set scheme stsj
 set seed 2026
 
-* Florentine marriages: shade and shape by council seat (the attribute of nodematch(seat))
+* Florentine marriages: node size by wealth (the attribute of nodecov(wealth))
 nwwebuse florentine, nwclear
-nwplot flomarriage, layout(kk) lab color(seat, colorpalette(gs11 gs3)) symbol(seat, legendoff symbolpalette(circle diamond)) nodefactor(.45) labelopt(mlabposition(6) mlabgap(*2.5) mlabsize(small) mlabcolor(black)) legend(cols(1) size(small) position(3) region(lstyle(none))) xsize(5.6) ysize(4.2) name(flo, replace)
+* style shared with the nwsaom article: grey markers with a thin black outline, thin grey ties, no legend (the caption gives the key)
+nwplot flomarriage, layout(kk) lab size(wealth, legendoff) nodefactor(1.1) scatteropt(mfcolor(gs6) mlcolor(black) mlwidth(vthin)) lineopt(lcolor(gs10) lwidth(thin)) labelopt(mlabposition(6) mlabgap(*2.5) mlabsize(small) mlabcolor(black)) legend(off) xsize(5.6) ysize(4.2) name(flo, replace)
 graph export fig_florentine.pdf, name(flo) replace
 
 * Lazega advice: colour by office, shape by status
 nwwebuse lazega, nwclear
-nwplot lazega_adv, layout(kk) arrows color(office, colorpalette(gs11 gs6 black)) symbol(status, symbolpalette(circle diamond)) nodefactor(.32) arrowfactor(.3) lineopt(lcolor(gs13) lwidth(vthin)) legend(cols(1) size(small) position(3) region(lstyle(none))) xsize(5.6) ysize(4.2) name(laz, replace)
+* ties lighter than in the other figures (gs13): the network is dense
+nwplot lazega_adv, layout(kk) arrows color(office, legendoff colorpalette(gs11 gs6 black)) symbol(status, legendoff symbolpalette(circle diamond)) nodefactor(.6) arrowfactor(.3) scatteropt(mlcolor(black) mlwidth(vthin)) lineopt(lcolor(gs13) lwidth(vthin)) legend(off) xsize(5.6) ysize(4.2) name(laz, replace)
 graph export fig_lazega.pdf, name(laz) replace

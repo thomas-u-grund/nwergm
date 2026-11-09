@@ -28,7 +28,8 @@ Evaluating log-likelihood at the estimate (bridge sampling with 16 bridges) ...
 Log-likelihood:   -51.5534 (df = 3)   AIC:     109.1   BIC:     117.5   (MC std. err. =  .00086)
 
 . nwergm flomarriage, edges nodecov(wealth) gwesp(0.5) constraints(edges) seed(1)
-Note: the specified model's sample space constraint holds statistic(s) edges constant. They will be ignored.
+Note: the specified model's sample space constraint holds statistic(s) edges constant. They will
+>  be ignored.
 
 Exponential-family random graph model
 

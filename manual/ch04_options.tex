@@ -288,7 +288,9 @@ Command and option & Description (default)\\
 \opt{nsim(\#)}, \opt{seed(\#)} & Number of simulated networks (100) and seed.\\
 \opt{gofburnin(\#)}, \opt{gofinterval(\#)} & Burn-in and interval; default those of the fit (\texttt{e(mcmc\_burnin)}, \texttt{e(mcmc\_interval\_final)}; 16384 and 1024 after a pseudolikelihood fit).\\
 \opt{plot}, \opt{maxdeg(\#)}, \opt{maxdist(\#)}, \opt{name(string)} & Graph of the degree and geodesic distributions (maximum degree 15, maximum distance 6, name \texttt{gof}).\\
-\texttt{estat mcmcdiag} \opt{plot}, \opt{name(string)} & Trace and density plots (name \texttt{mcmcdiag}).\\
+\texttt{estat mcmcdiag} \opt{heidel} & Adds the Heidelberger--Welch test.\\
+\opt{report} & Adds the report of R's \texttt{mcmc.diagnostics()}.\\
+\opt{plot}, \opt{name(string)} & Trace and density plots (name \texttt{mcmcdiag}).\\
 \opt{pvalue(\#)}, \opt{eps(\#)} & Level of the Heidelberger--Welch test (one of 0.10, 0.05, 0.025, 0.01; default 0.05) and the relative half-width (0.1).\\
 \texttt{estat ic} & Log-likelihood, AIC and BIC.\\
 \texttt{predict} \opt{pr}, \opt{xb} & Conditional probability (default) or conditional log odds of each informative dyad.\\

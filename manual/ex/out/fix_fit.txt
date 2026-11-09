@@ -1,5 +1,6 @@
 . nwergm lazega_fr, edges mutual nodematch(prac) constraints(odegrees) seed(1)
-Note: the specified model's sample space constraint holds statistic(s) edges constant. They will be ignored.
+Note: the specified model's sample space constraint holds statistic(s) edges constant. They will
+>  be ignored.
 
 Exponential-family random graph model
 

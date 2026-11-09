@@ -1,4 +1,4 @@
-# Replication files for "Native exponential-family random graph models in Stata"
+# Replication files for "nwergm: Exponential-family random graph models in Stata"
 
 This folder lets a reader check every comparison of the article between `nwergm` (Stata) and `ergm` (R) on their own
 computer. Both programs read the same data, the R scripts are plain `ergm` calls with default settings, and each

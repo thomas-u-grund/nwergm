@@ -64,25 +64,25 @@ Friendship ties are reciprocated (\opt{mutual} is $0.81$, so that a tie that rec
 
 \subsection{Is the chain trustworthy?}
 
-The fit says it converged after six iterations. The default sample is adaptive (Section~\ref{sec:adaptive}): the last iteration kept 593 draws, and the interval of that sample is not the requested interval of 1024 but the one that the sampler arrived at (\texttt{e(mcmc\_interval\_final)}); the header of \texttt{estat mcmcdiag} shows the interval of the final sample and names the requested one when the two differ:
+The fit says it converged after six iterations. The default sample is adaptive (Section~\ref{sec:adaptive}): the last iteration kept 593 draws, and the interval of that sample is not the requested interval of 1024 but the one that the sampler arrived at (\texttt{e(mcmc\_interval\_final)}); \texttt{estat mcmcdiag} shows the interval of the final sample and, in a note under the table, the requested one when the two differ:
 \showlog{lz_interval}
-\texttt{estat mcmcdiag} looks at the final sample (the first part of its output is shown; the rest is the report of \texttt{mcmc.diagnostics()}). Its end note advises a higher target effective sample size (\opt{mcmleeffectivesize()}) for an adaptive fit and a larger \opt{mcmcsamplesize()} or \opt{mcmcinterval()} for a fit with fixed-size samples:
-\showlogpart{lz_diag}{1}{48}
-With the default settings, which are those of \ergm{}, the chain mixes acceptably: the lag-1 autocorrelation of the five statistics is $0.37$ to $0.50$, and the effective sample size is between 185 and 232 out of 593 draws. That is well above the target of 64, which refers to the estimating equations jointly (a smaller number than that of any single statistic) and which the iterations whose convergence test failed had raised. Geweke's test does not reject stationarity for any statistic (the smallest $p$-value is $0.74$), and the Heidelberger--Welch test passes. A fit with a burn-in of 3000, an interval of 50 proposals and fixed-size samples of 3000 draws (\opt{mcmleeffectivesize(0) mcmcburnin(3000) mcmcinterval(50)}) shows what a chain that is too short looks like:
+\texttt{estat mcmcdiag} looks at the final sample; option \opt{heidel} adds the Heidelberger--Welch test. The last note advises a higher target effective sample size (\opt{mcmleeffectivesize()}) for an adaptive fit and a larger \opt{mcmcsamplesize()} or \opt{mcmcinterval()} for a fit with fixed-size samples:
+\showlog{lz_diag}
+With the default settings, which are those of \ergm{}, the chain mixes acceptably: the lag-1 autocorrelation of the five statistics is $0.37$ to $0.50$, and the effective sample size is between 185 and 232 out of 593 draws. That is well above the target of 64, which refers to the estimating equations jointly (a smaller number than that of any single statistic) and which the iterations whose convergence test failed had raised. Geweke's test does not reject stationarity for any statistic ($|z|$ is at most $0.33$), and the Heidelberger--Welch test passes. A fit with a burn-in of 3000, an interval of 50 proposals and fixed-size samples of 3000 draws (\opt{mcmleeffectivesize(0) mcmcburnin(3000) mcmcinterval(50)}) shows what a chain that is too short looks like:
 \showlog{lz_fit2}
 The coefficients move by less than their standard errors, and the standard errors are of the same size. The diagnostics of the short chain:
-\showlogpart{lz_diag2}{1}{28}
-With the short chain the lag-1 autocorrelation of every statistic is $0.98$ to $0.99$ and the effective sample size is between 13 and 23 out of 3000 draws, whereas Geweke's test does not reject stationarity (the smallest $p$-value is $0.077$) and the Heidelberger--Welch test passes. The stationarity tests do not reveal the problem here; the autocorrelation and the effective sample size do, and the coefficients carry a large Monte Carlo error. The adaptive sample is protected against this. With the short interval and burn-in as starting values, but the adaptive sample of the default, the fit does not stay at the short interval; it thins the sample until the effective sample size is reached:
+\showlogpart{lz_diag2}{1}{29}
+With the short chain the lag-1 autocorrelation of every statistic is $0.98$ to $0.99$ and the effective sample size is between 13 and 23 out of 3000 draws, whereas Geweke's test does not reject stationarity ($|z|$ is at most $1.77$, $p=0.077$) and the Heidelberger--Welch test passes. The stationarity tests do not reveal the problem here; the autocorrelation and the effective sample size do, and the coefficients carry a large Monte Carlo error. The adaptive sample is protected against this. With the short interval and burn-in as starting values, but the adaptive sample of the default, the fit does not stay at the short interval; it thins the sample until the effective sample size is reached:
 \showlog{lz_adaptold}
-The fit takes ten iterations, the interval of the last sample is 3200 proposals, and the effective sample size of the 948 draws kept is between 262 and 396. These settings are a bad choice for the \emph{fixed} chain, not of the starting values of the adaptive one. The rest of the output of the default fit reports whether the sample statistics differ from the observed ones, with Hotelling's omnibus test:
-\showlogpart{lz_diag}{76}{81}
-None of the five individual tests rejects (the smallest $p$-value is 0.056), but Hotelling's omnibus test, which takes the very high cross-correlations of the five statistics into account, does ($p=0.017$). The omnibus test is sensitive to a small joint displacement along the direction in which the statistics move together, and the sample was drawn at the coefficients before the last update of the iteration (the note under the output; Section~\ref{sec:mcmcdiag}). It is a reason for caution, for example refitting from the estimate with \opt{init()} and a larger \opt{mcmleeffectivesize()}, and not a verdict on the final model, whose check is \texttt{estat gof}.
+The fit takes ten iterations, the interval of the last sample is 3200 proposals, and the effective sample size of the 948 draws kept is between 262 and 396. These settings are a bad choice for the \emph{fixed} chain, not of the starting values of the adaptive one. For the default fit, option \opt{report} adds the report of R's \texttt{mcmc.diagnostics()}; one of its tables tests whether the sample statistics differ from the observed ones, with Hotelling's omnibus test:
+\showlogpart{lz_report}{50}{61}
+None of the five individual tests rejects (the smallest $p$-value is 0.056), but Hotelling's omnibus test, which takes the very high cross-correlations of the five statistics into account, does ($p=0.017$). The omnibus test is sensitive to a small joint displacement along the direction in which the statistics move together, and the sample was drawn at the coefficients before the last update of the iteration (the note at the end of the report; Section~\ref{sec:mcmcdiag}). It is a reason for caution, for example refitting from the estimate with \opt{init()} and a larger \opt{mcmleeffectivesize()}, and not a verdict on the final model, whose check is \texttt{estat gof}.
 Figure~\ref{fig:mcmcdiag} shows the trace and density plots of this sample.
 
 \subsection{Goodness of fit}
 
 \texttt{estat gof} compares the observed network with 100 networks simulated from the fitted model. For a directed network the default statistics are the model statistics, the geodesic distances, the out-degrees, the in-degrees and the edgewise shared partners; the first three blocks are shown:
-\showlogpart{lz_gof}{1}{48}
+\showlogpart{lz_gof}{1}{54}
 The model statistics are reproduced (the observed value is inside the range of the simulations, with $p$-values between 0.94 and 1.00). The geodesic distances show a hint of a discrepancy: in the observed network 140 ordered pairs of lawyers cannot reach each other (distance \texttt{Inf}), whereas the simulated networks have 29 such pairs on average (Monte Carlo $p=0.12$ on that row). A few small $p$-values among some eighty rows, which are not independent, are not surprising (the smallest in the blocks shown is 0.04, for an out-degree of 22), but this row points to a feature, a few lawyers who are reached by few others, that the model may not capture. Figure~\ref{fig:gof} shows the same comparison as a plot. The tables are matrices; for example the edgewise shared partners, with the statistics chosen explicitly:
 \showlog{lz_gof2}
 \showlog{lz_gofmat}
@@ -103,7 +103,7 @@ The network is the tailor-shop network of Kapferer~\cite{kapferer1972} at the se
 The message \emph{unconstrained MCMC sampling did not mix at all} is the error of \ergm{} for this situation, and the return code is 498. The remedy is the geometrically weighted version of the triangle term, which discounts additional shared partners:
 \showlog{kap_gw}
 The model converges (after six iterations). The goodness-of-fit table shows, however, that the fitted model is not far from the degenerate region: the simulated networks range from 135 to 227 ties against the observed 190, and many simulated networks leave pairs unconnected (49 pairs on average), which the observed network does not.
-\showlogpart{kap_gof}{1}{21}
+\showlogpart{kap_gof}{1}{22}
 Such a model should be checked with a longer chain and with the diagnostics before it is interpreted.
 
 \section{Missing dyads}\label{sec:missingex}
@@ -133,7 +133,7 @@ The average predicted probability, 0.115, is close to the density of the network
 \section{Constraints and observation processes}\label{sec:conex}
 
 \opt{constraints(edges)} holds the number of ties fixed at the observed number; the density term is then not estimated (it is reported as omitted, with a note), and the other coefficients are those of a model conditional on the density. Florentine, with and without the constraint:
-\showlogpart{con_edges}{30}{56}
+\showlogpart{con_edges}{30}{57}
 \opt{constraints(odegrees)} holds the out-degree of every node fixed, which fixes the number of ties as well. In the Lazega network the density is again omitted, with a note:
 \showlog{cons_deg}
 When a constraint fixes the sample space, \texttt{nwergm simulate} from the fit keeps it: the three simulated networks have exactly 575 ties, the number of ties of the data, and the out-degree of every node is that of the data.
@@ -159,7 +159,7 @@ A model with the density and the mixing of the type of person and club (\opt{nod
 Ties between people and clubs of the same type are more likely than ties between different types: the coefficients of the two cells of different types are $-1.5$ and $-2.4$ relative to the cell in which both are of type 1, against $-0.23$ for the cell in which both are of type 2. A geometrically weighted degree term for the second mode (\opt{bgwdegree2(0.5)}) makes the model dyad-dependent:
 \showlog{two_fit2}
 The goodness of fit of a two-mode model compares the statistics of the model, the degree distributions of both modes, the dyadwise shared partners and the distances. The listing shows the first three blocks (the other blocks follow in the same layout):
-\showlogpart{two_gof}{1}{37}
+\showlogpart{two_gof}{1}{44}
 Operators evaluate terms on a derived network. \texttt{Proj1(edges triangle)} evaluates the number of ties and triangles of the one-mode projection on the first mode (two people are tied if they belong to a common club):
 \showlog{two_ops}
 On the directed Lazega network, \texttt{Symmetrize(triangle, rule(strong))} counts the triangles of the network of reciprocated ties:

@@ -19,12 +19,12 @@ nwwebuse florentine, nwclear
 nwergm flomarriage, edges
 sjlog close, replace
 
-sjlog using flo_nodematch, replace
-nwergm flomarriage, edges nodematch(seat)
+sjlog using flo_nodecov, replace
+nwergm flomarriage, edges nodecov(wealth)
 sjlog close, replace
 
 sjlog using flo_gwesp, replace
-nwergm flomarriage, edges nodematch(seat) gwesp(.5) seed(2026)
+nwergm flomarriage, edges nodecov(wealth) gwesp(.5) seed(2026)
 sjlog close, replace
 
 sjlog using flo_constr, replace
@@ -48,7 +48,7 @@ nwtomata flomarriage, mat(A)
 mata: A[1,2] = A[2,1] = A[3,5] = A[5,3] = .
 mata: st_matrix("M", A)
 nwset, mat(M) undirected name(flo_na)
-nwergm flo_na, edges nodematch(seat)
+nwergm flo_na, edges nodecov(wealth)
 display "informative dyads: " e(N) "   missing dyads: " e(nmissing)
 sjlog close, replace
 
@@ -59,7 +59,7 @@ mata: V = A :* (1 :+ mod((1::16)*J(1,16,1) + J(16,1,1)*(1..16), 3))
 mata: st_matrix("V", V)
 nwset, mat(V) undirected name(flo_val)
 nwsummarize flo_val
-nwergm flo_val, edges nodematch(seat)
+nwergm flo_val, edges nodecov(wealth)
 sjlog close, replace
 
 * ---------------------------------------------------------------------

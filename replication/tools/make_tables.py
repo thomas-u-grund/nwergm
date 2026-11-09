@@ -17,8 +17,8 @@ def tex(s):
 
 LABEL = collections.OrderedDict([
     ('toy', ('5-node directed network, MCMLE (10 seeds)', ['edges', 'mutual'])),
-    ('flo_mple', ('Florentine marriages, MPLE', ['edges', 'nodematch(seat)', 'nodecov(wealth)'])),
-    ('flo_gwesp', ('Florentine marriages, MCMLE (10 seeds)', ['edges', 'nodematch(seat)', 'gwesp(.5)'])),
+    ('flo_mple', ('Florentine marriages, MPLE', ['edges', 'nodecov(wealth)'])),
+    ('flo_gwesp', ('Florentine marriages, MCMLE (10 seeds)', ['edges', 'nodecov(wealth)', 'gwesp(.5)'])),
     ('lazega_dindep', ('Lazega advice, MPLE', ['edges', 'nodematch(office)', 'nodematch(practice)', 'nodeofactor(status=2)', 'nodeifactor(status=2)'])),
     ('lazega_final', ('Lazega advice, MCMLE (5 seeds)', ['edges', 'mutual', 'nodematch(office)', 'nodematch(practice)', 'nodeofactor(status=2)', 'nodeifactor(status=2)', 'gwesp(.5)'])),
     ('lazega_sym', ('Lazega friendship, operator (see text)', ['edges', 'mutual', 'nodematch(practice)', 'Symmetrize(strong)~triangle'])),

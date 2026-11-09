@@ -3,6 +3,12 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [1.5.5] - 2026-11-09
+
+### Changed
+- **`estat mcmcdiag` prints a shorter report in the layout of Stata's own tables.** The default output is a header with the sample size, burn-in, interval and acceptance rate, and one table with the mean, standard deviation, lag-1 autocorrelation, effective sample size and Geweke z of every statistic; the name column is as wide as the longest name (up to 28 characters) and the notes wrap at word boundaries. The new option `heidel` adds the Heidelberger-Welch table, and the new option `report` adds the report of R's `mcmc.diagnostics()`, which was printed every time before. The report is now printed with `matlist`, so wide tables are split into panels that fit the line size. All results in `r()` are the same, whichever options are given.
+- **`estat gof` tables have a right-aligned label column, column titles and the number of simulations.** Counts print as integers and weighted statistics (such as `gwesp`) with two decimals. The results in `r()` are unchanged.
+
 ## [1.5.4] - 2026-11-09
 
 ### Fixed

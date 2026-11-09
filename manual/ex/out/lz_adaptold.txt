@@ -1,11 +1,12 @@
-. quietly nwergm lazega_fr, edges mutual nodematch(prac) nodeicov(seniority) gwesp(0.5) seed(1) mcmcburnin(3000) mcmcinte
-> rval(50)
+. quietly nwergm lazega_fr, edges mutual nodematch(prac) nodeicov(seniority) gwesp(0.5) seed(1) 
+> mcmcburnin(3000) mcmcinterval(50)
 
 . quietly estat mcmcdiag
 
-. display "adaptive sample, starting interval 50: " e(mcmle_iterations) " iterations, " e(mcmc_samplesize) " draws, inter
-> val of the last sample " e(mcmc_interval_final)
-adaptive sample, starting interval 50: 10 iterations, 948 draws, interval of the last sample 3200
+. display "adaptive sample, starting interval 50: " e(mcmle_iterations) " iterations, " e(mcmc_s
+> amplesize) " draws, interval of the last sample " e(mcmc_interval_final)
+adaptive sample, starting interval 50: 10 iterations, 948 draws, interval of the last sample 320
+> 0
 
 . matrix list r(ess), format(%9.1f)
 

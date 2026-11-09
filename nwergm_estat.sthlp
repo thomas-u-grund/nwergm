@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.5.4  09nov2026 author: Thomas Grund}{...}
+{* *! version 1.5.5  09nov2026 author: Thomas Grund}{...}
 
 {title:Title}
 
@@ -13,7 +13,7 @@
 The following postestimation commands are available after {helpb nwergm}:
 
 {p2colset 9 22 23 2}{...}
-{p2col: {cmd:estat mcmcdiag}}MCMC diagnostics for the final simulation, including the report of R's {cmd:mcmc.diagnostics()} (method(mcmle) only); see {help nwergm_estimation}{p_end}
+{p2col: {cmd:estat mcmcdiag}}MCMC diagnostics for the final simulation (method(mcmle) only); see {help nwergm_estimation}{p_end}
 {p2col: {cmd:estat gof}}Simulation-based goodness of fit as in R's {cmd:gof()}; see {help nwergm_estimation}{p_end}
 {p2col: {cmd:estat ic}}Log-likelihood, AIC and BIC (see {help nwergm_fit}){p_end}
 {p2colreset}{...}
@@ -30,7 +30,7 @@ output left behind by {help nwergm}, not on a network directly; see that command
 {title:estat mcmcdiag}
 
 {p 8 17 2}
-{cmd:estat mcmcdiag} {opt [, PLOT NAME(string) PVALUE(real 0.05) EPS(real 0.1)]}
+{cmd:estat mcmcdiag} [{cmd:,} {opt heidel} {opt rep:ort} {opt plot} {opt name(string)} {opt pvalue(#)} {opt eps(#)}]
 
 {pstd}
 {cmd:estat mcmcdiag} reports diagnostics for the final MCMC simulation {cmd:nwergm} ran
@@ -41,6 +41,13 @@ tests behind R {cmd:ergm}'s own {cmd:mcmc.diagnostics()}, via its {cmd:coda} pac
 dependency); plus the overall Metropolis-Hastings acceptance rate and {cmd:nwergm}'s own MCMLE
 convergence-test result. Available only after {opt method(mcmle)} - a pure MPLE fit involves no
 MCMC simulation at all, so there is nothing to diagnose.
+
+{pstd}
+By default the command prints the sample size, burn-in, interval and acceptance rate, and one
+table with the mean, standard deviation, lag-1 autocorrelation, ESS and Geweke z of every
+statistic. {opt heidel} adds the table of the Heidelberger-Welch test. {opt report} adds the report
+that R's {cmd:mcmc.diagnostics()} prints: sample statistics, quantiles, cross-correlations and
+the joint Geweke test. All results are stored in {cmd:r()} whichever options are given.
 
 {pstd}
 {bf:This command never claims a fit converged merely because estimation stopped.} A satisfied
@@ -191,4 +198,4 @@ goodness of fit:
 	{help nwergm}
 
 {hline}
-{pstd}{it:nwergm version 1.5.4, 9 November 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.5.5, 9 November 2026}{p_end}{* nwversion}

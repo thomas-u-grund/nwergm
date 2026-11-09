@@ -1,117 +1,37 @@
-. estat mcmcdiag
+. estat mcmcdiag, heidel
 
-MCMC diagnostics for the final simulation (nwergm, method(mcmle))
-Sample size:         =    3000
-Burn-in:             =    3000
-Thinning interval:   =      50
-Acceptance rate:     =  0.5716
+MCMC diagnostics, final sample                   Sample size      =      3,000
+                                                 Burn-in          =      3,000
+                                                 Interval         =         50
+                                                 Acceptance rate  =     0.5716
 
-------------------------------------------------------------
-Statistic       |      Mean         SD    Autocorr      ESS
-----------------+-------------------------------------------
-edges           |  579.8833    37.8010      0.9896     16.0
-mutual          |   75.9640    11.2073      0.9836     22.7
-nodematch_prac  |  416.3750    32.7571      0.9914     13.0
-nodeicov_seniority|19186.3100  1434.3840      0.9886     17.5
-gwesp_0.5       |  568.8043    73.5510      0.9883     20.0
-------------------------------------------------------------
+------------------------------------------------------------------------
+         Statistic |      Mean        SD  Autocorr       ESS   Geweke z
+-------------------+----------------------------------------------------
+             edges |    579.88     37.80     0.990      16.0      1.16 
+            mutual |     75.96     11.21     0.984      22.7      1.30 
+    nodematch_prac |    416.38     32.76     0.991      13.0      1.36 
+nodeicov_seniority |  19186.31   1434.38     0.989      17.5      1.77 
+         gwesp_0.5 |    568.80     73.55     0.988      20.0      1.36 
+------------------------------------------------------------------------
 
-Geweke diagnostic (first 10% vs. last 50% of the retained sample):
----------------------------------------
-Statistic       |         z   p-value
-----------------+----------------------
-edges           |     1.158    0.2470
-mutual          |     1.302    0.1929
-nodematch_prac  |     1.358    0.1746
-nodeicov_seniority|     1.766    0.0774
-gwesp_0.5       |     1.365    0.1723
----------------------------------------
-Note: |z| > 1.96 (flagged *) rejects convergence of that parameter's own chain at the 5% level (Geweke 1992) - a large sy
-> stematic difference between the retained sample's own early and late portions, not proof either way for a borderline z.
+Heidelberger-Welch test                          pvalue           =      0.050
+                                                 eps              =       0.10
+---------------------------------------------------------------
+         Statistic | Stationary    Start  Halfwidth  Halfwidth
+                   |                                      test
+-------------------+-------------------------------------------
+             edges |     passed        1      18.54     passed
+            mutual |     passed        1       4.61     passed
+    nodematch_prac |     passed        1      17.82     passed
+nodeicov_seniority |     passed        1     671.95     passed
+         gwesp_0.5 |     passed        1      32.25     passed
+---------------------------------------------------------------
+Stationary: a Cramer-von-Mises test on the cumulative sums passes after discarding up to half
+of the sample (Heidelberger and Welch 1983); Start is the first draw kept. Halfwidth test: the
+half-width of the 95% interval of the mean is within eps() of the mean.
 
-Heidelberger-Welch stationarity + halfwidth test (pvalue=.05, eps=.1):
---------------------------------------------------------------
-Statistic       | Stationary    Start  Halfwidth   HW test
-----------------+---------------------------------------------
-edges           |     passed        1    18.5450    passed
-mutual          |     passed        1     4.6130    passed
-nodematch_prac  |     passed        1    17.8244    passed
-nodeicov_seniority|     passed        1   671.9527    passed
-gwesp_0.5       |     passed        1    32.2476    passed
---------------------------------------------------------------
-Note: Stationary = passed a Cramer-von-Mises test on the chain's own cumulative-sum path (Heidelberger & Welch 1983), dis
-> carding an increasing initial fraction (up to 50%) until it does - Start is the first retained iteration once it passes
-> , FAILED means no discard fraction achieved stationarity. HW test additionally requires the retained portion's own 95% 
-> CI halfwidth to be within eps() (default 10%) of its own mean - a separate, stricter precision check, only meaningful o
-> nce stationarity itself has passed.
-
-MCMLE's own convergence test was satisfied after   1 iteration(s).
-Note: a satisfied convergence test is a necessary check, not proof of a converged fit - inspect the autocorrelation/ESS a
-> bove, and consider raising mcmleeffectivesize() (the target effective sample size of the adaptive sample; mcmleiteratio
-> ns() if the iterations ran out) if acceptance rate or ESS looks poor. For a fit with a fixed-size sample (mcmleeffectiv
-> esize(0)) raise mcmcsamplesize() or mcmcinterval() instead.
-
-Sample statistics summary (centered at the observed statistics):
-
-1. Empirical mean and standard deviation for each variable,
-   plus standard error of the mean:
-
-                        Mean          SD    Naive SE  Time-series SE
-edges                 4.8833      37.801      .69015          9.4649
-mutual                 1.964      11.207      .20462          2.3552
-nodematch_prac         4.375      32.757      .59806          9.0971
-nodeicov_senio~y     -192.69      1434.4      26.188          342.95
-gwesp_0.5             13.185      73.551      1.3429          16.469
-
-2. Quantiles for each variable:
-
-                        2.5%         25%         50%         75%       97.5%
-edges                -68.025         -22           8          31          76
-mutual                   -17          -7           2          11          22
-nodematch_prac           -60         -17         5.5          25          65
-nodeicov_senio~y     -3043.1     -1108.3       -39.5       835.5        2261
-gwesp_0.5            -124.46      -39.55      21.863      66.258      145.32
-
-Are sample statistics significantly different from observed?
-
-                         edges          mutual  nodematch_prac  nodeicov_sen~y       gwesp_0.5          (Omni)
-diff.                   4.8833           1.964           4.375         -192.69          13.185              NA
-test stat.              .51594          .83391          .48092         -.56188          .80059          18.218
-P-val.                  .60589          .40433          .63057           .5742          .42337         .016204
-
-Sample statistics cross-correlations:
-
-                           edges          mutual  nodematch_prac  nodeicov_sen~y       gwesp_0.5
-edges                  1.0000000       0.7451897       0.9141937       0.9340396       0.9718410
-mutual                 0.7451897       1.0000000       0.7721929       0.6609470       0.7715969
-nodematch_prac         0.9141937       0.7721929       1.0000000       0.8424445       0.9124839
-nodeicov_senio~y       0.9340396       0.6609470       0.8424445       1.0000000       0.8854111
-gwesp_0.5              0.9718410       0.7715969       0.9124839       0.8854111       1.0000000
-
-Sample statistics auto-correlation:
-Chain 1
-                           edges          mutual  nodematch_prac  nodeicov_sen~y       gwesp_0.5
-Lag 0                  1.0000000       1.0000000       1.0000000       1.0000000       1.0000000
-Lag 50                 0.9894190       0.9834834       0.9913904       0.9884015       0.9881943
-Lag 100                0.9791389       0.9671396       0.9830790       0.9767931       0.9764486
-Lag 150                0.9692634       0.9527579       0.9749848       0.9658721       0.9653836
-Lag 200                0.9592431       0.9385889       0.9665027       0.9545564       0.9534254
-Lag 250                0.9484894       0.9254314       0.9581822       0.9429285       0.9408123
-
-Sample statistics burn-in diagnostic (Geweke):
-Chain 1
-
-Fraction in 1st window = 0.1
-Fraction in 2nd window = 0.5
-
-                         z-score    Individual P-value
-edges                  1.1367746             0.2556325
-mutual                 0.8865825             0.3753037
-nodematch_prac         0.9435259             0.3454120
-nodeicov_senio~y       1.7603724             0.0783447
-gwesp_0.5              1.0230553             0.3062817
-Joint P-value (lower = worse):  0.2464620
-
-Note: MCMC diagnostics shown here are from the last round of simulation, prior to computation of final parameter estimate
-> s. Because the final estimates are refinements of those used for this simulation run, these diagnostics may understate 
-> model performance. To directly assess the performance of the final model on in-model statistics, please use estat gof.
+The convergence test of MCMLE was satisfied after 1 iteration. This is necessary but not
+sufficient for convergence; option plot draws the trace plots.
+If the ESS is low, raise mcmleeffectivesize(); after mcmleeffectivesize(0), raise
+mcmcsamplesize() or mcmcinterval().

@@ -2,7 +2,8 @@
 
 . encode practice, generate(prac)
 
-. nwergm lazega_fr, edges mutual nodematch(prac) operators(Symmetrize(triangle, rule(strong))) seed(1)
+. nwergm lazega_fr, edges mutual nodematch(prac) operators(Symmetrize(triangle, rule(strong))) s
+> eed(1)
 
 Exponential-family random graph model
 

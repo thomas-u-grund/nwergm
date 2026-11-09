@@ -1,4 +1,5 @@
 do setup.doh
+set linesize 96
 *# con_edges
 nwwebuse florentine, nwclear
 nwergm flomarriage, edges nodecov(wealth) gwesp(0.5) seed(1)

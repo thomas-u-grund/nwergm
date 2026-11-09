@@ -19,8 +19,8 @@ for (s in 1:10) run("toy", s, quote(ergm(toy ~ edges + mutual)))
 # Florentine marriages
 fm <- network(rd("flo_marriage.csv"), directed = FALSE)
 fa <- read.csv("data/flo_attr.csv"); fm %v% "seat" <- fa$seat; fm %v% "wealth" <- fa$wealth
-for (s in 1:10) run("flo_gwesp", s, quote(ergm(fm ~ edges + nodematch("seat") + gwesp(0.5, fixed = TRUE))))
-run("flo_mple", 1, quote(ergm(fm ~ edges + nodecov("wealth") + nodematch("seat"))))
+for (s in 1:10) run("flo_gwesp", s, quote(ergm(fm ~ edges + nodecov("wealth") + gwesp(0.5, fixed = TRUE))))
+run("flo_mple", 1, quote(ergm(fm ~ edges + nodecov("wealth"))))
 # Lazega advice and friendship
 adv <- lazega("lazega_adv.csv"); fr <- lazega("lazega_fr.csv")
 run("lazega_dindep", 1, quote(ergm(adv ~ edges + nodematch("officen") + nodematch("practicen") + nodeofactor("statusn") + nodeifactor("statusn"))))

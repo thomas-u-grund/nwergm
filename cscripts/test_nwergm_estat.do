@@ -189,7 +189,8 @@ di "=== ergm_geweke_z()/ergm_heidel_diag(): correctly distinguish converged from
 * interval printed is the one of the final sample, e(mcmc_interval_final), and
 * the requested one is named when it differs; (3) the end note advises
 * mcmleeffectivesize() for the adaptive default and mcmcsamplesize()/
-* mcmcinterval() for fixed-size samples.
+* mcmcinterval() for fixed-size samples. (1.5.5: the interval is the
+* "Interval" line of the header, a raised interval is named in a footnote.)
 * =====================================================================
 tempfile q1 q2 q3
 set linesize 255
@@ -199,6 +200,7 @@ qui nwergm mydirnet, edges mutual mcmcburnin(1000) mcmcinterval(20) mcmcsamplesi
 di "converged = " e(converged)
 quietly log using `q1', text replace nomsg
 quietly estat mcmcdiag
+quietly estat mcmcdiag, heidel report
 quietly log close
 file open __fh using `q1', read text
 file read __fh __line
@@ -227,13 +229,14 @@ local endnote 0
 file open __fh using `q2', read text
 file read __fh __line
 while r(eof) == 0 {
-	if strpos(`"`macval(__line)'"', "Thinning interval:") == 1 {
-		local printed = real(trim(substr(`"`macval(__line)'"', strpos(`"`macval(__line)'"', "=") + 1, .)))
+	if strpos(trim(`"`macval(__line)'"'), "Interval") == 1 {
+		local printed = real(subinstr(trim(substr(`"`macval(__line)'"', strpos(`"`macval(__line)'"', "=") + 1, .)), ",", "", .))
 	}
-	if strpos(`"`macval(__line)'"', "Requested interval:") == 1 {
-		local reqprinted = real(trim(substr(`"`macval(__line)'"', strpos(`"`macval(__line)'"', "=") + 1, 8)))
+	if strpos(`"`macval(__line)'"', "raised the interval from") > 0 {
+		local __r = substr(`"`macval(__line)'"', strpos(`"`macval(__line)'"', "from") + 5, .)
+		local reqprinted = real(subinstr(word(`"`__r'"', 1), ",", "", .))
 	}
-	if strpos(`"`macval(__line)'"', "raising mcmleeffectivesize()") > 0 local endnote 1
+	if strpos(`"`macval(__line)'"', "raise mcmleeffectivesize()") > 0 local endnote 1
 	file read __fh __line
 }
 file close __fh
@@ -255,8 +258,8 @@ file open __fh using `q3', read text
 file read __fh __line
 while r(eof) == 0 {
 	if strpos(`"`macval(__line)'"', "mcmcsamplesize() or mcmcinterval()") > 0 local fixednote 1
-	if strpos(`"`macval(__line)'"', "Requested interval:") == 1 {
-		di as err "fixed-size fit printed a requested-interval line"
+	if strpos(`"`macval(__line)'"', "raised the interval from") > 0 {
+		di as err "fixed-size fit printed a raised-interval line"
 		exit 9
 	}
 	file read __fh __line

@@ -1,124 +1,30 @@
 . estat mcmcdiag, plot name(mcmcdiag)
 
-MCMC diagnostics for the final simulation (nwergm, method(mcmle))
-Sample size:         =     593
-Burn-in:             =   16384
-Thinning interval:   =    4096
-Requested interval:  =    1024  (raised by the adaptive sampler)
-Acceptance rate:     =  0.5765
+MCMC diagnostics, final sample                   Sample size      =        593
+                                                 Burn-in          =     16,384
+                                                 Interval         =      4,096
+                                                 Acceptance rate  =     0.5765
 
-------------------------------------------------------------
-Statistic       |      Mean         SD    Autocorr      ESS
-----------------+-------------------------------------------
-edges           |  579.0219    39.6324      0.4956    201.1
-mutual          |   73.9578    10.6150      0.3665    185.4
-nodematch_prac  |  414.5346    30.8407      0.4910    203.8
-nodeicov_seniority|19563.6400  1467.9280      0.4389    232.1
-gwesp_0.5       |  562.2946    75.4279      0.4840    207.4
-------------------------------------------------------------
+------------------------------------------------------------------------
+         Statistic |      Mean        SD  Autocorr       ESS   Geweke z
+-------------------+----------------------------------------------------
+             edges |    579.02     39.63     0.496     201.1      0.17 
+            mutual |     73.96     10.62     0.367     185.4      0.23 
+    nodematch_prac |    414.53     30.84     0.491     203.8      0.13 
+nodeicov_seniority |  19563.64   1467.93     0.439     232.1      0.14 
+         gwesp_0.5 |    562.29     75.43     0.484     207.4      0.33 
+------------------------------------------------------------------------
+The adaptive sampler raised the interval from 1,024 to 4,096.
 
-Geweke diagnostic (first 10% vs. last 50% of the retained sample):
----------------------------------------
-Statistic       |         z   p-value
-----------------+----------------------
-edges           |     0.166    0.8683
-mutual          |     0.228    0.8195
-nodematch_prac  |     0.127    0.8986
-nodeicov_seniority|     0.141    0.8879
-gwesp_0.5       |     0.328    0.7427
----------------------------------------
-Note: |z| > 1.96 (flagged *) rejects convergence of that parameter's own chain at the 5% level (Geweke 1992) - a large sy
-> stematic difference between the retained sample's own early and late portions, not proof either way for a borderline z.
-
-Heidelberger-Welch stationarity + halfwidth test (pvalue=.05, eps=.1):
---------------------------------------------------------------
-Statistic       | Stationary    Start  Halfwidth   HW test
-----------------+---------------------------------------------
-edges           |     passed        1     5.4776    passed
-mutual          |     passed        1     1.5279    passed
-nodematch_prac  |     passed        1     4.2343    passed
-nodeicov_seniority|     passed        1   188.8393    passed
-gwesp_0.5       |     passed        1    10.2657    passed
---------------------------------------------------------------
-Note: Stationary = passed a Cramer-von-Mises test on the chain's own cumulative-sum path (Heidelberger & Welch 1983), dis
-> carding an increasing initial fraction (up to 50%) until it does - Start is the first retained iteration once it passes
-> , FAILED means no discard fraction achieved stationarity. HW test additionally requires the retained portion's own 95% 
-> CI halfwidth to be within eps() (default 10%) of its own mean - a separate, stricter precision check, only meaningful o
-> nce stationarity itself has passed.
-
-MCMLE's own convergence test was satisfied after   6 iteration(s).
-Note: a satisfied convergence test is a necessary check, not proof of a converged fit - inspect the autocorrelation/ESS a
-> bove, and consider raising mcmleeffectivesize() (the target effective sample size of the adaptive sample; mcmleiteratio
-> ns() if the iterations ran out) if acceptance rate or ESS looks poor. For a fit with a fixed-size sample (mcmleeffectiv
-> esize(0)) raise mcmcsamplesize() or mcmcinterval() instead.
-(plot saved as mcmcdiag; each row is one model statistic's MCMC trace and density from the final simulation)
-
-Sample statistics summary (centered at the observed statistics):
-
-1. Empirical mean and standard deviation for each variable,
-   plus standard error of the mean:
-
-                        Mean          SD    Naive SE  Time-series SE
-edges                 4.0219      39.632      1.6275          2.7994
-mutual              -.042159      10.615      .43591          .78285
-nodematch_prac        2.5346      30.841      1.2665           2.164
-nodeicov_senio~y      184.64      1467.9      60.281          96.509
-gwesp_0.5             6.6754      75.428      3.0975          5.2464
-
-2. Quantiles for each variable:
-
-                        2.5%         25%         50%         75%       97.5%
-edges                  -73.2         -24           5          31        77.2
-mutual                   -20          -7          -1           7          21
-nodematch_prac           -57         -19           3          24        60.2
-nodeicov_senio~y     -2757.6        -848         224        1207      2954.2
-gwesp_0.5            -136.32     -42.217      6.5051      61.327      144.27
-
-Are sample statistics significantly different from observed?
-
-                         edges          mutual  nodematch_prac  nodeicov_sen~y       gwesp_0.5          (Omni)
-diff.                   4.0219        -.042159          2.5346          184.64          6.6754              NA
-test stat.              1.4367        -.053853          1.1712          1.9132          1.2724           14.18
-P-val.                  .15081          .95705           .2415         .055724          .20324         .016764
-
-Sample statistics cross-correlations:
-
-                           edges          mutual  nodematch_prac  nodeicov_sen~y       gwesp_0.5
-edges                  1.0000000       0.7639939       0.9053430       0.9234819       0.9742232
-mutual                 0.7639939       1.0000000       0.7435690       0.6893500       0.7880255
-nodematch_prac         0.9053430       0.7435690       1.0000000       0.8479634       0.9094407
-nodeicov_senio~y       0.9234819       0.6893500       0.8479634       1.0000000       0.8922310
-gwesp_0.5              0.9742232       0.7880255       0.9094407       0.8922310       1.0000000
-
-Sample statistics auto-correlation:
-Chain 1
-                           edges          mutual  nodematch_prac  nodeicov_sen~y       gwesp_0.5
-Lag 0                  1.0000000       1.0000000       1.0000000       1.0000000       1.0000000
-Lag 4096               0.4941396       0.3648177       0.4891032       0.4380258       0.4824116
-Lag 8192               0.2528311       0.2038886       0.2558040       0.1924814       0.2593884
-Lag 12288              0.1558554       0.1475999       0.1722113       0.1009611       0.1736028
-Lag 16384              0.0865176       0.1341397       0.0861254       0.0529754       0.1025560
-Lag 20480              0.0452218       0.0840010       0.0522456       0.0572462       0.0689251
-
-Sample statistics burn-in diagnostic (Geweke):
-Chain 1
-
-Fraction in 1st window = 0.1
-Fraction in 2nd window = 0.5
-
-                         z-score    Individual P-value
-edges                  0.2794777             0.7798783
-mutual                 0.3912140             0.6956390
-nodematch_prac         0.3790590             0.7046441
-nodeicov_senio~y       0.2659952             0.7902429
-gwesp_0.5              0.4464585             0.6552661
-Joint P-value (lower = worse):  0.9246312
-
-Note: MCMC diagnostics shown here are from the last round of simulation, prior to computation of final parameter estimate
-> s. Because the final estimates are refinements of those used for this simulation run, these diagnostics may understate 
-> model performance. To directly assess the performance of the final model on in-model statistics, please use estat gof.
+The convergence test of MCMLE was satisfied after 6 iterations. This is necessary but not
+sufficient for convergence; option plot draws the trace plots.
+If the ESS is low, raise mcmleeffectivesize(); after mcmleeffectivesize(0), raise
+mcmcsamplesize() or mcmcinterval().
+(plot saved as mcmcdiag; each row is one model statistic's MCMC trace and density from the final
+>  simulation)
 
 . graph display mcmcdiag, xsize(6.5) ysize(7.5)
 
 . graph export "../fig/mcmcdiag.pdf", name(mcmcdiag) replace
-file ../fig/mcmcdiag.pdf saved as PDF format
+file ../fig/mcmcdiag.pdf saved as PDF
+    format

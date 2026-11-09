@@ -1,4 +1,5 @@
 do setup.doh
+set linesize 96
 *# lz_data
 nwwebuse lazega, nwclear
 nwset
@@ -12,11 +13,13 @@ nwergm lazega_fr, edges mutual nodematch(prac) nodeicov(seniority) gwesp(0.5) se
 *# lz_interval
 display "requested interval " e(mcmc_interval) ", interval of the last sample " e(mcmc_interval_final) ", draws kept " e(mcmc_samplesize)
 *# lz_diag
-estat mcmcdiag
+estat mcmcdiag, heidel
+*# lz_report
+estat mcmcdiag, report
 *# lz_fit2
 nwergm lazega_fr, edges mutual nodematch(prac) nodeicov(seniority) gwesp(0.5) seed(1) mcmleeffectivesize(0) mcmcburnin(3000) mcmcinterval(50)
 *# lz_diag2
-estat mcmcdiag
+estat mcmcdiag, heidel
 *# lz_adaptold
 quietly nwergm lazega_fr, edges mutual nodematch(prac) nodeicov(seniority) gwesp(0.5) seed(1) mcmcburnin(3000) mcmcinterval(50)
 quietly estat mcmcdiag

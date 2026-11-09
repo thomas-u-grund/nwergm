@@ -9,7 +9,8 @@
 
 . describe, short
 
-Contains data from https://raw.githubusercontent.com/thomas-u-grund/nwcommands/main/data/lazega.nwdta
+Contains data from https://raw.githubusercontent.com/thomas-u-grund/nwcommands/main/data/lazega.
+> nwdta
  Observations:            71                  
     Variables:            10                  1 Sep 2026 21:38
 Sorted by: 

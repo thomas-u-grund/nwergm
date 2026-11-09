@@ -1,4 +1,5 @@
 do setup.doh
+set linesize 96
 *# kap_data
 nwwebuse kapferer, nwclear
 nwset

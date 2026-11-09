@@ -1,4 +1,4 @@
-*! version 1.5.4  09nov2026 nwergm_estat
+*! version 1.5.5  09nov2026 nwergm_estat
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -14,8 +14,12 @@ program define nwergm_estat, rclass
 	if "`subcmd'" == "mcmcdiag" {
 		nwergm_estat_mcmcdiag `rest'
 		return add
-		capture noisily _nwergm_mcdiag
-		capture return add
+		local 0 `"`rest'"'
+		capture syntax [, REPort *]
+		if "`report'" != "" {
+			capture noisily _nwergm_mcdiag
+			capture return add
+		}
 	}
 	else if "`subcmd'" == "gof" {
 		nwergm_estat_gof `rest'
@@ -33,7 +37,7 @@ end
 
 capture program drop nwergm_estat_mcmcdiag
 program define nwergm_estat_mcmcdiag, rclass
-	syntax [, PLOT NAME(string) PVALUE(real 0.05) EPS(real 0.1)]
+	syntax [, PLOT NAME(string) PVALUE(real 0.05) EPS(real 0.1) HEIDEL REPort]
 
 	if `"`e(cmd)'"' != "nwergm" {
 		di as err "last nwergm estimates not found"
@@ -76,112 +80,110 @@ program define nwergm_estat_mcmcdiag, rclass
 	tempname samp
 	mata: `samp' = st_matrix("e(mcmcsample)")
 
-	di
-	di as txt "MCMC diagnostics for the final simulation (nwergm, method(mcmle))"
-	di as txt "Sample size:{col 22}={res}  " %6.0f e(mcmc_samplesize)
-	di as txt "Burn-in:{col 22}={res}  " %6.0f e(mcmc_burnin)
-	// The interval of the FINAL sample: the adaptive sampler may have raised it
-	// above the requested e(mcmc_interval); the sample was recorded at
-	// e(mcmc_interval_final) (as the interval of R's mcmc.diagnostics() report).
+	// Interval of the FINAL sample: the adaptive sampler may have raised it above the
+	// requested e(mcmc_interval); the sample was recorded at e(mcmc_interval_final).
 	local __ergm_ivf = e(mcmc_interval)
 	if "`e(mcmc_interval_final)'" != "" local __ergm_ivf = e(mcmc_interval_final)
-	di as txt "Thinning interval:{col 22}={res}  " %6.0f `__ergm_ivf'
-	if `__ergm_ivf' != e(mcmc_interval) {
-		di as txt "Requested interval:{col 22}={res}  " %6.0f e(mcmc_interval) as txt "  (raised by the adaptive sampler)"
+
+	// width of the name column: the longest statistic name, 12 to 28 characters
+	local w = 12
+	foreach nm of local names {
+		local w = max(`w', min(28, udstrlen("`nm'")))
 	}
-	di as txt "Acceptance rate:{col 22}={res}  " %6.4f e(mcmc_acceptrate)
+	local w1 = `w' + 1
+
 	di
-	tempname __essm
+	di as txt "MCMC diagnostics, final sample{col 50}Sample size{col 67}= " as res %10.0fc e(mcmc_samplesize)
+	di as txt "{col 50}Burn-in{col 67}= " as res %10.0fc e(mcmc_burnin)
+	di as txt "{col 50}Interval{col 67}= " as res %10.0fc `__ergm_ivf'
+	di as txt "{col 50}Acceptance rate{col 67}= " as res %10.4f e(mcmc_acceptrate)
+	di
+
+	// Formal convergence diagnostics: the two coda tests behind R ergm's
+	// mcmc.diagnostics() (unw_ergm.do, ergm_geweke_z() and ergm_heidel_diag()).
+	tempname __gew __hd __gew_m __hd_m __essm
+	mata: st_matrix("`__gew'", ergm_geweke_z(`samp'))
+	mata: st_matrix("`__hd'", ergm_heidel_diag(`samp', `__ergm_hwcrit', `eps'))
+	mata: `__gew_m' = st_matrix("`__gew'")
+	mata: `__hd_m' = st_matrix("`__hd'")
 	matrix `__essm' = J(1, `p', .)
 	matrix colnames `__essm' = `names'
-	di as txt "{hline 16}{c TT}{hline 11}{hline 11}{hline 12}{hline 9}"
-	di as txt %-16s "Statistic" "{c |}" %10s "Mean" %11s "SD" %12s "Autocorr" %9s "ESS"
-	di as txt "{hline 16}{c +}{hline 11}{hline 11}{hline 12}{hline 9}"
+
+	local __ergm_flag = 0
+	di as txt "{hline `w1'}{c TT}{hline 52}"
+	di as txt %`w's "Statistic" " {c |}" %10s "Mean" %10s "SD" %10s "Autocorr" %10s "ESS" %11s "Geweke z"
+	di as txt "{hline `w1'}{c +}{hline 52}"
 	forvalues k = 1/`p' {
 		local nm : word `k' of `names'
 		mata: st_local("__ergm_mn", strofreal(mean(`samp'[.,`k'])))
 		mata: st_local("__ergm_sd", strofreal(sqrt(variance(`samp'[.,`k']))))
 		mata: st_local("__ergm_rho", strofreal(ergm_lag1_autocorr(`samp')[`k']))
-		// ESS as coda::effectiveSize(): n*var(x)/spectrum0.ar(x), the
-		// spectral density at 0 from an AR(p) fit (ergm_spec0_scalar()).
-		// The lag-1 formula n(1-rho)/(1+rho) used before assumed geometric
-		// decay and overstated ESS severalfold for slowly mixing chains.
+		// ESS as coda::effectiveSize(): n*var(x)/spectrum0.ar(x), the spectral
+		// density at 0 from an AR(p) fit (ergm_spec0_scalar()).
 		mata: __ergm_essx = `samp'[.,`k'] :- mean(`samp'[.,`k'])
 		mata: __ergm_esss = ergm_spec0_scalar(__ergm_essx)
 		mata: st_local("__ergm_ess", strofreal(__ergm_esss > 0 ? rows(__ergm_essx)*variance(__ergm_essx)/__ergm_esss : 0))
 		capture mata: mata drop __ergm_essx __ergm_esss
 		matrix `__essm'[1, `k'] = `__ergm_ess'
-		di as txt %-16s "`nm'" "{c |}" as res %10.4f `__ergm_mn' %11.4f `__ergm_sd' %12.4f `__ergm_rho' %9.1f `__ergm_ess'
-	}
-	di as txt "{hline 16}{c BT}{hline 11}{hline 11}{hline 12}{hline 9}"
-	di
-
-	// Formal convergence diagnostics (harmonisation unit 144): the two
-	// coda-package tests behind R ergm's own mcmc.diagnostics() - see
-	// unw_ergm.do's own header comment above ergm_geweke_z()/
-	// ergm_heidel_diag() for the full port account (ported directly from
-	// coda's real current source, cross-certified against real coda
-	// output on synthetic reference series - cscripts/test_nwergm_mcmcdiag.do).
-	tempname __gew __hd
-	mata: st_matrix("`__gew'", ergm_geweke_z(`samp'))
-	mata: st_matrix("`__hd'", ergm_heidel_diag(`samp', `__ergm_hwcrit', `eps'))
-	tempname __gew_m __hd_m
-	mata: `__gew_m' = st_matrix("`__gew'")
-	mata: `__hd_m' = st_matrix("`__hd'")
-
-	di as txt "Geweke diagnostic (first 10% vs. last 50% of the retained sample):"
-	di as txt "{hline 16}{c TT}{hline 11}{hline 11}"
-	di as txt %-16s "Statistic" "{c |}" %10s "z" %10s "p-value"
-	di as txt "{hline 16}{c +}{hline 11}{hline 11}"
-	forvalues k = 1/`p' {
-		local nm : word `k' of `names'
 		mata: st_local("__ergm_gz", strofreal(`__gew_m'[1,`k']))
-		mata: st_local("__ergm_gp", strofreal(2*(1-normal(abs(`__gew_m'[1,`k'])))))
+		local __ergm_star " "
 		if abs(`__ergm_gz') > 1.96 {
-			// "{err}" (SMCL) rather than "as err": the latter is not silenced by -quietly-
-			di as txt %-16s "`nm'" "{c |}" "{err}" %10.3f `__ergm_gz' %10.4f `__ergm_gp' "  *"
+			local __ergm_star "*"
+			local __ergm_flag = 1
 		}
-		else {
-			di as txt %-16s "`nm'" "{c |}" as res %10.3f `__ergm_gz' %10.4f `__ergm_gp'
-		}
+		di as txt %`w's abbrev("`nm'", `w') " {c |}" as res %10.2f `__ergm_mn' %10.2f `__ergm_sd' %10.3f `__ergm_rho' %10.1f `__ergm_ess' %10.2f `__ergm_gz' as txt "`__ergm_star'"
 	}
-	di as txt "{hline 16}{c BT}{hline 11}{hline 11}"
-	di as txt "Note: |z| > 1.96 (flagged {bf:*}) rejects convergence of that parameter's own chain at the 5% level (Geweke 1992) - a large systematic difference between the retained sample's own early and late portions, not proof either way for a borderline z."
-	di
+	di as txt "{hline `w1'}{c BT}{hline 52}"
+	if `__ergm_ivf' != e(mcmc_interval) {
+		local __ergm_iv0 = strtrim(string(e(mcmc_interval), "%12.0fc"))
+		local __ergm_iv1 = strtrim(string(`__ergm_ivf', "%12.0fc"))
+		di as txt "{p 0 0 2}The adaptive sampler raised the interval from `__ergm_iv0' to `__ergm_iv1'.{p_end}"
+	}
+	if `__ergm_flag' {
+		di as txt "{p 0 2 2}* |z| > 1.96: the mean of the first 10% of the sample differs from the mean of the last 50% at the 5% level (Geweke 1992).{p_end}"
+	}
 
-	di as txt "Heidelberger-Welch stationarity + halfwidth test (pvalue=`pvalue', eps=`eps'):"
-	di as txt "{hline 16}{c TT}{hline 12}{hline 10}{hline 12}{hline 11}"
-	di as txt %-16s "Statistic" "{c |}" %11s "Stationary" %9s "Start" %11s "Halfwidth" %10s "HW test"
-	di as txt "{hline 16}{c +}{hline 12}{hline 10}{hline 12}{hline 11}"
-	forvalues k = 1/`p' {
-		local nm : word `k' of `names'
-		mata: st_local("__ergm_hstest", strofreal(`__hd_m'[`k',1]))
-		if `__ergm_hstest' == 1 {
-			mata: st_local("__ergm_hstart", strofreal(`__hd_m'[`k',2]))
-			mata: st_local("__ergm_hhw", strofreal(`__hd_m'[`k',6]))
-			mata: st_local("__ergm_hhtest", strofreal(`__hd_m'[`k',4]))
-			local __ergm_httext = cond(`__ergm_hhtest'==1, "passed", "failed")
-			di as txt %-16s "`nm'" "{c |}" as res %11s "passed" %9.0f `__ergm_hstart' %11.4f `__ergm_hhw' %10s "`__ergm_httext'"
+	if "`heidel'" != "" {
+		di
+		local __ergm_pv = strtrim(string(`pvalue', "%5.3f"))
+		local __ergm_ep = strtrim(string(`eps', "%5.2f"))
+		di as txt "Heidelberger-Welch test{col 50}pvalue{col 67}= " as res %10s "`__ergm_pv'"
+		di as txt "{col 50}eps{col 67}= " as res %10s "`__ergm_ep'"
+		di as txt "{hline `w1'}{c TT}{hline 43}"
+		di as txt %`w's "Statistic" " {c |}" %11s "Stationary" %9s "Start" %11s "Halfwidth" %11s "Halfwidth"
+		di as txt %`w's "" " {c |}" %11s "" %9s "" %11s "" %11s "test"
+		di as txt "{hline `w1'}{c +}{hline 43}"
+		forvalues k = 1/`p' {
+			local nm : word `k' of `names'
+			mata: st_local("__ergm_hstest", strofreal(`__hd_m'[`k',1]))
+			if `__ergm_hstest' == 1 {
+				mata: st_local("__ergm_hstart", strofreal(`__hd_m'[`k',2]))
+				mata: st_local("__ergm_hhw", strofreal(`__hd_m'[`k',6]))
+				mata: st_local("__ergm_hhtest", strofreal(`__hd_m'[`k',4]))
+				local __ergm_httext = cond(`__ergm_hhtest'==1, "passed", "failed")
+				di as txt %`w's abbrev("`nm'", `w') " {c |}" as res %11s "passed" %9.0f `__ergm_hstart' %11.2f `__ergm_hhw' %11s "`__ergm_httext'"
+			}
+			else {
+				di as txt %`w's abbrev("`nm'", `w') " {c |}" "{err}" %11s "failed" %9s "." %11s "." %11s "."
+			}
 		}
-		else {
-			di as txt %-16s "`nm'" "{c |}" "{err}" %11s "FAILED" %9s "-" %11s "n/a" %10s "n/a"
-		}
+		di as txt "{hline `w1'}{c BT}{hline 43}"
+		di as txt "{p 0 0 2}Stationary: a Cramer-von-Mises test on the cumulative sums passes after discarding up to half of the sample (Heidelberger and Welch 1983); Start is the first draw kept. Halfwidth test: the half-width of the 95% interval of the mean is within eps() of the mean.{p_end}"
 	}
-	di as txt "{hline 16}{c BT}{hline 12}{hline 10}{hline 12}{hline 11}"
-	di as txt "Note: {bf:Stationary} = passed a Cramer-von-Mises test on the chain's own cumulative-sum path (Heidelberger & Welch 1983), discarding an increasing initial fraction (up to 50%) until it does - {bf:Start} is the first retained iteration once it passes, {bf:FAILED} means no discard fraction achieved stationarity. {bf:HW test} additionally requires the retained portion's own 95% CI halfwidth to be within {bf:eps()} (default 10%) of its own mean - a separate, stricter precision check, only meaningful once stationarity itself has passed."
-	di
 
 	return matrix ess = `__essm'
 	return matrix geweke = `__gew'
 	return matrix heidel = `__hd'
 
+	di
 	if e(converged) == 1 {
-		di as txt "MCMLE's own convergence test was satisfied after " %3.0f e(mcmle_iterations) " iteration(s)."
+		di as txt "{p 0 0 2}The convergence test of MCMLE was satisfied after " e(mcmle_iterations) cond(e(mcmle_iterations)==1, " iteration.", " iterations.") " This is necessary but not sufficient for convergence; option {cmd:plot} draws the trace plots.{p_end}"
 	}
 	else {
-		di "{err}Warning: MCMLE did NOT satisfy its own convergence test - treat these diagnostics, and the fitted coefficients, with caution."
+		di "{err}{p 0 0 2}The convergence test of MCMLE was not satisfied: treat these diagnostics and the coefficients with caution, and raise {bf:mcmleiterations()} or {bf:mcmleeffectivesize()}.{p_end}"
 	}
-	di as txt "Note: a satisfied convergence test is a necessary check, not proof of a converged fit - inspect the autocorrelation/ESS above, and consider raising {bf:mcmleeffectivesize()} (the target effective sample size of the adaptive sample; {bf:mcmleiterations()} if the iterations ran out) if acceptance rate or ESS looks poor. For a fit with a fixed-size sample ({bf:mcmleeffectivesize(0)}) raise {bf:mcmcsamplesize()} or {bf:mcmcinterval()} instead."
+	di as txt "{p 0 0 2}If the ESS is low, raise {bf:mcmleeffectivesize()}; after {bf:mcmleeffectivesize(0)}, raise {bf:mcmcsamplesize()} or {bf:mcmcinterval()}.{p_end}"
+
 
 	return scalar acceptrate = e(mcmc_acceptrate)
 

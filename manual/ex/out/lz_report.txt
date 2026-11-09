@@ -1,0 +1,102 @@
+. estat mcmcdiag, report
+
+MCMC diagnostics, final sample                   Sample size      =        593
+                                                 Burn-in          =     16,384
+                                                 Interval         =      4,096
+                                                 Acceptance rate  =     0.5765
+
+------------------------------------------------------------------------
+         Statistic |      Mean        SD  Autocorr       ESS   Geweke z
+-------------------+----------------------------------------------------
+             edges |    579.02     39.63     0.496     201.1      0.17 
+            mutual |     73.96     10.62     0.367     185.4      0.23 
+    nodematch_prac |    414.53     30.84     0.491     203.8      0.13 
+nodeicov_seniority |  19563.64   1467.93     0.439     232.1      0.14 
+         gwesp_0.5 |    562.29     75.43     0.484     207.4      0.33 
+------------------------------------------------------------------------
+The adaptive sampler raised the interval from 1,024 to 4,096.
+
+The convergence test of MCMLE was satisfied after 6 iterations. This is necessary but not
+sufficient for convergence; option plot draws the trace plots.
+If the ESS is low, raise mcmleeffectivesize(); after mcmleeffectivesize(0), raise
+mcmcsamplesize() or mcmcinterval().
+
+Report of mcmc.diagnostics() in R for the final sample, centered at the observed statistics
+
+Mean and standard deviation, standard error of the mean (naive and time series)
+
+---------------------------------------------------------------
+         Statistic |      Mean         SD   Naive SE      TS SE 
+-------------------+-------------------------------------------
+             edges |     4.022      39.63      1.628      2.799 
+            mutual |   -.04216      10.62      .4359      .7828 
+    nodematch_prac |     2.535      30.84      1.266      2.164 
+nodeicov_seniority |     184.6       1468      60.28      96.51 
+         gwesp_0.5 |     6.675      75.43      3.097      5.246 
+---------------------------------------------------------------
+
+Quantiles
+
+--------------------------------------------------------------------------
+         Statistic |      2.5%        25%        50%        75%      97.5% 
+-------------------+------------------------------------------------------
+             edges |     -73.2        -24          5         31       77.2 
+            mutual |       -20         -7         -1          7         21 
+    nodematch_prac |       -57        -19          3         24       60.2 
+nodeicov_seniority |     -2758       -848        224       1207       2954 
+         gwesp_0.5 |    -136.3     -42.22      6.505      61.33      144.3 
+--------------------------------------------------------------------------
+
+Difference between the sample and the observed statistics
+
+----------------------------------------------------
+         Statistic |     Diff.       Test    p-value 
+-------------------+--------------------------------
+             edges |     4.022      1.437      .1508 
+            mutual |   -.04216    -.05385      .9571 
+    nodematch_prac |     2.535      1.171      .2415 
+nodeicov_seniority |     184.6      1.913     .05572 
+         gwesp_0.5 |     6.675      1.272      .2032 
+           Omnibus |         .      14.18     .01676 
+----------------------------------------------------
+
+Cross-correlations
+
+--------------------------------------------------------------------------
+                   |     edges     mutual  nodemat~c  nodeico~y  gwesp_0.5 
+-------------------+------------------------------------------------------
+             edges |     1.000                                             
+            mutual |     0.764      1.000                                  
+    nodematch_prac |     0.905      0.744      1.000                       
+nodeicov_seniority |     0.923      0.689      0.848      1.000            
+         gwesp_0.5 |     0.974      0.788      0.909      0.892      1.000 
+--------------------------------------------------------------------------
+
+Autocorrelation at lag (in proposals)
+
+--------------------------------------------------------------------------
+         Statistic |      4096       8192      12288      16384      20480 
+-------------------+------------------------------------------------------
+             edges |     0.494      0.253      0.156      0.087      0.045 
+            mutual |     0.365      0.204      0.148      0.134      0.084 
+    nodematch_prac |     0.489      0.256      0.172      0.086      0.052 
+nodeicov_seniority |     0.438      0.192      0.101      0.053      0.057 
+         gwesp_0.5 |     0.482      0.259      0.174      0.103      0.069 
+--------------------------------------------------------------------------
+
+Geweke test (first 10% against last 50% of the sample)
+
+-----------------------------------------
+         Statistic |         z    p-value 
+-------------------+---------------------
+             edges |     0.279      0.780 
+            mutual |     0.391      0.696 
+    nodematch_prac |     0.379      0.705 
+nodeicov_seniority |     0.266      0.790 
+         gwesp_0.5 |     0.446      0.655 
+-----------------------------------------
+Joint p-value = 0.925
+
+Note: the sample comes from the last simulation, run before the final estimates were computed,
+so these diagnostics may understate how well the final model fits its statistics; estat gof
+assesses the final model directly.

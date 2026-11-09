@@ -1,4 +1,5 @@
 do setup.doh
+set linesize 96
 nwwebuse lazega, nwclear
 encode practice, generate(prac)
 quietly nwergm lazega_fr, edges mutual nodematch(prac) nodeicov(seniority) gwesp(0.5) seed(1)
