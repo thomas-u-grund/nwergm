@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.5.3  09nov2026 author: Thomas Grund}{...}
+{* *! version 1.5.4  09nov2026 author: Thomas Grund}{...}
 
 {title:Title}
 
@@ -191,4 +191,4 @@ goodness of fit:
 	{help nwergm}
 
 {hline}
-{pstd}{it:nwergm version 1.5.3, 9 November 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.5.4, 9 November 2026}{p_end}{* nwversion}

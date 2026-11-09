@@ -3,6 +3,11 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [1.5.4] - 2026-11-09
+
+### Fixed
+- **`init()` is used as the starting point of Monte Carlo maximum likelihood under a dyad-dependent constraint.** With `constraints()` such as `degrees` or `bd()`, the pseudolikelihood is not a starting value, and the fit starts from zero, as in R. The values given in `init()` were set to zero along with it, so the fit ignored them. They are now kept, as R's `ergm()` does, and only the coefficients without a given value start at zero. The same applies to networks with missing dyads where the fit starts from zero. A new test checks the starting point with complete and partial `init()`.
+
 ## [1.5.3] - 2026-11-09
 
 ### Changed (speed)

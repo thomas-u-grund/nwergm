@@ -1,4 +1,4 @@
-*! version 1.5.3  09nov2026 nwergm
+*! version 1.5.4  09nov2026 nwergm
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -2280,7 +2280,7 @@ program nwergm, eclass
 		}
 		ereturn post `__b_mple' `__V_mple', depname(`netname') obs(`__ergm_nrows')
 		ereturn local cmd "nwergm"
-		ereturn local version "1.5.3"
+		ereturn local version "1.5.4"
 		ereturn local title "Exponential-family random graph model (MPLE)"
 		ereturn local depvar "`netname'"
 		ereturn local method "mple"
@@ -2343,11 +2343,16 @@ program nwergm, eclass
 		}
 		else {
 			mata: `__theta0' = st_matrix("`__b_mple'")
-			// R: without a dyad-independent sample space MPLE is not an initial-value method; start from zeros
+			// R: without a dyad-independent sample space MPLE is not an initial-value method; start from zeros,
+			// except for offsets and for the starting values given in init(), which R uses as given
+			tempname __keep0
+			mata: `__keep0' = __nwergm_last_M.isfixed
+			if `__e7_initmode' > 0 mata: `__keep0' = `__keep0' :| (__e7_init :< .)
 			if `__con_active' {
-				if `con_dind' == 0 mata: `__theta0' = `__theta0' :* __nwergm_last_M.isfixed
+				if `con_dind' == 0 mata: `__theta0' = `__theta0' :* `__keep0'
 			}
-			if `__obs_active' & !`__obs_info' mata: `__theta0' = `__theta0' :* __nwergm_last_M.isfixed
+			if `__obs_active' & !`__obs_info' mata: `__theta0' = `__theta0' :* `__keep0'
+			mata: mata drop `__keep0'
 		}
 		local __ergm_matatemps "`__ergm_matatemps' `__theta0'"
 
@@ -2659,7 +2664,7 @@ program nwergm, eclass
 
 		ereturn post `__b_mcmle' `__V_mcmle', depname(`netname') obs(`__ergm_nrows')
 		ereturn local cmd "nwergm"
-		ereturn local version "1.5.3"
+		ereturn local version "1.5.4"
 		ereturn local title "Exponential-family random graph model (MCMLE)"
 		ereturn local depvar "`netname'"
 		ereturn local method "mcmle"

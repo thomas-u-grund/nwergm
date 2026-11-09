@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.5.3  09nov2026 author: Thomas Grund}{...}
+{* *! version 1.5.4  09nov2026 author: Thomas Grund}{...}
 {vieweralsosee "nwergm" "help nwergm"}{...}
 {title:Title}
 
@@ -29,7 +29,7 @@ and to everything to its left, a term with {cmd:-} adds the dyads that may vary 
 
 {pstd}
 Statistics that a constraint holds constant (for example {cmd:edges} under {cmd:constraints(edges)} or {cmd:kstar()} under {cmd:constraints(degrees)}) are fixed at zero and ignored in the fit, with a note, as R does.
-A dyad-dependent constraint makes the sample space dyad-dependent: the default method is then {cmd:mcmle}, started from zero, and {cmd:method(mple)} reports the pseudolikelihood over the free dyads.
+A dyad-dependent constraint makes the sample space dyad-dependent: the default method is then {cmd:mcmle}, started from zero or from the values given in {opt init()}, and {cmd:method(mple)} reports the pseudolikelihood over the free dyads.
 
 {title:Constraint terms}
 
@@ -101,4 +101,4 @@ simulates under the constraints of the fit.
 {pstd}Thomas Grund, RWTH Aachen University{p_end}
 
 {hline}
-{pstd}{it:nwergm version 1.5.3, 9 November 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.5.4, 9 November 2026}{p_end}{* nwversion}
