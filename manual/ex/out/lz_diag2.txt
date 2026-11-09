@@ -1,9 +1,9 @@
 . estat mcmcdiag, heidel
 
-MCMC diagnostics, final sample                   Sample size      =      3,000
-                                                 Burn-in          =      3,000
-                                                 Interval         =         50
-                                                 Acceptance rate  =     0.5716
+MCMC diagnostics, final sample             Sample size      =      3,000
+                                           Burn-in          =      3,000
+                                           Interval         =         50
+                                           Acceptance rate  =     0.5716
 
 ------------------------------------------------------------------------
          Statistic |      Mean        SD  Autocorr       ESS   Geweke z
@@ -15,8 +15,8 @@ nodeicov_seniority |  19186.31   1434.38     0.989      17.5      1.77
          gwesp_0.5 |    568.80     73.55     0.988      20.0      1.36 
 ------------------------------------------------------------------------
 
-Heidelberger-Welch test                          pvalue           =      0.050
-                                                 eps              =       0.10
+Heidelberger-Welch test           pvalue           =      0.050
+                                  eps              =       0.10
 ---------------------------------------------------------------
          Statistic | Stationary    Start  Halfwidth  Halfwidth
                    |                                      test

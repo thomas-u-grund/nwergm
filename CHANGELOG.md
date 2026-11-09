@@ -3,6 +3,11 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [1.5.6] - 2026-11-09
+
+### Fixed
+- **The header of `estat mcmcdiag` and of its Heidelberger-Welch table ends where the table ends**, instead of at a fixed column that lay beyond the right edge of narrower tables. `estat gof` gives the number of simulated networks in the title of each table.
+
 ## [1.5.5] - 2026-11-09
 
 ### Changed

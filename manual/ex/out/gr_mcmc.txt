@@ -1,9 +1,9 @@
 . estat mcmcdiag, plot name(mcmcdiag)
 
-MCMC diagnostics, final sample                   Sample size      =        593
-                                                 Burn-in          =     16,384
-                                                 Interval         =      4,096
-                                                 Acceptance rate  =     0.5765
+MCMC diagnostics, final sample             Sample size      =        593
+                                           Burn-in          =     16,384
+                                           Interval         =      4,096
+                                           Acceptance rate  =     0.5765
 
 ------------------------------------------------------------------------
          Statistic |      Mean        SD  Autocorr       ESS   Geweke z

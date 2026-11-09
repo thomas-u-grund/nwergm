@@ -1,6 +1,6 @@
 . estat gof, gof(idegree odegree espartners) nsim(100) seed(2)
 
-Goodness of fit: model statistics                Simulations      =        100
+Goodness of fit: model statistics (100 simulated networks)
 ------------------------------------------------------------------------
          Statistic |  Observed       Min      Mean       Max  MC p-value
 -------------------+----------------------------------------------------
@@ -11,7 +11,7 @@ nodeicov_seniority |     19379     16529  19346.53     22358        0.98
          gwesp_0.5 |    555.62    361.07    554.14    760.38        0.98
 ------------------------------------------------------------------------
 
-Goodness of fit: out-degree                      Simulations      =        100
+Goodness of fit: out-degree (100 simulated networks)
 ------------------------------------------------------------------
   Out-degree |  Observed       Min      Mean       Max  MC p-value
 -------------+----------------------------------------------------
@@ -40,7 +40,7 @@ Goodness of fit: out-degree                      Simulations      =        100
           22 |         1         0      0.02         1        0.04
 ------------------------------------------------------------------
 
-Goodness of fit: in-degree                       Simulations      =        100
+Goodness of fit: in-degree (100 simulated networks)
 ------------------------------------------------------------------
    In-degree |  Observed       Min      Mean       Max  MC p-value
 -------------+----------------------------------------------------
@@ -70,7 +70,7 @@ Goodness of fit: in-degree                       Simulations      =        100
           25 |         0         0      0.01         1        1.00
 ------------------------------------------------------------------
 
-Goodness of fit: edgewise shared partner         Simulations      =        100
+Goodness of fit: edgewise shared partner (100 simulated networks)
 ------------------------------------------------------------------
          ESP |  Observed       Min      Mean       Max  MC p-value
 -------------+----------------------------------------------------

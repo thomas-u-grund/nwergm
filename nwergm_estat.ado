@@ -1,4 +1,4 @@
-*! version 1.5.5  09nov2026 nwergm_estat
+*! version 1.5.6  09nov2026 nwergm_estat
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -92,11 +92,14 @@ program define nwergm_estat_mcmcdiag, rclass
 	}
 	local w1 = `w' + 1
 
+	// the header block on the right ends where the table ends (column w+54)
+	local cl = `w' + 26
+	local ce = `w' + 43
 	di
-	di as txt "MCMC diagnostics, final sample{col 50}Sample size{col 67}= " as res %10.0fc e(mcmc_samplesize)
-	di as txt "{col 50}Burn-in{col 67}= " as res %10.0fc e(mcmc_burnin)
-	di as txt "{col 50}Interval{col 67}= " as res %10.0fc `__ergm_ivf'
-	di as txt "{col 50}Acceptance rate{col 67}= " as res %10.4f e(mcmc_acceptrate)
+	di as txt "MCMC diagnostics, final sample{col `cl'}Sample size{col `ce'}= " as res %10.0fc e(mcmc_samplesize)
+	di as txt "{col `cl'}Burn-in{col `ce'}= " as res %10.0fc e(mcmc_burnin)
+	di as txt "{col `cl'}Interval{col `ce'}= " as res %10.0fc `__ergm_ivf'
+	di as txt "{col `cl'}Acceptance rate{col `ce'}= " as res %10.4f e(mcmc_acceptrate)
 	di
 
 	// Formal convergence diagnostics: the two coda tests behind R ergm's
@@ -147,8 +150,9 @@ program define nwergm_estat_mcmcdiag, rclass
 		di
 		local __ergm_pv = strtrim(string(`pvalue', "%5.3f"))
 		local __ergm_ep = strtrim(string(`eps', "%5.2f"))
-		di as txt "Heidelberger-Welch test{col 50}pvalue{col 67}= " as res %10s "`__ergm_pv'"
-		di as txt "{col 50}eps{col 67}= " as res %10s "`__ergm_ep'"
+		// right-hand block ends where this table ends (column w+45)
+		di as txt "Heidelberger-Welch test{col `=`w'+17'}pvalue{col `=`w'+34'}= " as res %10s "`__ergm_pv'"
+		di as txt "{col `=`w'+17'}eps{col `=`w'+34'}= " as res %10s "`__ergm_ep'"
 		di as txt "{hline `w1'}{c TT}{hline 43}"
 		di as txt %`w's "Statistic" " {c |}" %11s "Stationary" %9s "Start" %11s "Halfwidth" %11s "Halfwidth"
 		di as txt %`w's "" " {c |}" %11s "" %9s "" %11s "" %11s "test"

@@ -1,6 +1,6 @@
 . estat gof, nsim(100) seed(2)
 
-Goodness of fit: model statistics                Simulations      =        100
+Goodness of fit: model statistics (100 simulated networks)
 ------------------------------------------------------------------------
          Statistic |  Observed       Min      Mean       Max  MC p-value
 -------------------+----------------------------------------------------
@@ -11,7 +11,7 @@ nodeicov_seniority |     19379     15591  19349.15     23426        0.98
          gwesp_0.5 |    555.62    386.57    551.32    734.20        1.00
 ------------------------------------------------------------------------
 
-Goodness of fit: minimum geodesic distance       Simulations      =        100
+Goodness of fit: minimum geodesic distance (100 simulated networks)
 ------------------------------------------------------------------
     Distance |  Observed       Min      Mean       Max  MC p-value
 -------------+----------------------------------------------------
@@ -24,7 +24,7 @@ Goodness of fit: minimum geodesic distance       Simulations      =        100
          Inf |       140         0     28.65       210        0.12
 ------------------------------------------------------------------
 
-Goodness of fit: out-degree                      Simulations      =        100
+Goodness of fit: out-degree (100 simulated networks)
 ------------------------------------------------------------------
   Out-degree |  Observed       Min      Mean       Max  MC p-value
 -------------+----------------------------------------------------
@@ -53,7 +53,7 @@ Goodness of fit: out-degree                      Simulations      =        100
           22 |         1         0      0.02         1        0.04
 ------------------------------------------------------------------
 
-Goodness of fit: in-degree                       Simulations      =        100
+Goodness of fit: in-degree (100 simulated networks)
 ------------------------------------------------------------------
    In-degree |  Observed       Min      Mean       Max  MC p-value
 -------------+----------------------------------------------------
@@ -82,7 +82,7 @@ Goodness of fit: in-degree                       Simulations      =        100
           22 |         0         0      0.03         1        1.00
 ------------------------------------------------------------------
 
-Goodness of fit: edgewise shared partner         Simulations      =        100
+Goodness of fit: edgewise shared partner (100 simulated networks)
 ------------------------------------------------------------------
          ESP |  Observed       Min      Mean       Max  MC p-value
 -------------+----------------------------------------------------

@@ -1,4 +1,4 @@
-*! version 1.5.5  09nov2026 _nwergm_gof.ado -- estat gof after nwergm, following R's gof.ergm(): observed values against simulations from the fitted model
+*! version 1.5.6  09nov2026 _nwergm_gof.ado -- estat gof after nwergm, following R's gof.ergm(): observed values against simulations from the fitted model
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -224,7 +224,7 @@ program _nwergm_gof, rclass
 			local w = max(`w', min(28, udstrlen("`lb'")))
 		}
 		di
-		di as txt "Goodness of fit: `desc_`t''{col 50}Simulations{col 67}= " as res %10.0fc `nsim'
+		di as txt "Goodness of fit: `desc_`t'' (" as res `nsim' as txt " simulated networks)"
 		di as txt "{hline `=`w'+1'}{c TT}{hline 52}"
 		di as txt %`w's "`hd'" " {c |}" %10s "Observed" %10s "Min" %10s "Mean" %10s "Max" %12s "MC p-value"
 		di as txt "{hline `=`w'+1'}{c +}{hline 52}"
