@@ -1,7 +1,8 @@
-# Builds the article's Table 4 (results/tab_compare.tex) from results/cmp_ergm.csv and results/cmp_nwergm.csv,
+# Builds the article's Table 2 (results/tab_compare.tex) from results/cmp_ergm.csv and results/cmp_nwergm.csv,
 # and Table 3 (results/tab_bench.tex) plus the data of Figure 6 (results/fig_speed_bench.csv) from
 # results/benchmark_raw.txt. Run from the folder replication/:  python3 tools/make_tables.py
-# It prints, per model, the largest difference between the programs in units of ergm's standard error.
+# It prints, per model, the largest difference between the programs in units of ergm's standard error, and, for every
+# coefficient fitted with several seeds in both programs, the difference in units of the Monte Carlo error of the two means.
 import csv, collections, statistics as st, os, sys
 os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
 
@@ -65,6 +66,9 @@ def compare():
             rm = st.mean(rb); sm = st.mean(sb)
             rsd = st.stdev(rb) if nR > 1 else float('nan'); ssd = st.stdev(sb) if nS > 1 else float('nan')
             d = (sm - rm) / st.mean(rse)
+            if nR > 1 and nS > 1:
+                mcse = (rsd ** 2 / nR + ssd ** 2 / nS) ** 0.5
+                print("  %-13s %-28s difference %+.4f, Monte Carlo error %.4f, z = %+.2f" % (m, sr, sm - rm, mcse, (sm - rm) / mcse))
             summary.append((m, names[i] if i < len(names) else sr, d))
             sdr = '' if nR < 2 else '(%s)' % fmt(rsd)
             sds = '' if nS < 2 else '(%s)' % fmt(ssd)

@@ -2,12 +2,12 @@
 \caption{Median time of seven fits (seeds 1 to 7, fitted in turn on the same machine) of \texttt{ergm} 4.12.0 and of \texttt{nwergm} on identical networks, default settings; ratio of the medians, \texttt{ergm} divided by \texttt{nwergm}; Monte Carlo iterations in the seven fits of each program (minimum to maximum).\label{tab:bench}}
 \begin{tabular}{@{}lrrrcc@{}}\toprule
 Benchmark & \texttt{ergm} (s) & \texttt{nwergm} (s) & ratio & \texttt{ergm} it. & \texttt{nwergm} it. \\\midrule
-30 nodes, directed: edges, mutual & 0.19 & 0.07 & 2.9 & 1 & 1 \\
-100 nodes, directed: + nodematch & 0.30 & 0.14 & 2.1 & 1--3 & 1--4 \\
-100 nodes, undirected: edges, gwesp & 0.30 & 0.09 & 3.5 & 1 & 1 \\
-500 nodes, sparse, undir.: + nodematch, gwesp & 2.8 & 0.68 & 4.0 & 3--5 & 2--6 \\
-1000 nodes, directed: edges, mutual, nodematch & 7.8 & 2.3 & 3.4 & 2--3 & 1--3 \\
-1000 nodes, sparse, undir.: edges, gwesp, gwnsp & 6.6 & 1.7 & 3.8 & 2--6 & 2--4 \\
-Lazega advice, 71 nodes: seven terms & 9.7 & 2.5 & 3.9 & 6--8 & 6--9 \\
-Faux Mesa High, 205 nodes: gwesp(.25) & 3.8 & 1.0 & 3.7 & 5--11 & 6--10 \\
+30 nodes, directed: edges, mutual & 0.21 & 0.06 & 3.2 & 1 & 1 \\
+100 nodes, directed: + nodematch & 0.31 & 0.15 & 2.1 & 1--3 & 1--4 \\
+100 nodes, undirected: edges, gwesp & 0.33 & 0.12 & 2.7 & 1 & 1 \\
+500 nodes, sparse, undir.: + nodematch, gwesp & 2.8 & 0.70 & 4.0 & 3--5 & 2--6 \\
+1000 nodes, directed: edges, mutual, nodematch & 8.0 & 2.5 & 3.3 & 2--3 & 1--3 \\
+1000 nodes, sparse, undir.: edges, gwesp, gwnsp & 7.1 & 1.8 & 4.0 & 2--6 & 2--4 \\
+Lazega advice, 71 nodes: seven terms & 9.8 & 2.4 & 4.1 & 6--8 & 6--9 \\
+Faux Mesa High, 205 nodes: gwesp(.25) & 3.8 & 0.98 & 3.8 & 5--11 & 6--10 \\
 \bottomrule\end{tabular}\end{table}

@@ -28,7 +28,7 @@ The versions used in the article are installed in Stata from their release tags 
 `ergm` 4.12.0 is the version that `nwergm` was compared with, and on 8 November 2026 it was also the newest
 release on CRAN. We also ran all R scripts with the development version of `ergm` from the statnet repository on
 r-universe (4.13.0-8272, with network 1.20.0-784 and statnet.common 4.14.0-526). The results did not change in
-substance: the mean estimates of Table 4 moved by at most 0.12 of `ergm`'s standard errors and differed from those
+substance: the mean estimates of Table 2 moved by at most 0.12 of `ergm`'s standard errors and differed from those
 of `nwergm` by at most 0.10; the effective sample sizes of `R/02_effective_size.R` were 180 to 440; and the
 per-node model again agreed with `nwergm` to 1.44e-6. We did not time the development version under the controlled conditions of Table 3.
 
@@ -36,9 +36,9 @@ per-node model again agreed with `nwergm` to 1.44e-6. We did not time the develo
 
 | Article | R | Stata | Result files | What to expect |
 |---|---|---|---|---|
-| Table 4, estimates of both programs | `R/01_compare_estimates.R` | `stata/01_compare_estimates.do` | `results/cmp_ergm.csv`, `results/cmp_nwergm.csv`, `results/tab_compare.tex` | see below |
+| Table 2, estimates of both programs | `R/01_compare_estimates.R` | `stata/01_compare_estimates.do` | `results/cmp_ergm.csv`, `results/cmp_nwergm.csv`, `results/tab_compare.tex` | see below |
 | Effective sample size (Sections 7.2 and 9.3) | `R/02_effective_size.R` | `article/gen_logs.do` (listing of `estat mcmcdiag`) | | about 215 to 315 for `nwergm`, 240 to 500 for `ergm` |
-| Table 3 and Figure 6, speed | `R/03_benchmark_fit.R` | `stata/03_benchmark_fit.do` | `results/benchmark_raw.txt`, `results/tab_bench.tex`, `results/fig_speed_bench.csv` | ratios of the medians 2.1 to 4.0 on our machine |
+| Table 3 and Figure 6, speed | `R/03_benchmark_fit.R` | `stata/03_benchmark_fit.do` | `results/benchmark_raw.txt`, `results/tab_bench.tex`, `results/fig_speed_bench.csv` | ratios of the medians 2.1 to 4.1 on our machine |
 | Models with one coefficient per node (Section 9.3) | `R/04_per_node.R` | `stata/04_per_node.do` | `results/per_node_ergm.csv`, `results/per_node_nwergm.csv` | identical estimates up to about 1e-6 |
 | All listings and figures of the article | | `article/gen_logs.do`, `article/plot_networks.do`, `article/fig_speed.do` | | identical output on the same platform |
 | Manual, Appendix C: proposals per fit | `R/08_count_proposals.R` | (counter, see below) | `results/proposal_counts.txt` | |
@@ -47,7 +47,7 @@ per-node model again agreed with `nwergm` to 1.44e-6. We did not time the develo
 | Manual, Appendix C: samplers at given coefficients | `R/05_sampler_check.R` | `stata/05_sampler_check.do` | `results/sampler_*.csv`, `results/draws_*.csv`, `results/sampler_check.txt` | \|t\| at most 2.35; the one value above 2 is checked in the next row (`tools/compare_sampler.py`) |
 | Manual, Appendix C: 20 further runs for B4 | `R/05b_sampler20.R` | `stata/05b_sampler20.do` | `results/sampler20_*.csv` | \|t\| below 1 (`tools/compare_sampler.py --runs20 B4`) |
 
-To run the comparison of the estimates and build Table 4:
+To run the comparison of the estimates and build Table 2:
 
 ```
 stata -e do stata/01_compare_estimates.do      # a few minutes; "stata" is your Stata executable
@@ -87,13 +87,15 @@ The listings of the article are produced in the folder `article/` (`cd article`,
 ## How close the numbers should be
 
 Fits that do not simulate agree to the last digits. The pseudolikelihood fits (Florentine and Lazega, MPLE in
-Table 4) differ by less than 1e-7 in the coefficients and 1e-5 in the standard errors, and the 799 coefficients of
+Table 2) differ by less than 1e-7 in the coefficients and 1e-5 in the standard errors, and the 799 coefficients of
 the per-node model by about 1e-6. The observed statistics of every term agree to 1e-6 or better.
 
 Fits by Monte Carlo maximum likelihood cannot agree to the digit, because the two programs use different random
-number generators. For these, Table 4 reports the mean over several seeds for each program and the difference of the
+number generators. For these, Table 2 reports the mean over several seeds for each program and the difference of the
 means in units of `ergm`'s standard error. The differences are at most 0.09 standard errors, and the seed-to-seed
 spread of each program is of the same order. A fresh run with other seeds should give differences of the same size.
+`tools/make_tables.py` also prints each difference in units of the Monte Carlo error of the two means; three of the 23
+coefficients fitted with several seeds in both programs differ by more than two such errors (see the article, Section 9.2).
 
 Timings depend on the machine and its load. The ratios between the programs are more stable than the seconds;
 `results/load.txt` records the load average before each of our fits.
@@ -109,7 +111,8 @@ network of the per-node comparison (`data/net400_edges.csv`) is written by `stat
 
 Appendix C of the manual of `nwergm`, "Comparison with ergm: the same estimator, and where the speed comes from",
 explains with these measurements why `nwergm` is faster than `ergm` although it runs the same algorithm with the
-same defaults. The manual is in the `nwergm` repository:
+same defaults. The manual is archived at Zenodo, <https://doi.org/10.5281/zenodo.23661331> (all versions),
+and is also in the `nwergm` repository:
 <https://github.com/thomas-u-grund/nwergm/blob/main/manual/nwergm_manual.pdf>.
 
 The released `nwergm` does not report its number of proposals. For `results/proposal_counts.txt` we used a copy of
