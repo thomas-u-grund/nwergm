@@ -1,0 +1,57 @@
+\begin{table}[htbp]
+\centering\footnotesize
+\caption{Coefficients of \texttt{ergm} 4.12.0 and \texttt{nwergm} 1.5.2 on the same networks, default settings. Mean over seeds (standard deviation over seeds in parentheses); $\Delta$ is the difference of the means in units of the standard error that \texttt{ergm} reports.\label{tab:compare}}
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+ & \multicolumn{2}{c}{\texttt{ergm}} & \multicolumn{2}{c}{\texttt{nwergm}} & \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+Term & mean & (sd) & mean & (sd) & $\Delta$ \\
+\midrule
+\multicolumn{6}{@{}l}{\textit{5-node directed network, MCMLE (10 seeds)}} \\
+\quad edges & -0.954 & (0.050) & -0.953 & (0.042) & 0.00 \\
+\quad mutual & 0.285 & (0.093) & 0.306 & (0.095) & 0.01 \\
+\multicolumn{6}{@{}l}{\textit{Florentine marriages, MPLE}} \\
+\quad edges & -2.825 &  & -2.825 &  & 0.00 \\
+\quad nodematch(seat) & 0.454 &  & 0.454 &  & 0.00 \\
+\quad nodecov(wealth) & 0.010 &  & 0.010 &  & 0.00 \\
+\multicolumn{6}{@{}l}{\textit{Florentine marriages, MCMLE (10 seeds)}} \\
+\quad edges & -1.961 & (0.034) & -1.966 & (0.034) & -0.01 \\
+\quad nodematch(seat) & 0.485 & (0.040) & 0.476 & (0.030) & -0.02 \\
+\quad gwesp(.5) & 0.095 & (0.010) & 0.093 & (0.018) & -0.01 \\
+\multicolumn{6}{@{}l}{\textit{Lazega advice, MPLE}} \\
+\quad edges & -4.095 &  & -4.095 &  & 0.00 \\
+\quad nodematch(office) & 1.422 &  & 1.422 &  & 0.00 \\
+\quad nodematch(practice) & 1.038 &  & 1.038 &  & 0.00 \\
+\quad nodeofactor(status=2) & 1.126 &  & 1.126 &  & 0.00 \\
+\quad nodeifactor(status=2) & 0.783 &  & 0.783 &  & 0.00 \\
+\multicolumn{6}{@{}l}{\textit{Lazega advice, MCMLE (5 seeds)}} \\
+\quad edges & -4.648 & (0.007) & -4.663 & (0.008) & -0.08 \\
+\quad mutual & 1.034 & (0.010) & 1.025 & (0.004) & -0.07 \\
+\quad nodematch(office) & 1.006 & (0.005) & 1.006 & (0.005) & 0.00 \\
+\quad nodematch(practice) & 0.759 & (0.006) & 0.756 & (0.004) & -0.04 \\
+\quad nodeofactor(status=2) & 0.821 & (0.004) & 0.818 & (0.005) & -0.04 \\
+\quad nodeifactor(status=2) & 0.397 & (0.005) & 0.398 & (0.004) & 0.01 \\
+\quad gwesp(.5) & 0.557 & (0.003) & 0.566 & (0.002) & 0.09 \\
+\multicolumn{6}{@{}l}{\textit{Lazega friendship, operator (see text)}} \\
+\quad edges & -2.736 & (0.007) & -2.739 & (0.002) & -0.04 \\
+\quad mutual & 0.921 & (0.019) & 0.925 & (0.008) & 0.03 \\
+\quad nodematch(practice) & 0.895 & (0.002) & 0.897 & (0.004) & 0.01 \\
+\quad Symmetrize(strong)$\sim$triangle & 0.671 & (0.036) & 0.697 & (0.031) & 0.05 \\
+\multicolumn{6}{@{}l}{\textit{Southern women, two-mode MCMLE (10 seeds)}} \\
+\quad edges & -0.316 & (0.013) & -0.327 & (0.017) & -0.06 \\
+\quad b1factor(title=2) & -0.045 & (0.022) & -0.044 & (0.021) & 0.00 \\
+\quad gwb2degree(1) & -2.360 & (0.053) & -2.295 & (0.054) & 0.07 \\
+\multicolumn{6}{@{}l}{\textit{Faux Mesa High, MCMLE (5 seeds)}} \\
+\quad edges & -6.412 & (0.004) & -6.413 & (0.007) & -0.01 \\
+\quad nodematch(grade) & 1.991 & (0.005) & 1.988 & (0.007) & -0.02 \\
+\quad nodematch(race) & 0.285 & (0.003) & 0.288 & (0.006) & 0.02 \\
+\quad gwesp(.25) & 1.452 & (0.007) & 1.450 & (0.003) & -0.02 \\
+\multicolumn{6}{@{}l}{\textit{Faux Mesa High, curved gwesp (see text)}} \\
+\quad edges & -6.369 &  & -6.368 & (0.001) & 0.00 \\
+\quad nodematch(grade) & 1.973 &  & 1.971 & (0.006) & -0.01 \\
+\quad nodematch(race) & 0.279 &  & 0.274 & (0.003) & -0.05 \\
+\quad gwesp weight & 1.343 &  & 1.346 & (0.005) & 0.02 \\
+\quad gwesp decay & 0.389 &  & 0.388 & (0.005) & -0.02 \\
+\bottomrule
+\end{tabular}
+\end{table}

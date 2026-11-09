@@ -1,0 +1,31 @@
+B4
+  statistic 1: ergm    1473.980 (sd  2.742)   nwergm    1472.733 (sd  1.854)   t =  -0.84
+  statistic 2: ergm     483.819 (sd  1.854)   nwergm     485.084 (sd  2.104)   t =   1.01
+  statistic 3: ergm     112.218 (sd  1.063)   nwergm     111.939 (sd  0.798)   t =  -0.47
+  statistic 1, draws of one run: sd ergm    42.523  nwergm    38.531   lag-1 autocorrelation ergm  0.806  nwergm  0.697
+  statistic 2, draws of one run: sd ergm    23.112  nwergm    20.967   lag-1 autocorrelation ergm  0.783  nwergm  0.683
+  statistic 3, draws of one run: sd ergm    19.049  nwergm    19.611   lag-1 autocorrelation ergm  0.494  nwergm  0.447
+Mesa
+  statistic 1: ergm     204.989 (sd  4.560)   nwergm     203.272 (sd  6.372)   t =  -0.49
+  statistic 2: ergm     164.727 (sd  4.177)   nwergm     163.223 (sd  6.182)   t =  -0.45
+  statistic 3: ergm     104.164 (sd  2.568)   nwergm     103.097 (sd  3.863)   t =  -0.51
+  statistic 4: ergm     133.388 (sd  5.380)   nwergm     131.579 (sd  7.821)   t =  -0.43
+  statistic 1, draws of one run: sd ergm    29.022  nwergm    24.211   lag-1 autocorrelation ergm  0.848  nwergm  0.847
+  statistic 2, draws of one run: sd ergm    27.252  nwergm    22.640   lag-1 autocorrelation ergm  0.873  nwergm  0.897
+  statistic 3, draws of one run: sd ergm    17.462  nwergm    15.906   lag-1 autocorrelation ergm  0.813  nwergm  0.856
+  statistic 4, draws of one run: sd ergm    32.836  nwergm    27.287   lag-1 autocorrelation ergm  0.834  nwergm  0.950
+Lazega
+  statistic 1: ergm     892.513 (sd  4.826)   nwergm     890.637 (sd  1.132)   t =  -0.85
+  statistic 2: ergm     192.359 (sd  1.722)   nwergm     191.936 (sd  0.884)   t =  -0.49
+  statistic 3: ergm     673.930 (sd  3.018)   nwergm     673.569 (sd  1.752)   t =  -0.23
+  statistic 4: ergm     610.424 (sd  3.599)   nwergm     608.543 (sd  0.614)   t =  -1.15
+  statistic 5: ergm     615.949 (sd  2.788)   nwergm     614.680 (sd  1.040)   t =  -0.95
+  statistic 6: ergm     563.547 (sd  2.831)   nwergm     561.176 (sd  0.974)   t =  -1.77
+  statistic 7: ergm    1285.458 (sd  9.247)   nwergm    1281.880 (sd  3.091)   t =  -0.82
+  statistic 1, draws of one run: sd ergm    26.625  nwergm    28.524   lag-1 autocorrelation ergm  0.692  nwergm  0.745
+  statistic 2, draws of one run: sd ergm    12.081  nwergm    12.054   lag-1 autocorrelation ergm  0.670  nwergm  0.739
+  statistic 3, draws of one run: sd ergm    22.198  nwergm    22.773   lag-1 autocorrelation ergm  0.732  nwergm  0.747
+  statistic 4, draws of one run: sd ergm    21.938  nwergm    24.352   lag-1 autocorrelation ergm  0.732  nwergm  0.791
+  statistic 5, draws of one run: sd ergm    19.947  nwergm    19.529   lag-1 autocorrelation ergm  0.683  nwergm  0.700
+  statistic 6, draws of one run: sd ergm    19.615  nwergm    18.371   lag-1 autocorrelation ergm  0.681  nwergm  0.688
+  statistic 7, draws of one run: sd ergm    52.893  nwergm    56.664   lag-1 autocorrelation ergm  0.667  nwergm  0.735
