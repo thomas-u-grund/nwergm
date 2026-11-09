@@ -1,0 +1,8 @@
+network,step,seconds
+lazega,estat gof (five statistics),     1.43
+lazega,nwergm simulate nsim(100),     0.09
+mesa,estat gof (default),     1.12
+random1000,fit (MCMLE),     2.42
+random1000,estat gof (default),    26.25
+random1000,nwergm simulate nsim(100),     0.15
+random1000,fit (stochastic approximation),    15.85

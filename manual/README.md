@@ -7,10 +7,10 @@
 The manual's title and citation carry no version number; the title page states the series it describes (`\manualseries`, valid for 1.5.x). The exact version and date of the release that produced the listings are two more macros in `nwergm_manual.tex` (written by `tools/set_version.py`):
 
     \newcommand{\manualseries}{1.5}
-    \newcommand{\pkgversion}{1.5.2}
+    \newcommand{\pkgversion}{1.5.3}
     \newcommand{\pkgdate}{8 November 2026}
 
-Change `\manualseries` only for a new minor or major release whose documented behaviour changed. For a patch release change the last two lines, rebuild (`make -C manual pdf`) and check the pages that the build output of the examples shows (version strings come from `make examples`, see below). The tag in the installation example of `ch01_intro.tex` (`nwergm/v1.5.2/`, inside a listing, so it cannot use the macro) is the only other place with the number.
+Change `\manualseries` only for a new minor or major release whose documented behaviour changed. For a patch release change the last two lines, rebuild (`make -C manual pdf`) and check the pages that the build output of the examples shows (version strings come from `make examples`, see below). The tag in the installation example of `ch01_intro.tex` (`nwergm/v1.5.3/`, inside a listing, so it cannot use the macro) is the only other place with the number.
 
 ## The DOI
 

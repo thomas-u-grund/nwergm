@@ -4909,6 +4909,11 @@ class ErgmModel {
 	// (0 columns) unless nwergm's logstat()/expstat() set them.
 	real rowvector opkind
 	real rowvector opparam
+	// statistics of the empty network, used by ErgmNativeFullStat(); kept for the network size, direction and
+	// mode vector in empty_key/empty_mode, recomputed when these or the number of terms or columns change
+	real rowvector empty_stat
+	real rowvector empty_key
+	real colvector empty_mode
 
 	void init()
 	void addterm()
@@ -4949,6 +4954,9 @@ void ErgmModel::init(){
 	fixedvalue = J(1, 0, .)
 	opkind = J(1, 0, .)
 	opparam = J(1, 0, .)
+	empty_stat = J(1, 0, .)
+	empty_key = J(1, 0, .)
+	empty_mode = J(0, 1, .)
 }
 
 /*
@@ -5960,9 +5968,17 @@ real matrix ergm_acf_cov(real matrix X, real scalar lagmax){
 		m2 = mean(select(X[., k], X[., k] :< .))
 		Z[., k] = X[., k] :- m2
 	}
+	out = J((lagmax+1)*p, p, .)
+	// without missing values every pair count N[k,k2] is n - lag, so N + lag = n exactly and the counts need not be formed
+	if (!hasmissing(Z)) {
+		for (lag=0; lag<=lagmax; lag++) {
+			S = Z[(lag+1)::n, .]' * Z[1::(n-lag), .]
+			out[(lag*p+1)::((lag+1)*p), .] = S :/ n
+		}
+		return(out)
+	}
 	Mk = (Z :< .)
 	Z = editmissing(Z, 0)
-	out = J((lagmax+1)*p, p, .)
 	for (lag=0; lag<=lagmax; lag++) {
 		S = Z[(lag+1)::n, .]' * Z[1::(n-lag), .]
 		N = Mk[(lag+1)::n, .]' * Mk[1::(n-lag), .]
@@ -6024,6 +6040,66 @@ void ergm_ar_yw(real matrix X, real scalar ordmax, real scalar useaic, real scal
 	xaic = xaic :- min(xaic)
 }
 
+// ergm_ar_yw() for all orders 0..ordmax in one pass: the Whittle recursion up to order m does not depend on ordmax (the
+// autocovariance of a lag does not depend on lagmax either), so the state at step m is the same as in a call with any
+// ordmax >= m. For each m the raw AIC (row vector raic, before the minimum is subtracted), the sum of the AR coefficient
+// matrices (rows m*nser+1..(m+1)*nser of ARS) and the prediction variance (same rows of VP) are those that ergm_ar_yw()
+// computes at step m, by the same operations in the same order. ergm_spec0_mvar() uses it to replace the repeated calls
+// of R's order search by one recursion.
+void ergm_ar_yw_path(real matrix X, real scalar ordmax, real rowvector raic, real matrix ARS, real matrix VP){
+	real scalar n, nser, nobs, m, i, ld
+	real matrix xacf, A, B, Aold, Bold, EA, EB, KA, KB, betaA, betaB, Im, arsum
+	n = rows(X)
+	nser = cols(X)
+	nobs = sum(X[., 1] :< .)
+	xacf = ergm_acf_cov(X, ordmax)
+	Im = I(nser)
+	A = J((ordmax+1)*nser, nser, 0)
+	B = A
+	A[1::nser, .] = Im
+	B[1::nser, .] = Im
+	EA = xacf[1::nser, .]
+	EB = EA
+	raic = J(1, ordmax+1, .)
+	ARS = J((ordmax+1)*nser, nser, .)
+	VP = J((ordmax+1)*nser, nser, .)
+	for (m=0; m<=ordmax; m++) {
+		ld = ln(abs(det(EA)))
+		raic[m+1] = nobs * ld + 2 * m * nser * nser
+		VP[(m*nser+1)::((m+1)*nser), .] = EA * nobs / (nobs - nser * (m + 1))
+		arsum = J(nser, nser, 0)
+		for (i=1; i<=m; i++) arsum = arsum - A[(i*nser+1)::((i+1)*nser), .]
+		ARS[(m*nser+1)::((m+1)*nser), .] = arsum
+		if (m < ordmax) {
+			betaA = J(nser, nser, 0)
+			betaB = J(nser, nser, 0)
+			for (i=0; i<=m; i++) {
+				betaA = betaA + A[(i*nser+1)::((i+1)*nser), .] * xacf[((m+1-i)*nser+1)::((m+2-i)*nser), .]
+				betaB = betaB + B[(i*nser+1)::((i+1)*nser), .] * xacf[((m+1-i)*nser+1)::((m+2-i)*nser), .]'
+			}
+			KA = -betaA * luinv(EB)
+			KB = -betaB * luinv(EA)
+			EB = (Im - KB * KA) * EB
+			EA = (Im - KA * KB) * EA
+			Aold = A
+			Bold = B
+			for (i=1; i<=m+1; i++) {
+				A[(i*nser+1)::((i+1)*nser), .] = Aold[(i*nser+1)::((i+1)*nser), .] + KA * Bold[((m+1-i)*nser+1)::((m+2-i)*nser), .]
+				B[(i*nser+1)::((i+1)*nser), .] = Bold[(i*nser+1)::((i+1)*nser), .] + KB * Aold[((m+1-i)*nser+1)::((m+2-i)*nser), .]
+			}
+		}
+	}
+}
+
+// the order ergm_ar_yw(X, omax, useaic, ...) chooses, from the raw AIC of ergm_ar_yw_path(): with useaic the last order
+// whose AIC is at most the AIC of every lower order, otherwise omax
+real scalar ergm_ar_pick(real rowvector raic, real scalar omax, real scalar useaic){
+	real scalar m, ord
+	ord = 0
+	for (m=0; m<=omax; m++) if (!useaic | raic[m+1] <= min(raic[1..(m+1)])) ord = m
+	return(ord)
+}
+
 // coda spectrum0.ar for one series (missing rows dropped): innovations variance / (1 - sum of AR)^2; 0 for a (linearly trending) constant
 real scalar ergm_spec0_ar(real colvector x0){
 	real colvector x, z, r
@@ -6045,9 +6121,9 @@ real scalar ergm_spec0_ar(real colvector x0){
 // With the optional argument rc, a series that R's spectrum0.mvar() would stop on (all variables constant, no AR fit) returns
 // rc != 0 (and infl missing) instead of an error, so that the caller can do what R does after a try-error.
 real matrix ergm_spec0_mvar(real matrix Xfull, real scalar infl, real scalar rnk, | real scalar rc){
-	real scalar p, pv, k, ord, tol, ordsel, i, j, ok, userc
-	real matrix x, xf, evec, xr, unmapper, indvar, v, vvar, adj, arsum, varpred
-	real rowvector xscl, ev, xrsd, xaic, d, keep, ind
+	real scalar p, pv, k, ord, tol, ordsel, i, j, ok, userc, ordtop, pv2
+	real matrix x, xf, evec, xr, unmapper, indvar, v, vvar, adj, arsum, varpred, ARS, VP
+	real rowvector xscl, ev, xrsd, xaic, d, keep, ind, raic
 	real colvector rows_ok
 	real scalar ord_ar
 
@@ -6087,9 +6163,14 @@ real matrix ergm_spec0_mvar(real matrix Xfull, real scalar infl, real scalar rnk
 	xr = xr[., ind]
 	rnk = cols(ind)
 	indvar = variance(select(xr, rowmissing(xr) :== 0))
-	ord = ceil(10 * log10(rows(xr)))
+	// R's order search: fit up to order ord with the AIC choice, lower ord while the prediction variance of the chosen
+	// order is not a valid covariance matrix, then refit at the first local minimum of the AIC curve if that is lower.
+	// One recursion up to the largest order gives the results of all these fits (ergm_ar_yw_path()).
+	ordtop = ceil(10 * log10(rows(xr)))
+	if (ordtop > 0) ergm_ar_yw_path(xr, ordtop, raic, ARS, VP)
+	pv2 = cols(xr)
+	ord = ordtop + 1
 	ok = 0
-	ord = ord + 1
 	while (!ok & ord > 0) {
 		ord = ord - 1
 		if (ord <= 0) {
@@ -6099,13 +6180,17 @@ real matrix ergm_spec0_mvar(real matrix Xfull, real scalar infl, real scalar rnk
 			}
 			_error(3498, "Unable to fit ar() even with order 1; this is likely to be due to insufficient sample size or a trend in the data.")
 		}
-		ergm_ar_yw(xr, ord, 1, ord_ar, arsum, varpred, xaic)
+		ord_ar = ergm_ar_pick(raic, ord, 1)
+		arsum = ARS[(ord_ar*pv2+1)::((ord_ar+1)*pv2), .]
+		varpred = VP[(ord_ar*pv2+1)::((ord_ar+1)*pv2), .]
 		ok = !hasmissing(varpred)
 		if (ok) {
 			symeigensystem(0.5 * (varpred + varpred'), evec, ev)
 			if (min(ev) < 0) ok = 0
 		}
 	}
+	xaic = raic[1..(ord+1)]
+	xaic = xaic :- min(xaic)
 	// the AIC curve's first local minimum bounds the order
 	d = (. , xaic, .)
 	ordsel = -1
@@ -6116,7 +6201,9 @@ real matrix ergm_spec0_mvar(real matrix Xfull, real scalar infl, real scalar rnk
 		}
 	}
 	if (ord_ar > ordsel) {
-		ergm_ar_yw(xr, max((ordsel, 1)), (ordsel == 0), ord_ar, arsum, varpred, xaic)
+		ord_ar = ergm_ar_pick(raic, max((ordsel, 1)), (ordsel == 0))
+		arsum = ARS[(ord_ar*pv2+1)::((ord_ar+1)*pv2), .]
+		varpred = VP[(ord_ar*pv2+1)::((ord_ar+1)*pv2), .]
 	}
 	adj = I(cols(xr)) - arsum
 	vvar = luinv(adj) * varpred * luinv(adj)'
@@ -9693,7 +9780,8 @@ void ergm_graph_load_ties(class ErgmGraph scalar G, real matrix ties)
 // plugin and has no operator and no constraint/composite terms; returns J(1,0,.) when not applicable
 real rowvector ErgmNativeFullStat(class ErgmModel scalar M, class ErgmGraph scalar G)
 {
-	real rowvector s, th
+	real rowvector s, th, key
+	real colvector md
 	real matrix tout
 	class ErgmGraph scalar E
 	if (!M.native_enabled_sample) return(J(1, 0, .))
@@ -9701,9 +9789,18 @@ real rowvector ErgmNativeFullStat(class ErgmModel scalar M, class ErgmGraph scal
 	if (rows(M.native_con) > 0 | rows(M.native_ctx) > 0) return(J(1, 0, .))
 	th = J(1, M.nparam(), 0)
 	s = ErgmNativeSampleCore(M, G, th, 0, 1, 1, th, G.all_ties(), tout, 1)
-	E.init(G.n, G.directed)
-	if (G.bipartite) E.set_bipartite(G.mode)
-	return(s :+ M.full_statistic(E))
+	// the empty-network statistics depend only on the model and the network's size, direction and modes; on a
+	// large bipartite network their Mata computation takes seconds, so they are computed once and kept on M
+	key = (G.n, G.directed, G.bipartite, M.nterms, M.nparam())
+	md = G.bipartite ? G.mode : J(0, 1, .)
+	if (M.empty_key != key | M.empty_mode != md | cols(M.empty_stat) != cols(s)) {
+		E.init(G.n, G.directed)
+		if (G.bipartite) E.set_bipartite(G.mode)
+		M.empty_stat = M.full_statistic(E)
+		M.empty_key = key
+		M.empty_mode = md
+	}
+	return(s :+ M.empty_stat)
 }
 
 // the statistics of G: in the plugin from 500 nodes on (there the Mata computation becomes slow; integer-valued
