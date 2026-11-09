@@ -128,7 +128,7 @@ REMARK = {
     "gwodegree": "Directed networks only. Fixed decay gwodegree(), curved gwodegreefree().",
     "gwb1dsp": "Fixed decay bgwdsp1(), curved bgwdspfree1().", "gwb2dsp": "Fixed decay bgwdsp2(), curved bgwdspfree2().",
     "gwb1degree": "Fixed decay bgwdegree1(), curved bgwdegreefree1().", "gwb2degree": "Fixed decay bgwdegree2(), curved bgwdegreefree2().",
-    "opentriad": "In ergm 4.12.0 the change statistic for removing a tie overflows an unsigned integer, so R's estimation with this term is wrong although its summary() is right; nwergm uses the correct change statistic.",
+    "opentriad": "nwergm computes the change statistics as the differences of the observed statistic; those of ergm 4.12.0 do not always equal them, so the estimates differ although summary() is the same (see the appendix on differences from ergm).",
 }
 FORCE_DEP = {"cycle": "DD", "gwb1dsp": "DD", "gwb2dsp": "DD"}  # the inventory records R's answer for an example call; these terms are dyad-dependent
 
