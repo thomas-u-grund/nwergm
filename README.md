@@ -47,7 +47,7 @@ used an interval of 50 and a burn-in of 3,000; these much faster, much less reli
 
 * Stata 17 or later. Tested with Stata 17 and Stata 18 (Stata/BE is enough). The Mata libraries are built with Stata 17, the oldest tested version, because a library built by a newer Stata is ignored by older ones; Stata 16 and older have not been tested and are not expected to work.
 * The core nwcommands package (see above), including its Mata library `lnwcommands.mlib`.
-* Platform plugins are shipped for macOS, Linux and Windows.
+* Platform plugins are shipped for macOS, Linux and Windows. The test suite passes on macOS and Windows; the Linux plugin is built by CI but has not yet been tested on a Linux machine.
 
 ## Tests
 

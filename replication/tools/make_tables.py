@@ -35,7 +35,7 @@ def compare():
     out = []
     out.append(r"\begin{table}[htbp]")
     out.append(r"\centering\footnotesize")
-    out.append(r"\caption{Coefficients of \texttt{ergm} 4.12.0 and \texttt{nwergm} 1.5.2 on the same networks, default settings. Mean over seeds (standard deviation over seeds in parentheses); $\Delta$ is the difference of the means in units of the standard error that \texttt{ergm} reports.\label{tab:compare}}")
+    out.append(r"\caption{Coefficients of \texttt{ergm} 4.12.0 and \texttt{nwergm} 1.5.4 on the same networks, default settings. Mean over seeds (standard deviation over seeds in parentheses); $\Delta$ is the difference of the means in units of the standard error that \texttt{ergm} reports.\label{tab:compare}}")
     out.append(r"\begin{tabular}{@{}lrrrrr@{}}")
     out.append(r"\toprule")
     out.append(r" & \multicolumn{2}{c}{\texttt{ergm}} & \multicolumn{2}{c}{\texttt{nwergm}} & \\")
@@ -111,7 +111,7 @@ def bench():
         q = Decimal('0.01') if x < 1 else Decimal('0.1')
         return str(Decimal(repr(x)).quantize(q, rounding=ROUND_HALF_UP))
     out = [r"\begin{table}[htbp]\centering\footnotesize\setlength{\tabcolsep}{4pt}",
-           r"\caption{Median time of seven fits (seeds 1 to 7, fitted in turn on the same machine) of \texttt{ergm} 4.12.0 and of \texttt{nwergm} 1.5.2 on identical networks, default settings; ratio of the medians, \texttt{ergm} divided by \texttt{nwergm}; Monte Carlo iterations in the seven fits of each program (minimum to maximum).\label{tab:bench}}",
+           r"\caption{Median time of seven fits (seeds 1 to 7, fitted in turn on the same machine) of \texttt{ergm} 4.12.0 and of \texttt{nwergm} on identical networks, default settings; ratio of the medians, \texttt{ergm} divided by \texttt{nwergm}; Monte Carlo iterations in the seven fits of each program (minimum to maximum).\label{tab:bench}}",
            r"\begin{tabular}{@{}lrrrcc@{}}\toprule",
            r"Benchmark & \texttt{ergm} (s) & \texttt{nwergm} (s) & ratio & \texttt{ergm} it. & \texttt{nwergm} it. \\\midrule"]
     for k, d in DESC.items():

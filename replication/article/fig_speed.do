@@ -34,7 +34,7 @@ twoway ///
 	ylabel(1/8, valuelabel angle(0) labsize(small) nogrid) yscale(range(0.5 8.8)) ///
 	xtitle("Seconds per fit (log scale)", size(small)) ytitle("") ///
 	text(8.75 30 "faster by", size(small)) ///
-	legend(order(5 "nwergm 1.5.2, median" 3 "single fits" 4 "ergm 4.12.0, median" 2 "single fits") ///
+	legend(order(5 "nwergm, median" 3 "single fits" 4 "ergm 4.12.0, median" 2 "single fits") ///
 		rows(1) size(small) position(6) symxsize(*0.5)) ///
 	graphregion(color(white)) plotregion(color(white)) name(a, replace) xsize(6.5) ysize(4)
 graph export fig_speed.pdf, name(a) replace

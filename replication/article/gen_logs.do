@@ -1,6 +1,6 @@
 * =====================================================================
 * gen_logs.do: regenerates every log and figure of the nwergm article
-* from the RELEASED software: nwcommands (core) 3.17.2 and nwergm 1.5.2.
+* from the RELEASED software: nwcommands (core) 3.17.2 and nwergm 1.5.4.
 * Run from the paper folder with Stata 18 (the Mata libraries are built with Stata 17):
 *   /Applications/Stata/StataBE.app/Contents/MacOS/StataBE -e do gen_logs.do
 * hdr_local.do (this folder) uses the installed packages, or source trees named by globals

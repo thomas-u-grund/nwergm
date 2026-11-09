@@ -15,14 +15,14 @@ All commands below are run from this folder, the folder that holds this README.
 | ergm | 4.12.0 (with network 1.20.0, statnet.common 4.13.0) | `Rscript R/00_install.R` |
 | Stata | 18 (BE); also tested with 17 and 19 | |
 | nwcommands | 3.17.2 | see below |
-| nwergm | 1.5.2 | see below |
+| nwergm | 1.5.4 | see below |
 
 The versions used in the article are installed in Stata from their release tags on GitHub:
 
 ```
 . net install nwcommands, replace from(https://raw.githubusercontent.com/thomas-u-grund/nwcommands/v3.17.2/)
 . nwinstall, all from(https://raw.githubusercontent.com/thomas-u-grund/nwcommands/v3.17.2)
-. nwinstall, modelpkg(nwergm) release(v1.5.2)
+. nwinstall, modelpkg(nwergm) release(v1.5.4)
 ```
 
 `ergm` 4.12.0 is the version that `nwergm` was compared with, and on 8 November 2026 it was also the newest
