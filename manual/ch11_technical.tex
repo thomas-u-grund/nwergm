@@ -1,0 +1,127 @@
+\chapter{Technical notes}\label{ch:technical}
+
+This chapter is for users who fit large models, who run \nwergm{} on several platforms, or who want to read or extend the source. It describes the three layers of the program, the native plugin and how to tell which engine ran, reproducibility, the size limits of Stata and of \nwergm{}, the run times to expect, and the layout of the source files.
+
+\section{The three layers}
+
+\nwergm{} consists of three layers.
+\begin{enumerate}[nosep]
+  \item The \textbf{ado layer} (\texttt{nwergm.ado}, \texttt{nwergm\_estat.ado}, \texttt{nwergm\_p.ado} and the helper files \texttt{\_nwergm\_*.ado}) parses the terms and options, checks the network and the combinations of options, builds the model, calls the estimator and posts the results in \texttt{e()}.
+  \item The \textbf{Mata core} (\texttt{unw\_ergm.do}, compiled into the library \texttt{lnwergm.mlib}) holds the model and the network, the statistics and change statistics of every term, the pseudolikelihood fit, the Monte Carlo estimator with its adaptive sample, convergence test and step length, the covariance, the bridge sampling of the log-likelihood, the diagnostics, and a reference sampler written in Mata.
+  \item {\sloppy The \textbf{native plugin} (\texttt{native/ergm\_mcmc.c}, compiled for each platform into \opt{lib/plugins/<platform>/}\allowbreak\opt{ergm\_mcmc\_<platform>.plugin}) runs the Metropolis--Hastings sampler with the change statistics, the observed statistics of large networks, the design matrix of the pseudolikelihood, the constraints and the operators. Almost all of the computing time of a Monte Carlo fit is spent in it.\par}
+\end{enumerate}
+The Mata layer calls the plugin once per sample and not once per proposal: a call passes the model, the network and the coefficients, runs the burn-in and all draws of the sample, and returns the statistics of the draws. The estimating step, the covariance, the convergence test and the output stay in Mata and ado.
+
+\section{The native plugin}\label{sec:platforms}
+
+\subsection{Which engine ran}
+
+After a fit, \texttt{e(native)} is 1 if the plugin was used (the sampler of a Monte Carlo fit, the design matrix of a pseudolikelihood fit) and 0 if Mata was. \nwergm{} prints one warning line before a Monte Carlo fit, \texttt{estat gof} or \texttt{nwergm simulate} that runs on the Mata sampler instead of the plugin, with the reason: the plugin file is missing for the platform, \opt{nonative} was given, or the model is outside the capacity of the plugin. No warning is printed when the plugin is used. The Mata sampler runs the same algorithm and gives statistically equivalent results (the random streams differ, so that the digits differ), but it is slower by orders of magnitude (Section~\ref{sec:runtimes}). \opt{nonative} is for testing and comparison.
+
+\subsection{Platforms}
+
+The native plugin is built for macOS (universal binary, compiled on the development machine), Linux and Windows (compiled by continuous integration). All the output of this manual comes from the macOS build with Stata/BE~18; the Linux and Windows plugins were not run for this manual, and the other editions of Stata (SE, MP) were not tested. The plugin reports its version, and a plugin that is older than the \texttt{.ado} files is detected. A platform without a plugin runs the Mata sampler, which is much slower for the models that have one (Table~\ref{tab:timing}) and does not exist for \opt{structural()}, \opt{operators()}, \opt{constraints()}, \opt{obsconstraints()} and \opt{mcmcmaxedges()}.
+
+Two practical traps. A plugin in Stata's PLUS directory from an older installation shadows the plugin of a repository on the ado-path, so that a freshly built plugin can silently not be used; test it through a scratch ado-path. On macOS, overwriting a plugin that has already been loaded kills Stata without a message (the code signature is cached by the system); remove the old file first, then copy.
+
+\subsection{Source code of the plugin}
+
+The C source of the plugin is part of the package. \texttt{net install} installs the compiled plugins only; the command
+\begin{lstlisting}
+. net get nwergm, from(https://raw.githubusercontent.com/thomas-u-grund/nwergm/main)
+\end{lstlisting}
+copies the source files, the build rules and a short build note into the current directory. The same files are in the folder \texttt{native/} of the repository (\url{https://github.com/thomas-u-grund/nwergm}). \nwergm{} is free software under the GNU General Public License, version 3; the plugin interface files in \texttt{native/spi/} are StataCorp's Stata Plugin Interface, redistributed unchanged.
+
+\subsection{Building the plugin on your computer}
+
+If the plugin of your platform is missing or does not work on your computer, compile it there with
+\begin{lstlisting}
+. nwinstall, buildplugin(nwergm)
+\end{lstlisting}
+The command copies the source from the repository, compiles it with the compiler of your computer (a C compiler and \texttt{make} are needed: on macOS the command line tools of Xcode, on Linux \texttt{gcc} and \texttt{make}), and installs the plugin next to the one that \texttt{net install} put into the PLUS directory; an existing file is kept with the extension \texttt{.prev}. Restart Stata afterwards. The plugin depends on the operating system and the processor, not on the version or the flavour of Stata. The routine was tested on macOS; on Windows it stops with a message and the build note that comes with the source gives the command for the Visual Studio command line.
+
+\subsection{Fixed limits of the plugin}
+
+The plugin has fixed capacities: 8192 coefficients (columns of the model; a model with more than 256 receives its term table and returns its sample in frame variables), 64 distinct node attributes and 8 distinct dyadic covariate matrices in one model. The dyadic covariates are passed as their nonzero entries, so that their size is not limited by the number of variables of Stata/BE. \nwergm{} checks that the plugin found matches the version of the package. A model that exceeds them is not refused; it runs in the Mata sampler as a whole, never partly in C and partly in Mata, and is much slower (and \opt{structural()}, \opt{operators()} and the constraints, which exist only in the plugin, are refused).
+
+\section{Reproducibility}\label{sec:repro}
+
+The plugin runs on one thread. A Monte Carlo fit, \texttt{estat gof} and \texttt{nwergm simulate} draw their random numbers from a stream set by \opt{seed()}, so that the same \opt{seed()}, model, network and version give identical results; the test suite checks this for fits and for simulation. The plugin and the Mata sampler use the random numbers differently, so that their draws differ. Results change if the model, the seed, the options or the version of the program change; report the version printed by \texttt{nwergm version}.
+
+\section{Size limits}\label{sec:size}
+
+\subsection{What costs what}
+
+The pseudolikelihood is built over \emph{all} dyads, $n(n-1)/2$ in an undirected network and $n(n-1)$ in a directed one, so that time and memory of a pseudolikelihood fit grow with the square of the number of nodes, whatever the number of ties. The Monte Carlo sampler works on the ties and their neighborhoods and its cost per proposal depends on the degrees, not on $n^2$, but every Monte Carlo fit starts from a pseudolikelihood fit (unless all coefficients are given in \opt{init()}) and so pays the cost of the dyad-level fit once, and the log-likelihood evaluation by bridge sampling needs further chains. A network is held in a sparse structure; dense $n\times n$ objects exist only for dyadic covariates (\opt{edgecov()}, \opt{hamming()}, \opt{dyadcov()}) and for \texttt{predict, matrix()}.
+
+\subsection{What Stata limits}
+
+Stata/BE has a maximum matrix dimension of 800 (\texttt{c(max\_matdim)}) and at most 2048 variables. A network with more than 800 nodes therefore cannot be declared from a Stata matrix with \texttt{nwset, mat()}; build it from an edge list (\texttt{nwfromedge}), as the networks of Table~\ref{tab:scaling} were. The same holds for \texttt{predict, matrix()}; \texttt{predict, frame()} has one row per dyad and is limited by memory. Coefficient vectors wider than 800 (a model with one coefficient per node on more than about 400 nodes) are posted and read through Mata, so that \texttt{e(b)} and \texttt{e(V)} and the postestimation commands work. The matrix \texttt{e(mcmcsample)} has one row per draw; filling it from Mata is the slowest step for a very large \opt{mcmcsamplesize()} (more than 30 seconds at 100,000 rows in a test of the development of the package), and \opt{nomcmcsample} skips it. Other editions of Stata have larger limits; they were not tested.
+
+\subsection{Models with one coefficient per node}\label{sec:pernode}
+
+\opt{sender} and \opt{receiver}, and factor terms on an attribute with many levels, give a model with hundreds or thousands of coefficients. A dyad-independent model of this kind is fitted by the pseudolikelihood, which is then the likelihood, with a sparse design: \opt{edges sender receiver} on a random directed network of 400 nodes (799 coefficients) took 1.0 second, against 573 seconds for \ergm{}, with estimates that agree to $1.4\times10^{-6}$, and about 8 seconds on 1000 nodes (1999 coefficients, Stata/BE). A dyad-dependent model needs Monte Carlo maximum likelihood. As in \ergm{}, every iteration draws at least 32 networks per coefficient, so that the work of an iteration grows with the square of the number of coefficients, and such fits take much longer than fits of the same network without the per-node terms. For larger networks, replace the per-node terms by node covariates or degree terms, or use the pseudolikelihood, which for a dyad-dependent model is only an approximation with too small standard errors.
+
+\subsection{Not measured}
+
+Not measured: networks above 10,000 nodes, networks with mean degree above 6, models with several dense dyadic covariates, memory use as a function of $n$, and fits of a directed network of the sizes in the table.
+
+\section{Performance}\label{sec:runtimes}
+
+The following run times were measured on one machine with the native plugin and are indications, not benchmarks; Appendix~\ref{app:samest} compares the run times with \ergm{}'s and explains where the difference comes from.
+
+Table~\ref{tab:scaling} gives the run time of \texttt{nwergm} on random undirected networks with mean degree 6 and three random groups, with the default settings and the native plugin, one fit per row (so the figures are indications, not benchmarks). The networks were generated by \texttt{manual/ex/ex98\_scaling.do} and \texttt{ex99\_scaling2.do}; all rows were measured with \nwergm{}~1.5.2 on 9 November 2026 on the machine of Appendix~\ref{app:samest} (one-minute load average 2.6 to 2.9 at the start of the runs and 7.5 at the end). The dyad-independent model has the terms \opt{edges}, \opt{nodematch(g)} and \opt{nodecov(x)}; the dyad-dependent model adds \opt{gwesp(0.5)} (Monte Carlo maximum likelihood with the default settings, with bridge sampling for the log-likelihood). The times of the pseudolikelihood column do not depend on the Markov chain; they vary between runs by tens of percent on a machine that is also used for other jobs, and a single fit is a single measurement.
+
+\begin{table}[ht]\centering\small
+\caption{Run time in seconds of \texttt{nwergm} on random networks of $n$ nodes (mean degree 6).}\label{tab:scaling}
+\begin{tabular}{@{}rrrr@{}}\toprule
+$n$ & dyads & pseudolikelihood (3 terms) & Monte Carlo (4 terms with \texttt{gwesp})\\\midrule
+200 & 19,900 & 0.1 & 0.3 (2 iterations)\\
+500 & 124,750 & 0.2 & 0.5 (3 iterations)\\
+1000 & 499,500 & 0.6 & 1.9 (4 iterations)\\
+2000 & 1,999,000 & 3.0 & 6.3 (4 iterations)\\
+4000 & 7,998,000 & 13.3 & not run\\
+5000 & 12,497,500 & not run & 38.5 (3 iterations)\\
+8000 & 31,996,000 & 60.2 & not run\\
+10000 & 49,995,000 & not run & 150.8 (2 iterations)\\\bottomrule
+\end{tabular}
+\end{table}
+
+A random network has no clustering, so that the shared-partner statistics are small and the sampler is fast; a network with high degrees and heavy clustering is costlier per proposal and mixes more slowly, and the time of a Monte Carlo fit is dominated by the number of iterations and by the adaptive growth of the interval. These figures are \emph{not} a statement about such networks. For the Lazega network of Chapter~\ref{ch:examples} (71 nodes, 575 ties, five terms) Table~\ref{tab:timing} gives the run times of five seeds each: the default, the fixed-size algorithm (\opt{mcmleeffectivesize(0)}, 3000 draws per iteration), the fixed-size algorithm with a short chain (burn-in 3000, interval 50), the Mata sampler (one fit) and \ergm{}.
+
+\begin{table}[ht]\centering\small
+\caption{Run time in seconds of the Lazega model (five seeds). nwergm with default settings, with fixed-size samples and with fixed-size samples and a short chain (native plugin), the Mata sampler with default settings (one run), and R's \texttt{ergm()} with its defaults, on the machine of Appendix~\ref{app:samest} (9 November 2026, \nwergm{}~1.5.2).}\label{tab:timing}
+\input{gen_timing.tex}
+\end{table}
+
+On the Lazega model of this table \nwergm{} took a median of 1.9 seconds (5 to 7 iterations) and \ergm{} 9.3 seconds (3 to 8 iterations), measured one after the other; the same model fitted with fixed 3000 draws took 1.8 seconds in one iteration for every seed. The Mata sampler (\opt{nonative}) is the slow fallback: 1,158 seconds (12 iterations) for one fit. A single model is not a comparison of the two programs; Appendix~\ref{app:samest} compares them on eight models.
+
+\paragraph{Postestimation and the other algorithms.} Single runs with 1.5.2 on the same machine (9 November 2026, \texttt{manual/ex/ex9f\_posttime.do}; one run each, so the figures are indications): \texttt{estat gof, gof(model distance odegree idegree espartners)} after the Lazega model of Table~\ref{tab:timing} took 1.4 seconds and \texttt{nwergm simulate, nsim(100) output(stats)} 0.1 seconds; \texttt{estat gof} with its default statistics after \opt{edges nodematch(grade racen) gwesp(.25)} on Faux Mesa High took 1.1 seconds. On a random undirected network of 1000 nodes (mean degree 6) with \opt{edges gwesp(.5) nodefactor(g) nodecov(x)}, the fit by Monte Carlo maximum likelihood took 2.4 seconds, \texttt{estat gof} 26 seconds, \texttt{nwergm simulate, nsim(100) output(stats)} 0.15 seconds and the fit by stochastic approximation (\opt{mainmethod(sa)}) 16 seconds. These steps use the triad census by the algorithm of Batagelj and Mrvar, geodesic distances by breadth-first search over neighbour lists, observed statistics of large networks computed in the plugin, and chains that continue from the statistics of the previous draw instead of recomputing them.
+
+Some hints. Shorten exploratory runs with \opt{mcmleeffectivesize(0)} and a short chain, and use the defaults for the final fit, because the convergence test and the standard errors come from the adaptive sample. Look at \texttt{estat mcmcdiag} after every Monte Carlo fit. Models that the data do not support take more iterations, not fewer (Section~\ref{sec:issues}).
+
+\section{File layout}
+
+\begin{center}
+\small
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{5.2cm}>{\raggedright\arraybackslash}p{9.8cm}@{}}
+\toprule
+File & Content \\
+\midrule
+\texttt{nwergm.ado} & The command: parsing, checks, model, estimation dispatch, results. \\
+\texttt{\_nwergm\_*.ado} & Helpers: the two-mode, structural, operator, constraint and covariate terms, missing dyads, the estimation methods, the goodness of fit and its graphs, the warnings. \\
+\texttt{nwergm\_estat.ado}, \texttt{nwergm\_p.ado} & \texttt{estat} (\texttt{gof}, \texttt{mcmcdiag}, \texttt{ic}) and \texttt{predict}. \\
+\texttt{nwergm\_version.ado} & \texttt{nwergm version}: the versions of the package, the core and the plugin. \\
+\texttt{unw\_ergm.do} & The Mata core: model, terms, estimators, diagnostics, reference sampler, interface to the plugin. \\
+\texttt{lib/lnwergm.mlib} & The compiled Mata library, built by \texttt{lib/build.do}. \\
+\texttt{native/ergm\_mcmc.c} & The C plugin source; \texttt{native/Makefile} builds it. \\
+\opt{lib/plugins/<platform>/} & The compiled plugins for \texttt{macos}, \texttt{unix} and \texttt{windows}. \\
+\texttt{nwergm.sthlp}, \texttt{nwergm\_*.sthlp} & The help file and its parts (estimation, terms, constraints, operators, postestimation). \\
+\opt{cscripts/test\_nwergm\_*.do} & The regression tests, one file per feature, and \opt{cscripts/run\_tests.sh}, which runs them. \\
+\texttt{dev/} & The R scripts that generated the reference values of the tests. \\
+\texttt{manual/} & The source of this manual; \texttt{manual/ex} holds the do-files of its examples. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Testing.} The tests run against the Mata sources loaded directly (\texttt{do unw\_core.do}, \texttt{do unw\_ergm.do}) and the plugin of the checkout, with an empty PLUS directory, so that no installed copy shadows them. They compare the statistics, change statistics and pseudolikelihood fits with reference values of \ergm{}, the sampler with exact enumeration, and the Monte Carlo fits with runs of \ergm{} (Chapter~\ref{ch:validation}).

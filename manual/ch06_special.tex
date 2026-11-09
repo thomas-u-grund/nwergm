@@ -53,7 +53,7 @@ Operator & What it does\\
 \end{longtable}
 \normalsize
 
-\paragraph{Remarks.} The operators work with the pseudolikelihood, with Monte Carlo maximum likelihood, with \texttt{nwergm simulate} from a fit and with \texttt{estat gof}. They cannot be combined with \opt{constraints()}, \opt{obsconstraints()}, \opt{freedyads()}, \opt{blockdiag()} or \opt{fixdensity}, and a curved term cannot be used inside an operator. Dyadic covariates (\opt{edgecov()}, \opt{dyadcov()}, \ldots) cannot be used inside \texttt{S()} or \texttt{Project()}, which change the set of nodes. For \texttt{Symmetrize()} with \texttt{rule(weak)} on a network with reciprocated ties, the pseudolikelihood is formed from the exact change statistics of the symmetrized network, which is not what \ergm{}~\ergmver{} does (Section~\ref{sec:quirks}).
+\paragraph{Remarks.} The operators work with the pseudolikelihood, with Monte Carlo maximum likelihood, with \texttt{nwergm simulate} from a fit and with \texttt{estat gof}. They cannot be combined with \opt{constraints()}, \opt{obsconstraints()}, \opt{freedyads()}, \opt{blockdiag()} or \opt{fixdensity}, and a curved term cannot be used inside an operator. Dyadic covariates (\opt{edgecov()}, \opt{dyadcov()}, \ldots) cannot be used inside \texttt{S()} or \texttt{Project()}, which change the set of nodes. For \texttt{Symmetrize()} with \texttt{rule(weak)} on a network with reciprocated ties, the pseudolikelihood is formed from the exact change statistics of the symmetrized network, which is not what \ergm{}~\ergmver{} does (Appendix~\ref{app:quirks}).
 
 \section{Offsets: fixed coefficients}\label{sec:offset}
 
