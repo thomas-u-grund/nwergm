@@ -21,5 +21,6 @@ The software was developed with Claude Code (Anthropic), an AI coding assistant,
 
 ## How to cite
 
-Grund, T. U. (2026). nwergm: a Stata package (version 1.5.9). GitHub. https://github.com/thomas-u-grund/nwergm
+Grund, T. U. (2026). nwergm: Exponential random graph models in Stata. Manual. Zenodo. https://doi.org/10.5281/zenodo.23661331
+The DOI is the one of all versions of the manual. Please also report the exact version of the package that produced your results, as printed by `nwergm version` (for example nwergm 1.5.9).
 Please also cite the core package (Grund, T. U., nwcommands) and the work this package is derived from (see above).
