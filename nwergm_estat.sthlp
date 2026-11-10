@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.5.7  09nov2026 author: Thomas Grund}{...}
+{* *! version 1.5.8  10nov2026 author: Thomas Grund}{...}
 
 {title:Title}
 
@@ -137,8 +137,7 @@ before treating a single {cmd:estat gof} run's Simulated column as a stable esti
 distribution - not just their means - across the {opt nsim()} simulated draws, each as its own
 panel: a whisker (minimum-maximum), a box (interquartile range), and a median marker summarize
 the simulated draws at each value, with the observed network's own proportion overlaid as a
-connected line (dashed, triangle markers - distinguished from the median by shape and line
-pattern rather than color, so the figure stays legible printed in black and white). This is an
+connected red line with circle markers, as in {cmd:nwsaom}'s goodness-of-fit plots. This is an
 analogous comparison to Statnet's {cmd:plot(gof())} (via R's {cmd:boxplot()} rather than these
 {cmd:graph twoway} primitives), restricted to the two dimensions {cmd:estat gof} already
 computes a mean for - it does not add an edgewise shared-partner panel, the third dimension
@@ -198,4 +197,4 @@ goodness of fit:
 	{help nwergm}
 
 {hline}
-{pstd}{it:nwergm version 1.5.7, 9 November 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.5.8, 10 November 2026}{p_end}{* nwversion}

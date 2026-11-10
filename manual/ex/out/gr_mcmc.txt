@@ -26,5 +26,4 @@ mcmcsamplesize() or mcmcinterval().
 . graph display mcmcdiag, xsize(6.5) ysize(7.5)
 
 . graph export "../fig/mcmcdiag.pdf", name(mcmcdiag) replace
-file ../fig/mcmcdiag.pdf saved as PDF
-    format
+file ../fig/mcmcdiag.pdf saved as PDF format

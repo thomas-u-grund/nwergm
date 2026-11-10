@@ -1,4 +1,4 @@
-*! version 1.5.7  09nov2026 _nwergm_gofplot.ado -- one panel of the estat gof plot
+*! version 1.5.8  10nov2026 _nwergm_gofplot.ado -- one panel of the estat gof plot
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -33,16 +33,13 @@ program define _nwergm_gofplot
 	}
 	local xlabopt `"`xlabopt' `__lastval' "`lastlabel'""'
 
-	// Grayscale by design, not merely by accident of the default scheme:
-	// the Stata Journal requires figures to remain legible in black and
-	// white, so the observed-network line is distinguished from the
-	// median marker by shape (triangle vs. diamond) and line pattern
-	// (dashed vs. solid), not by color - color is not a legend the
-	// figure is allowed to depend on.
+	// The observed network is a red line with circles, as in the gof plots of
+	// nwsaom (and RSiena's plot.sienaGOF); in black and white it stays apart
+	// from the grey boxes and the black median diamonds by its markers.
 	twoway (rcap ymin ymax xval, lcolor(gs10)) ///
 		(rbar yp25 yp75 xval, barwidth(0.5) fcolor(gs14) lcolor(gs8)) ///
 		(scatter ymedian xval, mcolor(black) msymbol(diamond)) ///
-		(connected observed xval, lcolor(black) lpattern(dash) mcolor(black) msymbol(triangle)), ///
+		(connected observed xval, lcolor(red) mcolor(red) msymbol(circle) lwidth(medthin)), ///
 		xlabel(`xlabopt', angle(45) labsize(vsmall)) ///
 		xtitle("`xlabel'") ytitle("Proportion") ///
 		title("`xlabel'", size(small)) legend(off) nodraw name(`graphname', replace)

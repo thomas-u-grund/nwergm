@@ -3,6 +3,11 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [1.5.8] - 2026-11-10
+
+### Changed
+- **`estat gof, plot` draws the observed distribution as a red line with circle markers**, as in nwsaom's goodness-of-fit plots, instead of a dashed black line with triangle markers. The simulated draws are shown as before (whisker, box and median). Results are unchanged.
+
 ## [1.5.7] - 2026-11-09
 
 ### Fixed
