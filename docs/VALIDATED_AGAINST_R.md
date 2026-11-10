@@ -56,7 +56,7 @@ Each line: feature | status | syntax | validation (taken from the development lo
 * tripercent | IMPLEMENTED | structural(tripercent) | summary() max |diff| 4e-14 on 4 nets; MPLE coef diff 4e-09, SE diff 1e-06 (3 nets)
 * tripercent(attr) | IMPLEMENTED | structural(tripercent(attr=a)) | summary() max |diff| 2e-07 on 4 nets; MPLE coef diff 2e-08, SE diff 2e-05 (2 nets)
 * tripercent(diff) | IMPLEMENTED | structural(tripercent(attr=a diff)) | summary() max |diff| 4e-14 on 4 nets; MPLE coef diff 2e-08, SE diff 3e-05 (1 nets)
-* opentriad | IMPLEMENTED | structural(opentriad) | summary() max |diff| 0e+00 on 4 nets; MPLE coef diff 2e+00, SE diff 1e-01 (1 nets)
+* opentriad | IMPLEMENTED | structural(opentriad) | summary() max |diff| 0e+00 on 4 nets; MPLE equal to ergm 4.13.0-8255 (statnet/ergm#666) in every printed digit
 * threetrail | IMPLEMENTED | structural(threetrail (4 types for directed)) | summary() max |diff| 0e+00 on 8 nets; MPLE coef diff 7e-08, SE diff 7e-05 (8 nets)
 * nearsimmelian | IMPLEMENTED | structural(nearsimmelian) | summary() max |diff| 0e+00 on 4 nets; MPLE coef diff 2e-11, SE diff 1e-08 (2 nets)
 * simmelian | IMPLEMENTED | structural(simmelian) | summary() max |diff| 0e+00 on 4 nets; MPLE coef diff 5e-09, SE diff 3e-06 (1 nets)
@@ -97,8 +97,7 @@ Each line: feature | status | syntax | validation (taken from the development lo
 * levels= argument (all terms taking attr/by), keep= of asymmetric/mutual/threetrail(keep is implemented for threetrail only) | not implemented: all attribute levels are used; keep is accepted only by threetrail
 * cyclicalties/transitiveties attr=, hamming cov=/attrname=, gwdegree attr=: untouched (other categories)
 * # QUIRKS / GOTCHAS
-* opentriad: in ergm 4.12.0 c_opentriad stores the 2-star part of the change in an unsigned `Edge` and negates it when a tie is removed (`-change` on unsigned = ~4.29e9 - change).  summary() is right (only additions),
-* but every MPLE design row of a tied dyad and every MCMC proposal that removes a tie is garbage (ergmMPLE() shows min -4.3e9; the MPLE coefficient of opentriad comes out 0 with SE ~1e-7).  nwergm uses the correct change statistic, so its MPLE/MCMLE differ from R 4.12.0 for this term (statistic equal).
+* opentriad: the signedness bug of c_opentriad in ergm 4.12.0 was reported as statnet/ergm#666 and fixed in ergm 4.13.0-8255 (commit 12e606d, 10 Nov 2026).  With that version the change statistics equal the differences of summary() on all 66 dyads of the 12-node test network, and the MPLE equals nwergm's (edges -1.901886, opentriad .2923868, SE .1474668) in every printed digit.
 * triangle on a directed network (R cpp_changestats.cpp): neighbors(head) visits a node that is both in- and out-neighbour twice, and the change adds nw(k,tail)+nw(tail,k): copied exactly (statistic and MPLE equal R).
 * degcrossprod/degcor: scaled with quantities of the OBSERVED network at model creation (2*edges; observed degree variance): copied; hence not available in `nwergm simulate` (error message). degcor: summary statistic is the true degree correlation, the change statistic is R's approximation (copied).
 * tripercent: R uses float (single precision) ratios in the change statistic: copied with float casts; observed statistic is the sum of single-step changes along a build-up like R's (equal to R to 2e-7).

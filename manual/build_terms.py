@@ -128,7 +128,6 @@ REMARK = {
     "gwodegree": "Directed networks only. Fixed decay gwodegree(), curved gwodegreefree().",
     "gwb1dsp": "Fixed decay bgwdsp1(), curved bgwdspfree1().", "gwb2dsp": "Fixed decay bgwdsp2(), curved bgwdspfree2().",
     "gwb1degree": "Fixed decay bgwdegree1(), curved bgwdegreefree1().", "gwb2degree": "Fixed decay bgwdegree2(), curved bgwdegreefree2().",
-    "opentriad": "nwergm computes the change statistics as the differences of the observed statistic; those of ergm 4.12.0 do not always equal them, so the estimates differ although summary() is the same (see the appendix on differences from ergm).",
 }
 FORCE_DEP = {"cycle": "DD", "gwb1dsp": "DD", "gwb2dsp": "DD"}  # the inventory records R's answer for an example call; these terms are dyad-dependent
 
@@ -172,7 +171,7 @@ def validation(x):
         so, mc = EXTRA[t]
         return "statistic equals R's%s; MPLE to %s (compared for this manual)" % (" (to %s)" % pw(so) if so >= 1e-9 else "", pw(max(mc, 1e-12)))
     if x["nwergm_status"] not in ("IMPLEMENTED", "PARTIAL"): return ""
-    if t == "opentriad": return "statistic equals R's; estimation deliberately differs (see remark)"
+    if t == "opentriad": return "statistic equals R's; MPLE equals that of ergm 4.13.0-8255 (development version)"
     if t == "localtriangle": return "statistic equals R's on two networks"
     if t == "Curve": return "statistics, MPLE (to $10^{-9}$), MCMLE"
     if v.startswith("yes | R ergm 4.12.0: observed statistics (summary), MPLE"): return "statistics, MPLE and MCMLE (several models)"

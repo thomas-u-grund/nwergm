@@ -48,10 +48,10 @@ Both kinds of network: {cmd:density}, {cmd:meandeg}, {cmd:twopath}, {cmd:isolate
 {title:Remarks}
 
 {pstd}
-Statistics, maximum pseudolikelihood estimates and maximum likelihood estimates are checked against R's ergm 4.12.0.
-Three points where the result is not simply R's: (1) {cmd:opentriad}: {cmd:nwergm} computes the change statistics as the differences of the observed statistic; in ergm 4.12.0 the change
-statistics used in estimation do not always equal these differences, so the estimates for this term differ, although the observed statistic is the same. (2) {cmd:degcor} and {cmd:degcrossprod} are scaled by quantities of the observed network, as in R,
-and are therefore not available in {cmd:nwergm simulate}. (3) {cmd:altkstar} without {cmd:fixed} is R's default, the curved form with an estimated {cmd:lambda}: it is estimated by {cmd:method(mple)} with starting values given by {cmd:init(}{it:edges weight lambda}{cmd:)}, as R needs them
+Statistics, maximum pseudolikelihood estimates and maximum likelihood estimates are checked against R's ergm 4.12.0
+(for {cmd:opentriad}, against the development version 4.13.0-8255 of 10 November 2026).
+Two points where the result is not simply R's: (1) {cmd:degcor} and {cmd:degcrossprod} are scaled by quantities of the observed network, as in R,
+and are therefore not available in {cmd:nwergm simulate}. (2) {cmd:altkstar} without {cmd:fixed} is R's default, the curved form with an estimated {cmd:lambda}: it is estimated by {cmd:method(mple)} with starting values given by {cmd:init(}{it:edges weight lambda}{cmd:)}, as R needs them
 to fit this term, and has the coefficients {cmd:altkstar} and {cmd:altkstar_lambda}; {cmd:altkstar(lambda=}{it:#} {cmd:fixed)} is the fixed form.
 
 {pstd}

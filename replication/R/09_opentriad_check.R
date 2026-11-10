@@ -1,6 +1,10 @@
 # opentriad: compare the change statistics that ergm uses in estimation with the
-# differences of ergm's own summary statistic (g(y with tie ij) - g(y without tie ij)).
-# Needs R 4.6.0 and ergm 4.12.0 (00_install.R). Run: Rscript 09_opentriad_check.R
+# differences of ergm's own summary statistic (g(y with tie ij) - g(y without tie ij)),
+# and fit edges + opentriad by pseudolikelihood. Run with an ergm development version that
+# contains commit 12e606d of 10 November 2026, the fix of statnet/ergm#666 (we used 4.13.0-8255
+# from statnet.r-universe.dev):
+# 0 of 66 dyads differ, and the estimates equal nwergm's (edges -1.901886, opentriad .2923868).
+# Run: Rscript 09_opentriad_check.R
 suppressPackageStartupMessages(library(ergm))
 set.seed(1)
 m <- matrix(0, 12, 12); m[upper.tri(m)] <- rbinom(66, 1, 0.3); m <- m + t(m)
