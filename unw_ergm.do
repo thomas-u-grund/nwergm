@@ -5517,7 +5517,7 @@ real rowvector ergm_gof_deg(real matrix A, real scalar mode){
 	return(out)
 }
 
-// bipartite degree: nodes of mode 1 (rows 1..n1) or mode 2, by the number of ties, 0..max
+// bipartite degree: nodes of mode 1 (rows 1..n1; the caller orders the matrix by mode) or mode 2, by the number of ties, 0..max
 real rowvector ergm_gof_bdeg(real matrix A, real scalar n1, real scalar mode){
 	real colvector d
 	real rowvector out
@@ -5750,6 +5750,12 @@ void ergm_gof_run(class ErgmModel scalar M, class ErgmGraph scalar G, real matri
 	string scalar gname
 	real matrix Sg, Pg, d
 	real rowvector ov
+	real colvector bp
+
+	// bipartite: the degree and shared-partner counts take mode 1 as rows 1..n1 of the matrix. The nodes of a
+	// two-mode network need not be stored in that order (e.g. sorted by name, the modes interleaved), so the
+	// matrices are put into mode-1-then-mode-2 order first (the model statistics and distances do not depend on it)
+	if (n1 > 0) bp = G.mode1nodes \ G.mode2nodes
 
 	// a curved model is posted with its curved coefficients (weight, decay); the sampler needs the natural parameters
 	if (cols(theta) != M.nparam() & cols(theta) == M.ntheta()) theta = M.theta_to_eta(theta)
@@ -5767,10 +5773,10 @@ void ergm_gof_run(class ErgmModel scalar M, class ErgmGraph scalar G, real matri
 			else if (gname == "deg") st = ergm_gof_deg(A, 0)
 			else if (gname == "ideg") st = ergm_gof_deg(A, 1)
 			else if (gname == "odeg") st = ergm_gof_deg(A, 2)
-			else if (gname == "b1deg") st = ergm_gof_bdeg(A, n1, 1)
-			else if (gname == "b2deg") st = ergm_gof_bdeg(A, n1, 2)
+			else if (gname == "b1deg") st = ergm_gof_bdeg(A[bp, bp], n1, 1)
+			else if (gname == "b2deg") st = ergm_gof_bdeg(A[bp, bp], n1, 2)
 			else if (gname == "espart") st = ergm_gof_sp(A, directed, 0)
-			else if (gname == "dspart") st = (n1 > 0 ? ergm_gof_bdsp(A, n1) : ergm_gof_sp(A, directed, 1))
+			else if (gname == "dspart") st = (n1 > 0 ? ergm_gof_bdsp(A[bp, bp], n1) : ergm_gof_sp(A, directed, 1))
 			else if (gname == "dist") st = ergm_gof_dist(A, directed)
 			else st = ergm_gof_triad(A, directed)
 			Sg = asarray(sims, gname)
@@ -5785,10 +5791,10 @@ void ergm_gof_run(class ErgmModel scalar M, class ErgmGraph scalar G, real matri
 		else if (gname == "deg") ov = ergm_gof_deg(Aobs, 0)
 		else if (gname == "ideg") ov = ergm_gof_deg(Aobs, 1)
 		else if (gname == "odeg") ov = ergm_gof_deg(Aobs, 2)
-		else if (gname == "b1deg") ov = ergm_gof_bdeg(Aobs, n1, 1)
-		else if (gname == "b2deg") ov = ergm_gof_bdeg(Aobs, n1, 2)
+		else if (gname == "b1deg") ov = ergm_gof_bdeg(Aobs[bp, bp], n1, 1)
+		else if (gname == "b2deg") ov = ergm_gof_bdeg(Aobs[bp, bp], n1, 2)
 		else if (gname == "espart") ov = ergm_gof_sp(Aobs, directed, 0)
-		else if (gname == "dspart") ov = (n1 > 0 ? ergm_gof_bdsp(Aobs, n1) : ergm_gof_sp(Aobs, directed, 1))
+		else if (gname == "dspart") ov = (n1 > 0 ? ergm_gof_bdsp(Aobs[bp, bp], n1) : ergm_gof_sp(Aobs, directed, 1))
 		else if (gname == "dist") ov = ergm_gof_dist(Aobs, directed)
 		else ov = ergm_gof_triad(Aobs, directed)
 		Sg = asarray(sims, gname)

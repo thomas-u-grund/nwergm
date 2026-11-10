@@ -43,4 +43,33 @@ forvalues i = 1/11 {
 * the one-mode only statistics are still refused on a two-mode fit
 capture estat gof, gof(degree)
 assert _rc == 198
+* Nodes of a two-mode network stored with the modes interleaved (davis: nodes sorted by name, women and events
+* mixed). The degree and shared-partner counts of estat gof took the first n1 nodes as mode 1 (nwergm 1.5.8 and
+* earlier), which gave 4 "isolated" women and degree sums of 72 instead of 89. Each mode's degree sum must be the
+* number of ties; the women's and events' degrees are those of Davis, Gardner and Gardner (1941).
+nwclear
+nwwebuse davis, nwclear
+qui nwergm davis, edges
+estat gof, nsim(20) seed(1)
+foreach t in b1degree b2degree dspartners {
+	matrix G = r(gof_`t')
+	local s = 0
+	local c = 0
+	forvalues i = 1/`=rowsof(G)' {
+		local s = `s' + (`i' - 1) * G[`i', 1]
+		local c = `c' + G[`i', 1]
+	}
+	local s_`t' = `s'
+	local c_`t' = `c'
+}
+assert `c_b1degree' == 18 & `s_b1degree' == 89 & r(gof_b1degree)[1, 1] == 0
+assert `c_b2degree' == 14 & `s_b2degree' == 89
+* every pair of nodes of the same mode once: C(18,2) + C(14,2)
+assert `c_dspartners' == 153 + 91
+* women's degrees (Davis): 2 2 2 3 4 4 4 4 4 4 5 6 7 7 7 8 8 8
+local want "0 0 3 1 6 1 1 3 3"
+forvalues i = 1/9 {
+	local w : word `i' of `want'
+	assert r(gof_b1degree)[`i', 1] == `w'
+}
 di "PASS test_nwergm_gofbip"

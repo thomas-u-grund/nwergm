@@ -3,6 +3,11 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [1.5.9] - 2026-11-10
+
+### Fixed
+- **`estat gof` after a two-mode fit counts the degrees and shared partners of each mode correctly when the modes are interleaved.** The degree distributions of the two modes and the dyadwise shared partners took the first n1 nodes of the network as the first mode. When the nodes are stored in another order (as in the Davis data shipped with nwcommands, where women and events are sorted by name together), nodes of the wrong mode were counted: for Davis the degree sums of both modes were 72 instead of 89, with four women shown as isolates. The counts now follow the mode of each node. Model statistics, geodesic distances, estimates and one-mode networks were not affected. A test with the Davis data checks the counts.
+
 ## [1.5.8] - 2026-11-10
 
 ### Changed
