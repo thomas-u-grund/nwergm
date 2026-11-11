@@ -1,4 +1,4 @@
-*! version 1.5.9  10nov2026 nwergm_p: predict after nwergm (R: predict.ergm, conditional tie probabilities)
+*! version 1.5.10  11nov2026 nwergm_p: predict after nwergm (R: predict.ergm, conditional tie probabilities)
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -12,7 +12,7 @@ program nwergm_p
 	syntax [anything] [if] [in] [, PR XB MATrix(name) FRame(name)]
 	capture confirm number 0
 	if "`matrix'" == "" & "`frame'" == "" {
-		di as err "predict after nwergm needs matrix(name) or frame(name): the predictions are dyadic (one per dyad)"
+		di as err "{p 0 0 2}predict after nwergm needs matrix(name) or frame(name): the predictions are dyadic (one per dyad){p_end}"
 		exit 198
 	}
 	if "`pr'`xb'" == "" local pr pr
@@ -53,7 +53,7 @@ program nwergm_p
 	if "`pr'" != "" mata: `P'[., 3] = 1 :/ (1 :+ exp(-`P'[., 3]))
 	if "`matrix'" != "" {
 		mata: st_matrix("`matrix'", ergm_predict_matrix(`P', `nodes', ("`directed'"=="true"), `MM'))
-		di as txt "(matrix `matrix' contains the " cond("`pr'" != "", "conditional tie probabilities", "conditional log-odds") "; missing dyads are .)"
+		di as txt "{p 0 0 2}(matrix `matrix' contains the " cond("`pr'" != "", "conditional tie probabilities", "conditional log-odds") "; missing dyads are .){p_end}"
 	}
 	if "`frame'" != "" {
 		mata: st_local("nrowsP", strofreal(rows(`P'), "%18.0g"))
@@ -61,7 +61,7 @@ program nwergm_p
 		frame create `frame' double(tail head p)
 		frame `frame': qui set obs `nrowsP'
 		frame `frame': mata: st_store(., ("tail","head","p"), `P')
-		di as txt "(frame `frame' contains one row per informative dyad: tail, head, " cond("`pr'" != "", "p = conditional tie probability", "p = conditional log-odds") ")"
+		di as txt "{p 0 0 2}(frame `frame' contains one row per informative dyad: tail, head, " cond("`pr'" != "", "p = conditional tie probability", "p = conditional log-odds") "){p_end}"
 	}
 	mata: mata drop `G' `P' `MM'
 end

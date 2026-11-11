@@ -1,4 +1,4 @@
-*! version 1.5.9  10nov2026 _nwergm_constr: parse nwergm's constraints() / obsconstraints() formula (R ergm's sample-space constraints)
+*! version 1.5.10  11nov2026 _nwergm_constr: parse nwergm's constraints() / obsconstraints() formula (R ergm's sample-space constraints)
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -33,7 +33,7 @@ program _nwergm_constr
 				if `"`__cb`k''"' != "" {
 					_nwsyntax `__cb`k'', max(1) other(cb)
 					if `cbnodes' != `nodes' {
-						di "{txt}Warning: network size of argument {bf:`__cb`k''} differs from that of the response network."
+						di "{p 0 0 2}{txt}Warning: network size of argument {bf:`__cb`k''} differs from that of the response network.{p_end}"
 					}
 					mata: __ncon_net`k' = *(`cbnetobj'->get_matrix_mod(0,`dir'))
 				}
@@ -43,7 +43,7 @@ program _nwergm_constr
 	}
 	mata: _ergm_con_finish("`weights'")
 	if `"`__con_err'"' != "" {
-		di as err `"`__con_err'"'
+		di as err `"{p 0 0 2}`__con_err'{p_end}"'
 		error 198
 	}
 	foreach v in code dind implies maxonly hasdyad hasbd observed {

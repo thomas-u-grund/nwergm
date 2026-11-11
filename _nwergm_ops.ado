@@ -1,4 +1,4 @@
-*! version 1.5.9  10nov2026 _nwergm_ops: the operator terms of R's ergm (Sum, Prod, S, F, NodematchFilter, Symmetrize, Project, I, For, Label) for nwergm's operators() option
+*! version 1.5.10  11nov2026 _nwergm_ops: the operator terms of R's ergm (Sum, Prod, S, F, NodematchFilter, Symmetrize, Project, I, For, Label) for nwergm's operators() option
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -37,7 +37,7 @@ program _nwergm_ops, rclass
 		}
 		else {
 			mata: mata drop __ops_calls`d'
-			di "{err}operators(): unknown operator {bf:`opname'}; the operators are Sum, Prod, S, F, NodematchFilter, Symmetrize, Project, Proj1, Proj2, I, For, Label, Log, Exp, Offset and Curve."
+			di "{p 0 0 2}{err}operators(): unknown operator {bf:`opname'}; the operators are Sum, Prod, S, F, NodematchFilter, Symmetrize, Project, Proj1, Proj2, I, For, Label, Log, Exp, Offset and Curve.{p_end}"
 			error 198
 		}
 		local ne = r(nebase)
@@ -214,7 +214,7 @@ program _nwergm_ops_derived, rclass
 		mata: st_local("filter", __flt)
 		mata: st_local("hasf", strofreal(__ok))
 		if "`bad'" != "" | !`hasf' {
-			di "{err}F(): the syntax is F(terms, filter(term)), for example F(triangle, filter(nodematch(sex)))."
+			di "{p 0 0 2}{err}F(): the syntax is F(terms, filter(term)), for example F(triangle, filter(nodematch(sex))).{p_end}"
 			error 198
 		}
 		// a leading ! or a trailing comparison with a number selects the filter's comparison, as in R
@@ -239,7 +239,7 @@ program _nwergm_ops_derived, rclass
 		local fname "`r(name)'"
 		mata: st_local("e0", strofreal(ergm_ops_emptystat(`fname', __nwergm_last_G)[1]))
 		if `e0' != 0 {
-			di "{err}F(): the filter term must have the property that its dyadwise components are 0 for 0-valued relations."
+			di "{p 0 0 2}{err}F(): the filter term must have the property that its dyadwise components are 0 for 0-valued relations.{p_end}"
 			error 198
 		}
 		mata: `td'.opkind = "filter"
@@ -261,13 +261,13 @@ program _nwergm_ops_derived, rclass
 			confirm variable `v'
 			capture confirm numeric variable `v'
 			if _rc {
-				di "{err}{bf:NodematchFilter(`v')}: {bf:`v'} is a string variable; nwergm needs a numeric attribute."
+				di "{p 0 0 2}{err}{bf:NodematchFilter(`v')}: {bf:`v'} is a string variable; nwergm needs a numeric attribute.{p_end}"
 				di "{err}Encode it first, e.g. {bf:encode `v', generate(`v'_n)}."
 				error 109
 			}
 			mata: st_local("nmiss", strofreal(missing(st_data(1::__nwergm_last_G.n, "`v'"))))
 			if `nmiss' > 0 {
-				di "{err}In term {bf:NodematchFilter}: attribute {bf:`v'} has missing data, which is not currently supported by ergm."
+				di "{p 0 0 2}{err}In term {bf:NodematchFilter}: attribute {bf:`v'} has missing data, which is not currently supported by ergm.{p_end}"
 				error 416
 			}
 		}
@@ -318,7 +318,7 @@ program _nwergm_ops_derived, rclass
 		mata: st_local("attrs", __at)
 		mata: st_local("hasa", strofreal(__ok))
 		if "`bad'" != "" | !`hasa' {
-			di "{err}S(): the syntax is S(terms, attrs(varname or condition)), for example S(triangle, attrs(sex==1))."
+			di "{p 0 0 2}{err}S(): the syntax is S(terms, attrs(varname or condition)), for example S(triangle, attrs(sex==1)).{p_end}"
 			error 198
 		}
 		if "`twomode'" == "true" {
@@ -354,7 +354,7 @@ program _nwergm_ops_derived, rclass
 		mata: st_local("mode", __md)
 		mata: st_local("hasm", strofreal(__ok))
 		if "`bad'" != "" {
-			di "{err}Project(): the syntax is Project(terms, mode(1|2)); Proj1(terms) and Proj2(terms) are the short forms."
+			di "{p 0 0 2}{err}Project(): the syntax is Project(terms, mode(1|2)); Proj1(terms) and Proj2(terms) are the short forms.{p_end}"
 			error 198
 		}
 		if "`kind'" == "proj1" local mode 1
@@ -386,7 +386,7 @@ program _nwergm_ops_derived, rclass
 	if inlist("`kind'", "s", "project", "proj1", "proj2") {
 		foreach dc in edgecov hamming dyadcov attrcov {
 			if strpos(lower(`"`first'"'), "`dc'(") > 0 {
-				di "{err}`=upper(substr("`kind'", 1, 1))'`=substr("`kind'", 2, .)'(): the dyadic covariate term {bf:`dc'()} cannot be used where the set of nodes changes."
+				di "{p 0 0 2}{err}`=upper(substr("`kind'", 1, 1))'`=substr("`kind'", 2, .)'(): the dyadic covariate term {bf:`dc'()} cannot be used where the set of nodes changes.{p_end}"
 				error 198
 			}
 		}
@@ -471,7 +471,7 @@ program _nwergm_ops_inline, rclass
 		if "`o4'" != "" local which "`o4'"
 		if "`kind'" == "label" {
 			if !`haslab' {
-				di "{err}Label(): the syntax is Label(terms, label(string) [pos(prepend|replace|append|paren)])."
+				di "{p 0 0 2}{err}Label(): the syntax is Label(terms, label(string) [pos(prepend|replace|append|paren)]).{p_end}"
 				error 198
 			}
 			if "`pos'" == "" local pos "paren"
@@ -526,7 +526,7 @@ program _nwergm_ops_curve, rclass
 	mata: __ok = 0
 	mata: st_local("map", ergm_ops_getopt(st_local("opts"), "map", __ok))
 	if "`bad'" != "" | "`params'" == "" | "`map'" == "" {
-		di "{err}Curve(): the syntax is Curve(terms, params(names) map(rep)) or map(matrix(name)); R's other arguments (gradient, minpar, maxpar, cov) and map functions are not available."
+		di "{p 0 0 2}{err}Curve(): the syntax is Curve(terms, params(names) map(rep)) or map(matrix(name)); R's other arguments (gradient, minpar, maxpar, cov) and map functions are not available.{p_end}"
 		error 198
 	}
 	_nwergm_opsub `netname', terms(`terms') nodes(.) directed(.) twomode(.) nebase(`ne') type(`type')

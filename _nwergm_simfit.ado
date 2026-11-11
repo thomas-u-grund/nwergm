@@ -1,4 +1,4 @@
-*! version 1.5.9  10nov2026 _nwergm_simfit.ado -- nwergm simulate from the last fit (R: simulate.ergm)
+*! version 1.5.10  11nov2026 _nwergm_simfit.ado -- nwergm simulate from the last fit (R: simulate.ergm)
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -73,7 +73,7 @@ program _nwergm_simfit, rclass
 			exit 498
 		}
 		if `nodes' != e(nodes) | ("`directed'"=="true") != `dir' {
-			di as err "basis(): network `basis' must have the nodes and directedness of the fitted network."
+			di as err "{p 0 0 2}basis(): network `basis' must have the nodes and directedness of the fitted network.{p_end}"
 			exit 498
 		}
 		tempname bG
@@ -151,7 +151,7 @@ program _nwergm_simfit, rclass
 			else nwset, mat(`M1') `=cond(`dir',"directed","undirected")' name(`nm') nooutput `__lb'
 			restore
 		}
-		di as txt "(`nsim' simulated network(s) created: `generate'" cond(`nsim' > 1, "_1 ... `generate'_`nsim'", "") ")"
+		di as txt "{p 0 0 2}(`nsim' simulated network(s) created: `generate'" cond(`nsim' > 1, "_1 ... `generate'_`nsim'", "") "){p_end}"
 	}
 	else if "`output'" == "edgelist" {
 		tempname EL

@@ -1,4 +1,4 @@
-*! version 1.5.9  10nov2026 _nwergm_hints: validate nwergm's mcmcprop() (R ergm's control MCMC.prop hint formula)
+*! version 1.5.10  11nov2026 _nwergm_hints: validate nwergm's mcmcprop() (R ergm's control MCMC.prop hint formula)
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -57,7 +57,7 @@ program _nwergm_hints
 				}
 				else if "`key'" == "type" {
 					if !inlist(upper("`val'"), "OTP", "UTP") {
-						di as err "triadic(): nwergm implements the triadic proposal for shared partners of type OTP (the default; UTP on an undirected network) only."
+						di as err "{p 0 0 2}triadic(): nwergm implements the triadic proposal for shared partners of type OTP (the default; UTP on an undirected network) only.{p_end}"
 						error 198
 					}
 				}
@@ -69,7 +69,7 @@ program _nwergm_hints
 		}
 	}
 	if "`unmet'" != "" {
-		di "{txt}Best valid proposal '`=cond(`focus' >= 0, "SPDyad", "TNT")'' cannot take into account hint(s)`unmet'."
+		di "{p 0 0 2}{txt}Best valid proposal '`=cond(`focus' >= 0, "SPDyad", "TNT")'' cannot take into account hint(s)`unmet'.{p_end}"
 	}
 	c_local __spdfocus `focus'
 	c_local __spdstrict `strict'

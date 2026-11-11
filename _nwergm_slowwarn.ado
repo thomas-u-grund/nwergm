@@ -1,4 +1,4 @@
-*! version 1.5.9  10nov2026 _nwergm_slowwarn: warning line before a long run on the Mata fallback sampler
+*! version 1.5.10  11nov2026 _nwergm_slowwarn: warning line before a long run on the Mata fallback sampler
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -19,5 +19,5 @@ program _nwergm_slowwarn
 		if _rc local why "the plugin file ergm_mcmc_`os'.plugin was not found; reinstall the package with {bf:net install nwergm, replace}"
 		else local why "the model is outside the capacity of the plugin"
 	}
-	di as txt "(Warning: the compiled plugin is not used for `what' (`why'); the Mata fallback is much slower, possibly minutes to hours. See {help nwergm##native:Performance}. If the plugin of your platform does not work, compile it on this computer: {cmd:nwinstall, buildplugin(nwergm)}.)"
+	di as txt "{p 0 0 2}(Warning: the compiled plugin is not used for `what' (`why'); the Mata fallback is much slower, possibly minutes to hours. See {help nwergm##native:Performance}. If the plugin of your platform does not work, compile it on this computer: {cmd:nwinstall, buildplugin(nwergm)}.){p_end}"
 end

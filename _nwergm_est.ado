@@ -1,4 +1,4 @@
-*! version 1.5.9  10nov2026 _nwergm_est.ado -- estimation-method helpers for nwergm (MPLE variants, starting values, control options)
+*! version 1.5.10  11nov2026 _nwergm_est.ado -- estimation-method helpers for nwergm (MPLE variants, starting values, control options)
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -64,7 +64,7 @@ program _nwergm_est_init, rclass
 	local n : word count `init'
 	mata: st_local("p", strofreal(__nwergm_last_M.nparam()))
 	if `n' != `p' {
-		di "{err}option {bf:init()} needs one value per coefficient (`p' here, `n' given); use . or NA for a value to be estimated."
+		di "{p 0 0 2}{err}option {bf:init()} needs one value per coefficient (`p' here, `n' given); use . or NA for a value to be estimated.{p_end}"
 		exit 198
 	}
 	mata: __e7_init = J(1, `p', .)
@@ -74,7 +74,7 @@ program _nwergm_est_init, rclass
 		if inlist(upper("`tok'"), "NA", ".") continue
 		capture confirm number `tok'
 		if _rc {
-			di "{err}option {bf:init()}: `tok' is not a number (use . or NA for a value to be estimated)."
+			di "{p 0 0 2}{err}option {bf:init()}: `tok' is not a number (use . or NA for a value to be estimated).{p_end}"
 			exit 198
 		}
 		mata: __e7_init[`k'] = `tok'
@@ -150,7 +150,7 @@ program _nwergm_est_ctl
 		exit 198
 	}
 	if `tcode' == 2 & (`margin' >= . | `steplength' != 1) {
-		di "{err}Hummel termination requires a non-missing {bf:mcmlestepmargin()} and {bf:mcmlesteplength(1)}."
+		di "{p 0 0 2}{err}Hummel termination requires a non-missing {bf:mcmlestepmargin()} and {bf:mcmlesteplength(1)}.{p_end}"
 		exit 198
 	}
 	// R: MCMLE.effectiveSize = 64 by default (adaptive sample size); 0 = fixed-size samples (R: NULL)
@@ -187,7 +187,7 @@ program _nwergm_est_mplecov
 		else local pf "&ergm_propose_uniform_masked()"
 	}
 	if "`proposal'" == "spdyad" local pf "&ergm_propose_spdyad()"
-	di as txt "(estimating the " cond("`kind'" == "godambe", "Godambe", "bootstrap") " covariance from 500 simulated networks)"
+	di as txt "{p 0 0 2}(estimating the " cond("`kind'" == "godambe", "Godambe", "bootstrap") " covariance from 500 simulated networks){p_end}"
 	mata: __e7_fi = __nwergm_last_M.freeidx()
 	mata: __e7_V = st_matrix("`vmat'")
 	mata: __e7_C = ergm_mple_cov(__nwergm_last_M, __nwergm_last_G, st_matrix("`bmat'"), __e7_V[__e7_fi, __e7_fi], ("`kind'" == "godambe" ? 1 : 2), 500, 1024, 1024, `pf')

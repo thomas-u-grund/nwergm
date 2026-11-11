@@ -3,6 +3,11 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [1.5.10] - 2026-11-11
+
+### Fixed
+- **Long notes, warnings and messages wrap at word boundaries instead of being cut in the middle of a word.** Stata breaks a displayed line that is longer than the line size at exactly that column (for example "(plot saved as gof; box and whiskers summarize the simulated draws, the dashed l" / "> ine is the observed network)"); these messages are now SMCL paragraphs, which wrap between words. The wording is unchanged; tables are not affected. Messages printed by the Mata library (for example the MCMLE warning "statistic(s) at column(s) ... not varying this iteration") are not yet changed. Results do not change. Tested in `cscripts/test_nwergm_msgwrap.do` at line size 80.
+
 ## [1.5.9] - 2026-11-10
 
 ### Fixed

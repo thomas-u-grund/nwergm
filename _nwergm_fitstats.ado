@@ -1,4 +1,4 @@
-*! version 1.5.9  10nov2026 _nwergm_fitstats: log-likelihood, deviance, AIC/BIC of an nwergm fit (R: logLik.ergm, summary.ergm)
+*! version 1.5.10  11nov2026 _nwergm_fitstats: log-likelihood, deviance, AIC/BIC of an nwergm fit (R: logLik.ergm, summary.ergm)
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -33,7 +33,7 @@ program _nwergm_fitstats, eclass
 			local bridgeinterval = max(1, ceil(`bi'/`bridgesteps'))
 		}
 		local between = max(ceil(`mcmcburnin'/sqrt(`bridgesteps')), `mcmcinterval'*16)
-		di as txt "Evaluating log-likelihood at the estimate (bridge sampling with `bridgesteps' bridges) ..."
+		di as txt "{p 0 0 2}Evaluating log-likelihood at the estimate (bridge sampling with `bridgesteps' bridges) ...{p_end}"
 		if "`sparse'" != "" mata: __ergm_fs_d = ergm_sp_dind(__nwergm_last_M, `dmat')
 		else if "`dcomp'" != "" mata: __ergm_fs_d = ergm_dind_submodel_c(__nwergm_last_M, `dcomp')
 		else mata: __ergm_fs_d = ergm_dind_submodel(__nwergm_last_M, `dmat')

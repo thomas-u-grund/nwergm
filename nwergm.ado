@@ -1,4 +1,4 @@
-*! version 1.5.9  10nov2026 nwergm
+*! version 1.5.10  11nov2026 nwergm
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -116,11 +116,11 @@ program nwergm, eclass
 	// but at least one OTHER term is required, checked below).
 	if "`fixdensity'" != "" {
 		if "`freedyads'" != "" | "`blockdiag'" != "" {
-			di "{err}fixdensity cannot currently be combined with freedyads()/blockdiag() - v1 supports one dyad-space constraint at a time."
+			di "{p 0 0 2}{err}fixdensity cannot currently be combined with freedyads()/blockdiag() - v1 supports one dyad-space constraint at a time.{p_end}"
 			error 198
 		}
 		if "`method'" != "" & "`method'" != "mcmle" {
-			di "{err}fixdensity requires {bf:method(mcmle)} - a fixed-density fit cannot be a plain MPLE (that never runs MCMC at all, so there is no proposal for the constraint to restrict)."
+			di "{p 0 0 2}{err}fixdensity requires {bf:method(mcmle)} - a fixed-density fit cannot be a plain MPLE (that never runs MCMC at all, so there is no proposal for the constraint to restrict).{p_end}"
 			error 198
 		}
 		local method "mcmle"
@@ -147,7 +147,7 @@ program nwergm, eclass
 	if !`__sub' | "`3'" == "." _nwrowalign `netname'
 	_nwsyntax `netname', max(1)
 	if `"`operators'"' != "" & (`"`constraints'`obsconstraints'"' != "" | "`freedyads'`blockdiag'`fixdensity'" != "") {
-		di "{err}operators() cannot be combined with constraints(), obsconstraints(), freedyads(), blockdiag() or fixdensity."
+		di "{p 0 0 2}{err}operators() cannot be combined with constraints(), obsconstraints(), freedyads(), blockdiag() or fixdensity.{p_end}"
 		error 198
 	}
 	if `__sub' {
@@ -197,8 +197,8 @@ program nwergm, eclass
 	// statistic applied to a rectangular dyad space it was never
 	// derived for.
 	if "`is2mode'" == "true" & "`directed'" == "true" {
-		di "{err}nwergm does not support directed two-mode (bipartite) networks; {bf:`netname'} is directed and two-mode."
-		di "{err}Bipartite ERGMs are undirected only, matching the reference implementation this package studies (R's ergm package) - there is no standard directed two-mode dyad-space treatment to fall back to."
+		di "{p 0 0 2}{err}nwergm does not support directed two-mode (bipartite) networks; {bf:`netname'} is directed and two-mode.{p_end}"
+		di "{p 0 0 2}{err}Bipartite ERGMs are undirected only, matching the reference implementation this package studies (R's ergm package) - there is no standard directed two-mode dyad-space treatment to fall back to.{p_end}"
 		error 198
 	}
 	if "`is2mode'" == "true" {
@@ -216,7 +216,7 @@ program nwergm, eclass
 				error 198
 			}
 		if `"`structural'"' != "" {
-			di "{err}structural() terms are not available for a two-mode network; use the bipartite terms."
+			di "{p 0 0 2}{err}structural() terms are not available for a two-mode network; use the bipartite terms.{p_end}"
 			error 198
 		}
 		}
@@ -248,14 +248,14 @@ program nwergm, eclass
 			}
 		}
 		if "`bcov1'`bcov2'`bfactor1'`bfactor2'`bdegree1'`bdegree2'`bstar1'`bstar2'`bnodematch1'`bnodematch2'`bgwdegree1'`bgwdegree2'" != "" {
-			di "{err}options {bf:bcov1()}/{bf:bcov2()}/{bf:bfactor1()}/{bf:bfactor2()}/{bf:bdegree1()}/{bf:bdegree2()}/{bf:bstar1()}/{bf:bstar2()}/{bf:bnodematch1()}/{bf:bnodematch2()}/{bf:bgwdegree1()}/{bf:bgwdegree2()} require a two-mode (bipartite) network; {bf:`netname'} is one-mode."
-			di "{err}Use {bf:nodematch()}/{bf:nodecov()}/{bf:nodefactor()}/{bf:degree()}/{bf:kstar()}/{bf:gwdegree()} for a one-mode network's own analogous effect."
+			di "{p 0 0 2}{err}options {bf:bcov1()}/{bf:bcov2()}/{bf:bfactor1()}/{bf:bfactor2()}/{bf:bdegree1()}/{bf:bdegree2()}/{bf:bstar1()}/{bf:bstar2()}/{bf:bnodematch1()}/{bf:bnodematch2()}/{bf:bgwdegree1()}/{bf:bgwdegree2()} require a two-mode (bipartite) network; {bf:`netname'} is one-mode.{p_end}"
+			di "{p 0 0 2}{err}Use {bf:nodematch()}/{bf:nodecov()}/{bf:nodefactor()}/{bf:degree()}/{bf:kstar()}/{bf:gwdegree()} for a one-mode network's own analogous effect.{p_end}"
 			error 198
 		}
 	}
 	if "`istemporal'" == "true" {
 		di "{err}nwergm estimates static ERGMs only; {bf:`netname'} carries temporal metadata."
-		di "{err}nwergm never silently collapses a temporal network to a single slice - build an explicit static network first (e.g. via nwattime) and estimate on that."
+		di "{p 0 0 2}{err}nwergm never silently collapses a temporal network to a single slice - build an explicit static network first (e.g. via nwattime) and estimate on that.{p_end}"
 		error 198
 	}
 	// since nwcommands 3.6.0 the Valued flag is set at creation (a network made with a value variable is valued also when every
@@ -294,19 +294,19 @@ program nwergm, eclass
 	// extension in unit 171 (see their own registration sites below).
 	if "`gwespfree'" != "" {
 		if "`gwesp'" != "" {
-			di "{err}options {bf:gwesp()} and {bf:gwespfree()} cannot both be specified - a gwesp term is either fixed-decay or curved (free-decay), not both."
+			di "{p 0 0 2}{err}options {bf:gwesp()} and {bf:gwespfree()} cannot both be specified - a gwesp term is either fixed-decay or curved (free-decay), not both.{p_end}"
 			error 198
 		}
 		if "`esp'" != "" {
-			di "{err}options {bf:esp()} and {bf:gwespfree()} cannot both be specified - gwespfree() already spans every achievable shared-partner count, so combining it with an explicit esp() subset would be redundant/collinear."
+			di "{p 0 0 2}{err}options {bf:esp()} and {bf:gwespfree()} cannot both be specified - gwespfree() already spans every achievable shared-partner count, so combining it with an explicit esp() subset would be redundant/collinear.{p_end}"
 			error 198
 		}
 		if `__ergm_ncurved' > 1 {
-			di "{err}option {bf:gwespfree()} cannot be combined with another curved option - v1 scope supports at most one curved term per model."
+			di "{p 0 0 2}{err}option {bf:gwespfree()} cannot be combined with another curved option - v1 scope supports at most one curved term per model.{p_end}"
 			error 198
 		}
 		if `nodes' < 3 {
-			di "{err}option {bf:gwespfree()} needs at least 3 nodes (gwesp itself needs a real shared-partner count to be achievable)."
+			di "{p 0 0 2}{err}option {bf:gwespfree()} needs at least 3 nodes (gwesp itself needs a real shared-partner count to be achievable).{p_end}"
 			error 198
 		}
 		// method(mcmle) LIFTED (harmonisation unit - Hummel/Hunter/
@@ -341,19 +341,19 @@ program nwergm, eclass
 	// gwespfree(). Undirected v1 scope only, matching gwdegree() itself.
 	if "`gwdegreefree'" != "" {
 		if "`gwdegree'" != "" {
-			di "{err}options {bf:gwdegree()} and {bf:gwdegreefree()} cannot both be specified - a gwdegree term is either fixed-decay or curved (free-decay), not both."
+			di "{p 0 0 2}{err}options {bf:gwdegree()} and {bf:gwdegreefree()} cannot both be specified - a gwdegree term is either fixed-decay or curved (free-decay), not both.{p_end}"
 			error 198
 		}
 		if `__ergm_ncurved' > 1 {
-			di "{err}option {bf:gwdegreefree()} cannot be combined with another curved option - v1 scope supports at most one curved term per model."
+			di "{p 0 0 2}{err}option {bf:gwdegreefree()} cannot be combined with another curved option - v1 scope supports at most one curved term per model.{p_end}"
 			error 198
 		}
 		if "`degree'" != "" {
-			di "{err}options {bf:degree()} and {bf:gwdegreefree()} cannot both be specified - gwdegreefree() already spans every achievable degree value, so combining it with an explicit degree() subset would be redundant/collinear."
+			di "{p 0 0 2}{err}options {bf:degree()} and {bf:gwdegreefree()} cannot both be specified - gwdegreefree() already spans every achievable degree value, so combining it with an explicit degree() subset would be redundant/collinear.{p_end}"
 			error 198
 		}
 		if "`directed'" == "true" {
-			di "{err}option {bf:gwdegreefree()} (v1 scope) is undirected only; {bf:`netname'} is directed. Use {bf:gwodegreefree()}/{bf:gwidegreefree()} for a directed curved model, or {bf:gwodegree()}/{bf:gwidegree()} for a fixed decay."
+			di "{p 0 0 2}{err}option {bf:gwdegreefree()} (v1 scope) is undirected only; {bf:`netname'} is directed. Use {bf:gwodegreefree()}/{bf:gwidegreefree()} for a directed curved model, or {bf:gwodegree()}/{bf:gwidegree()} for a fixed decay.{p_end}"
 			error 198
 		}
 		if `nodes' < 2 {
@@ -378,19 +378,19 @@ program nwergm, eclass
 	// stat_dsp()/change_dsp() already dispatch on td.sptype, unit 91).
 	if "`gwdspfree'" != "" {
 		if "`gwdsp'" != "" {
-			di "{err}options {bf:gwdsp()} and {bf:gwdspfree()} cannot both be specified - a gwdsp term is either fixed-decay or curved (free-decay), not both."
+			di "{p 0 0 2}{err}options {bf:gwdsp()} and {bf:gwdspfree()} cannot both be specified - a gwdsp term is either fixed-decay or curved (free-decay), not both.{p_end}"
 			error 198
 		}
 		if `__ergm_ncurved' > 1 {
-			di "{err}option {bf:gwdspfree()} cannot be combined with another curved option - v1 scope supports at most one curved term per model."
+			di "{p 0 0 2}{err}option {bf:gwdspfree()} cannot be combined with another curved option - v1 scope supports at most one curved term per model.{p_end}"
 			error 198
 		}
 		if "`dsp'" != "" {
-			di "{err}options {bf:dsp()} and {bf:gwdspfree()} cannot both be specified - gwdspfree() already spans every achievable shared-partner count, so combining it with an explicit dsp() subset would be redundant/collinear."
+			di "{p 0 0 2}{err}options {bf:dsp()} and {bf:gwdspfree()} cannot both be specified - gwdspfree() already spans every achievable shared-partner count, so combining it with an explicit dsp() subset would be redundant/collinear.{p_end}"
 			error 198
 		}
 		if `nodes' < 3 {
-			di "{err}option {bf:gwdspfree()} needs at least 3 nodes (gwdsp itself needs a real shared-partner count to be achievable)."
+			di "{p 0 0 2}{err}option {bf:gwdspfree()} needs at least 3 nodes (gwdsp itself needs a real shared-partner count to be achievable).{p_end}"
 			error 198
 		}
 		// method(mcmle) LIFTED here too - same fix, see gwespfree()'s
@@ -419,15 +419,15 @@ program nwergm, eclass
 	// dispatch for free from stat_dsp()/stat_esp()).
 	if "`gwnspfree'" != "" {
 		if "`gwnsp'" != "" {
-			di "{err}options {bf:gwnsp()} and {bf:gwnspfree()} cannot both be specified - a gwnsp term is either fixed-decay or curved (free-decay), not both."
+			di "{p 0 0 2}{err}options {bf:gwnsp()} and {bf:gwnspfree()} cannot both be specified - a gwnsp term is either fixed-decay or curved (free-decay), not both.{p_end}"
 			error 198
 		}
 		if `__ergm_ncurved' > 1 {
-			di "{err}option {bf:gwnspfree()} cannot be combined with another curved option - v1 scope supports at most one curved term per model."
+			di "{p 0 0 2}{err}option {bf:gwnspfree()} cannot be combined with another curved option - v1 scope supports at most one curved term per model.{p_end}"
 			error 198
 		}
 		if `nodes' < 3 {
-			di "{err}option {bf:gwnspfree()} needs at least 3 nodes (gwnsp itself needs a real shared-partner count to be achievable)."
+			di "{p 0 0 2}{err}option {bf:gwnspfree()} needs at least 3 nodes (gwnsp itself needs a real shared-partner count to be achievable).{p_end}"
 			error 198
 		}
 		// method(mcmle) LIFTED here too - same fix, see gwespfree()'s
@@ -447,19 +447,19 @@ program nwergm, eclass
 	// bound as total degree).
 	if "`gwodegreefree'" != "" {
 		if "`gwodegree'" != "" {
-			di "{err}options {bf:gwodegree()} and {bf:gwodegreefree()} cannot both be specified - a gwodegree term is either fixed-decay or curved (free-decay), not both."
+			di "{p 0 0 2}{err}options {bf:gwodegree()} and {bf:gwodegreefree()} cannot both be specified - a gwodegree term is either fixed-decay or curved (free-decay), not both.{p_end}"
 			error 198
 		}
 		if `__ergm_ncurved' > 1 {
-			di "{err}option {bf:gwodegreefree()} cannot be combined with another curved option - v1 scope supports at most one curved term per model."
+			di "{p 0 0 2}{err}option {bf:gwodegreefree()} cannot be combined with another curved option - v1 scope supports at most one curved term per model.{p_end}"
 			error 198
 		}
 		if "`odegree'" != "" {
-			di "{err}options {bf:odegree()} and {bf:gwodegreefree()} cannot both be specified - gwodegreefree() already spans every achievable out-degree value, so combining it with an explicit odegree() subset would be redundant/collinear."
+			di "{p 0 0 2}{err}options {bf:odegree()} and {bf:gwodegreefree()} cannot both be specified - gwodegreefree() already spans every achievable out-degree value, so combining it with an explicit odegree() subset would be redundant/collinear.{p_end}"
 			error 198
 		}
 		if "`directed'" != "true" {
-			di "{err}option {bf:gwodegreefree()} requires a directed network; {bf:`netname'} is undirected. Use {bf:gwdegreefree()} for an undirected network."
+			di "{p 0 0 2}{err}option {bf:gwodegreefree()} requires a directed network; {bf:`netname'} is undirected. Use {bf:gwdegreefree()} for an undirected network.{p_end}"
 			error 198
 		}
 		if `nodes' < 2 {
@@ -471,19 +471,19 @@ program nwergm, eclass
 	}
 	if "`gwidegreefree'" != "" {
 		if "`gwidegree'" != "" {
-			di "{err}options {bf:gwidegree()} and {bf:gwidegreefree()} cannot both be specified - a gwidegree term is either fixed-decay or curved (free-decay), not both."
+			di "{p 0 0 2}{err}options {bf:gwidegree()} and {bf:gwidegreefree()} cannot both be specified - a gwidegree term is either fixed-decay or curved (free-decay), not both.{p_end}"
 			error 198
 		}
 		if `__ergm_ncurved' > 1 {
-			di "{err}option {bf:gwidegreefree()} cannot be combined with another curved option - v1 scope supports at most one curved term per model."
+			di "{p 0 0 2}{err}option {bf:gwidegreefree()} cannot be combined with another curved option - v1 scope supports at most one curved term per model.{p_end}"
 			error 198
 		}
 		if "`idegree'" != "" {
-			di "{err}options {bf:idegree()} and {bf:gwidegreefree()} cannot both be specified - gwidegreefree() already spans every achievable in-degree value, so combining it with an explicit idegree() subset would be redundant/collinear."
+			di "{p 0 0 2}{err}options {bf:idegree()} and {bf:gwidegreefree()} cannot both be specified - gwidegreefree() already spans every achievable in-degree value, so combining it with an explicit idegree() subset would be redundant/collinear.{p_end}"
 			error 198
 		}
 		if "`directed'" != "true" {
-			di "{err}option {bf:gwidegreefree()} requires a directed network; {bf:`netname'} is undirected. Use {bf:gwdegreefree()} for an undirected network."
+			di "{p 0 0 2}{err}option {bf:gwidegreefree()} requires a directed network; {bf:`netname'} is undirected. Use {bf:gwdegreefree()} for an undirected network.{p_end}"
 			error 198
 		}
 		if `nodes' < 2 {
@@ -494,7 +494,7 @@ program nwergm, eclass
 		// own comment above for the full account.
 	}
 	if ("`nodeicov'" != "" | "`nodeocov'" != "") & "`directed'" != "true" {
-		di "{err}options {bf:nodeicov()}/{bf:nodeocov()} require a directed network; {bf:`netname'} is undirected."
+		di "{p 0 0 2}{err}options {bf:nodeicov()}/{bf:nodeocov()} require a directed network; {bf:`netname'} is undirected.{p_end}"
 		error 198
 	}
 	// gwesp()/gwdsp()/gwnsp()/esp()/dsp() now support directed networks
@@ -519,25 +519,25 @@ program nwergm, eclass
 	// the user's selection"). All five directed types R ergm itself
 	// offers are now implemented - none remain outstanding.
 	if `__ergm_type_explicit' & "`directed'" != "true" {
-		di "{err}note: option {bf:type()} only affects directed networks; {bf:`netname'} is undirected, so the undirected shared-partner definition is used regardless."
+		di "{p 0 0 2}{err}note: option {bf:type()} only affects directed networks; {bf:`netname'} is undirected, so the undirected shared-partner definition is used regardless.{p_end}"
 	}
 	if `__ergm_type_explicit' & "`gwesp'`gwdsp'`gwnsp'`esp'`dsp'`gwespfree'`gwdspfree'`gwnspfree'" == "" {
-		di "{err}note: option {bf:type()} has no effect - no {bf:gwesp()}/{bf:gwdsp()}/{bf:gwnsp()}/{bf:esp()}/{bf:dsp()}/{bf:gwespfree()}/{bf:gwdspfree()}/{bf:gwnspfree()} term was requested."
+		di "{p 0 0 2}{err}note: option {bf:type()} has no effect - no {bf:gwesp()}/{bf:gwdsp()}/{bf:gwnsp()}/{bf:esp()}/{bf:dsp()}/{bf:gwespfree()}/{bf:gwdspfree()}/{bf:gwnspfree()} term was requested.{p_end}"
 	}
 	if ("`gwodegree'" != "" | "`gwidegree'" != "") & "`directed'" != "true" {
-		di "{err}options {bf:gwodegree()}/{bf:gwidegree()} require a directed network; {bf:`netname'} is undirected. Use {bf:gwdegree()} for an undirected network."
+		di "{p 0 0 2}{err}options {bf:gwodegree()}/{bf:gwidegree()} require a directed network; {bf:`netname'} is undirected. Use {bf:gwdegree()} for an undirected network.{p_end}"
 		error 198
 	}
 	if "`gwdegree'" != "" & "`directed'" == "true" {
-		di "{err}In term {bf:gwdegree}: term may not be used with directed networks. Use {bf:gwodegree()}/{bf:gwidegree()} for a directed network."
+		di "{p 0 0 2}{err}In term {bf:gwdegree}: term may not be used with directed networks. Use {bf:gwodegree()}/{bf:gwidegree()} for a directed network.{p_end}"
 		error 198
 	}
 	if "`degree'" != "" & "`directed'" == "true" {
-		di "{err}option {bf:degree()} is undirected only; {bf:`netname'} is directed. Use {bf:odegree()}/{bf:idegree()} for a directed network."
+		di "{p 0 0 2}{err}option {bf:degree()} is undirected only; {bf:`netname'} is directed. Use {bf:odegree()}/{bf:idegree()} for a directed network.{p_end}"
 		error 198
 	}
 	if ("`odegree'" != "" | "`idegree'" != "") & "`directed'" != "true" {
-		di "{err}options {bf:odegree()}/{bf:idegree()} require a directed network; {bf:`netname'} is undirected. Use {bf:degree()} for an undirected network."
+		di "{p 0 0 2}{err}options {bf:odegree()}/{bf:idegree()} require a directed network; {bf:`netname'} is undirected. Use {bf:degree()} for an undirected network.{p_end}"
 		error 198
 	}
 	if "`concurrent'" != "" & "`directed'" == "true" {
@@ -545,37 +545,37 @@ program nwergm, eclass
 		error 198
 	}
 	if "`triangle'" != "" & "`directed'" == "true" {
-		di "{err}option {bf:triangle} is undirected only; {bf:`netname'} is directed. Use {bf:ctriple} for a directed network."
+		di "{p 0 0 2}{err}option {bf:triangle} is undirected only; {bf:`netname'} is directed. Use {bf:ctriple} for a directed network.{p_end}"
 		error 198
 	}
 	if "`ctriple'" != "" & "`directed'" != "true" {
-		di "{err}option {bf:ctriple} requires a directed network; {bf:`netname'} is undirected. Use {bf:triangle} for an undirected network."
+		di "{p 0 0 2}{err}option {bf:ctriple} requires a directed network; {bf:`netname'} is undirected. Use {bf:triangle} for an undirected network.{p_end}"
 		error 198
 	}
 	if ("`nodeifactor'" != "" | "`nodeofactor'" != "") & "`directed'" != "true" {
-		di "{err}options {bf:nodeifactor()}/{bf:nodeofactor()} require a directed network; {bf:`netname'} is undirected. Use {bf:nodefactor()} for an undirected network."
+		di "{p 0 0 2}{err}options {bf:nodeifactor()}/{bf:nodeofactor()} require a directed network; {bf:`netname'} is undirected. Use {bf:nodefactor()} for an undirected network.{p_end}"
 		error 198
 	}
 	if "`kstar'" != "" & "`directed'" == "true" {
-		di "{err}option {bf:kstar()} is undirected only; {bf:`netname'} is directed. Use {bf:ostar()}/{bf:istar()} for a directed network."
+		di "{p 0 0 2}{err}option {bf:kstar()} is undirected only; {bf:`netname'} is directed. Use {bf:ostar()}/{bf:istar()} for a directed network.{p_end}"
 		error 198
 	}
 	if ("`ostar'" != "" | "`istar'" != "") & "`directed'" != "true" {
-		di "{err}options {bf:ostar()}/{bf:istar()} require a directed network; {bf:`netname'} is undirected. Use {bf:kstar()} for an undirected network."
+		di "{p 0 0 2}{err}options {bf:ostar()}/{bf:istar()} require a directed network; {bf:`netname'} is undirected. Use {bf:kstar()} for an undirected network.{p_end}"
 		error 198
 	}
 	if "`degrange'" != "" & "`directed'" == "true" {
-		di "{err}option {bf:degrange()} is undirected only; {bf:`netname'} is directed. Use {bf:odegrange()}/{bf:idegrange()} for a directed network."
+		di "{p 0 0 2}{err}option {bf:degrange()} is undirected only; {bf:`netname'} is directed. Use {bf:odegrange()}/{bf:idegrange()} for a directed network.{p_end}"
 		error 198
 	}
 	if ("`odegrange'" != "" | "`idegrange'" != "") & "`directed'" != "true" {
-		di "{err}options {bf:odegrange()}/{bf:idegrange()} require a directed network; {bf:`netname'} is undirected. Use {bf:degrange()} for an undirected network."
+		di "{p 0 0 2}{err}options {bf:odegrange()}/{bf:idegrange()} require a directed network; {bf:`netname'} is undirected. Use {bf:degrange()} for an undirected network.{p_end}"
 		error 198
 	}
 	// esp()/dsp() now support directed networks too (wave 5) via the
 	// same automatic OTP default as gwesp()/gwdsp()/gwnsp() above.
 	if ("`transitiveties'" != "" | "`cyclicalties'" != "") & "`directed'" != "true" {
-		di "{err}options {bf:transitiveties}/{bf:cyclicalties} require a directed network; {bf:`netname'} is undirected."
+		di "{p 0 0 2}{err}options {bf:transitiveties}/{bf:cyclicalties} require a directed network; {bf:`netname'} is undirected.{p_end}"
 		error 198
 	}
 	if ("`sender'" != "" | "`receiver'" != "") & "`directed'" != "true" {
@@ -676,7 +676,7 @@ program nwergm, eclass
 	// intersection of several.
 	if "`blockdiag'" != "" {
 		if "`freedyads'" != "" {
-			di "{err}blockdiag() cannot currently be combined with freedyads() - v1 supports one dyad-eligibility constraint at a time."
+			di "{p 0 0 2}{err}blockdiag() cannot currently be combined with freedyads() - v1 supports one dyad-eligibility constraint at a time.{p_end}"
 			error 198
 		}
 		confirm variable `blockdiag'
@@ -693,10 +693,10 @@ program nwergm, eclass
 		if "`proposal'" == "uniform" local __con_w "random"
 		_nwergm_constr, spec(`constraints') nodes(`nodes') directed(`directed') twomode(`is2mode') matobj(`netobj') weights(`__con_w')
 		if "`con_observed'" == "miss" {
-			di "{err}constraints(observed) cannot be used on a network with missing dyads: R's ergm stops on it with an internal error ('types' and 'constraints' are not the same length). Use {bf:obsconstraints(observed)}, which fits on the observed dyads and lets only the missing dyads vary."
+			di "{p 0 0 2}{err}constraints(observed) cannot be used on a network with missing dyads: R's ergm stops on it with an internal error ('types' and 'constraints' are not the same length). Use {bf:obsconstraints(observed)}, which fits on the observed dyads and lets only the missing dyads vary.{p_end}"
 			error 198
 		}
-		if "`con_observed'" == "none" di "{txt}Note: network `netname' has no missing dyads, so the {bf:observed} constraint leaves every dyad free (as in R's ergm); the model is fitted without it."
+		if "`con_observed'" == "none" di "{p 0 0 2}{txt}Note: network `netname' has no missing dyads, so the {bf:observed} constraint leaves every dyad free (as in R's ergm); the model is fitted without it.{p_end}"
 		local __con_active 1
 		if `con_hasdyad' mata: __nwergm_last_G.set_dyadmask(__ncon_free)
 		mata: __nwergm_c1_par = __ncon_par
@@ -708,7 +708,7 @@ program nwergm, eclass
 	// weighting, without a constraint or with dyad constraints and degree bounds that are not maximum-only bounds
 	// (R: SPDyad; with maximum-only bounds BDStratTNT, with the other constraints their own proposals)
 	if `__spdstrict' & "`is2mode'" == "true" {
-		di as err "The triadic() hint cannot be used with a bipartite network (use .triadic, which R skips on a bipartite network)."
+		di as err "{p 0 0 2}The triadic() hint cannot be used with a bipartite network (use .triadic, which R skips on a bipartite network).{p_end}"
 		error 198
 	}
 	local __spd 0
@@ -739,7 +739,7 @@ program nwergm, eclass
 			else local __obs_spec `"`constraints' + `obsconstraints'"'
 		}
 		_nwergm_constr, spec(`__obs_spec') nodes(`nodes') directed(`directed') twomode(`is2mode') matobj(`netobj') weights(default) prefix(o)
-		if "`ocon_observed'" == "none" di "{txt}Note: network `netname' has no missing dyads, so the {bf:observed} constraint leaves every dyad free (as in R's ergm)."
+		if "`ocon_observed'" == "none" di "{p 0 0 2}{txt}Note: network `netname' has no missing dyads, so the {bf:observed} constraint leaves every dyad free (as in R's ergm).{p_end}"
 		// R drops an observation constraint that is empty (only `observed' on a network without missing dyads): plain MCMLE
 		if "`ocon_observed'" == "none" & `ocon_hasdyad' == 0 & inlist("`ocon_code'", "10", "11") {
 			local __obs_active 0
@@ -785,7 +785,7 @@ program nwergm, eclass
 	}
 	else local __ergm_nmiss 0
 	if `__ergm_nmiss' > 0 & ("`freedyads'" != "" | "`blockdiag'" != "" | "`fixdensity'" != "") {
-		di "{err}missing dyads cannot currently be combined with freedyads(), blockdiag() or fixdensity."
+		di "{p 0 0 2}{err}missing dyads cannot currently be combined with freedyads(), blockdiag() or fixdensity.{p_end}"
 		error 198
 	}
 
@@ -817,10 +817,10 @@ program nwergm, eclass
 	local __ergm_spcache_used = 0
 	if "`spcache'" != "" {
 		if "`directed'" == "true" {
-			di "{err}note: option {bf:spcache} has no effect on a directed network; the incremental shared-partner cache only implements the undirected shared-partner definition."
+			di "{p 0 0 2}{err}note: option {bf:spcache} has no effect on a directed network; the incremental shared-partner cache only implements the undirected shared-partner definition.{p_end}"
 		}
 		else if !`__ergm_spcache_relevant' {
-			di "{err}note: option {bf:spcache} has no effect without gwesp()/gwdsp()/gwnsp()/esp()/dsp()/triangle/ctriple; none of those terms was requested."
+			di "{p 0 0 2}{err}note: option {bf:spcache} has no effect without gwesp()/gwdsp()/gwnsp()/esp()/dsp()/triangle/ctriple; none of those terms was requested.{p_end}"
 		}
 		else {
 			mata: __nwergm_last_G.enable_sp_cache()
@@ -1480,7 +1480,7 @@ program nwergm, eclass
 		mata: `__td_hm`__ergm_termidx''.edgecovmat = *(`hm`__ergm_termidx'netobj'->get_matrix_mod(0,("`directed'"=="true")))
 		mata: st_local("__nacov", strofreal(ergm_offdiag_missing(`__td_hm`__ergm_termidx''.edgecovmat)))
 		if `__nacov' {
-			di "{err}In term {bf:edgecov/hamming}: network {bf:`__ergm_v'} has missing dyads, which is not supported for a dyadic covariate."
+			di "{p 0 0 2}{err}In term {bf:edgecov/hamming}: network {bf:`__ergm_v'} has missing dyads, which is not supported for a dyadic covariate.{p_end}"
 			error 416
 		}
 		mata: __nwergm_last_M.addterm("hamming", 1, &stat_hamming(), &change_hamming(), `__td_hm`__ergm_termidx'', ("hamming_`__ergm_v'"))
@@ -1675,7 +1675,7 @@ program nwergm, eclass
 	// curved bipartite terms (gwb1degree/gwb2degree/gwb1dsp/gwb2dsp with fixed=FALSE in R): see _nwergm_bip.ado
 	if "`bgwdegreefree1'`bgwdegreefree2'`bgwdspfree1'`bgwdspfree2'" != "" {
 		if "`is2mode'" != "true" {
-			di "{err}In term {bf:bgwdegreefree/bgwdspfree}: Term may not be used with networks with bipartite==FALSE."
+			di "{p 0 0 2}{err}In term {bf:bgwdegreefree/bgwdspfree}: Term may not be used with networks with bipartite==FALSE.{p_end}"
 			error 198
 		}
 		_nwergm_bip_curved, bgwdegreefree1(`"`bgwdegreefree1'"') bgwdegreefree2(`"`bgwdegreefree2'"') bgwdspfree1(`"`bgwdspfree1'"') bgwdspfree2(`"`bgwdspfree2'"') full(`=("`method'" != "mple")')
@@ -1798,7 +1798,7 @@ program nwergm, eclass
 	if "`fixdensity'" != "" {
 		mata: st_local("__ergm_nterms_check", strofreal(__nwergm_last_M.nterms))
 		if `__ergm_nterms_check' == 0 {
-			di "{err}fixdensity requires at least one term besides {bf:edges} (which is dropped, not estimated, under this constraint - see {bf:Remarks})."
+			di "{p 0 0 2}{err}fixdensity requires at least one term besides {bf:edges} (which is dropped, not estimated, under this constraint - see {bf:Remarks}).{p_end}"
 			error 198
 		}
 	}
@@ -1806,11 +1806,11 @@ program nwergm, eclass
 	// altkstar with fixed = FALSE (R's default): the degree counts 1..n-1 with R's own weight/lambda map (curved type 2)
 	if `__altk' {
 		if "`directed'" == "true" | "`is2mode'" == "true" {
-			di "{err}In term {bf:altkstar}: Term may not be used with networks with `=cond("`directed'" == "true", "directed==TRUE", "bipartite > 0")'; the curved form is available for one-mode undirected networks."
+			di "{p 0 0 2}{err}In term {bf:altkstar}: Term may not be used with networks with `=cond("`directed'" == "true", "directed==TRUE", "bipartite > 0")'; the curved form is available for one-mode undirected networks.{p_end}"
 			error 198
 		}
 		if "`method'" != "mple" {
-			di "{err}altkstar with an estimated decay (R: fixed=FALSE) is available with {bf:method(mple)} only, with starting values given by {bf:init()}; use {bf:altkstar(lambda=#  fixed)} for a fixed decay."
+			di "{p 0 0 2}{err}altkstar with an estimated decay (R: fixed=FALSE) is available with {bf:method(mple)} only, with starting values given by {bf:init()}; use {bf:altkstar(lambda=#  fixed)} for a fixed decay.{p_end}"
 			error 198
 		}
 		local __td_altk "__netd_`++__ne_n'"
@@ -1879,14 +1879,14 @@ program nwergm, eclass
 		local method = cond(`__ergm_dind' & "`mainmethod'" != "sa", "mple", "mcmle")
 	}
 	if "`method'" == "mple" & `__con_active' {
-		if `con_dind' == 0 di "{txt}Maximum Pseudo-Likelihood (MPLE) estimation for ERGMs with dyad-dependent constraints is not implemented at this time. You may want to use {bf:method(mcmle)} instead."
+		if `con_dind' == 0 di "{p 0 0 2}{txt}Maximum Pseudo-Likelihood (MPLE) estimation for ERGMs with dyad-dependent constraints is not implemented at this time. You may want to use {bf:method(mcmle)} instead.{p_end}"
 	}
 	if "`method'" == "mple" & !`__ergm_dind' {
-		di "{txt}Note: {bf:method(mple)} requested for a dyad-dependent model - reporting pseudolikelihood, NOT full ERGM maximum likelihood."
+		di "{p 0 0 2}{txt}Note: {bf:method(mple)} requested for a dyad-dependent model - reporting pseudolikelihood, NOT full ERGM maximum likelihood.{p_end}"
 	}
 
 	if `"`logstat'`expstat'"' != "" & ("`fixdensity'" != "" | `__ergm_curved') {
-		di "{err}options {bf:logstat()}/{bf:expstat()} cannot be combined with {bf:fixdensity} or a curved (free-decay) term."
+		di "{p 0 0 2}{err}options {bf:logstat()}/{bf:expstat()} cannot be combined with {bf:fixdensity} or a curved (free-decay) term.{p_end}"
 		error 198
 	}
 	if `"`logstat'"' != "" {
@@ -1910,12 +1910,12 @@ program nwergm, eclass
 	// only - a curved term's own weight/decay are not addressable here.
 	if "`offset'" != "" {
 		if `__ergm_curved' {
-			di "{err}option {bf:offset()} is not currently supported for a model containing a curved (free-decay) term."
+			di "{p 0 0 2}{err}option {bf:offset()} is not currently supported for a model containing a curved (free-decay) term.{p_end}"
 			error 198
 		}
 		local __ergm_noffset : word count `offset'
 		if mod(`__ergm_noffset', 2) != 0 {
-			di "{err}option {bf:offset()} needs coefname/value PAIRS - `offset' has `__ergm_noffset' token(s), an odd count."
+			di "{p 0 0 2}{err}option {bf:offset()} needs coefname/value PAIRS - `offset' has `__ergm_noffset' token(s), an odd count.{p_end}"
 			error 198
 		}
 		local __ergm_noffset_pairs = `__ergm_noffset' / 2
@@ -1924,7 +1924,7 @@ program nwergm, eclass
 			local __ergm_off_val : word `=2*`__k'' of `offset'
 			capture confirm number `__ergm_off_val'
 			if _rc {
-				di "{err}option {bf:offset()}: `__ergm_off_val' is not a valid number - expected coefname/value pairs, e.g. {bf:offset(mutual 2)}."
+				di "{p 0 0 2}{err}option {bf:offset()}: `__ergm_off_val' is not a valid number - expected coefname/value pairs, e.g. {bf:offset(mutual 2)}.{p_end}"
 				error 198
 			}
 			mata: st_local("__ergm_off_colpos", strofreal(__nwergm_last_M.findcoef("`__ergm_off_name'")))
@@ -1941,7 +1941,7 @@ program nwergm, eclass
 		}
 		mata: st_local("__ergm_nfree", strofreal(cols(__nwergm_last_M.freeidx())))
 		if `__ergm_nfree' == 0 {
-			di "{err}option {bf:offset()} cannot fix every coefficient in the model - at least one must remain free to estimate."
+			di "{p 0 0 2}{err}option {bf:offset()} cannot fix every coefficient in the model - at least one must remain free to estimate.{p_end}"
 			error 198
 		}
 	}
@@ -1960,7 +1960,7 @@ program nwergm, eclass
 			di "{txt}{p 0 6 2}Note: the constraints hold{res}`__con_confnames'{txt} constant; they are dropped from the model.{p_end}"
 			mata: st_local("__ergm_nfree", strofreal(cols(__nwergm_last_M.freeidx())))
 			if `__ergm_nfree' == 0 {
-				di "{err}all terms are either offsets or held constant by the constraints; there is nothing to estimate."
+				di "{p 0 0 2}{err}all terms are either offsets or held constant by the constraints; there is nothing to estimate.{p_end}"
 				error 198
 			}
 		}
@@ -1982,7 +1982,7 @@ program nwergm, eclass
 	// benchmark suite's own large-network control case
 	// (the development notes harmonisation unit 81).
 	if `__ergm_curved' & ("`method'" == "cd" | "`mainmethod'" == "sa") {
-		di "{err}contrastive divergence and stochastic approximation are not available for models with curved terms."
+		di "{p 0 0 2}{err}contrastive divergence and stochastic approximation are not available for models with curved terms.{p_end}"
 		error 198
 	}
 	// init(): R's control.ergm(init=); starting values / offset values
@@ -1991,7 +1991,7 @@ program nwergm, eclass
 		if `__ergm_curved' {
 			// the starting values of the curved pseudolikelihood fit (R: control.ergm(init=)): one per parameter, . = default
 			if "`method'" != "mple" {
-				di "{err}option {bf:init()} with a curved (free-decay) term is available with {bf:method(mple)} only."
+				di "{p 0 0 2}{err}option {bf:init()} with a curved (free-decay) term is available with {bf:method(mple)} only.{p_end}"
 				error 198
 			}
 			capture mata: mata drop __ergm_curved_init
@@ -2146,7 +2146,7 @@ program nwergm, eclass
 		mata: st_local("__ergm_curved_converged", strofreal(st_matrix("`__ergm_curvedconv'")[1,1]))
 		mata: st_local("__ergm_coefnames", invtokens(__nwergm_last_M.theta_coefnames()))
 		if `__ergm_curved_converged' == 0 {
-			di "{err}note: the curved MPLE fit did not converge within 100 Newton-Raphson iterations - treat these results with caution."
+			di "{p 0 0 2}{err}note: the curved MPLE fit did not converge within 100 Newton-Raphson iterations - treat these results with caution.{p_end}"
 		}
 	}
 	else {
@@ -2231,7 +2231,7 @@ program nwergm, eclass
 		if `__e7_rcx' != 0 {
 			local __ergm_mple_rc = `__e7_rcx'
 			restore
-			di "{err}The MPLE fit did not converge (outcome does not vary - e.g. a fully edgeless network with no ties at all). Cannot estimate this model."
+			di "{p 0 0 2}{err}The MPLE fit did not converge (outcome does not vary - e.g. a fully edgeless network with no ties at all). Cannot estimate this model.{p_end}"
 			error `__ergm_mple_rc'
 		}
 		tempname __b_mple_free __V_mple_free
@@ -2277,7 +2277,7 @@ program nwergm, eclass
 		}
 		ereturn post `__b_mple' `__V_mple', depname(`netname') obs(`__ergm_nrows')
 		ereturn local cmd "nwergm"
-		ereturn local version "1.5.9"
+		ereturn local version "1.5.10"
 		ereturn local title "Exponential-family random graph model (MPLE)"
 		ereturn local depvar "`netname'"
 		ereturn local method "mple"
@@ -2307,7 +2307,7 @@ program nwergm, eclass
 		}
 		else _nwergm_fitstats, dmat(`__nw_D') method(mple) dind(`__ergm_dind') curved(`__ergm_curved')
 		if `__ergm_curved' {
-			di as text "(decay is an estimated curved parameter here - see {help nwergm##gw_effects:help nwergm, gw_effects} for how this differs from R ergm's own BFGS-based fit)"
+			di as text "{p 0 0 2}(decay is an estimated curved parameter here - see {help nwergm##gw_effects:help nwergm, gw_effects} for how this differs from R ergm's own BFGS-based fit){p_end}"
 		}
 	}
 	else {
@@ -2431,7 +2431,7 @@ program nwergm, eclass
 		if `__con_active' | `mcmcmaxedges' > 0 {
 			mata: st_local("__con_ok", strofreal(__nwergm_last_M.native_enabled_sample))
 			if `__con_ok' != 1 {
-				di "{err}constraints() and mcmcmaxedges() need the native plugin, which is not available for this model, platform or the nonative option."
+				di "{p 0 0 2}{err}constraints() and mcmcmaxedges() need the native plugin, which is not available for this model, platform or the nonative option.{p_end}"
 				error 198
 			}
 			if `__con_active' {
@@ -2446,7 +2446,7 @@ program nwergm, eclass
 		if `__obs_active' {
 			mata: st_local("__con_ok", strofreal(__nwergm_last_M.native_enabled_sample))
 			if `__con_ok' != 1 {
-				di "{err}obsconstraints() needs the native plugin, which is not available for this model, platform or the nonative option."
+				di "{p 0 0 2}{err}obsconstraints() needs the native plugin, which is not available for this model, platform or the nonative option.{p_end}"
 				error 198
 			}
 		}
@@ -2600,7 +2600,7 @@ program nwergm, eclass
 			// (r(504)) instead of this command's own clear message.
 			mata: st_local("__ergm_curved_degenerate", strofreal(missing(`__fit'.coef_theta) > 0))
 			if `__ergm_curved_degenerate' {
-				di "{err}The curved MCMLE fit did not produce a valid result - the underlying MCMC chain likely became degenerate for this model/network combination (this is a genuine difficulty of curved-decay estimation in general, not specific to this package; R's own ergm can fail identically with 'Unconstrained MCMC sampling did not mix at all' on a hard case). Try a different starting decay value, a longer {bf:mcmcburnin()}, or a simpler model."
+				di "{p 0 0 2}{err}The curved MCMLE fit did not produce a valid result - the underlying MCMC chain likely became degenerate for this model/network combination (this is a genuine difficulty of curved-decay estimation in general, not specific to this package; R's own ergm can fail identically with 'Unconstrained MCMC sampling did not mix at all' on a hard case). Try a different starting decay value, a longer {bf:mcmcburnin()}, or a simpler model.{p_end}"
 				error 430
 			}
 			mata: st_matrix("`__b_mcmle'", `__fit'.coef_theta)
@@ -2609,7 +2609,7 @@ program nwergm, eclass
 			mata: mata drop __ergm_Jac_mcmle
 			mata: st_local("__ergm_curved_vcov_degenerate", strofreal(missing(st_matrix("`__V_mcmle'")) > 0))
 			if `__ergm_curved_vcov_degenerate' {
-				di "{err}The curved MCMLE fit did not produce a valid result - the final variance-covariance simulation landed at a near-degenerate (frozen) point, leaving the theta-space variance-covariance matrix undefined after the delta-method transform. Try a different starting decay value, a longer {bf:mcmcburnin()}, a larger {bf:mcmcsamplesize()}, or a simpler model."
+				di "{p 0 0 2}{err}The curved MCMLE fit did not produce a valid result - the final variance-covariance simulation landed at a near-degenerate (frozen) point, leaving the theta-space variance-covariance matrix undefined after the delta-method transform. Try a different starting decay value, a longer {bf:mcmcburnin()}, a larger {bf:mcmcsamplesize()}, or a simpler model.{p_end}"
 				error 430
 			}
 			mata: st_local("__ergm_coefnames", invtokens(__nwergm_last_M.theta_coefnames()))
@@ -2633,7 +2633,7 @@ program nwergm, eclass
 			// previously applied here.
 			mata: st_local("__ergm_mcmle_degenerate", strofreal(missing(`__fit'.vcov) > 0))
 			if `__ergm_mcmle_degenerate' {
-				di "{err}The MCMLE fit did not produce a valid result - the underlying MCMC chain likely became degenerate for this model/network combination (the fitted parameters drove the simulated graph into a near-deterministic region, leaving the variance-covariance matrix undefined). Try different starting values, a longer {bf:mcmcburnin()}, or a simpler model."
+				di "{p 0 0 2}{err}The MCMLE fit did not produce a valid result - the underlying MCMC chain likely became degenerate for this model/network combination (the fitted parameters drove the simulated graph into a near-deterministic region, leaving the variance-covariance matrix undefined). Try different starting values, a longer {bf:mcmcburnin()}, or a simpler model.{p_end}"
 				error 430
 			}
 			mata: st_matrix("`__b_mcmle'", `__fit'.coef)
@@ -2661,7 +2661,7 @@ program nwergm, eclass
 
 		ereturn post `__b_mcmle' `__V_mcmle', depname(`netname') obs(`__ergm_nrows')
 		ereturn local cmd "nwergm"
-		ereturn local version "1.5.9"
+		ereturn local version "1.5.10"
 		ereturn local title "Exponential-family random graph model (MCMLE)"
 		ereturn local depvar "`netname'"
 		ereturn local method "mcmle"
@@ -2750,8 +2750,8 @@ program nwergm, eclass
 		}
 
 		if `__ergm_converged' == 0 {
-			di "{err}Warning: MCMLE did NOT satisfy its own convergence test after `__ergm_niter' iterations."
-			di "{err}Results are reported but should not be treated as a converged fit - consider increasing mcmleiterations()/mcmcsamplesize()."
+			di "{p 0 0 2}{err}Warning: MCMLE did NOT satisfy its own convergence test after `__ergm_niter' iterations.{p_end}"
+			di "{p 0 0 2}{err}Results are reported but should not be treated as a converged fit - consider increasing mcmleiterations()/mcmcsamplesize().{p_end}"
 		}
 
 		nwergm_display "`netname'" "`nodes'" "`directed'" "`=cond("`method'"=="cd","CD",cond("`mainmethod'"=="sa","SA","MCMLE"))'" "`__ergm_converged'" "`__ergm_niter'" "`mcmcsamplesize'"
@@ -2881,11 +2881,11 @@ program nwergm_simulate
 	// so a simulated bipartite draw round-trips cleanly back through
 	// nwset/nwergm without any node relabeling.
 	if `bipartite' != 0 & "`directed'" != "" {
-		di "{err}nwergm simulate does not support directed two-mode (bipartite) networks - bipartite ERGMs are undirected only, matching the reference implementation this package studies (R's ergm package)."
+		di "{p 0 0 2}{err}nwergm simulate does not support directed two-mode (bipartite) networks - bipartite ERGMs are undirected only, matching the reference implementation this package studies (R's ergm package).{p_end}"
 		error 198
 	}
 	if `bipartite' < 0 | `bipartite' == `nodes' {
-		di "{err}option {bf:bipartite()} must give the mode-1 node count, strictly between 0 and {bf:nodes()} (`nodes'); got `bipartite'."
+		di "{p 0 0 2}{err}option {bf:bipartite()} must give the mode-1 node count, strictly between 0 and {bf:nodes()} (`nodes'); got `bipartite'.{p_end}"
 		error 198
 	}
 	if `bipartite' != 0 {
@@ -2908,13 +2908,13 @@ program nwergm_simulate
 			local __ergm_bipall `"`__ergm_bipall'``__ergm_bo''"'
 		}
 		if "`bcov1'`bcov2'`bfactor1'`bfactor2'`bdegree1'`bdegree2'`bstar1'`bstar2'`bnodematch1'`bnodematch2'" != "" | `"`__ergm_bipall'"' != "" {
-			di "{err}options {bf:bcov1()}/{bf:bcov2()}/{bf:bfactor1()}/{bf:bfactor2()}/{bf:bdegree1()}/{bf:bdegree2()}/{bf:bstar1()}/{bf:bstar2()}/{bf:bnodematch1()}/{bf:bnodematch2()}/{bf:bgwdegree1()}/{bf:bgwdegree2()} require {bf:bipartite()} (the mode-1 node count)."
-			di "{err}Use {bf:nodematch()}/{bf:nodecov()}/{bf:nodefactor()}/{bf:degree()}/{bf:kstar()}/{bf:gwdegree()} for a one-mode simulation's own analogous effect."
+			di "{p 0 0 2}{err}options {bf:bcov1()}/{bf:bcov2()}/{bf:bfactor1()}/{bf:bfactor2()}/{bf:bdegree1()}/{bf:bdegree2()}/{bf:bstar1()}/{bf:bstar2()}/{bf:bnodematch1()}/{bf:bnodematch2()}/{bf:bgwdegree1()}/{bf:bgwdegree2()} require {bf:bipartite()} (the mode-1 node count).{p_end}"
+			di "{p 0 0 2}{err}Use {bf:nodematch()}/{bf:nodecov()}/{bf:nodefactor()}/{bf:degree()}/{bf:kstar()}/{bf:gwdegree()} for a one-mode simulation's own analogous effect.{p_end}"
 			error 198
 		}
 	}
 	if "`theta'" == "" {
-		di "{err}option {bf:theta()} is required - one coefficient per requested term, in the same order the term options are listed (edges first)."
+		di "{p 0 0 2}{err}option {bf:theta()} is required - one coefficient per requested term, in the same order the term options are listed (edges first).{p_end}"
 		error 198
 	}
 	if "`mutual'" != "" & "`directed'" == "" {
@@ -2922,7 +2922,7 @@ program nwergm_simulate
 		error 198
 	}
 	if (`gwodegree' != 0 | `gwidegree' != 0) & "`directed'" == "" {
-		di "{err}options {bf:gwodegree()}/{bf:gwidegree()} require {bf:directed}. Use {bf:gwdegree()} for an undirected simulation."
+		di "{p 0 0 2}{err}options {bf:gwodegree()}/{bf:gwidegree()} require {bf:directed}. Use {bf:gwdegree()} for an undirected simulation.{p_end}"
 		error 198
 	}
 	// gwesp()/gwdsp()/gwnsp()/esp()/dsp() support directed simulation too
@@ -2934,21 +2934,21 @@ program nwergm_simulate
 	if "`type'" == "" local type "OTP"
 	_opts_oneof "OTP ITP OSP ISP RTP" "type" "`type'" 6556
 	if `__ergm_type_explicit' & "`directed'" == "" {
-		di "{err}note: option {bf:type()} only affects directed simulation; without {bf:directed}, the undirected shared-partner definition is used regardless."
+		di "{p 0 0 2}{err}note: option {bf:type()} only affects directed simulation; without {bf:directed}, the undirected shared-partner definition is used regardless.{p_end}"
 	}
 	if `__ergm_type_explicit' & (`gwesp'==0 & `gwdsp'==0 & `gwnsp'==0 & "`esp'`dsp'"=="") {
-		di "{err}note: option {bf:type()} has no effect - no {bf:gwesp()}/{bf:gwdsp()}/{bf:gwnsp()}/{bf:esp()}/{bf:dsp()} term was requested."
+		di "{p 0 0 2}{err}note: option {bf:type()} has no effect - no {bf:gwesp()}/{bf:gwdsp()}/{bf:gwnsp()}/{bf:esp()}/{bf:dsp()} term was requested.{p_end}"
 	}
 	if ("`nodeicov'" != "" | "`nodeocov'" != "") & "`directed'" == "" {
 		di "{err}options {bf:nodeicov()}/{bf:nodeocov()} require {bf:directed}."
 		error 198
 	}
 	if "`degree'" != "" & "`directed'" != "" {
-		di "{err}option {bf:degree()} is undirected only. Use {bf:odegree()}/{bf:idegree()} for a directed simulation."
+		di "{p 0 0 2}{err}option {bf:degree()} is undirected only. Use {bf:odegree()}/{bf:idegree()} for a directed simulation.{p_end}"
 		error 198
 	}
 	if ("`odegree'" != "" | "`idegree'" != "") & "`directed'" == "" {
-		di "{err}options {bf:odegree()}/{bf:idegree()} require {bf:directed}. Use {bf:degree()} for an undirected simulation."
+		di "{p 0 0 2}{err}options {bf:odegree()}/{bf:idegree()} require {bf:directed}. Use {bf:degree()} for an undirected simulation.{p_end}"
 		error 198
 	}
 	if "`concurrent'" != "" & "`directed'" != "" {
@@ -2964,23 +2964,23 @@ program nwergm_simulate
 		error 198
 	}
 	if ("`nodeifactor'" != "" | "`nodeofactor'" != "") & "`directed'" == "" {
-		di "{err}options {bf:nodeifactor()}/{bf:nodeofactor()} require {bf:directed}. Use {bf:nodefactor()} for an undirected simulation."
+		di "{p 0 0 2}{err}options {bf:nodeifactor()}/{bf:nodeofactor()} require {bf:directed}. Use {bf:nodefactor()} for an undirected simulation.{p_end}"
 		error 198
 	}
 	if "`kstar'" != "" & "`directed'" != "" {
-		di "{err}option {bf:kstar()} is undirected only. Use {bf:ostar()}/{bf:istar()} for a directed simulation."
+		di "{p 0 0 2}{err}option {bf:kstar()} is undirected only. Use {bf:ostar()}/{bf:istar()} for a directed simulation.{p_end}"
 		error 198
 	}
 	if ("`ostar'" != "" | "`istar'" != "") & "`directed'" == "" {
-		di "{err}options {bf:ostar()}/{bf:istar()} require {bf:directed}. Use {bf:kstar()} for an undirected simulation."
+		di "{p 0 0 2}{err}options {bf:ostar()}/{bf:istar()} require {bf:directed}. Use {bf:kstar()} for an undirected simulation.{p_end}"
 		error 198
 	}
 	if "`degrange'" != "" & "`directed'" != "" {
-		di "{err}option {bf:degrange()} is undirected only. Use {bf:odegrange()}/{bf:idegrange()} for a directed simulation."
+		di "{p 0 0 2}{err}option {bf:degrange()} is undirected only. Use {bf:odegrange()}/{bf:idegrange()} for a directed simulation.{p_end}"
 		error 198
 	}
 	if ("`odegrange'" != "" | "`idegrange'" != "") & "`directed'" == "" {
-		di "{err}options {bf:odegrange()}/{bf:idegrange()} require {bf:directed}. Use {bf:degrange()} for an undirected simulation."
+		di "{p 0 0 2}{err}options {bf:odegrange()}/{bf:idegrange()} require {bf:directed}. Use {bf:degrange()} for an undirected simulation.{p_end}"
 		error 198
 	}
 	if ("`transitiveties'" != "" | "`cyclicalties'" != "") & "`directed'" == "" {
@@ -2995,7 +2995,7 @@ program nwergm_simulate
 	_opts_oneof "uniform tnt" "proposal" "`proposal'" 6556
 	_nwergm_hints, spec(`mcmcprop')
 	if `__spdstrict' & `bipartite' != 0 {
-		di as err "The triadic() hint cannot be used with a bipartite network (use .triadic, which R skips on a bipartite network)."
+		di as err "{p 0 0 2}The triadic() hint cannot be used with a bipartite network (use .triadic, which R skips on a bipartite network).{p_end}"
 		error 198
 	}
 	if "`generate'" == "" local generate "ergmsim"
@@ -3644,7 +3644,7 @@ program nwergm_simulate
 		mata: `__td_ec`__ergm_termidx'' = ErgmTermData()
 		_nwsyntax `__ergm_v', max(1) other(ec`__ergm_termidx')
 		if `ec`__ergm_termidx'nodes' != `nodes' {
-			di "{err}edgecov() network {bf:`__ergm_v'} has a different number of nodes than requested ({bf:`nodes'})."
+			di "{p 0 0 2}{err}edgecov() network {bf:`__ergm_v'} has a different number of nodes than requested ({bf:`nodes'}).{p_end}"
 			error 198
 		}
 		mata: `__td_ec`__ergm_termidx''.edgecovmat = *(`ec`__ergm_termidx'netobj'->get_matrix_mod(1,("`directed'"!="")))
@@ -3659,7 +3659,7 @@ program nwergm_simulate
 		mata: `__td_hm`__ergm_termidx'' = ErgmTermData()
 		_nwsyntax `__ergm_v', max(1) other(hm`__ergm_termidx')
 		if `hm`__ergm_termidx'nodes' != `nodes' {
-			di "{err}hamming() network {bf:`__ergm_v'} has a different number of nodes than requested ({bf:`nodes'})."
+			di "{p 0 0 2}{err}hamming() network {bf:`__ergm_v'} has a different number of nodes than requested ({bf:`nodes'}).{p_end}"
 			error 198
 		}
 		mata: `__td_hm`__ergm_termidx''.edgecovmat = *(`hm`__ergm_termidx'netobj'->get_matrix_mod(0,("`directed'"!="")))
@@ -3729,7 +3729,7 @@ program nwergm_simulate
 	local nterm : word count `ntermtok'
 	local nth : word count `theta'
 	if `nth' != `nterm' {
-		di "{err}theta() supplies `nth' coefficient(s) but `nterm' term(s) were requested (`ntermtok') - exactly one coefficient per term, in listed order."
+		di "{p 0 0 2}{err}theta() supplies `nth' coefficient(s) but `nterm' term(s) were requested (`ntermtok') - exactly one coefficient per term, in listed order.{p_end}"
 		error 198
 	}
 	tempname thetamat
@@ -3749,10 +3749,10 @@ program nwergm_simulate
 	local __ergm_spcache_relevant = (`gwesp'!=0 | `gwdsp'!=0 | `gwnsp'!=0 | "`esp'"!="" | "`dsp'"!="" | "`triangle'"!="" | "`ctriple'"!="")
 	if "`spcache'" != "" {
 		if "`directed'" != "" {
-			di "{err}note: option {bf:spcache} has no effect on a directed simulation; the incremental shared-partner cache only implements the undirected shared-partner definition."
+			di "{p 0 0 2}{err}note: option {bf:spcache} has no effect on a directed simulation; the incremental shared-partner cache only implements the undirected shared-partner definition.{p_end}"
 		}
 		else if !`__ergm_spcache_relevant' {
-			di "{err}note: option {bf:spcache} has no effect without gwesp()/gwdsp()/gwnsp()/esp()/dsp()/triangle/ctriple; none of those terms was requested."
+			di "{p 0 0 2}{err}note: option {bf:spcache} has no effect without gwesp()/gwdsp()/gwnsp()/esp()/dsp()/triangle/ctriple; none of those terms was requested.{p_end}"
 		}
 	}
 	local __ergm_spcache_used = ("`spcache'"!="" & "`directed'"=="" & `__ergm_spcache_relevant')
@@ -3807,7 +3807,7 @@ program nwergm_simulate
 		mata: mata drop __sim_rc
 		mata: st_local("__sim_ok", strofreal(__nwergm_last_M.native_enabled_sample))
 		if `__sim_ok' != 1 {
-			di "{err}basis()/constraints() need the native plugin, which is not available for this model or platform."
+			di "{p 0 0 2}{err}basis()/constraints() need the native plugin, which is not available for this model or platform.{p_end}"
 			error 198
 		}
 		if `"`constraints'"' != "" {
@@ -3938,8 +3938,8 @@ program _nwergm_numvar
 	confirm variable `v'
 	capture confirm numeric variable `v'
 	if _rc {
-		di "{err}{bf:`term'(`v')}: {bf:`v'} is a string variable; nwergm needs a numeric attribute."
-		di "{err}Encode it first, e.g. {bf:encode `v', generate(`v'_n)}, and specify {bf:`term'(`v'_n)}."
+		di "{p 0 0 2}{err}{bf:`term'(`v')}: {bf:`v'} is a string variable; nwergm needs a numeric attribute.{p_end}"
+		di "{p 0 0 2}{err}Encode it first, e.g. {bf:encode `v', generate(`v'_n)}, and specify {bf:`term'(`v'_n)}.{p_end}"
 		error 109
 	}
 	local __nn = _N
@@ -3952,7 +3952,7 @@ program _nwergm_numvar
 		capture mata: st_local("__nna", strofreal(missing(st_data(1::`__nn', "`v'")[__nwergm_last_G.mode`__md'nodes])))
 	}
 	if `__nna' > 0 {
-		di "{err}In term {bf:`term'}: attribute {bf:`v'} has missing data, which is not currently supported by ergm."
+		di "{p 0 0 2}{err}In term {bf:`term'}: attribute {bf:`v'} has missing data, which is not currently supported by ergm.{p_end}"
 		error 416
 	}
 end

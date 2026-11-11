@@ -1,4 +1,4 @@
-*! version 1.5.9  10nov2026 _nwergm_struct: parse and register the structural ergm terms given in nwergm's structural() option
+*! version 1.5.10  11nov2026 _nwergm_struct: parse and register the structural ergm terms given in nwergm's structural() option
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -143,7 +143,7 @@ program _nwergm_struct, rclass
 			local __ns_ne2 ""
 			capture mata: st_local("__ns_ne2", strofreal(2 * __nwergm_last_G.nties, "%18.0g"))
 			if "`__ns_ne2'" == "" {
-				di "{err}degcrossprod needs an observed network (it is scaled by the observed number of ties); it is not available in nwergm simulate."
+				di "{p 0 0 2}{err}degcrossprod needs an observed network (it is scaled by the observed number of ties); it is not available in nwergm simulate.{p_end}"
 				error 198
 			}
 			local slots "1009,`__ns_ne2',0,0,0,0"
@@ -155,7 +155,7 @@ program _nwergm_struct, rclass
 			local __ns_sig ""
 			capture mata: st_local("__ns_sig", strofreal(ns_degcor_sigma2(__nwergm_last_G), "%25.17g"))
 			if "`__ns_sig'" == "" {
-				di "{err}degcor needs an observed network (its change statistic is standardised by the observed degree variance); it is not available in nwergm simulate."
+				di "{p 0 0 2}{err}degcor needs an observed network (its change statistic is standardised by the observed degree variance); it is not available in nwergm simulate.{p_end}"
 				error 198
 			}
 			local slots "1010,`__ns_sig',0,0,0,0"
@@ -186,7 +186,7 @@ program _nwergm_struct, rclass
 				local cn "altkstar.`LAM'"
 			}
 			else {
-				di "{err}altkstar without {bf:fixed} (the curved form) is not available yet; use altkstar(lambda=# fixed)."
+				di "{p 0 0 2}{err}altkstar without {bf:fixed} (the curved form) is not available yet; use altkstar(lambda=# fixed).{p_end}"
 				error 198
 			}
 		}
@@ -231,11 +231,11 @@ program _nwergm_struct, rclass
 			local ksel ""
 			foreach kk of numlist `KV' {
 				if `kk' > `nodes' {
-					di "{txt}cycles of length greater than the network size cannot exist and their statistics will be omitted"
+					di "{p 0 0 2}{txt}cycles of length greater than the network size cannot exist and their statistics will be omitted{p_end}"
 					continue
 				}
 				if !`dir' & `kk' < 3 {
-					di "{txt}cycles of length less than 3 cannot exist in an undirected network and their statistics will be omitted"
+					di "{p 0 0 2}{txt}cycles of length less than 3 cannot exist in an undirected network and their statistics will be omitted{p_end}"
 					continue
 				}
 				if `kk' < 2 {
@@ -243,7 +243,7 @@ program _nwergm_struct, rclass
 					continue
 				}
 				if `dir' & `SEMI' & `kk' == 2 {
-					di "{txt}semicycles of length 2 are not currently supported and their statistics will be omitted"
+					di "{p 0 0 2}{txt}semicycles of length 2 are not currently supported and their statistics will be omitted{p_end}"
 					continue
 				}
 				if `kk' > 100 {
@@ -422,7 +422,7 @@ program _nwergm_struct, rclass
 					}
 				}
 				else if `nf' != `nt' {
-					di "{err}The arguments of term {bf:`tname'} must have either the same length, or one of them must have length 1."
+					di "{p 0 0 2}{err}The arguments of term {bf:`tname'} must have either the same length, or one of them must have length 1.{p_end}"
 					error 198
 				}
 				local nf : word count `FROMV'
@@ -537,7 +537,7 @@ program _nwergm_struct, rclass
 			confirm variable `attrvar'
 			capture confirm numeric variable `attrvar'
 			if _rc {
-				di "{err}{bf:`tname'}: attribute {bf:`attrvar'} is a string variable; nwergm needs a numeric attribute. Encode it first."
+				di "{p 0 0 2}{err}{bf:`tname'}: attribute {bf:`attrvar'} is a string variable; nwergm needs a numeric attribute. Encode it first.{p_end}"
 				error 109
 			}
 		}
@@ -639,7 +639,7 @@ program _nwergm_struct, rclass
 		if `"`covnet'"' != "" {
 			_nwsyntax `covnet', max(1) other(lt`nterm')
 			if `lt`nterm'nodes' != `nodes' {
-				di "{err}localtriangle(): network {bf:`covnet'} has a different number of nodes than {bf:`netname'}."
+				di "{p 0 0 2}{err}localtriangle(): network {bf:`covnet'} has a different number of nodes than {bf:`netname'}.{p_end}"
 				error 198
 			}
 			mata: `__td'.edgecovmat = *(`lt`nterm'netobj'->get_matrix_mod(0,("`directed'"=="true")))
@@ -662,11 +662,11 @@ capture program drop _nwergm_struct_need
 program _nwergm_struct_need
 	args need dir tname netname
 	if "`need'" == "dir" & `dir' == 0 {
-		di "{err}structural(): term {bf:`tname'} requires a directed network; {bf:`netname'} is undirected."
+		di "{p 0 0 2}{err}structural(): term {bf:`tname'} requires a directed network; {bf:`netname'} is undirected.{p_end}"
 		error 198
 	}
 	if "`need'" == "und" & `dir' == 1 {
-		di "{err}structural(): term {bf:`tname'} requires an undirected network; {bf:`netname'} is directed."
+		di "{p 0 0 2}{err}structural(): term {bf:`tname'} requires an undirected network; {bf:`netname'} is directed.{p_end}"
 		error 198
 	}
 end

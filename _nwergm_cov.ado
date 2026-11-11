@@ -1,4 +1,4 @@
-*! version 1.5.9  10nov2026 _nwergm_cov: covariate-term registration helper for nwergm (R ergm's nodemix, nodefactor, ...)
+*! version 1.5.10  11nov2026 _nwergm_cov: covariate-term registration helper for nwergm (R ergm's nodemix, nodefactor, ...)
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -34,7 +34,7 @@ program _nwergm_cov, rclass
 			capture quietly _nwsyntax `v', max(1) other(zz)
 			if _rc == 0 {
 				if `zznodes' != `nn' {
-					di "{err}`term'() network {bf:`v'} has a different number of nodes than the model network."
+					di "{p 0 0 2}{err}`term'() network {bf:`v'} has a different number of nodes than the model network.{p_end}"
 					error 198
 				}
 				mata: `td'.edgecovmat = *(`zznetobj'->get_matrix_mod(1, `isdir'))
@@ -57,7 +57,7 @@ program _nwergm_cov, rclass
 			}
 			mata: st_local("__nacov", strofreal(ergm_offdiag_missing(`td'.edgecovmat)))
 			if `__nacov' {
-				di "{err}In term {bf:`term'}: network {bf:`v'} has missing dyads, which is not supported for a dyadic covariate."
+				di "{p 0 0 2}{err}In term {bf:`term'}: network {bf:`v'} has missing dyads, which is not supported for a dyadic covariate.{p_end}"
 				error 416
 			}
 			if "`term'" == "edgecov" {
@@ -173,14 +173,14 @@ program _nwergm_covattr, rclass
 	}
 	capture confirm numeric variable `v'
 	if _rc {
-		di "{err}{bf:`term'(`nm')}: {bf:`nm'} is a string variable; nwergm needs a numeric attribute."
-		di "{err}Encode it first, e.g. {bf:encode `nm', generate(`nm'_n)}, and specify {bf:`term'(`nm'_n)}."
+		di "{p 0 0 2}{err}{bf:`term'(`nm')}: {bf:`nm'} is a string variable; nwergm needs a numeric attribute.{p_end}"
+		di "{p 0 0 2}{err}Encode it first, e.g. {bf:encode `nm', generate(`nm'_n)}, and specify {bf:`term'(`nm'_n)}.{p_end}"
 		error 109
 	}
 	quietly count if missing(`v') in 1/`nodes'
 	if r(N) > 0 {
 		capture drop __nwergm_tmpattr
-		di "{err}In term {bf:`term'}: attribute {bf:`nm'} has missing data, which is not currently supported."
+		di "{p 0 0 2}{err}In term {bf:`term'}: attribute {bf:`nm'} has missing data, which is not currently supported.{p_end}"
 		error 416
 	}
 	return local var "`v'"

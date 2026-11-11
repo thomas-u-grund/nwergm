@@ -1,4 +1,4 @@
-*! version 1.5.9  10nov2026 _nwergm_gof.ado -- estat gof after nwergm, following R's gof.ergm(): observed values against simulations from the fitted model
+*! version 1.5.10  11nov2026 _nwergm_gof.ado -- estat gof after nwergm, following R's gof.ergm(): observed values against simulations from the fitted model
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -15,7 +15,7 @@ program _nwergm_gof, rclass
 	}
 	capture mata: __nwergm_last_G.n
 	if _rc {
-		di as err "no fitted nwergm model available for simulation - re-run nwergm before estat gof."
+		di as err "{p 0 0 2}no fitted nwergm model available for simulation - re-run nwergm before estat gof.{p_end}"
 		exit 498
 	}
 	if `nsim' < 2 {
@@ -41,11 +41,11 @@ program _nwergm_gof, rclass
 	local edirected `"`e(directed)'"'
 	capture _nwsyntax `depvar', max(1)
 	if _rc {
-		di as err "network `depvar' (the network nwergm was fitted on) is no longer loaded - estat gof needs it for the observed comparison statistics."
+		di as err "{p 0 0 2}network `depvar' (the network nwergm was fitted on) is no longer loaded - estat gof needs it for the observed comparison statistics.{p_end}"
 		exit 498
 	}
 	if `nodes' != e(nodes) | ("`directed'"=="true") != ("`edirected'"=="true") {
-		di as err "network `depvar' no longer matches the network nwergm was fitted on (nodes or directedness differ) - re-fit before running estat gof."
+		di as err "{p 0 0 2}network `depvar' no longer matches the network nwergm was fitted on (nodes or directedness differ) - re-fit before running estat gof.{p_end}"
 		exit 498
 	}
 	local dir = ("`edirected'" == "true")
@@ -95,7 +95,7 @@ program _nwergm_gof, rclass
 			if `nm' != 1 local found ""
 		}
 		if "`found'" == "" {
-			di as err "estat gof: unknown statistic `tok'; choose from degree idegree odegree b1degree b2degree espartners dspartners distance triadcensus model."
+			di as err "{p 0 0 2}estat gof: unknown statistic `tok'; choose from degree idegree odegree b1degree b2degree espartners dspartners distance triadcensus model.{p_end}"
 			exit 198
 		}
 		if "`found'" == "model" local nmodel = `nmodel' + `sign'
@@ -299,7 +299,7 @@ program _nwergm_gof, rclass
 		capture graph drop `panel1'
 		capture graph drop `panel2'
 		mata: mata drop `obsdeg' `obsgeo' `degsumm' `geosumm'
-		di as txt "(plot saved as {bf:`name'}; box and whiskers summarize the simulated draws, the dashed line is the observed network)"
+		di as txt "{p 0 0 2}(plot saved as {bf:`name'}; box and whiskers summarize the simulated draws, the dashed line is the observed network){p_end}"
 	}
 	capture mata: mata drop __gofE7_x
 	foreach m in p s o {

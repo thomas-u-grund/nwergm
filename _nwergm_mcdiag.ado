@@ -1,4 +1,4 @@
-*! version 1.5.9  10nov2026 _nwergm_mcdiag.ado -- the report of R's mcmc.diagnostics() for the final MCMC sample of an nwergm fit
+*! version 1.5.10  11nov2026 _nwergm_mcdiag.ado -- the report of R's mcmc.diagnostics() for the final MCMC sample of an nwergm fit
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -21,7 +21,7 @@ program _nwergm_mcdiag, rclass
 	local depvar `"`e(depvar)'"'
 	capture _nwsyntax `depvar', max(1)
 	if _rc {
-		di as txt "(network `depvar' is no longer loaded; the R-style sample diagnostics need it for the observed statistics)"
+		di as txt "{p 0 0 2}(network `depvar' is no longer loaded; the R-style sample diagnostics need it for the observed statistics){p_end}"
 		exit
 	}
 	local dir = ("`e(directed)'" == "true")

@@ -1,4 +1,4 @@
-*! version 1.5.9  10nov2026 _nwergm_libcheck: clear message when the core and nwergm Mata libraries do not match
+*! version 1.5.10  11nov2026 _nwergm_libcheck: clear message when the core and nwergm Mata libraries do not match
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -20,8 +20,8 @@ program _nwergm_libcheck
 	capture mata: ergm_libcheck()
 	local rc = _rc
 	if inlist(`rc', 3021, 3260) {
-		di as err "The installed core nwcommands and nwergm were built for different versions (their Mata libraries do not match)."
-		di as err "Reinstall the package: {bf:nwinstall, models} or {bf:net install nwergm, from(https://raw.githubusercontent.com/thomas-u-grund/nwergm/main/) replace}."
+		di as err "{p 0 0 2}The installed core nwcommands and nwergm were built for different versions (their Mata libraries do not match).{p_end}"
+		di as err "{p 0 0 2}Reinstall the package: {bf:nwinstall, models} or {bf:net install nwergm, from(https://raw.githubusercontent.com/thomas-u-grund/nwergm/main/) replace}.{p_end}"
 		di as err "Or build the libraries with your own Stata: {bf:nwinstall, buildmata(all)}."
 		exit `rc'
 	}

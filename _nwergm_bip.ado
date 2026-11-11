@@ -1,4 +1,4 @@
-*! version 1.5.9  10nov2026 _nwergm_bip
+*! version 1.5.10  11nov2026 _nwergm_bip
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -109,7 +109,7 @@ program _nwergm_bip_one, rclass
 		local a1 "`by'"
 		local L1 "`levels'"
 		if `"`main'"' != "" & `"`main'"' != "all" {
-			di "{err}{bf:bconcurrent`m'()}: unexpected argument {bf:`main'}; use {bf:bconcurrent`m'(all)} or {bf:bconcurrent`m'(by(var) levels(numlist))}"
+			di "{p 0 0 2}{err}{bf:bconcurrent`m'()}: unexpected argument {bf:`main'}; use {bf:bconcurrent`m'(all)} or {bf:bconcurrent`m'(by(var) levels(numlist))}{p_end}"
 			error 198
 		}
 	}
@@ -230,7 +230,7 @@ program _nwergm_bip_one, rclass
 		local L1 "`levels'"
 		if "`a1'" == "" {
 			// no attribute: the original fixed-decay term
-			di "{err}{bf:bgwdegree`m'(`spec')}: give {bf:attr(var)} or use the plain form {bf:bgwdegree`m'(decay)}."
+			di "{p 0 0 2}{err}{bf:bgwdegree`m'(`spec')}: give {bf:attr(var)} or use the plain form {bf:bgwdegree`m'(decay)}.{p_end}"
 			error 198
 		}
 	}
@@ -290,8 +290,8 @@ program _nwergm_bip_numvar
 	confirm variable `v'
 	capture confirm numeric variable `v'
 	if _rc {
-		di "{err}{bf:`term'(`v')}: {bf:`v'} is a string variable; nwergm needs a numeric attribute."
-		di "{err}Encode it first, e.g. {bf:encode `v', generate(`v'_n)}, and specify {bf:`term'(`v'_n)}."
+		di "{p 0 0 2}{err}{bf:`term'(`v')}: {bf:`v'} is a string variable; nwergm needs a numeric attribute.{p_end}"
+		di "{p 0 0 2}{err}Encode it first, e.g. {bf:encode `v', generate(`v'_n)}, and specify {bf:`term'(`v'_n)}.{p_end}"
 		error 109
 	}
 end

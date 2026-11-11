@@ -1,4 +1,4 @@
-*! version 1.5.9  10nov2026 nwergm_estat
+*! version 1.5.10  11nov2026 nwergm_estat
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -44,7 +44,7 @@ program define nwergm_estat_mcmcdiag, rclass
 		exit 301
 	}
 	if `"`e(method)'"' != "mcmle" {
-		di as err "{bf:estat mcmcdiag} is only available after {bf:method(mcmle)} - MPLE fits involve no MCMC simulation."
+		di as err "{p 0 0 2}{bf:estat mcmcdiag} is only available after {bf:method(mcmle)} - MPLE fits involve no MCMC simulation.{p_end}"
 		exit 498
 	}
 	// harmonisation unit 154: e(mcmcsample) is now optional (nwergm's
@@ -53,7 +53,7 @@ program define nwergm_estat_mcmcdiag, rclass
 	// "matrix not found".
 	capture confirm matrix e(mcmcsample)
 	if _rc {
-		di as err "{bf:estat mcmcdiag} needs {bf:e(mcmcsample)}, which the preceding {bf:nwergm} call did not post (it was run with {bf:nomcmcsample}). Refit without {bf:nomcmcsample} to use {bf:estat mcmcdiag}."
+		di as err "{p 0 0 2}{bf:estat mcmcdiag} needs {bf:e(mcmcsample)}, which the preceding {bf:nwergm} call did not post (it was run with {bf:nomcmcsample}). Refit without {bf:nomcmcsample} to use {bf:estat mcmcdiag}.{p_end}"
 		exit 498
 	}
 
@@ -68,7 +68,7 @@ program define nwergm_estat_mcmcdiag, rclass
 	else if `pvalue' == 0.025 local __ergm_hwcrit = 0.5806146822
 	else if `pvalue' == 0.01 local __ergm_hwcrit = 0.7434593138
 	else {
-		di as err "{bf:pvalue()} must be one of 0.10, 0.05, 0.025, or 0.01 - the Heidelberger-Welch stationarity test is evaluated against a fixed table of Cramer-von-Mises critical values (see unw_ergm.do's own header comment on ergm_heidel_diag() for why), not a continuously computed p-value."
+		di as err "{p 0 0 2}{bf:pvalue()} must be one of 0.10, 0.05, 0.025, or 0.01 - the Heidelberger-Welch stationarity test is evaluated against a fixed table of Cramer-von-Mises critical values (see unw_ergm.do's own header comment on ergm_heidel_diag() for why), not a continuously computed p-value.{p_end}"
 		exit 198
 	}
 
@@ -245,7 +245,7 @@ program define nwergm_estat_mcmcdiag, rclass
 			capture graph drop `__g'
 		}
 		restore
-		di as txt "(plot saved as {bf:`name'}; each row is one model statistic's MCMC trace and density from the final simulation)"
+		di as txt "{p 0 0 2}(plot saved as {bf:`name'}; each row is one model statistic's MCMC trace and density from the final simulation){p_end}"
 	}
 
 	mata: mata drop `samp'
@@ -412,7 +412,7 @@ end
 capture program drop nwergm_estat_ic
 program define nwergm_estat_ic, rclass
 	if missing(e(ll)) {
-		di as err "no log-likelihood was stored for this fit (it was fitted with the nologlik option)"
+		di as err "{p 0 0 2}no log-likelihood was stored for this fit (it was fitted with the nologlik option){p_end}"
 		exit 498
 	}
 	tempname M
