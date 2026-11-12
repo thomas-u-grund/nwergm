@@ -31,7 +31,7 @@ parentheses.
 {phang}
 {opt estimate(mle|mple|cd)} ({cmd:estimate=}) chooses the estimator. {cmd:mle} (the default) is the maximum pseudolikelihood fit for dyad-independent models and Monte Carlo maximum likelihood otherwise,
 {cmd:mple} is the maximum pseudolikelihood estimate and {cmd:cd} is contrastive divergence (CD.nsteps proposals from the observed network per draw, started from zeros; the
-covariance in {cmd:e(V)} is that of the CD sample, R reports it as missing). {cmd:method(mple|mcmle|cd)} is the older spelling.
+covariance in {cmd:e(V)} is that of the CD sample, R reports it as missing). {cmd:method(mple|mcmle|cd)} is a synonym.
 
 {phang}
 {opt mainmethod(mcmle|sa)} ({cmd:main.method=}) chooses the Monte Carlo algorithm: Monte Carlo maximum likelihood or Stochastic-Approximation
@@ -39,10 +39,11 @@ covariance in {cmd:e(V)} is that of the CD sample, R reports it as missing). {cm
 set SA.burnin, SA.interval, SA.phase3_n, SA.initial_gain and SA.nsubphases.
 
 {phang}
-{opt init(numlist)} ({cmd:control.ergm(init=)}) gives one value per coefficient, in the order of the coefficient table; {cmd:.} or {cmd:NA} leaves a value to be estimated. Values for With a curved (free-decay) term, {cmd:init()} is available for {cmd:method(mple)} and needs one value (or
-{cmd:.}) for each parameter of the model, the curved term's weight and decay or lambda last; it is the starting point of the pseudolikelihood fit.
+{opt init(numlist)} ({cmd:control.ergm(init=)}) gives one value per coefficient, in the order of the coefficient table; {cmd:.} or {cmd:NA} leaves a value to be estimated. Values for
 {opt offset()} coefficients replace those of {opt offset()}; other values are starting values for the Monte Carlo fit (and are held fixed in the pseudolikelihood step that finds the missing ones). If every
 value is given the pseudolikelihood start is skipped. With {cmd:estimate(mple)} only the offset values are used.
+With a curved (free-decay) term, {cmd:init()} is available for {cmd:method(mple)} and needs one value (or
+{cmd:.}) for each parameter of the model, the curved term's weight and decay or lambda last; it is the starting point of the pseudolikelihood fit.
 
 {title:Maximum pseudolikelihood}
 
@@ -63,7 +64,7 @@ and, with {cmd:estimate(mple)}, reports the iterate of R's {cmd:glm()} (huge coe
 {opt mcmleiterations(#)} ({cmd:MCMLE.maxit}, default 60), {opt mcmleconfidence(#)} ({cmd:MCMLE.confidence}, 0.99), {opt mcmletermination(confidence|hummel|hotelling|none)} ({cmd:MCMLE.termination}),
 {opt mcmlesteplength(#)} and {opt mcmlestepmargin(#)} ({cmd:MCMLE.steplength}, {cmd:MCMLE.steplength.margin}; margin {cmd:.} switches the Hummel step length off), {opt mcmleeffectivesize(#)} ({cmd:MCMLE.effectiveSize}),
 {opt mcmcburnin()}, {opt mcmcinterval()} and {opt mcmcsamplesize()} ({cmd:MCMLE.burnin}, {cmd:MCMLE.interval}, {cmd:MCMLE.samplesize}).
-With {cmd:confidence} (the default) the fit stops when a Hotelling-type test puts the estimating equations inside the tolerance region at the given confidence; as in R, its covariance is that of the multivariate autoregressive spectral density of the sample ({cmd:spectrum0.mvar()}) with n/inflation - 1 degrees of freedom, and the sample size is raised by up to {cmd:MCMLE.confidence.boost} (2) while the test is not passed. Versions up to 1.5.0 used the ordinary covariance times one scalar inflation factor, which understated the variance of strongly correlated statistics and could stop the fit earlier than R.
+With {cmd:confidence} (the default) the fit stops when a Hotelling-type test puts the estimating equations inside the tolerance region at the given confidence; as in R, its covariance is that of the multivariate autoregressive spectral density of the sample ({cmd:spectrum0.mvar()}) with n/inflation - 1 degrees of freedom, and the sample size is raised by up to {cmd:MCMLE.confidence.boost} (2) while the test is not passed.
 {cmd:hummel} and {cmd:hotelling} stop after the criterion has held in two successive iterations, the sample size being raised by {cmd:MCMLE.last.boost} (4) after the first; {cmd:none} runs all iterations.
 Contrastive divergence uses {opt cdnsteps()} (CD.nsteps, 8), {opt cdsamplesize()} (default CD.samplesize.per_theta = 128 times the number of free coefficients) and {opt mcmleiterations()} for CD.maxit.
 If the statistics of the sample do not vary at all the fit stops with the error of R: unconstrained MCMC sampling did not mix at all.
@@ -87,7 +88,7 @@ The two follow the same chain rules but use the random numbers differently, so t
 {cmd:estat gof} follows {cmd:gof.ergm()}: the fit is simulated {opt nsim()} times (default 100, burn-in and interval of the fit, the interval rescaled by sample size / nsim as in R) and for each statistic the observed value,
 the minimum, mean and maximum of the simulations and the Monte Carlo p-value 2 min(P(sim >= obs), P(sim <= obs)) are shown; rows that are zero throughout are left out. {opt gof(statistics)} chooses among
 {cmd:degree idegree odegree b1degree b2degree espartners dspartners distance triadcensus model} (a minus sign drops {cmd:model}); the default is the R default for the type of network. The tables are returned
-in {cmd:r(gof_}{it:statistic}{cmd:)}. The earlier summary values ({cmd:r(obs_meandeg)}, {cmd:r(sim_avgpath)}, {cmd:r(obs_triad_}{it:cat}{cmd:)} ...) are still returned.
+in {cmd:r(gof_}{it:statistic}{cmd:)}. The summary values ({cmd:r(obs_meandeg)}, {cmd:r(sim_avgpath)}, {cmd:r(obs_triad_}{it:cat}{cmd:)} ...) of {help nwergm_estat} are also returned.
 
 {title:estat mcmcdiag}
 

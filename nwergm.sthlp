@@ -81,7 +81,7 @@ Estimation methods (MPLE variants, contrastive divergence, stochastic approximat
 {synopt:{opt bstar2(numlist)}}Bipartite networks only: the {cmd:b2star()} term - the {opt bstar1()} mirror for the MODE-2 endpoint{p_end}
 {synopt:{opth bnodematch1(varlist)}}Bipartite networks only: the {cmd:b1nodematch()} term - pooled homophily (default-parameter scope: no {cmd:diff()}/{cmd:alpha()}/{cmd:beta()}/{cmd:byb2attr()}) on each listed categorical attribute, counting only ties whose MODE-1 endpoint carries the matching level. Dyad-DEPENDENT (needs {opt method(mcmle)}), unlike {opt bcov1()}/{opt bfactor1()}. Reported coefficient name: {cmd:b1nodematch_}{it:varname}{p_end}
 {synopt:{opth bnodematch2(varlist)}}Bipartite networks only: the {cmd:b2nodematch()} term - the {opt bnodematch1()} mirror for the MODE-2 endpoint. Reported coefficient name: {cmd:b2nodematch_}{it:varname}{p_end}
-{synopt:{opt bgwdegree1(real)}}Bipartite networks only: the {cmd:gwb1degree()} term - geometrically weighted degree, fixed decay, counting only MODE-1 nodes' own degree. Dyad-DEPENDENT (needs {opt method(mcmle)}); no curved (estimated-decay) counterpart yet, unlike plain {opt gwdegree()}/{opt gwdegreefree()}. Reported coefficient name: {cmd:bgwdegree1_}{it:decay}{p_end}
+{synopt:{opt bgwdegree1(real)}}Bipartite networks only: the {cmd:gwb1degree()} term - geometrically weighted degree, fixed decay, counting only MODE-1 nodes' own degree. Dyad-DEPENDENT (needs {opt method(mcmle)}); the curved (estimated-decay) counterpart is {opt bgwdegreefree1()}, see {help nwergm_bipartite:nwergm (two-mode)}. Reported coefficient name: {cmd:bgwdegree1_}{it:decay}{p_end}
 {synopt:{opt bgwdegree2(real)}}Bipartite networks only: the {cmd:gwb2degree()} term - the {opt bgwdegree1()} mirror for the MODE-2 endpoint. Reported coefficient name: {cmd:bgwdegree2_}{it:decay}{p_end}
 
 {marker gw_effects}{...}
@@ -153,22 +153,22 @@ Estimation methods (MPLE variants, contrastive divergence, stochastic approximat
 {synopt:{opt bridgesteps(#)}}Number of bridges for the log-likelihood evaluation; default 16 (R: {cmd:bridge.nsteps}){p_end}
 {synopt:{opt bridgesamplesize(#)}}Draws per bridge; default the sample size of the last MCMLE iteration (with {cmd:mcmleeffectivesize(0)}: {opt mcmcsamplesize()}){p_end}
 {synopt:{opt bridgeinterval(#)}}MCMC thinning within the bridges; default the final MCMLE interval divided by the number of bridges{p_end}
-{synopt:{opt mcmcburnin(int)}}MCMC burn-in steps before the recorded draws of each MCMLE iteration (R's {cmd:MCMLE.burnin}); default 16 times {opt mcmcinterval()}, that is 16,384. Versions before 1.2.0 used 3,000{p_end}
-{synopt:{opt mcmcinterval(int)}}MCMC steps between recorded draws (R's {cmd:MCMLE.interval}); default 1,024. Versions before 1.2.0 used 50. The earlier, faster but much less reliable settings are {cmd:mcmcburnin(3000) mcmcinterval(50)}{p_end}
-{synopt:{opt mcmcsamplesize(int)}}Number of recorded MCMC draws per MCMLE iteration. Default as in R ({cmd:MCMLE.samplesize}): the larger of 256 and 32 times the number of parameters, as the base size of an adaptive sample that is extended until the effective sample size reaches {opt mcmleeffectivesize()} (the number of draws kept, {cmd:e(mcmc_samplesize)}, is then usually larger). With {cmd:mcmleeffectivesize(0)} every iteration records exactly this many draws; default 3,000. Versions before 1.3.0 always recorded 3,000{p_end}
-{synopt:{opt mcmleeffectivesize(#)}}Target effective sample size of the adaptive MCMLE sample (R's {cmd:MCMLE.effectiveSize}); default 64. The effective size is computed as in R, from the multivariate autoregressive spectral density of the estimating equations ({cmd:spectrum0.mvar()}; since 1.5.1), and the burn-in is checked with the multivariate Geweke test ({cmd:geweke.diag.mv()}). {cmd:0} switches the adaptive sample off and uses fixed-size samples (R: {cmd:MCMLE.effectiveSize=NULL}), with the interval grown when the effective size stays low{p_end}
+{synopt:{opt mcmcburnin(int)}}MCMC burn-in steps before the recorded draws of each MCMLE iteration (R's {cmd:MCMLE.burnin}); default 16 times {opt mcmcinterval()}, that is 16,384{p_end}
+{synopt:{opt mcmcinterval(int)}}MCMC steps between recorded draws (R's {cmd:MCMLE.interval}); default 1,024. Faster but much less reliable settings are {cmd:mcmcburnin(3000) mcmcinterval(50)}{p_end}
+{synopt:{opt mcmcsamplesize(int)}}Number of recorded MCMC draws per MCMLE iteration. Default as in R ({cmd:MCMLE.samplesize}): the larger of 256 and 32 times the number of parameters, as the base size of an adaptive sample that is extended until the effective sample size reaches {opt mcmleeffectivesize()} (the number of draws kept, {cmd:e(mcmc_samplesize)}, is then usually larger). With {cmd:mcmleeffectivesize(0)} every iteration records exactly this many draws; default 3,000{p_end}
+{synopt:{opt mcmleeffectivesize(#)}}Target effective sample size of the adaptive MCMLE sample (R's {cmd:MCMLE.effectiveSize}); default 64. The effective size is computed as in R, from the multivariate autoregressive spectral density of the estimating equations ({cmd:spectrum0.mvar()}), and the burn-in is checked with the multivariate Geweke test ({cmd:geweke.diag.mv()}). {cmd:0} switches the adaptive sample off and uses fixed-size samples (R: {cmd:MCMLE.effectiveSize=NULL}), with the interval grown when the effective size stays low{p_end}
 {synopt:{opt mcmleiterations(int)}}Maximum MCMLE outer iterations (R's {cmd:MCMLE.maxit}); default 60. When the limit is reached without convergence the fit is reported with a warning and {cmd:e(converged)} = 0{p_end}
 {synopt:{opt proposal(uniform|random|tnt)}}Metropolis-Hastings proposal weights (R's {cmd:MCMC.prop.weights}); default {it:tnt}, which on a one-mode network is R's default SPDyad proposal (tie/no-tie steps mixed with steps on dyads that have a shared partner; {opt mcmcprop(sparse)} gives tie/no-tie steps alone, see {help nwergm_constraints}). All have a masked variant when {opt freedyads()} or {opt blockdiag()} is given{p_end}
 {synopt:{opt constraints(formula)}}Sample-space constraints written as in R's {cmd:constraints=} (edges, degrees, odegrees, idegrees, bd, blocks, blockdiag, fixedas, fixallbut, ...), several at once; see {help nwergm_constraints}{p_end}
 {synopt:{opt obsconstraints(formula)}}Observation-process constraints (R's {cmd:obs.constraints}); see {help nwergm_constraints}{p_end}
-{synopt:{opt mcmcprop(hints)}}R's {cmd:MCMC.prop} hint formula; default {cmd:sparse + .triadic} (SPDyad, since 1.5.0), {cmd:sparse} for tie/no-tie steps alone, {cmd:triadic(triFocus=}{it:#}{cmd:)} for another share of triadic steps; see {help nwergm_constraints}{p_end}
+{synopt:{opt mcmcprop(hints)}}R's {cmd:MCMC.prop} hint formula; default {cmd:sparse + .triadic} (SPDyad), {cmd:sparse} for tie/no-tie steps alone, {cmd:triadic(triFocus=}{it:#}{cmd:)} for another share of triadic steps; see {help nwergm_constraints}{p_end}
 {synopt:{opt mcmcmaxedges(#)}}R's {cmd:MCMC.maxedges}: stop sampling when the network has more ties than this{p_end}
-{synopt:{opth freedyads(netname)}}Restrict the dyad space to fit (see {bf:Remarks}): {bf:netname}'s own ties mark which dyads of the network being fit are free to vary during MCMC; every dyad NOT tied in {bf:netname} is held fixed at its observed value for the rest of the fit (R ergm's own {cmd:fixallbut()} constraint). Compatible with both {opt proposal(uniform)} and {opt proposal(tnt)}, and native (C)-accelerated when otherwise eligible. See {bf:Limitations (v1 scope)} below{p_end}
+{synopt:{opth freedyads(netname)}}Restrict the dyad space to fit (see {bf:Remarks}): {bf:netname}'s own ties mark which dyads of the network being fit are free to vary during MCMC; every dyad NOT tied in {bf:netname} is held fixed at its observed value for the rest of the fit (R ergm's own {cmd:fixallbut()} constraint). Compatible with both {opt proposal(uniform)} and {opt proposal(tnt)}, and native (C)-accelerated when otherwise eligible. See {bf:Limitations} below{p_end}
 {synopt:{opth blockdiag(varname)}}Restrict the dyad space to fit (see {bf:Remarks}): only dyads sharing the same value of {bf:varname} are free to vary during MCMC; every cross-value dyad is held fixed at its observed value for the rest of the fit (R ergm's own {cmd:blockdiag()} constraint). Cannot be combined with {opt freedyads()}. Compatible with both {opt proposal(uniform)} and {opt proposal(tnt)}, and native (C)-accelerated when otherwise eligible{p_end}
 {synopt:{opt seed(int)}}Set the random-number seed before simulating. The same call with the same {opt seed()}, data and plugin gives identical coefficients in any session and whatever was loaded or fitted before. A different operating system or plugin build, or different {opt mcmcinterval()}, {opt mcmcsamplesize()} or other controls, gives a different (statistically equivalent) Monte Carlo fit; the stream of random numbers is not the one of R, so results match R only up to Monte Carlo error. Without {opt seed()} the current Stata seed is used{p_end}
 {synopt:{opt verbose}}Show MPLE/MCMLE iteration detail{p_end}
 {synopt:{opt spcache}}Enable the incremental shared-partner cache for {opt gwesp()}/{opt gwdsp()}/{opt gwnsp()}/{opt esp()}/{opt dsp()}/{opt triangle}/{opt ctriple} on an undirected network; OFF by default because direct benchmarking found it a net LOSS below roughly average degree 30-40 (the common case) and a net win only above that - enable only for denser undirected networks; no effect on a directed network or without any of those terms{p_end}
-{synopt:{opt fixdensity}}Hold the total tie count fixed during MCMC (R ergm's own {cmd:constraints=~edges}), via a compound tie/non-tie swap proposal rather than the ordinary single-dyad toggle; native (C)-accelerated when otherwise eligible. Requires {opt method(mcmle)} and at least one term besides {opt edges} (which is dropped, not estimated, under this constraint - see {bf:Remarks}). Cannot currently be combined with {opt freedyads()}/{opt blockdiag()} - v1 supports one dyad-space constraint at a time{p_end}
+{synopt:{opt fixdensity}}Hold the total tie count fixed during MCMC (R ergm's own {cmd:constraints=~edges}), via a compound tie/non-tie swap proposal rather than the ordinary single-dyad toggle; native (C)-accelerated when otherwise eligible. Requires {opt method(mcmle)} and at least one term besides {opt edges} (which is dropped, not estimated, under this constraint - see {bf:Remarks}). Cannot currently be combined with {opt freedyads()}/{opt blockdiag()} - only one dyad-space constraint may be given at a time{p_end}
 {synopt:{opt nonative}}Force the Mata backend even on an otherwise plugin-eligible model - for testing or direct comparison against the plugin (C) backend; very slow; not needed for ordinary use, since {cmd:nwergm} already picks the native backend automatically whenever a model qualifies{p_end}
 {synopt:{opt nomcmcsample}}Skip posting {bf:e(mcmcsample)} ({bf:method(mcmle)} only). Populating this matrix from Mata is the single slowest step for a fit with a large {opt mcmcsamplesize()} - a genuine Stata matrix-engine cost at bulk-data scale (confirmed by direct timing: over 30 seconds at 100,000 rows), not something {help nwergm_estat:estat mcmcdiag}'s own consumption of it can be blamed for or sped up (reading the already-posted matrix back is fast regardless of size - the cost is entirely in creating it in the first place). Specify {opt nomcmcsample} when fitting with an unusually large {opt mcmcsamplesize()} and you do not need {cmd:estat mcmcdiag} or to inspect the raw sample directly - the coefficient table, standard errors, and every other stored result are completely unaffected{p_end}
 
@@ -275,9 +275,9 @@ The build clears the data and the Mata objects in memory. See {help nwinstall##b
 {title:Supported network types}
 
 {pstd}
-Binary: yes (only) - MPLE/MCMLE estimation here is for a binary tie-formation model; a valued network's own tie values are not used as an outcome (no weighted ERGM family is implemented); a valued network is fitted as the binary graph (a tie is present when its value is not zero), as R's ergm does without response=; one note says that the tie values are ignored (none when every value is 1). Directed: yes, most terms have both directed and undirected forms (see the term list). Weighted: not applicable (see Binary). Signed: not applicable. Two-mode: yes, undirected only - the two-mode terms are listed in {help nwergm_bipartite:nwergm (two-mode)} (the older ones are {opt edges}, {opt bcov1()}/{opt bcov2()}/{opt bfactor1()}/{opt bfactor2()}, {opt bdegree1()}/{opt bdegree2()}/{opt bstar1()}/{opt bstar2()}, {opt bnodematch1()}/{opt bnodematch2()}, {opt bgwdegree1()}/{opt bgwdegree2()}); see Limitations below.
+Binary: yes (only) - MPLE/MCMLE estimation here is for a binary tie-formation model; a valued network's own tie values are not used as an outcome (no weighted ERGM family is implemented); a valued network is fitted as the binary graph (a tie is present when its value is not zero), as R's ergm does without response=; one note says that the tie values are ignored (none when every value is 1). Directed: yes, most terms have both directed and undirected forms (see the term list). Weighted: not applicable (see Binary). Signed: not applicable. Two-mode: yes, undirected only - the two-mode terms are listed in {help nwergm_bipartite:nwergm (two-mode)} (the ones described in this help file are {opt edges}, {opt bcov1()}/{opt bcov2()}/{opt bfactor1()}/{opt bfactor2()}, {opt bdegree1()}/{opt bdegree2()}/{opt bstar1()}/{opt bstar2()}, {opt bnodematch1()}/{opt bnodematch2()}, {opt bgwdegree1()}/{opt bgwdegree2()}); see Limitations below.
 
-{title:Limitations (v1 scope)}
+{title:Limitations}
 
 {pstd}
 {cmd:nwergm} estimates {bf:binary, static} ERGMs only:
@@ -322,8 +322,8 @@ constant the way R ergm itself displays it.{p_end}
 {p2colreset}{...}
 
 {pstd}
-The effect library has grown considerably past its original small first-release set (see the
-{cmd:Syntax} block above for the complete, current option list) and now covers, in addition to
+The effect library (see the {cmd:Syntax} block above for the complete option list) covers, in
+addition to
 {opt edges}/{opt mutual}: the node-covariate family ({opt nodematch()}, {opt nodematchdiff()},
 {opt nodecov()}, {opt nodeicov()}/{opt nodeocov()}, {opt absdist()}, {opt nodefactor()},
 {opt nodeofactor()}/{opt nodeifactor()}, {opt nodemix()}, {opt sender}, {opt receiver}); dyadic
@@ -379,11 +379,10 @@ the diagnostics and the output are written in Mata and Stata. The sampling and o
 {opt structural()} and the operators exist in the plugin only and stop with a message when it is missing.
 
 {pstd}
-A slower Mata implementation of the original terms still exists. It is used only when the plugin file
+A slower Mata implementation of the other terms also exists. It is used only when the plugin file
 for the platform is missing, when the option {opt nonative} is given (for testing and comparison), or when a
 model exceeds the capacity of the plugin. The two are statistically indistinguishable for {opt method(mcmle)}
-(independent random-number streams, so not bit-identical sample paths, but the same target distribution; see
-the package's own {cmd:cscripts/test_nwergm_native.do}) and give a bit-identical design matrix for
+(independent random-number streams, so not bit-identical sample paths, but the same target distribution) and give a bit-identical design matrix for
 {opt method(mple)}.
 
 {pstd}
@@ -590,9 +589,8 @@ existing network is required or read).
 
 {marker simulate_terms}{...}
 {pstd}
-As of this release, {cmd:nwergm simulate} supports the full {cmd:nwergm} term library - every
-term option listed in the {cmd:nwergm} {bf:Syntax} section above - not just the geometrically
-weighted family. Each family sources its data the same way it does during estimation:
+{cmd:nwergm simulate} supports the full {cmd:nwergm} term library - every
+term option listed in the {cmd:nwergm} {bf:Syntax} section above. Each family sources its data the same way it does during estimation:
 
 {p2colset 9 32 34 2}{...}
 {p2col:{it:no external data}}{opt mutual}, {opt concurrent}, {opt triangle}, {opt ctriple},
@@ -651,8 +649,8 @@ matching {cmd:nwergm}'s own control conventions rather than continuing one long 
 
 {pstd}
 As in R's {cmd:simulate()}, {opt mcmcinterval()} defaults to 1,024 and {opt mcmcburnin()} to 16 times
-the interval (16,384). Versions before 1.2.0 used 50 and 3,000; {cmd:mcmcburnin(3000) mcmcinterval(50)}
-restores them.
+the interval (16,384). {cmd:mcmcburnin(3000) mcmcinterval(50)} is faster but much less
+reliable.
 
 {pstd}
 The C source of the plugin comes with the package: {cmd:net get nwergm, from(https://raw.githubusercontent.com/thomas-u-grund/nwergm/main)}

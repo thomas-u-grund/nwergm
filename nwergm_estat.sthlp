@@ -70,8 +70,7 @@ discard fraction achieved it. {opt pvalue()} sets the significance level and mus
 {bf:0.10}, {bf:0.05} (the default), {bf:0.025}, or {bf:0.01} - the test is evaluated against a
 fixed table of Cramer-von-Mises critical values at these four levels (each solved directly from
 the real {cmd:coda} package's own {cmd:pcramer()} CDF, not approximated), rather than a
-continuously computed p-value; see {cmd:unw_ergm.do}'s own header comment above
-{cmd:ergm_heidel_diag()} for why. Only once stationarity passes does the HALFWIDTH test run: the
+continuously computed p-value. Only once stationarity passes does the HALFWIDTH test run: the
 retained portion's own 95% CI halfwidth must be within {opt eps()} (default 10%) of its own
 mean - a separate, stricter precision check.
 

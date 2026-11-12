@@ -43,7 +43,7 @@ Node attributes are numeric variables in the observation order of the nodes (mod
 {synopt:{opt bdsp1(numlist)} | {opt bdsp2(numlist)}}Pairs of nodes of the mode with exactly d shared partners ({cmd:b1dsp}, {cmd:b2dsp}){p_end}
 {synopt:{opt bgwdsp1(decay)} | {opt bgwdsp2(decay)}}Geometrically weighted dyadwise shared partners, fixed decay ({cmd:gwb1dsp(fixed=TRUE)}){p_end}
 {synopt:{opt bgwdegreefree1(decay)} | {opt bgwdegreefree2()} | {opt bgwdspfree1()} | {opt bgwdspfree2()}}The curved versions (R's default {cmd:fixed=FALSE}); the number is the starting value of the decay{p_end}
-{synopt:{opt bgwdegree1(decay, attr(var) levels())}}{cmd:gwb1degree(decay, fixed=TRUE, attr=)}; plain {cmd:bgwdegree1(decay)} is unchanged{p_end}
+{synopt:{opt bgwdegree1(decay, attr(var) levels())}}{cmd:gwb1degree(decay, fixed=TRUE, attr=)}; plain {cmd:bgwdegree1(decay)} is the term described in {help nwergm}{p_end}
 {synopt:{opt bnodematch1(var, diff alpha(#) beta(#) byattr(var) keep() levels())}}Full {cmd:b1nodematch}: {opt byattr()} is R's {cmd:byb2attr}; {opt bnodematch2()} takes the mode-1 attribute as {opt byattr()}{p_end}
 {synopt:{opt nodemix(var)}}On a two-mode network, edges between each level of the mode-1 and each level of the mode-2 attribute (the first cell is omitted, as R){p_end}
 {synoptline}
