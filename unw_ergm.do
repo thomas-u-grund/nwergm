@@ -329,7 +329,7 @@ void ErgmGraph::set_dyadmask(real matrix freemat){
 	has_dyadmask = 1
 	freedyadmat = freemat
 	if (sum(freemat) == 0) {
-		errprintf("freedyads()/blockdiag(): the given dyad-eligibility mask leaves no free dyad at all (freedyads(): an all-untied network; blockdiag(): every node in its own singleton block) - every dyad would be fixed, leaving no dyad for the MCMC proposal to ever toggle.\n")
+		errprintf("{p 0 2 2}freedyads()/blockdiag(): the given dyad-eligibility mask leaves no free dyad at all (freedyads(): an all-untied network; blockdiag(): every node in its own singleton block) - every dyad would be fixed, leaving no dyad for the MCMC proposal to ever toggle.{p_end}\n")
 		exit(error(198))
 	}
 
@@ -1586,7 +1586,7 @@ real colvector _ergm_cov_pick(real colvector u, real rowvector idx){
 	}
 	if (cols(pos) > 0) {
 		if (max(pos) > rows(u)) {
-			errprintf("levels(): position %g is larger than the number of distinct attribute values (%g).\n", max(pos), rows(u))
+			errprintf("{p 0 2 2}levels(): position %g is larger than the number of distinct attribute values (%g).{p_end}\n", max(pos), rows(u))
 			exit(198)
 		}
 		return(u[pos'])
@@ -1753,7 +1753,7 @@ real matrix _ergm_attrcov_matrix(real colvector attr, real matrix mat, real scal
 
 	u = uniqrows(select(attr, attr :< .))
 	if (rows(mat) != rows(u) | cols(mat) != rows(u)) {
-		errprintf("attrcov(): mat has wrong dimensions for the attribute (%g distinct values, matrix is %g x %g).\n", rows(u), rows(mat), cols(mat))
+		errprintf("{p 0 2 2}attrcov(): mat has wrong dimensions for the attribute (%g distinct values, matrix is %g x %g).{p_end}\n", rows(u), rows(mat), cols(mat))
 		exit(198)
 	}
 	n = rows(attr)
@@ -1782,7 +1782,7 @@ void _ergm_covmat_load(class ErgmTermData scalar td, string scalar mname, real s
 
 	X = st_matrix(mname)
 	if (rows(X) != n | cols(X) != n) {
-		errprintf("Dyadic covariate matrix has dimension %g x %g, %g x %g expected.\n", rows(X), cols(X), n, n)
+		errprintf("{p 0 2 2}Dyadic covariate matrix has dimension %g x %g, %g x %g expected.{p_end}\n", rows(X), cols(X), n, n)
 		exit(198)
 	}
 	if (!directed) {
@@ -5063,7 +5063,7 @@ real scalar _ergm_cov_add(class ErgmTermData scalar td, string scalar term, real
 
 	if (term == "nodefactor" | term == "nodeifactor" | term == "nodeofactor") {
 		if ((term != "nodefactor") & !directed) {
-			errprintf("%s() requires a directed network; use nodefactor() for an undirected network.\n", term)
+			errprintf("{p 0 2 2}%s() requires a directed network; use nodefactor() for an undirected network.{p_end}\n", term)
 			exit(198)
 		}
 		u = _ergm_cov_levels(td.attr, lev, lval, base, 1)
@@ -5139,11 +5139,11 @@ real scalar _ergm_cov_add(class ErgmTermData scalar td, string scalar term, real
 		sa = (o3 == "" ? "identity" : strlower(o3))
 		pw = (o1 == "" ? 1 : strtoreal(o1))
 		if (!any(DIRS :== dr)) {
-			errprintf("diff(): dir() must be one of t-h, tail-head, b1-b2, h-t, head-tail, b2-b1\n")
+			errprintf("{p 0 2 2}diff(): dir() must be one of t-h, tail-head, b1-b2, h-t, head-tail, b2-b1{p_end}\n")
 			exit(198)
 		}
 		if (!any(SAS :== sa)) {
-			errprintf("diff(): signaction() must be one of identity, abs, posonly, negonly\n")
+			errprintf("{p 0 2 2}diff(): signaction() must be one of identity, abs, posonly, negonly{p_end}\n")
 			exit(198)
 		}
 		idx = select((1..cols(DIRS)), DIRS :== dr)
@@ -5174,7 +5174,7 @@ real scalar _ergm_cov_add(class ErgmTermData scalar td, string scalar term, real
 	}
 	if (term == "sociality") {
 		if (directed) {
-			errprintf("sociality() is for undirected networks; use sender()/receiver() for a directed network.\n")
+			errprintf("{p 0 2 2}sociality() is for undirected networks; use sender()/receiver() for a directed network.{p_end}\n")
 			exit(198)
 		}
 		d = (1::n)
@@ -7772,7 +7772,7 @@ real rowvector ErgmNativeTermStat(class ErgmGraph scalar G, class ErgmTermData s
 	real rowvector out
 
 	if (!ErgmNativeAvailable()) {
-		errprintf("this term needs the native plugin (ergm_mcmc), which could not be loaded; compile it on this computer with: nwinstall, buildplugin(nwergm)\n")
+		errprintf("{p 0 2 2}this term needs the native plugin (ergm_mcmc), which could not be loaded; compile it on this computer with: nwinstall, buildplugin(nwergm){p_end}\n")
 		_error(198)
 	}
 	n = G.n
@@ -7891,7 +7891,7 @@ real rowvector stat_ns(class ErgmGraph scalar G, class ErgmTermData scalar td){
 	return(td.levelpairs[., 4]' + ErgmNativeTermStat(G, td))
 }
 real rowvector change_ns(class ErgmGraph scalar G, real scalar i, real scalar j, class ErgmTermData scalar td){
-	errprintf("this term runs only in the native plugin (ergm_mcmc): the plugin must be installed (if it does not work on your system, compile it on this computer with: nwinstall, buildplugin(nwergm)) and the model may have at most 64 coefficients\n")
+	errprintf("{p 0 2 2}this term runs only in the native plugin (ergm_mcmc): the plugin must be installed (if it does not work on your system, compile it on this computer with: nwinstall, buildplugin(nwergm)) and the model may have at most 64 coefficients{p_end}\n")
 	_error(198)
 	return(J(1, rows(td.levelpairs), 0))
 }
@@ -8038,7 +8038,7 @@ real rowvector stat_op(class ErgmGraph scalar G, class ErgmTermData scalar td)
 }
 real rowvector change_op(class ErgmGraph scalar G, real scalar i, real scalar j, class ErgmTermData scalar td)
 {
-	errprintf("operator terms (Sum, Prod, S, F, NodematchFilter, Symmetrize, Project) run only in the native plugin (ergm_mcmc): the plugin must be installed (if it does not work on your system, compile it on this computer with: nwinstall, buildplugin(nwergm)) and the model may have at most 64 coefficients\n")
+	errprintf("{p 0 2 2}operator terms (Sum, Prod, S, F, NodematchFilter, Symmetrize, Project) run only in the native plugin (ergm_mcmc): the plugin must be installed (if it does not work on your system, compile it on this computer with: nwinstall, buildplugin(nwergm)) and the model may have at most 64 coefficients{p_end}\n")
 	_error(198)
 	return(J(1, rows(td.opW) > 0 ? rows(td.opW) : 1, 0))
 }
@@ -8445,7 +8445,7 @@ void ergm_ops_setoffset(class ErgmModel scalar S, string scalar coefs, string sc
 			if (strtoreal(wk[k]) < .) sel[k] = strtoreal(wk[k])
 			else sel[k] = S.findcoef(wk[k])
 			if (sel[k] < 1 | sel[k] > S.nparam()) {
-				errprintf("Offset(): which() does not select a coefficient of the formula\n")
+				errprintf("{p 0 2 2}Offset(): which() does not select a coefficient of the formula{p_end}\n")
 				_error(198)
 			}
 		}
@@ -8486,12 +8486,12 @@ void ergm_ops_curve_W(class ErgmTermData scalar td, string scalar map, real scal
 	else if (substr(m, 1, 7) == "matrix(") {
 		L = st_matrix(strtrim(substr(strtrim(map), 8, strlen(strtrim(map)) - 8)))
 		if (rows(L) != n | cols(L) != q) {
-			errprintf("Curve(): the map matrix must have %g rows (statistics) and %g columns (parameters)\n", n, q)
+			errprintf("{p 0 2 2}Curve(): the map matrix must have %g rows (statistics) and %g columns (parameters){p_end}\n", n, q)
 			_error(198)
 		}
 	}
 	else {
-		errprintf("Curve(): map() is rep or matrix(name); map functions are not available\n")
+		errprintf("{p 0 2 2}Curve(): map() is rep or matrix(name); map functions are not available{p_end}\n")
 		_error(198)
 	}
 	td.opW = L'
@@ -8562,7 +8562,7 @@ real matrix ergm_ops_weights(string scalar lhs, real scalar nstat, string scalar
 	if (substr(l, 1, 7) == "matrix(") {
 		W = st_matrix(strtrim(substr(l, 8, strlen(l) - 8)))
 		if (cols(W) != nstat) {
-			errprintf("operators(): the weight matrix has %g columns, the formula has %g statistics\n", cols(W), nstat)
+			errprintf("{p 0 2 2}operators(): the weight matrix has %g columns, the formula has %g statistics{p_end}\n", cols(W), nstat)
 			_error(198)
 		}
 		return(W)
@@ -8572,12 +8572,12 @@ real matrix ergm_ops_weights(string scalar lhs, real scalar nstat, string scalar
 	if (cols(tk) == 0) _error(198)
 	v = strtoreal(tk)
 	if (any(v :>= .)) {
-		errprintf("operators(): %s: the weights of a formula are a number, numbers, matrix(name), or %s\n", lhs, (kind == "sum" ? "sum or mean" : "prod or geomean"))
+		errprintf("{p 0 2 2}operators(): %s: the weights of a formula are a number, numbers, matrix(name), or %s{p_end}\n", lhs, (kind == "sum" ? "sum or mean" : "prod or geomean"))
 		_error(198)
 	}
 	if (cols(v) == 1) return(v[1] * I(nstat))
 	if (cols(v) != nstat) {
-		errprintf("operators(): %g weights for a formula with %g statistics\n", cols(v), nstat)
+		errprintf("{p 0 2 2}operators(): %g weights for a formula with %g statistics{p_end}\n", cols(v), nstat)
 		_error(198)
 	}
 	return(diag(v))
@@ -8609,7 +8609,7 @@ string scalar ergm_ops_for(string scalar args)
 		else tmpl = (tmpl == "" ? parts[k] : tmpl + ", " + parts[k])
 	}
 	if (nl == 0 | tmpl == "") {
-		errprintf("operators(): For() needs one or more loops (name = values) and the terms to repeat\n")
+		errprintf("{p 0 2 2}operators(): For() needs one or more loops (name = values) and the terms to repeat{p_end}\n")
 		_error(198)
 	}
 	sz = J(1, nl, 0)
@@ -8667,7 +8667,7 @@ string rowvector ergm_ops_label(string rowvector cn, string scalar lab, string s
 		if (cols(labs) != cols(cn)) {
 			if (cols(labs) == 1) labs = J(1, cols(cn), labs[1]) :+ strofreal(1..cols(cn))
 			else {
-				errprintf("operators(): Label() has %g labels for %g statistics\n", cols(labs), cols(cn))
+				errprintf("{p 0 2 2}operators(): Label() has %g labels for %g statistics{p_end}\n", cols(labs), cols(cn))
 				_error(198)
 			}
 		}
@@ -8706,7 +8706,7 @@ void ergm_ops_setW(class ErgmTermData scalar td, string rowvector lhs, string sc
 		Wf = ergm_ops_weights(lhs[f], td.opdims[f], kind)
 		if (P >= .) P = rows(Wf)
 		else if (rows(Wf) != P) {
-			errprintf("operators(): the formulas give different numbers of statistics after their weights are applied\n")
+			errprintf("{p 0 2 2}operators(): the formulas give different numbers of statistics after their weights are applied{p_end}\n")
 			_error(198)
 		}
 		if (f == 1) W = Wf
@@ -8721,7 +8721,7 @@ string rowvector ergm_ops_names(string scalar label, real scalar P, string scala
 	l = ergm_ops_words(label)
 	if (cols(l) == 1 & P > 1) l = l[1] :+ strofreal(1..P)
 	if (cols(l) != P) {
-		errprintf("operators(): label() has %g elements, the operator gives %g statistics\n", cols(l), P)
+		errprintf("{p 0 2 2}operators(): label() has %g elements, the operator gives %g statistics{p_end}\n", cols(l), P)
 		_error(198)
 	}
 	out = (Kind + "~") :+ l
@@ -10257,7 +10257,7 @@ real rowvector ergm_propose_uniform_masked(class ErgmGraph scalar G){
 		uprop = ergm_propose_uniform(G)
 		tries++
 		if (tries > 1000000) {
-			errprintf("freedyads(): could not find a free dyad to propose after 1,000,000 draws - the mask may be far too sparse relative to the total dyad space.\n")
+			errprintf("{p 0 2 2}freedyads(): could not find a free dyad to propose after 1,000,000 draws - the mask may be far too sparse relative to the total dyad space.{p_end}\n")
 			exit(error(499))
 		}
 	} while (!G.freedyadmat[uprop[1], uprop[2]])
@@ -10503,7 +10503,7 @@ real rowvector ergm_propose_swap(class ErgmGraph scalar G){
 		// least one non-tie, but guarded explicitly (same errprintf()+
 		// exit(error()) idiom freedyads()/blockdiag() already use above)
 		// rather than looping forever below.
-		errprintf("fixdensity: network has no ties, or is complete - no valid tie/non-tie swap exists.\n")
+		errprintf("{p 0 2 2}fixdensity: network has no ties, or is complete - no valid tie/non-tie swap exists.{p_end}\n")
 		exit(error(498))
 	}
 
@@ -11926,7 +11926,7 @@ struct ErgmMCMLEFit scalar ErgmCD(class ErgmModel scalar M, class ErgmGraph scal
 		tot = tot + ss * nsteps
 		X = samp[., freeidx]
 		if (all(diagonal(variance(X)) :< 1e-20) & any(X :!= 0)) {
-			errprintf("Unconstrained CD sampling did not mix at all. Optimization cannot continue.\n")
+			errprintf("{p 0 2 2}Unconstrained CD sampling did not mix at all. Optimization cannot continue.{p_end}\n")
 			exit(498)
 		}
 		pval = ergm_hotel_indep(X)
@@ -11940,7 +11940,7 @@ struct ErgmMCMLEFit scalar ErgmCD(class ErgmModel scalar M, class ErgmGraph scal
 		steps = steps, steplen
 		if (cols(steps) > 2) {
 			if (steps[cols(steps)] + steps[cols(steps)-1] < 2 * 0.0001) {
-				errprintf("CD-MCMLE estimation stuck. There may be excessive correlation between model terms, suggesting a poor model for the observed data.\n")
+				errprintf("{p 0 2 2}CD-MCMLE estimation stuck. There may be excessive correlation between model terms, suggesting a poor model for the observed data.{p_end}\n")
 				exit(498)
 			}
 		}
@@ -12472,7 +12472,7 @@ real matrix ErgmMCMCSampleAdaptive(class ErgmModel scalar M, class ErgmGraph sca
 				eS = 1
 				break
 			}
-			if (verbose) printf("{txt}  (adaptive MCMC run %g: burn-in estimate %g of %g rows, p = %g - not trustworthy, sampling on)\n", run, bb, rows(sms), pv)
+			if (verbose) printf("{txt}{p 2 4 2}(adaptive MCMC run %g: burn-in estimate %g of %g rows, p = %g - not trustworthy, sampling on){p_end}\n", run, bb, rows(sms), pv)
 			continue
 		}
 		// R: eS <- niter(postburnin) / attr(spectrum0.mvar(postburnin), "infl"); the univariate approximation only if R's
@@ -12480,7 +12480,7 @@ real matrix ErgmMCMCSampleAdaptive(class ErgmModel scalar M, class ErgmGraph sca
 		(void) ergm_spec0_mvar(post, einf, erk, erc)
 		if (erc | einf >= . | einf <= 0) einf = ergm_geomean_infl(post)
 		eS = rows(post) / einf
-		if (verbose) printf("{txt}  (adaptive MCMC run %g: ESS %g of target %g, burn-in %g of %g rows, p = %g)\n", run, eS, tgt, bb, rows(sms), pv)
+		if (verbose) printf("{txt}{p 2 4 2}(adaptive MCMC run %g: ESS %g of target %g, burn-in %g of %g rows, p = %g){p_end}\n", run, eS, tgt, bb, rows(sms), pv)
 		if (eS >= tgt) break
 	}
 	finalint = interval
@@ -12823,11 +12823,11 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 		if (sum(nonvarying) > 0) {
 			printf("{err}Warning: MCMLE iter %g - statistic(s) at column(s) ", iter)
 			for (k=1; k<=ptest_const; k++) if (nonvarying[k]) printf("%g ", k)
-			printf("not varying this iteration - this may indicate an extreme point or dead-end configuration.\n")
+			printf("{p 0 2 2}not varying this iteration - this may indicate an extreme point or dead-end configuration.{p_end}\n")
 		}
 		pvarying = ptest_const - sum(nonvarying)
 		if (pvarying == 0 & any(Dtestbar :!= 0)) {
-			errprintf("Unconstrained MCMC sampling did not mix at all. Optimization cannot continue.\n")
+			errprintf("{p 0 2 2}Unconstrained MCMC sampling did not mix at all. Optimization cannot continue.{p_end}\n")
 			exit(498)
 		}
 		if (pvarying > 1) {
@@ -12835,7 +12835,7 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 			for (k=1; k<=ptest_const; k++) if (!nonvarying[k]) varyidx = varyidx, k
 			Vrank = rank(Vtest[varyidx, varyidx])
 			if (Vrank < pvarying) {
-				printf("{err}Warning: MCMLE iter %g - linear dependence detected among the model statistics (rank %g of %g varying dimensions) - the model may be nonidentifiable.\n", iter, Vrank, pvarying)
+				printf("{err}{p 0 2 2}Warning: MCMLE iter %g - linear dependence detected among the model statistics (rank %g of %g varying dimensions) - the model may be nonidentifiable.{p_end}\n", iter, Vrank, pvarying)
 			}
 		}
 
@@ -13789,18 +13789,18 @@ void _ergm_con_apply(string scalar nm, real scalar sgn, string scalar args)
 			exit(error(198))
 		}
 		if ((nm == "odegrees" | nm == "idegrees" | nm == "idegreedist" | nm == "odegreedist") & !__ncon_dir) {
-			errprintf("In constraint '%s': Term may not be used with networks with directed==FALSE.\n", nm)
+			errprintf("{p 0 2 2}In constraint '%s': Term may not be used with networks with directed==FALSE.{p_end}\n", nm)
 			exit(error(198))
 		}
 		if ((nm == "b1degrees" | nm == "b2degrees") & !__ncon_bip) {
-			errprintf("In constraint '%s': Term may only be used with bipartite networks.\n", nm)
+			errprintf("{p 0 2 2}In constraint '%s': Term may only be used with bipartite networks.{p_end}\n", nm)
 			exit(error(198))
 		}
 		_ergm_con_addset(nm)
 		return
 	}
 	if (nm == "hamming") {
-		errprintf("Constraint 'hamming' is currently broken and will hopefully be fixed in a future release.\n")
+		errprintf("{p 0 2 2}Constraint 'hamming' is currently broken and will hopefully be fixed in a future release.{p_end}\n")
 		exit(error(198))
 	}
 	if (nm == "observed") {
@@ -13817,7 +13817,7 @@ void _ergm_con_apply(string scalar nm, real scalar sgn, string scalar args)
 	}
 	if (nm == "fixallbut") {
 		if (b[1] == "") {
-			errprintf("In constraint 'fixallbut': argument 'free.dyads' is required.\n")
+			errprintf("{p 0 2 2}In constraint 'fixallbut': argument 'free.dyads' is required.{p_end}\n")
 			exit(error(198))
 		}
 		_ergm_con_dyadic(sgn, __ncon_net1)
@@ -13833,14 +13833,14 @@ void _ergm_con_apply(string scalar nm, real scalar sgn, string scalar args)
 		if (b[1] != "") F = F :| (__ncon_net1 :!= 0)
 		if (b[2] != "") {
 			if (any(((__ncon_net2 :!= 0) :& !Y) :* (1 :- I(n)))) {
-				errprintf("Edges constrained to be present are absent in the LHS network.\n")
+				errprintf("{p 0 2 2}Edges constrained to be present are absent in the LHS network.{p_end}\n")
 				exit(error(198))
 			}
 			F = F :| (__ncon_net2 :!= 0)
 		}
 		if (b[3] != "") {
 			if (any(((__ncon_net3 :!= 0) :& Y) :* (1 :- I(n)))) {
-				errprintf("Edges constrained to be absent are present in the LHS network.\n")
+				errprintf("{p 0 2 2}Edges constrained to be absent are present in the LHS network.{p_end}\n")
 				exit(error(198))
 			}
 			F = F :| (__ncon_net3 :!= 0)
@@ -13855,7 +13855,7 @@ void _ergm_con_apply(string scalar nm, real scalar sgn, string scalar args)
 		}
 		merge = (b[2] == "" | b[2] == "merge")
 		if (!merge & b[2] != "split") {
-			errprintf("In constraint 'blockdiag': 'noncontig' must be 'merge' or 'split'.\n")
+			errprintf("{p 0 2 2}In constraint 'blockdiag': 'noncontig' must be 'merge' or 'split'.{p_end}\n")
 			exit(error(198))
 		}
 		a = _ergm_con_nodevar(b[1], n, nm)
@@ -13864,7 +13864,7 @@ void _ergm_con_apply(string scalar nm, real scalar sgn, string scalar args)
 		if (merge) {
 			// R: noncontiguous blocks are refused under noncontig="merge"
 			if (rows(uniqrows(runid)) > rows(uniqrows(a)) & !__ncon_bip) {
-				errprintf("Current implementation of the block-diagonal constraint requires that either the blocks be contiguous or be treated as separate; this may change in the future.\n")
+				errprintf("{p 0 2 2}Current implementation of the block-diagonal constraint requires that either the blocks be contiguous or be treated as separate; this may change in the future.{p_end}\n")
 				exit(error(198))
 			}
 		}
@@ -13880,7 +13880,7 @@ void _ergm_con_apply(string scalar nm, real scalar sgn, string scalar args)
 			exit(error(198))
 		}
 		if (!__ncon_dir & dirn != "both") {
-			errprintf("Directed egocentric constraint cannot be used for an undirected network.\n")
+			errprintf("{p 0 2 2}Directed egocentric constraint cannot be used for an undirected network.{p_end}\n")
 			exit(error(198))
 		}
 		if (b[1] == "") aa = J(n, 1, 1)
@@ -13961,7 +13961,7 @@ void _ergm_con_apply(string scalar nm, real scalar sgn, string scalar args)
 			exit(error(198))
 		}
 		if (!__ncon_dir & (b[3] != "" | b[5] != "")) {
-			errprintf("'minin' and 'maxin' cannot be used with undirected networks.\n")
+			errprintf("{p 0 2 2}'minin' and 'maxin' cannot be used with undirected networks.{p_end}\n")
 			exit(error(198))
 		}
 		// attribs: 0/1 indicator variables (space separated); default one all-ones column
@@ -13999,13 +13999,13 @@ void _ergm_con_apply(string scalar nm, real scalar sgn, string scalar args)
 	}
 	if (nm == "dyadnoise") {
 		if (b[1] == "" | b[2] == "") {
-			errprintf("In constraint 'dyadnoise': arguments 'p01' and 'p10' are required.\n")
+			errprintf("{p 0 2 2}In constraint 'dyadnoise': arguments 'p01' and 'p10' are required.{p_end}\n")
 			exit(error(198))
 		}
 		p01 = strtoreal(b[1])
 		p10 = strtoreal(b[2])
 		if (p01 >= . | p10 >= . | p01 < 0 | p01 > 1 | p10 < 0 | p10 > 1) {
-			errprintf("In constraint 'dyadnoise': p01 and p10 must be probabilities.\n")
+			errprintf("{p 0 2 2}In constraint 'dyadnoise': p01 and p10 must be probabilities.{p_end}\n")
 			exit(error(198))
 		}
 		bigv = 1 / epsilon(1)
