@@ -1101,8 +1101,13 @@ di "=== MCMLE standard error REGRESSION VERIFIED ==="
 * so nodematch() silently became a copy of edges. Now a clear r(109).
 nwwebuse florentine, nwclear
 generate seatstr = cond(seat == 1, "yes", "no")
-capture noisily nwergm flomarriage, edges nodematch(seatstr) seed(12345)
-assert _rc == 109
+* Since 1.5.11 a categorical term takes a string variable (encoded for the call);
+* a term that uses the values as numbers still refuses it with r(109).
+nwergm flomarriage, edges nodematch(seat) method(mple)
+matrix bnum = e(b)
+nwergm flomarriage, edges nodematch(seatstr) method(mple)
+assert reldif(_b[nodematch_seatstr], bnum[1, 2]) < 1e-12
+confirm string variable seatstr
 capture noisily nwergm flomarriage, edges nodecov(seatstr) seed(12345)
 assert _rc == 109
 di "=== string attribute REGRESSION VERIFIED ==="

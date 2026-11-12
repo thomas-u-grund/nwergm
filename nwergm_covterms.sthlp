@@ -16,7 +16,7 @@ Every attribute term below takes one or more numeric node variables (the variabl
 suboptions of that term.
 The suboptions apply to every variable listed in the same option.
 Attribute variables must not contain missing values, as in R ergm ({it:In term nodecov: attribute has missing data, which is not currently supported}).
-String variables must be encoded first.
+The categorical terms ({opt nodematch()}, {opt nodematchdiff()}, {opt nodefactor()}, {opt nodeofactor()}, {opt nodeifactor()}, the {opt *distinct()} variants, {opt nodemix()}, {opt mm()}, {opt bfactor1()}, {opt bfactor2()}, {opt bnodematch1()}, {opt bnodematch2()} and {opt blockdiag()}) also take a string variable, given by its full name. For the duration of the command it is replaced by the codes {cmd:encode} would give, so its levels are the strings in sorted order and the coefficient names carry the variable's own name; afterwards the data are as before. The other terms use the values as numbers and refuse a string variable; an empty string is a missing value (return code 416).
 The suboptions {opt levels()}, {opt levelvalues()} and {opt signaction()} may be abbreviated to {opt lev()}, {opt levelv()} and {opt sign()}.
 On a two-mode network only {opt nodecov()}, {opt nodefactor()}, {opt nodematch()}, {opt nodematchdiff()}, {opt absdist()} and {opt edgecov()} of these terms are available
 (see {help nwergm_bipartite:nwergm (two-mode)}).

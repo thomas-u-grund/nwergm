@@ -62,8 +62,7 @@ diagnostic reports are described in {help nwergm_estimation}.{p_end}
 {marker covariate_effects}{...}
 {syntab:Node and dyadic covariate effects}
 {synopt:{opt mutual}}Reciprocated-tie count; directed networks only{p_end}
-{synopt:{opth nodematch(varlist)}}Pooled homophily on each listed categorical node attribute (exact match, one coefficient per variable). All node-attribute terms require {it:numeric} variables;
-{cmd:encode} a string attribute first. The attribute options take a {it:varlist} (ranges such as {cmd:x1-x3} and wildcards such as {cmd:x*}
+{synopt:{opth nodematch(varlist)}}Pooled homophily on each listed categorical node attribute (exact match, one coefficient per variable). The categorical terms ({opt nodematch()}, {opt nodefactor()}, {opt nodemix()} and their relatives) also take a string variable, given by its full name: its levels are the strings in sorted order, as after {cmd:encode}; the other attribute terms need {it:numeric} variables. The attribute options take a {it:varlist} (ranges such as {cmd:x1-x3} and wildcards such as {cmd:x*}
 follow Stata's varlist rules); a token that is not a varlist is read as an expression (e.g. {cmd:nodecov(x^2)}){p_end}
 {synopt:{opth nodematchdiff(varlist)}}Differential homophily: one coefficient PER DISTINCT LEVEL of each listed attribute, rather than pooled across levels{p_end}
 {synopt:{opth nodecov(varlist)}}Continuous node covariate main effect (sum over tie endpoints){p_end}

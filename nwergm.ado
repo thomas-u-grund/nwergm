@@ -7,7 +7,63 @@
 * or FITNESS FOR A PARTICULAR PURPOSE. See the file LICENSE for the full text.
 
 capture program drop nwergm
-program nwergm, eclass
+program nwergm
+	version 14
+	* String node attributes (1.5.11). A string variable named, with its full name, in a
+	* categorical term (nodematch(), nodefactor(), nodemix() and their relatives) is
+	* replaced for the duration of the call by a numeric variable of the same name that
+	* holds the codes -encode- would give (strings in sorted order, value label = the
+	* strings); afterwards the string variable is put back where it was. Terms that use
+	* the values as numbers (nodecov() etc.) still refuse a string variable. A call
+	* without string variables runs exactly as before. Variables whose names start
+	* with _nw (node names, bookkeeping) are never touched.
+	local __cat "nodematchdiff|nodematch|nodefactordistinct|nodeofactordistinct|nodeifactordistinct|nodefactor|nodeofactor|nodeifactor|nodemix|mm|bfactordistinct1|bfactordistinct2|bfactor1|bfactor2|bnodematch1|bnodematch2|blockdiag"
+	local __re "(?i)(?<![A-Za-z0-9_])(`__cat')\(([^()]*(?:\([^()]*\)[^()]*)*)\)"
+	local __rest `"`0'"'
+	local __args
+	while ustrregexm(`"`__rest'"', "`__re'") {
+		local __a = ustrregexs(2)
+		local __args `"`__args' `__a'"'
+		local __rest = ustrregexrf(`"`__rest'"', "`__re'", " ")
+	}
+	local __toks = ustrregexra(`"`__args'"', "[^A-Za-z0-9_]", " ")
+	local __toks : list uniq __toks
+	local __sv
+	foreach __t of local __toks {
+		if substr("`__t'", 1, 3) == "_nw" continue
+		capture confirm string variable `__t', exact
+		if !_rc local __sv `__sv' `__t'
+	}
+	if "`__sv'" == "" {
+		_nwergm_run `0'
+		exit
+	}
+	local __i = 0
+	foreach __v of local __sv {
+		local ++__i
+		tempvar __s`__i'
+		tempname __l`__i'
+		rename `__v' `__s`__i''
+		quietly encode `__s`__i'', generate(`__v') label(`__l`__i'')
+		order `__v', after(`__s`__i'')
+	}
+	capture noisily _nwergm_run `0'
+	local __rc = _rc
+	local __i = 0
+	foreach __v of local __sv {
+		local ++__i
+		capture confirm variable `__s`__i'', exact
+		if !_rc {
+			capture drop `__v'
+			rename `__s`__i'' `__v'
+		}
+		capture label drop `__l`__i''
+	}
+	exit `__rc'
+end
+
+capture program drop _nwergm_run
+program _nwergm_run, eclass
 	version 14
 	* an option given twice (edgecov(a) edgecov(b)) gets a clear error instead of "option edgecov() not allowed"
 	_nwergm_dupopt `0'
@@ -4033,7 +4089,7 @@ program _nwergm_numvar
 	capture confirm numeric variable `v'
 	if _rc {
 		di "{p 0 0 2}{err}{bf:`term'(`v')}: {bf:`v'} is a string variable; nwergm needs a numeric attribute.{p_end}"
-		di "{p 0 0 2}{err}Encode it first, e.g. {bf:encode `v', generate(`v'_n)}, and specify {bf:`term'(`v'_n)}.{p_end}"
+		di "{p 0 0 2}{err}Encode it first, e.g. {bf:encode `v', generate(`v'_n)}, and specify {bf:`term'(`v'_n)}. Categorical terms such as {bf:nodematch()}, {bf:nodefactor()} and {bf:nodemix()} take a string variable given by its full name.{p_end}"
 		error 109
 	}
 	local __nn = _N

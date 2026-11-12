@@ -190,7 +190,7 @@ program _nwergm_covattr, rclass
 	capture confirm numeric variable `v'
 	if _rc {
 		di "{p 0 0 2}{err}{bf:`term'(`nm')}: {bf:`nm'} is a string variable; nwergm needs a numeric attribute.{p_end}"
-		di "{p 0 0 2}{err}Encode it first, e.g. {bf:encode `nm', generate(`nm'_n)}, and specify {bf:`term'(`nm'_n)}.{p_end}"
+		di "{p 0 0 2}{err}Encode it first, e.g. {bf:encode `nm', generate(`nm'_n)}, and specify {bf:`term'(`nm'_n)}. Categorical terms such as {bf:nodematch()}, {bf:nodefactor()} and {bf:nodemix()} take a string variable given by its full name.{p_end}"
 		error 109
 	}
 	quietly count if missing(`v') in 1/`nodes'
