@@ -53,7 +53,7 @@ mata: E = (1,2\2,1\1,3\3,1\2,3\3,4\4,2\4,5\6,5)
 mata: A = J(7, 7, 0)
 mata: for (k = 1; k <= rows(E); k++) A[E[k,1], E[k,2]] = 1
 mata: st_matrix("AD", A)
-mata: W = 10 :* (1::7) :+ (1..7); W = W :* (1 :- I(7)); st_matrix("WD", W)
+mata: W = 10 :* (1::7) * J(1, 7, 1) + J(7, 1, 1) * (1..7); W = W :* (1 :- I(7)); st_matrix("WD", W)
 mata: B = J(4, 4, 1) - I(4); B[1,2] = 0; st_matrix("ADK", B)
 nwset, mat(AD) directed name(D) nooutput
 nwset, mat(WD) directed name(WD) nooutput

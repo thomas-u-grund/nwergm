@@ -70,7 +70,13 @@ foreach t in GM GD GE {
 * same seed, same tables; the default statistics include the model
 estat gof, nsim(20) seed(5) gofburnin(2000) gofinterval(64)
 matrix GM2 = r(gof_model)
-assert mreldif(GM, GM2) == 0
+// CONFIRMED BUG N6: estat gof moves the stored graph __nwergm_last_G to the last gof draw (ergm_gof_run,
+// unw_ergm.do:5742-5770), so a second estat gof with the same seed starts elsewhere; also nwergm simulate after it
+global XT_FAILS ""
+if mreldif(GM, GM2) != 0 {
+	di as err "FAIL estat gof, seed(5) twice gives different tables (mreldif " mreldif(GM, GM2) ")"
+	global XT_FAILS "$XT_FAILS N6"
+}
 estat gof, gof(-model degree) nsim(5) seed(1)
 capture confirm matrix r(gof_model)
 assert _rc != 0
@@ -128,8 +134,13 @@ matrix T5 = r(stats)
 assert T5[1,1] == 91 & T5[2,1] == 91
 * every draw empty with output(edgelist): no ties to list; the data should be empty, not an error
 * (_nwergm_simfit.ado reads matrix __simE7_el, which a 0 x 3 Mata matrix may not create)
-nwergm simulate, nsim(2) output(edgelist) clear coef(CN) seed(1) burnin(2000) interval(100)
-assert _N == 0
+// CONFIRMED BUG E4: r(111) "__simE7_el not found" (_nwergm_simfit.ado edge-list branch, unw_ergm.do:5955)
+capture noisily nwergm simulate, nsim(2) output(edgelist) clear coef(CN) seed(1) burnin(2000) interval(100)
+if _rc {
+	di as err "FAIL all-empty draws with output(edgelist): r(`=_rc')"
+	global XT_FAILS "$XT_FAILS E4"
+}
+else assert _N == 0
 * option errors of simulate from a fit
 capture noisily nwergm simulate, nsim(0)
 assert _rc == 198
@@ -155,7 +166,7 @@ predict, matrix(PU)
 predict, matrix(XU) xb
 predict, frame(FU)
 mata: P = st_matrix("PU"); X = st_matrix("XU"); b = st_matrix("e(b)"); g = st_data(1::14, "g"); O = 1 :- I(14)
-mata: E = b[1] :+ b[2] :* (g :== g'); st_numscalar("dp", max(editmissing(abs(P - invlogit(E)) :* O, 0))); st_numscalar("dx", max(editmissing(abs(X - E) :* O, 0)))
+mata: E = b[1] :+ b[2] :* (g * J(1, 14, 1) :== J(14, 1, 1) * g'); st_numscalar("dp", max(editmissing(abs(P - invlogit(E)) :* O, 0))); st_numscalar("dx", max(editmissing(abs(X - E) :* O, 0)))
 mata: st_numscalar("asym", max(editmissing(abs(P - P'), 0)))
 assert dp < 1e-10 & dx < 1e-10 & asym == 0
 frame FU: assert _N == 91
@@ -198,7 +209,7 @@ matrix SS = r(stats)
 forvalues s = 1/2 {
 	qui nwsummarize sd_`s'
 	assert r(nodes) == 12 & "`r(directed)'" == "true"
-	assert r(edges) == SS[`s', 1]
+	assert r(arcs) == SS[`s', 1]
 }
 di "PASS directed postestimation"
 
@@ -270,4 +281,8 @@ nwergm simulate, nsim(2) output(edgelist) clear seed(2) burnin(500) interval(50)
 assert min(_tail, _head) <= 6 & max(_tail, _head) >= 7
 di "PASS two-mode postestimation"
 
+if "$XT_FAILS" != "" {
+	di as err "failures:$XT_FAILS"
+	exit 9
+}
 di "ALL PASS"

@@ -71,7 +71,8 @@ di "PASS 2-node directed network"
 
 * 2 nodes undirected with its single dyad tied: the outcome does not vary, r(2000) (nwergm.ado ~2234)
 capture noisily nwergm U2, edges
-assert _rc == 2000
+* one dyad: logit stops with r(2001) "insufficient observations" (r(2000) needs more than one observation)
+assert _rc == 2001
 * two-mode 1 x 2 with one tie: 2 informative dyads, b = 0
 nwergm B12, edges
 assert e(N) == 2
@@ -116,7 +117,7 @@ qui nwsummarize k6
 assert r(nodes) == 6 & r(edges) == 15
 nwergm simulate 6, edges theta(50) directed nsim(1) generate(k6d) seed(1)
 qui nwsummarize k6d
-assert "`r(directed)'" == "true" & r(edges) == 30
+assert "`r(directed)'" == "true" & r(arcs) == 30
 nwergm simulate 5, edges theta(50) bipartite(2) nsim(1) generate(k23) seed(1)
 qui nwsummarize k23
 assert "`r(mode2)'" == "true" & r(nodes1) == 2 & r(nodes2) == 3 & r(edges) == 6

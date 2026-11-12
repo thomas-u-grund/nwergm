@@ -14,6 +14,7 @@ local nwcore : env NWCORE
 
 * ---------------------------------------------------------------------------------------------------------------
 * helper: fit `edges opts' by MPLE and compare e(obs_stats) with the full expected vector (edges first)
+global XT_FAILS ""
 capture program drop xt_stat
 program xt_stat
 	args id net opts expected
@@ -27,7 +28,8 @@ program xt_stat
 	}
 	if `rc' {
 		di as err "FAIL `id': nwergm `net', edges `opts' stopped with r(`rc')"
-		exit 9
+		global XT_FAILS "$XT_FAILS `id'"
+		exit
 	}
 	tempname S
 	matrix `S' = e(obs_stats)
@@ -35,14 +37,16 @@ program xt_stat
 	if colsof(`S') != `k' {
 		di as err "FAIL `id': " colsof(`S') " statistics, expected `k'"
 		matrix list `S'
-		exit 9
+		global XT_FAILS "$XT_FAILS `id'"
+		exit
 	}
 	forvalues j = 1/`k' {
 		local x : word `j' of `expected'
 		if abs(`S'[1, `j'] - (`x')) > 1e-6 * max(1, abs(`x')) {
 			di as err "FAIL `id': statistic `j' is " %20.12g `S'[1, `j'] ", R gives `x'"
 			matrix list `S'
-			exit 9
+			global XT_FAILS "$XT_FAILS `id'"
+			exit
 		}
 	}
 	di as txt "PASS `id'"
@@ -60,7 +64,7 @@ mata: A = J(7, 7, 0)
 mata: for (k = 1; k <= rows(E); k++) A[E[k,1], E[k,2]] = 1
 mata: A = A + A'
 mata: st_matrix("AU", A)
-mata: W = (1::7) :+ (1..7); W = W :* (1 :- I(7)); st_matrix("WU", W)
+mata: W = (1::7) * J(1, 7, 1) + J(7, 1, 1) * (1..7); W = W :* (1 :- I(7)); st_matrix("WU", W)
 mata: H = J(7, 7, 0); H[1,2] = 1; H[1,7] = 1; H[6,7] = 1; H = H + H'; st_matrix("HU", H)
 nwset, mat(AU) undirected name(U) nooutput
 nwset, mat(WU) undirected name(WU) nooutput
@@ -133,6 +137,7 @@ xt_stat U_gwesp10 U "gwesp(10)" "7 5.99995460007024"
 xt_stat U_gwdsp10 U "gwdsp(10)" "7 10.9999092001405"
 xt_stat U_gwnsp10 U "gwnsp(10)" "7 4.99995460007024"
 xt_stat U_gwdegree10 U "gwdegree(10)" "7 13.9995006069561"
+* CONFIRMED BUG N5: decay 30 loses ~3 digits, decay >= ~37 gives 0 (R gives the limit); naive exp(d)*(1-(1-exp(-d))^k)
 xt_stat U_gwesp30 U "gwesp(30)" "7 5.99999999999991"
 xt_stat U_gwdegree30 U "gwdegree(30)" "7 13.999999999999"
 xt_stat U_gwesp40 U "gwesp(40)" "7 6"
@@ -169,8 +174,12 @@ foreach t in nodefactor nodemix {
 	}
 	else {
 		* a refusal must be a Stata error code of the input checks, not a Mata failure (3000-3999)
-		assert `rc1' < 3000 | `rc1' > 3999
-		di as txt "SOFT `t'(one): refused with r(`rc1') (R drops the term with a note)"
+		if `rc1' >= 3000 & `rc1' <= 3999 {
+			// CONFIRMED BUG N4: single-level factor -> raw Mata error in _ergm_cov_pick (R drops the term)
+			di as err "FAIL `t'(one): raw Mata error r(`rc1')"
+			global XT_FAILS "$XT_FAILS `t'_onelevel(N4)"
+		}
+		else di as txt "SOFT `t'(one): refused with r(`rc1') (R drops the term with a note)"
 	}
 }
 * nodematchdiff() with a single level: R nodematch("one", diff=TRUE) = 7 (one column nodematch.one.1)
@@ -242,4 +251,8 @@ if _rc == 0 {
 else di as txt "SKIP flo_wealth: variable wealth not in the florentine data of the core"
 di "PASS block florentine"
 
+if "$XT_FAILS" != "" {
+	di as err "failures:$XT_FAILS"
+	exit 9
+}
 di "ALL PASS"

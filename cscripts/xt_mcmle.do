@@ -47,7 +47,7 @@ di "PASS MCMLE edges + mutual within 0.5 SE of the closed-form MLE"
 
 * same seed, after other networks were loaded and other models fitted (the core then returns neighbours in another
 * order; GOTCHA.md "seed() did not reproduce a fit across sessions"): bit-identical e(b) and e(V)
-nwuse `"`nwcore'/data/florentine"'
+nwuse `"`nwcore'/data/florentine"', nwappend
 qui nwergm flomarriage, edges gwesp(.5) seed(5) mcmcinterval(100)
 qui nwergm U14, edges triangle method(mple)
 nwergm D12, edges mutual seed(101)
@@ -138,12 +138,16 @@ di "PASS options stored in e()"
 nwergm D12, edges mutual nologlik mcmcinterval(100) seed(4)
 capture noisily predict, matrix(Pn)
 local rcp = _rc
+// CONFIRMED BUG E1: e(predict) is not set after nologlik (_nwergm_fitstats.ado:48-67), Stata's default predict runs
+global XT_FAILS ""
 if `rcp' != 0 {
 	di as err "FAIL predict after nologlik: r(`rcp'); e(predict) = `e(predict)'"
-	exit 9
+	global XT_FAILS "$XT_FAILS E1"
 }
-assert rowsof(Pn) == 12
-di "PASS predict after nologlik"
+else {
+	assert rowsof(Pn) == 12
+	di "PASS predict after nologlik"
+}
 
 * ---------------------------------------------------------------------------------------------------------------
 * init(): one value per coefficient, . = estimated (help nwergm_estimation); a wrong count is refused (198)
@@ -189,4 +193,8 @@ capture noisily predict, matrix(Pc)
 assert _rc != 0
 di "PASS curved MCMLE"
 
+if "$XT_FAILS" != "" {
+	di as err "failures:$XT_FAILS"
+	exit 9
+}
 di "ALL PASS"

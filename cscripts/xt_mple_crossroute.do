@@ -109,7 +109,8 @@ matrix R_s = (27, 13.1804080208621, 24.6798740272680)
 assert mreldif(S, R_s) < 1e-10
 forvalues j = 1/3 {
 	assert abs(b[1,`j'] - R_b[1,`j']) < 1e-5
-	assert abs(sqrt(V[`j',`j']) - R_se[1,`j']) < 1e-5
+	* SE: R glm stops at its own tolerance (epsilon 1e-8); 1.325475 vs 1.325455 here -> relative 1e-4
+	assert reldif(sqrt(V[`j',`j']), R_se[1,`j']) < 1e-4
 }
 di "PASS U14 gw MPLE = R"
 
@@ -128,13 +129,14 @@ matrix R_s = (28, 2, 40, 4)
 assert mreldif(SD, R_s) < 1e-12
 forvalues j = 1/4 {
 	assert abs(bD[1,`j'] - R_b[1,`j']) < 1e-6
-	assert abs(sqrt(VD[`j',`j']) - R_se[1,`j']) < 1e-5
+	assert reldif(sqrt(VD[`j',`j']), R_se[1,`j']) < 1e-4    // R glm SE differ by up to ~3e-5 relative
 }
 * logit by hand: ordered pair i->j: d_edges = 1, d_mutual = A_ji, d_nodeicov = x_j, d_ctriple = sum_k A_jk A_ki = (A*A)_ji
 preserve
 mata: x = st_data(1::12, "x"); A = st_matrix("AD12"); n = 12; T = A * A
-mata: R = J(0, 5, .)
-mata: for (i = 1; i <= n; i++) for (j = 1; j <= n; j++) if (i != j) R = R \ (A[i,j], 1, A[j,i], x[j], T[j,i])
+mata: R = J(0, 6, .)
+mata: for (i = 1; i <= n; i++) for (j = 1; j <= n; j++) R = R \ (A[i,j], 1, A[j,i], x[j], T[j,i], i != j)
+mata: R = select(R[., 1..5], R[., 6])          // (a one-line Mata "if" without else waits for more input)
 clear
 mata: st_addobs(rows(R)); (void) st_addvar("double", ("y", "c1", "c2", "c3", "c4")); st_store(., ("y", "c1", "c2", "c3", "c4"), R)
 logit y c1 c2 c3 c4, noconstant tolerance(1e-9) ltolerance(1e-11)

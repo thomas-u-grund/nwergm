@@ -52,30 +52,40 @@ local __sig0 "`r(datasignature)'"
 
 capture program drop xt_unchanged
 program xt_unchanged
+	* records a failure in $XT_FAILS (does not stop); restores the reference fit when e() was replaced
 	args id
 	if "`e(cmd)'" != "nwergm" | "`e(depvar)'" != "U14" {
 		di as err "FAIL `id': e() was replaced (cmd `e(cmd)', depvar `e(depvar)')"
-		exit 9
+		global XT_FAILS "$XT_FAILS `id'(e-replaced)"
+		qui nwergm U14, edges triangle method(mple)
+		exit
 	}
 	tempname bb VV
 	matrix `bb' = e(b)
 	matrix `VV' = e(V)
 	if mreldif(`bb', __b0) != 0 | mreldif(`VV', __V0) != 0 {
 		di as err "FAIL `id': e(b)/e(V) changed"
-		exit 9
+		global XT_FAILS "$XT_FAILS `id'(e-changed)"
+		qui nwergm U14, edges triangle method(mple)
+		exit
 	}
 	qui datasignature
 	if "`r(datasignature)'" != "$XT_SIG0" {
 		di as err "FAIL `id': the data changed"
-		exit 9
+		global XT_FAILS "$XT_FAILS `id'(data)"
+		exit
 	}
 	qui nwtomata U14, mat(__U)
+	mata: _diag(__U, 0)                 // nwtomata gives a missing diagonal
 	mata: st_numscalar("__ok", __U == st_matrix("AU14"))
 	if __ok != 1 {
 		di as err "FAIL `id': network U14 changed"
-		exit 9
+		global XT_FAILS "$XT_FAILS `id'(network)"
+		exit
 	}
+	di as txt "PASS `id': state unchanged"
 end
+global XT_FAILS ""
 global XT_SIG0 "`__sig0'"
 
 * each refused call: exact return code, then the state check
@@ -86,10 +96,9 @@ program xt_refuse
 	local got = _rc
 	if `got' != `rc' {
 		di as err "FAIL `id': r(`got'), expected r(`rc')"
-		exit 9
+		global XT_FAILS "$XT_FAILS `id'(rc`got')"
 	}
 	xt_unchanged `id'
-	di as txt "PASS `id': r(`rc'), state unchanged"
 end
 
 xt_refuse noedges 198 "nwergm U14, triangle"                                     // nwergm.ado ~95
@@ -125,6 +134,7 @@ xt_refuse mpletype 198 "nwergm U14, edges mpletype(foo)"
 xt_refuse expstat_log0 198 "nwergm U14, edges kstar(2) method(mple) expstat(kstar_2, log0(-5))"
 xt_refuse edgecov_size 198 "nwergm U14, edges edgecov(U7)"                     // _nwergm_cov.ado ~37
 xt_refuse edgecov_missing 416 "nwergm U14, edges edgecov(M14)"                 // ~58
+* CONFIRMED BUG E5: the r(2000) refusals below clear e() of the previous fit (inner logit)
 xt_refuse empty_network 2000 "nwergm E5, edges triangle method(mple)"          // nwergm.ado ~2234 (logit: outcome does not vary)
 xt_refuse empty_network_dind 2000 "nwergm E5, edges"
 * a network that does not exist: _nwsyntax stops with "Network ... not found" and error `errNWsNotFound', a local that
@@ -206,10 +216,11 @@ if `rc3' == 0 {
 }
 di as txt "state after simulate N: estat gof rc `rc1' ok `ok1'; simulate rc `rc2' ok `ok2'; predict rc `rc3' ok `ok3'"
 if !(`ok1' & `ok2' & `ok3') {
+	// CONFIRMED BUG E2 (notes item 2)
 	di as err "FAIL nwergm simulate N replaced the fitted model/graph used by estat gof / simulate / predict"
-	exit 9
+	global XT_FAILS "$XT_FAILS E2-simulateN"
 }
-di "PASS postestimation unaffected by nwergm simulate N"
+else di "PASS postestimation unaffected by nwergm simulate N"
 
 * (2) a refused nwergm call on another network in between (the graph global is rebuilt before the error)
 clear
@@ -218,8 +229,7 @@ gen double g = mod(_n - 1, 2) + 1
 gen double gm = g
 replace gm = . in 3
 qui nwergm U14, edges triangle method(mple)
-capture noisily nwergm E5, edges triangle method(mple)
-assert _rc == 2000
+* (the E5 refusal (r(2000)) is left out here: it clears e() altogether, CONFIRMED BUG E5 in the block above)
 capture noisily nwergm U7, edges triangle nodematch(gm) method(mple)
 assert _rc == 416
 assert "`e(depvar)'" == "U14"
@@ -241,9 +251,14 @@ if `rc2' == 0 {
 }
 di as txt "state after refused calls: estat gof rc `rc1' ok `ok1'; simulate rc `rc2' ok `ok2'"
 if !(`ok1' & `ok2') {
+	// CONFIRMED BUG E2 (notes item 2)
 	di as err "FAIL a refused nwergm call replaced the fitted model/graph used by estat gof / simulate"
+	global XT_FAILS "$XT_FAILS E2-refused"
+}
+else di "PASS postestimation unaffected by refused calls"
+
+if "$XT_FAILS" != "" {
+	di as err "failures:$XT_FAILS"
 	exit 9
 }
-di "PASS postestimation unaffected by refused calls"
-
 di "ALL PASS"

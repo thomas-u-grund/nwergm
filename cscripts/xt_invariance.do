@@ -35,7 +35,15 @@ gen double gp = .
 gen double zp = .
 mata: gg = st_data(., "g"); zz = st_data(., "z"); st_store(., "gp", gg[p]); st_store(., "zp", zz[p])
 
-local m1 "triangle kstar(2) gwesp(.5) gwdsp(.3) degree(1/3) esp(0/2) gwdegree(.8)"
+* (the first draft used 14 terms on 14 nodes: the MPLE is separated (residual deviance 0, |b| up to 900), so b is
+* not determined and cannot be compared across node orders; a smaller identified model instead; the statistics of
+* the large model are still compared below)
+local mbig "triangle kstar(2) gwesp(.5) gwdsp(.3) degree(1/3) esp(0/2) gwdegree(.8)"
+qui nwergm U, edges `mbig' nodematch(g) nodecov(z) method(mple)
+matrix SB0 = e(obs_stats)
+qui nwergm UP, edges `mbig' nodematch(gp) nodecov(zp) method(mple)
+assert mreldif(SB0, e(obs_stats)) < 1e-12
+local m1 "gwesp(.5) gwdegree(.8)"
 nwergm U, edges `m1' nodematch(g) nodecov(z) method(mple)
 matrix S0 = e(obs_stats)
 matrix b0 = e(b)

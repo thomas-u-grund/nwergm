@@ -47,9 +47,9 @@ A = st_matrix("A80"); n = rows(A); deg = rowsum(A); S = A * A; O = 1 :- I(n)
 X = st_data(., "x" :+ strofreal(1..50)); g = st_data(., "g")
 W = st_matrix("W80"); H = st_matrix("H80")
 v = sum(A) / 2
-v = v, sum(A :* (g :== g')) / 2
+v = v, sum(A :* (g * J(1, n, 1) :== J(n, 1, 1) * g')) / 2
 for (k = 1; k <= 50; k++) v = v, sum(deg :* X[., k])
-v = v, sum(A :* abs(X[., 1] :- X[., 1]')) / 2
+v = v, sum(A :* abs(X[., 1] * J(1, n, 1) - J(n, 1, 1) * X[., 1]')) / 2
 lv = uniqrows(g)
 for (l = 2; l <= rows(lv); l++) v = v, sum(deg :* (g :== lv[l]))
 for (d = 1; d <= 6; d++) v = v, sum(deg :== d)
@@ -161,17 +161,28 @@ matrix S2 = Sexp
 local cexp : colnames e(b)
 capture noisily nwergm D40, edges nodeocov(o1-o3) method(mple)
 local rcr = _rc
-if `rcr' == 0 {
+// CONFIRMED BUG E3 (notes item 3): o1-o3 is taken as the expression o1 minus o3 (one column nodeocov_o1-o3), silently
+global XT_FAILS ""
+local c2 ""
+if `rcr' == 0 local c2 : colnames e(b)
+if `rcr' == 0 & colsof(e(obs_stats)) == colsof(Sexp) & "`c2'" == "`cexp'" {
 	matrix S2 = e(obs_stats)
 	assert mreldif(S2, Sexp) < 1e-12
-	local c2 : colnames e(b)
-	assert "`c2'" == "`cexp'"
+	di "PASS varlist range in a covariate term"
 }
 else {
-	di as err "FAIL nodeocov(o1-o3): r(`rcr'); the help documents a varlist (a range should work as o1 o2 o3)"
-	exit 9
+	di as err "FAIL nodeocov(o1-o3): r(`rcr'), columns `c2' (expected `cexp'); the help documents a varlist"
+	global XT_FAILS "$XT_FAILS E3-range"
 }
-di "PASS varlist range in a covariate term"
+capture noisily nwergm D40, edges nodeocov(o*) method(mple)
+local rcw = _rc
+local c3 ""
+if `rcw' == 0 local c3 : colnames e(b)
+if `rcw' == 0 & "`c3'" == "`cexp'" di "PASS wildcard o* in a covariate term"
+else {
+	di as err "FAIL nodeocov(o*): r(`rcw'), columns `c3' (expected `cexp')"
+	global XT_FAILS "$XT_FAILS E3-wildcard"
+}
 
 * an expression as attribute (_nwergm_covattr: "neither a variable nor a valid expression"): nodeocov(o1^2)
 qui nwergm D40, edges nodeocov(o1^2) method(mple)
@@ -193,7 +204,7 @@ if `rcl' == 0 {
 	local cnu : list uniq cn
 	if `: word count `cn'' != `: word count `cnu'' {
 		di as err "FAIL long variable names: duplicate coefficient names `cn'"
-		exit 9
+		global XT_FAILS "$XT_FAILS longnames"
 	}
 	matrix S = e(obs_stats)
 	matrix S3 = Sexp[1, 1..3]
@@ -217,4 +228,8 @@ assert `rcs' < 3000 | `rcs' > 3999
 if `rcs' != 198 di as txt "SOFT fewer rows than nodes: r(`rcs') (expected 198 from the code)"
 di "PASS dataset with fewer rows than nodes refused"
 
+if "$XT_FAILS" != "" {
+	di as err "failures:$XT_FAILS"
+	exit 9
+}
 di "ALL PASS"
