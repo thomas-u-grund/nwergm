@@ -74,7 +74,7 @@ qui nwergm toynet, edges mutual method(mcmle) seed(777)
 log using `l2', text replace name(mw2)
 estat gof, seed(777) nsim(10) plot
 log close mw2
-_mw_check `l2' "(plot saved as gof; box and whiskers summarize the simulated draws, the dashed line is the observed network)"
+_mw_check `l2' "(plot saved as gof; box and whiskers summarize the simulated draws, the red line with circles is the observed network)"
 log using `l3', text replace name(mw3)
 estat mcmcdiag, plot
 log close mw3

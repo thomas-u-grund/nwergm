@@ -2307,7 +2307,7 @@ program nwergm, eclass
 		}
 		else _nwergm_fitstats, dmat(`__nw_D') method(mple) dind(`__ergm_dind') curved(`__ergm_curved')
 		if `__ergm_curved' {
-			di as text "{p 0 0 2}(decay is an estimated curved parameter here - see {help nwergm##gw_effects:help nwergm, gw_effects} for how this differs from R ergm's own BFGS-based fit){p_end}"
+			di as text "{p 0 1 2}(The decay of the curved term is estimated; see {help nwergm##gw_effects:help nwergm, gw_effects}.){p_end}"
 		}
 	}
 	else {

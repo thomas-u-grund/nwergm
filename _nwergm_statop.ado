@@ -11,6 +11,11 @@ program _nwergm_statop
 	version 14
 	gettoken kind 0 : 0
 	syntax anything(name=names) [, LOG0(string)]
+	// R's Exp() has no log0 argument (only Log() does): refuse it rather than ignore it
+	if "`kind'" == "exp" & "`log0'" != "" {
+		di "{err}option {bf:expstat()}: the suboption {bf:log0()} belongs to {bf:logstat()} only (the exponential of a statistic needs no value for the logarithm of zero)."
+		error 198
+	}
 	if "`log0'" == "" local log0 = -1/sqrt(c(epsdouble))
 	confirm number `log0'
 	mata: st_local("__np", strofreal(__nwergm_last_M.nparam()))

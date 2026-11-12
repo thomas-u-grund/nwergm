@@ -68,7 +68,7 @@ program define nwergm_estat_mcmcdiag, rclass
 	else if `pvalue' == 0.025 local __ergm_hwcrit = 0.5806146822
 	else if `pvalue' == 0.01 local __ergm_hwcrit = 0.7434593138
 	else {
-		di as err "{p 0 0 2}{bf:pvalue()} must be one of 0.10, 0.05, 0.025, or 0.01 - the Heidelberger-Welch stationarity test is evaluated against a fixed table of Cramer-von-Mises critical values (see unw_ergm.do's own header comment on ergm_heidel_diag() for why), not a continuously computed p-value.{p_end}"
+		di as err "{p 0 0 2}{bf:pvalue()} must be one of 0.10, 0.05, 0.025, or 0.01 - the Heidelberger-Welch stationarity test is evaluated against a table of the critical values of the Cramer-von Mises distribution at these four levels, not by a continuously computed p-value.{p_end}"
 		exit 198
 	}
 
@@ -412,7 +412,15 @@ end
 capture program drop nwergm_estat_ic
 program define nwergm_estat_ic, rclass
 	if missing(e(ll)) {
-		di as err "{p 0 0 2}no log-likelihood was stored for this fit (it was fitted with the nologlik option){p_end}"
+		if "`e(method)'" == "mcmle" & e(curved) == 1 {
+			di as err "{p 0 0 2}no log-likelihood was stored for this fit: the log-likelihood of a model with a curved (estimated decay) term fitted by MCMLE is not computed, so AIC and BIC are not available{p_end}"
+		}
+		else if "`e(method)'" == "mcmle" {
+			di as err "{p 0 0 2}no log-likelihood was stored for this fit: it was fitted with the option {bf:nologlik}, which skips the bridge sampling of the log-likelihood{p_end}"
+		}
+		else {
+			di as err "{p 0 0 2}no log-likelihood was stored for this fit{p_end}"
+		}
 		exit 498
 	}
 	tempname M

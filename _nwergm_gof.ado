@@ -299,7 +299,7 @@ program _nwergm_gof, rclass
 		capture graph drop `panel1'
 		capture graph drop `panel2'
 		mata: mata drop `obsdeg' `obsgeo' `degsumm' `geosumm'
-		di as txt "{p 0 0 2}(plot saved as {bf:`name'}; box and whiskers summarize the simulated draws, the dashed line is the observed network){p_end}"
+		di as txt "{p 0 0 2}(plot saved as {bf:`name'}; box and whiskers summarize the simulated draws, the red line with circles is the observed network){p_end}"
 	}
 	capture mata: mata drop __gofE7_x
 	foreach m in p s o {

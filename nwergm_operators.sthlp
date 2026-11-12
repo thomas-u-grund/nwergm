@@ -78,8 +78,8 @@ Dyadic covariates ({cmd:edgecov()}, {cmd:dyadcov()} ...) cannot be used inside {
 
 {pstd}
 {opt logstat(coefnames [, log0(#)])} and {opt expstat(coefnames)} are options of {cmd:nwergm} that apply {cmd:Log()} and {cmd:Exp()} to the statistics of terms already in the model, named by
-their coefficient names (for example {cmd:nodecov(age) logstat(nodecov_age)}); the coefficients are renamed {cmd:log_}{it:name} and {cmd:exp_}{it:name}. A statistic can be transformed only once,
-and these options cannot be combined with {opt fixdensity} or a curved (free-decay) term.
+their coefficient names (for example {cmd:nodecov(age) logstat(nodecov_age)}); the coefficients are renamed {cmd:log_}{it:name} and {cmd:exp_}{it:name}. {opt log0()} is a suboption of {opt logstat()}
+only ({opt expstat()} stops with an error). A statistic can be transformed only once, and these options cannot be combined with {opt fixdensity} or a curved (free-decay) term.
 
 {pstd}
 For {cmd:Symmetrize()} with {cmd:rule(weak)} on a network with reciprocated ties, the pseudolikelihood is formed from the exact change statistics of the symmetrized network.

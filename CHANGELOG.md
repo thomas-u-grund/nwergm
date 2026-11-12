@@ -3,6 +3,15 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+- `nwergm ..., expstat()` with the suboption `log0()` stops with an error; `log0()` belongs to `logstat()` only (as in R, where `Exp()` has no `log0` argument). Before, `log0()` was silently ignored.
+- `estat ic` without a stored log-likelihood names the real reason: a curved (estimated decay) term fitted by MCMLE, or the option `nologlik`. Before, it blamed `nologlik` in both cases.
+- `estat gof, plot`: the note under the plot says that the red line with circles is the observed network (it said "dashed line").
+- `estat mcmcdiag, pvalue()` with a value other than 0.10, 0.05, 0.025 or 0.01: the error message explains the choice without referring to a source file.
+- The note after a curved MPLE fit points to the section on geometrically weighted terms without the outdated claim about a different optimiser than R.
+
 ## [1.5.11] - 2026-11-12
 
 ### Fixed
