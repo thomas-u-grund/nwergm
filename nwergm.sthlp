@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.5.10  11nov2026 author: Thomas Grund}{...}
+{* *! version 1.5.11  12nov2026 author: Thomas Grund}{...}
 {marker topic}
 {helpb nwtopical##analysis_statmodels:[NW-2.6.6] Statistical Estimation of Networks}
 
@@ -10,7 +10,9 @@
 {p2colreset}{...}
 
 {pstd}
-Estimation methods (MPLE variants, contrastive divergence, stochastic approximation), the {cmd:init()} option, the MCMLE controls, {cmd:nwergm simulate} from a fit and the goodness-of-fit and diagnostic reports are described in {help nwergm_estimation}.{p_end}
+Estimation methods (MPLE variants, contrastive divergence, stochastic approximation), the {cmd:init()} option, the MCMLE controls, {cmd:nwergm simulate} from a fit and the goodness-of-fit and
+diagnostic reports are described in {help nwergm_estimation}.{p_end}
+
 
 {title:Syntax}
 
@@ -34,7 +36,8 @@ Estimation methods (MPLE variants, contrastive divergence, stochastic approximat
 {synoptset 26}{...}
 {p2col:{it:options}}Description{p_end}
 {p2line}
-{p2col:{it:{help nwergm##covariate_effects:covariate_effects}}}node and dyadic covariate main effects ({opt mutual}, {opt nodematch()}, {opt nodecov()}, {opt edgecov()}, {opt nodefactor()}, {opt nodemix()}, etc.){p_end}
+{p2col:{it:{help nwergm##covariate_effects:covariate_effects}}}node and dyadic covariate main effects ({opt mutual}, {opt nodematch()}, {opt nodecov()}, {opt edgecov()}, {opt nodefactor()},
+{opt nodemix()}, etc.){p_end}
 {p2col:{it:{help nwergm##bipartite_effects:bipartite_effects}}}two-mode (bipartite) network terms{p_end}
 {p2col:{it:{help nwergm##gw_effects:gw_effects}}}geometrically weighted shared-partner/degree terms, fixed and curved decay{p_end}
 {p2col:{it:{help nwergm##degree_effects:degree_effects}}}degree-distribution terms{p_end}
@@ -44,55 +47,88 @@ Estimation methods (MPLE variants, contrastive divergence, stochastic approximat
 {p2col:{it:{help nwergm##sharedpartner_effects:sharedpartner_effects}}}fixed (non-geometric) shared-partner count terms, and the directed shared-partner {opt type()} selector{p_end}
 {p2col:{it:{help nwergm##triad_effects_directed:triad_effects_directed}}}directed triad-closure existence-indicator terms{p_end}
 {p2col:{it:{help nwergm##nodelevel_effects:nodelevel_effects}}}dyadic-covariate and per-node fixed-effect terms{p_end}
-{p2col:{opt structural(termlist)}}further structural terms of R's ergm ({opt twopath}, {opt transitive}, {opt cycle()}, {opt altkstar()}, {opt degree()} with {opt by()} ...), see {help nwergm_structural}{p_end}
-{p2col:{opt operators(oplist)}}operator terms of R's ergm ({opt Sum}, {opt Prod}, {opt S}, {opt F}, {opt NodematchFilter}, {opt Symmetrize}, {opt Project}, {opt I}, {opt For}, {opt Label}, {opt Log}, {opt Exp}, {opt Offset}, {opt Curve}), see {help nwergm_operators}{p_end}
+{p2col:{opt structural(termlist)}}further structural terms of R's ergm ({opt twopath}, {opt transitive}, {opt cycle()}, {opt altkstar()}, {opt degree()} with {opt by()} ...), see
+{help nwergm_structural}{p_end}
+{p2col:{opt operators(oplist)}}operator terms of R's ergm ({opt Sum}, {opt Prod}, {opt S}, {opt F}, {opt NodematchFilter}, {opt Symmetrize}, {opt Project}, {opt I}, {opt For}, {opt Label}, {opt Log},
+{opt Exp}, {opt Offset}, {opt Curve}) and the statistic transforms {opt logstat()}/{opt expstat()}, see {help nwergm_operators}{p_end}
 {p2col:{it:{help nwergm##estimation_control:estimation_control}}}estimation method, MCMC tuning, constraints, and output control{p_end}
 
-{synoptset 25 tabbed}{...}
+{synoptset 27 tabbed}{...}
 {synopthdr}
 {synoptline}
 {syntab:Required}
-{synopt:{opt edges}}Include the {cmd:edges} term (density/intercept); required{p_end}
+{synopt:{opt edges}}Include the {cmd:edges} term (density/intercept); required, unless {opt structural()} contains {cmd:density} or {cmd:meandeg}, which stand in for it{p_end}
 
 {marker covariate_effects}{...}
 {syntab:Node and dyadic covariate effects}
 {synopt:{opt mutual}}Reciprocated-tie count; directed networks only{p_end}
-{synopt:{opth nodematch(varlist)}}Pooled homophily on each listed categorical node attribute (exact match, one coefficient per variable). All node-attribute terms require {it:numeric} variables; {cmd:encode} a string attribute first{p_end}
+{synopt:{opth nodematch(varlist)}}Pooled homophily on each listed categorical node attribute (exact match, one coefficient per variable). All node-attribute terms require {it:numeric} variables;
+{cmd:encode} a string attribute first{p_end}
 {synopt:{opth nodematchdiff(varlist)}}Differential homophily: one coefficient PER DISTINCT LEVEL of each listed attribute, rather than pooled across levels{p_end}
 {synopt:{opth nodecov(varlist)}}Continuous node covariate main effect (sum over tie endpoints){p_end}
 {synopt:{opth nodeicov(varlist)}}Directed receiver-covariate effect; directed networks only{p_end}
 {synopt:{opth nodeocov(varlist)}}Directed sender-covariate effect; directed networks only{p_end}
 {synopt:{opth edgecov(netname)}}Dyadic covariate effect, taken from an already-loaded network's own tie values{p_end}
-{synopt:{it:more covariate terms}}{opt absdiffcat()}, {opt diff()}, {opt smalldiff()}, {opt sociality()}, {opt attrcov()}, {opt dyadcov()}, {opt mm()}, {opt nodecovrange()}, {opt nodefactordistinct()}, level selection ({opt levels()}, {opt base()}) and {opt coeflabel()}: see {help nwergm_covterms}{p_end}
+{synopt:{it:more covariate terms}}{opt absdiffcat()}, {opt diff()}, {opt smalldiff()}, {opt sociality()}, {opt attrcov()}, {opt dyadcov()}, {opt mm()}, {opt nodecovrange()},
+{opt nodefactordistinct()}, level selection ({opt levels()}, {opt base()}) and {opt coeflabel()}: see {help nwergm_covterms}{p_end}
 {synopt:{opth absdist(varlist)}}Absolute-difference effect on a continuous node covariate: sum over ties of |x_i - x_j|{p_end}
-{synopt:{opth nodefactor(varlist)}}One coefficient per NON-BASE distinct level of each listed categorical attribute (the lowest-sorted level is omitted, matching R ergm's own default, to avoid exact collinearity with edges), each counting total degree among nodes at that level{p_end}
-{synopt:{opth nodemix(varlist)}}Categorical mixing matrix as in R ergm: ordered (tail, head) level cells on a directed network, cells with row level before column level on an undirected one, first cell dropped by default; see {help nwergm_covterms}{p_end}
+{synopt:{opth nodefactor(varlist)}}One coefficient per NON-BASE distinct level of each listed categorical attribute (the lowest-sorted level is omitted, matching R ergm's own default, to avoid exact
+collinearity with edges), each counting total degree among nodes at that level{p_end}
+{synopt:{opth nodemix(varlist)}}Categorical mixing matrix as in R ergm: ordered (tail, head) level cells on a directed network, cells with row level before column level on an undirected one, first
+cell dropped by default; see {help nwergm_covterms}{p_end}
 
 {marker bipartite_effects}{...}
 {syntab:Two-mode (bipartite) effects}
-{synopt:{it:further two-mode terms}}b1/b2 concurrent, mindegree, degrange, covrange, factordistinct, sociality, starmix, twostar, coincidence, dsp and gwdsp, curved versions, sub-arguments such as {cmd:by()} - see {help nwergm_bipartite:nwergm (two-mode)}{p_end}
-{synopt:{opth bcov1(varlist)}}Bipartite (two-mode) networks only: the {cmd:b1cov()} term from R's own {cmd:ergm} package (renamed to {cmd:bcov1()} because Stata's {cmd:syntax} command rejects an option name with a digit followed by a letter, e.g. {cmd:b1cov}) - continuous node covariate main effect for the MODE-1 endpoint only (sum, over ties, of the mode-1 endpoint's own covariate value; the mode-2 endpoint's value is never added). Reported coefficient name keeps R's own {cmd:b1cov_}{it:varname} spelling{p_end}
+{synopt:{it:further two-mode terms}}b1/b2 concurrent, mindegree, degrange, covrange, factordistinct, sociality, starmix, twostar, coincidence, dsp and gwdsp, curved versions, sub-arguments such as
+{cmd:by()} - see {help nwergm_bipartite:nwergm (two-mode)}{p_end}
+{synopt:{opth bcov1(varlist)}}Bipartite (two-mode) networks only: the {cmd:b1cov()} term from R's own {cmd:ergm} package (renamed to {cmd:bcov1()} because Stata's {cmd:syntax} command rejects an
+option name with a digit followed by a letter, e.g. {cmd:b1cov}) - continuous node covariate main effect for the MODE-1 endpoint only (sum, over ties, of the mode-1 endpoint's own covariate value; the
+mode-2 endpoint's value is never added). Reported coefficient name keeps R's own {cmd:b1cov_}{it:varname} spelling{p_end}
 {synopt:{opth bcov2(varlist)}}Bipartite networks only: the {cmd:b2cov()} term - the {opt bcov1()} mirror for the MODE-2 endpoint. Reported coefficient name: {cmd:b2cov_}{it:varname}{p_end}
-{synopt:{opth bfactor1(varlist)}}Bipartite networks only: the {cmd:b1factor()} term - one coefficient per NON-BASE distinct level of each listed categorical attribute (lowest-sorted level omitted, same convention as {opt nodefactor()}), each counting the number of ties whose MODE-1 endpoint carries that level (the mode-2 endpoint never gets credit, unlike {opt nodefactor()}'s own both-endpoints convention). Reported coefficient name: {cmd:b1factor_}{it:varname}{cmd:_}{it:level}{p_end}
-{synopt:{opth bfactor2(varlist)}}Bipartite networks only: the {cmd:b2factor()} term - the {opt bfactor1()} mirror for the MODE-2 endpoint. Reported coefficient name: {cmd:b2factor_}{it:varname}{cmd:_}{it:level}{p_end}
-{synopt:{opt bdegree1(numlist)}}Bipartite networks only: the {cmd:b1degree()} term - one coefficient per listed degree value, counting the number of MODE-1 nodes with that exact (total) degree (the mode-2 endpoint never contributes). Dyad-DEPENDENT (needs {opt method(mcmle)}), unlike {opt bcov1()}/{opt bfactor1()}. Reported coefficient name: {cmd:b1degree_}{it:d}{p_end}
+{synopt:{opth bfactor1(varlist)}}Bipartite networks only: the {cmd:b1factor()} term - one coefficient per NON-BASE distinct level of each listed categorical attribute (lowest-sorted level omitted,
+same convention as {opt nodefactor()}), each counting the number of ties whose MODE-1 endpoint carries that level (the mode-2 endpoint never gets credit, unlike {opt nodefactor()}'s own both-endpoints
+convention). Reported coefficient name: {cmd:b1factor_}{it:varname}{cmd:_}{it:level}{p_end}
+{synopt:{opth bfactor2(varlist)}}Bipartite networks only: the {cmd:b2factor()} term - the {opt bfactor1()} mirror for the MODE-2 endpoint. Reported coefficient
+name: {cmd:b2factor_}{it:varname}{cmd:_}{it:level}{p_end}
+{synopt:{opt bdegree1(numlist)}}Bipartite networks only: the {cmd:b1degree()} term - one coefficient per listed degree value, counting the number of MODE-1 nodes with that exact (total) degree (the
+mode-2 endpoint never contributes). Dyad-DEPENDENT (needs {opt method(mcmle)}), unlike {opt bcov1()}/{opt bfactor1()}. Reported coefficient name: {cmd:b1degree_}{it:d}{p_end}
 {synopt:{opt bdegree2(numlist)}}Bipartite networks only: the {cmd:b2degree()} term - the {opt bdegree1()} mirror for the MODE-2 endpoint{p_end}
-{synopt:{opt bstar1(numlist)}}Bipartite networks only: the {cmd:b1star()} term - one coefficient per listed k, counting the number of distinct k-stars centered on a MODE-1 node (C(degree,k) summed over mode-1 nodes only). Dyad-DEPENDENT (needs {opt method(mcmle)}). Note: {opt bstar1(1)} equals {opt bstar2(1)} equals {opt edges} (R ergm's own documented identity). Reported coefficient name: {cmd:b1star_}{it:k}{p_end}
+{synopt:{opt bstar1(numlist)}}Bipartite networks only: the {cmd:b1star()} term - one coefficient per listed k, counting the number of distinct k-stars centered on a MODE-1 node (C(degree,k) summed
+over mode-1 nodes only). Dyad-DEPENDENT (needs {opt method(mcmle)}). Note: {opt bstar1(1)} equals {opt bstar2(1)} equals {opt edges} (R ergm's own documented identity). Reported coefficient
+name: {cmd:b1star_}{it:k}{p_end}
 {synopt:{opt bstar2(numlist)}}Bipartite networks only: the {cmd:b2star()} term - the {opt bstar1()} mirror for the MODE-2 endpoint{p_end}
-{synopt:{opth bnodematch1(varlist)}}Bipartite networks only: the {cmd:b1nodematch()} term - pooled homophily (default-parameter scope: no {cmd:diff()}/{cmd:alpha()}/{cmd:beta()}/{cmd:byb2attr()}) on each listed categorical attribute, counting only ties whose MODE-1 endpoint carries the matching level. Dyad-DEPENDENT (needs {opt method(mcmle)}), unlike {opt bcov1()}/{opt bfactor1()}. Reported coefficient name: {cmd:b1nodematch_}{it:varname}{p_end}
-{synopt:{opth bnodematch2(varlist)}}Bipartite networks only: the {cmd:b2nodematch()} term - the {opt bnodematch1()} mirror for the MODE-2 endpoint. Reported coefficient name: {cmd:b2nodematch_}{it:varname}{p_end}
-{synopt:{opt bgwdegree1(real)}}Bipartite networks only: the {cmd:gwb1degree()} term - geometrically weighted degree, fixed decay, counting only MODE-1 nodes' own degree. Dyad-DEPENDENT (needs {opt method(mcmle)}); the curved (estimated-decay) counterpart is {opt bgwdegreefree1()}, see {help nwergm_bipartite:nwergm (two-mode)}. Reported coefficient name: {cmd:bgwdegree1_}{it:decay}{p_end}
-{synopt:{opt bgwdegree2(real)}}Bipartite networks only: the {cmd:gwb2degree()} term - the {opt bgwdegree1()} mirror for the MODE-2 endpoint. Reported coefficient name: {cmd:bgwdegree2_}{it:decay}{p_end}
+{synopt:{opth bnodematch1(varlist)}}Bipartite networks only: the {cmd:b1nodematch()} term - pooled homophily (default-parameter scope: no {cmd:diff()}/{cmd:alpha()}/{cmd:beta()}/{cmd:byb2attr()}) on
+each listed categorical attribute, counting only ties whose MODE-1 endpoint carries the matching level. Dyad-DEPENDENT (needs {opt method(mcmle)}), unlike {opt bcov1()}/{opt bfactor1()}. Reported
+coefficient name: {cmd:b1nodematch_}{it:varname}{p_end}
+{synopt:{opth bnodematch2(varlist)}}Bipartite networks only: the {cmd:b2nodematch()} term - the {opt bnodematch1()} mirror for the MODE-2 endpoint. Reported coefficient
+name: {cmd:b2nodematch_}{it:varname}{p_end}
+{synopt:{opt bgwdegree1(real)}}Bipartite networks only: the {cmd:gwb1degree()} term - geometrically weighted degree, fixed decay, counting only MODE-1 nodes' own degree. Dyad-DEPENDENT (needs
+{opt method(mcmle)}); the curved (estimated-decay) counterpart is {opt bgwdegreefree1()}, see {help nwergm_bipartite:nwergm (two-mode)}. Reported coefficient name: {cmd:bgwdegree1_}{it:decay}{p_end}
+{synopt:{opt bgwdegree2(real)}}Bipartite networks only: the {cmd:gwb2degree()} term - the {opt bgwdegree1()} mirror for the MODE-2 endpoint. Reported coefficient
+name: {cmd:bgwdegree2_}{it:decay}{p_end}
 
 {marker gw_effects}{...}
 {syntab:Geometrically weighted effects}
 {synopt:{opt gwesp(real)}}Geometrically weighted edgewise shared partners, fixed decay; undirected (UTP) or directed (shared-partner definition set by {opt type()}, default OTP){p_end}
-{synopt:{opt gwespfree(real)}}Geometrically weighted edgewise shared partners with an ESTIMATED (curved) decay parameter; undirected (UTP), or directed (shared-partner definition set by {opt type()}, default OTP - all five of OTP/ITP/OSP/ISP/RTP supported). The argument is only a starting value for decay, not a fixed value. Both {bf:method(mple)} and {bf:method(mcmle)} are supported (default {bf:mcmle}, as for any other dyad-dependent term - see {opt method()} below) - reports {bf:gwesp_weight}/{bf:gwesp_decay} in place of a single {opt gwesp()} coefficient. Cannot be combined with {opt gwesp()}, {opt esp()}, or another curved term{p_end}
-{synopt:{opt gwdegreefree(real)}}Geometrically weighted degree with an ESTIMATED (curved) decay parameter, undirected networks only; the argument is only a starting value for decay, not a fixed value. Both {bf:method(mple)} and {bf:method(mcmle)} are supported (default {bf:mcmle}) - reports {bf:gwdegree_weight}/{bf:gwdegree_decay} in place of a single {opt gwdegree()} coefficient. Cannot be combined with {opt gwdegree()}, {opt degree()}, or another curved term{p_end}
-{synopt:{opt gwdspfree(real)}}Geometrically weighted dyadwise shared partners with an ESTIMATED (curved) decay parameter, undirected networks only; the argument is only a starting value for decay, not a fixed value. Both {bf:method(mple)} and {bf:method(mcmle)} are supported (default {bf:mcmle}) - reports {bf:gwdsp_weight}/{bf:gwdsp_decay} in place of a single {opt gwdsp()} coefficient. Cannot be combined with {opt gwdsp()}, {opt dsp()}, or another curved term{p_end}
-{synopt:{opt gwodegreefree(real)}}Geometrically weighted out-degree with an ESTIMATED (curved) decay parameter, directed networks only; the argument is only a starting value for decay, not a fixed value. Both {bf:method(mple)} and {bf:method(mcmle)} are supported (default {bf:mcmle}) - reports {bf:gwodegree_weight}/{bf:gwodegree_decay} in place of a single {opt gwodegree()} coefficient. Cannot be combined with {opt gwodegree()}, {opt odegree()}, or another curved term{p_end}
-{synopt:{opt gwidegreefree(real)}}Geometrically weighted in-degree with an ESTIMATED (curved) decay parameter, directed networks only; the argument is only a starting value for decay, not a fixed value. Both {bf:method(mple)} and {bf:method(mcmle)} are supported (default {bf:mcmle}) - reports {bf:gwidegree_weight}/{bf:gwidegree_decay} in place of a single {opt gwidegree()} coefficient. Cannot be combined with {opt gwidegree()}, {opt idegree()}, or another curved term{p_end}
-{synopt:{opt gwnspfree(real)}}Geometrically weighted nonedgewise shared partners with an ESTIMATED (curved) decay parameter, undirected networks only; the argument is only a starting value for decay, not a fixed value. Both {bf:method(mple)} and {bf:method(mcmle)} are supported (default {bf:mcmle}) - reports {bf:gwnsp_weight}/{bf:gwnsp_decay} in place of a single {opt gwnsp()} coefficient. Cannot be combined with {opt gwnsp()} or another curved term{p_end}
+{synopt:{opt gwespfree(real)}}Geometrically weighted edgewise shared partners with an ESTIMATED (curved) decay parameter; undirected (UTP), or directed (shared-partner definition set by {opt type()},
+default OTP - all five of OTP/ITP/OSP/ISP/RTP supported). The argument is only a starting value for decay, not a fixed value. Both {bf:method(mple)} and {bf:method(mcmle)} are supported (default
+{bf:mcmle}, as for any other dyad-dependent term - see {opt method()} below) - reports {bf:gwesp_weight}/{bf:gwesp_decay} in place of a single {opt gwesp()} coefficient. Cannot be combined with
+{opt gwesp()}, {opt esp()}, or another curved term{p_end}
+{synopt:{opt gwdegreefree(real)}}Geometrically weighted degree with an ESTIMATED (curved) decay parameter, undirected networks only; the argument is only a starting value for decay, not a fixed
+value. Both {bf:method(mple)} and {bf:method(mcmle)} are supported (default {bf:mcmle}) - reports {bf:gwdegree_weight}/{bf:gwdegree_decay} in place of a single {opt gwdegree()} coefficient. Cannot be
+combined with {opt gwdegree()}, {opt degree()}, or another curved term{p_end}
+{synopt:{opt gwdspfree(real)}}Geometrically weighted dyadwise shared partners with an ESTIMATED (curved) decay parameter; undirected (UTP) or directed (see {opt type()}); the argument is only a
+starting value for decay, not a fixed value. Both {bf:method(mple)} and {bf:method(mcmle)} are supported (default {bf:mcmle}) - reports {bf:gwdsp_weight}/{bf:gwdsp_decay} in place of a single {opt gwdsp()} coefficient. Cannot be
+combined with {opt gwdsp()}, {opt dsp()}, or another curved term{p_end}
+{synopt:{opt gwodegreefree(real)}}Geometrically weighted out-degree with an ESTIMATED (curved) decay parameter, directed networks only; the argument is only a starting value for decay, not a fixed
+value. Both {bf:method(mple)} and {bf:method(mcmle)} are supported (default {bf:mcmle}) - reports {bf:gwodegree_weight}/{bf:gwodegree_decay} in place of a single {opt gwodegree()} coefficient. Cannot
+be combined with {opt gwodegree()}, {opt odegree()}, or another curved term{p_end}
+{synopt:{opt gwidegreefree(real)}}Geometrically weighted in-degree with an ESTIMATED (curved) decay parameter, directed networks only; the argument is only a starting value for decay, not a fixed
+value. Both {bf:method(mple)} and {bf:method(mcmle)} are supported (default {bf:mcmle}) - reports {bf:gwidegree_weight}/{bf:gwidegree_decay} in place of a single {opt gwidegree()} coefficient. Cannot
+be combined with {opt gwidegree()}, {opt idegree()}, or another curved term{p_end}
+{synopt:{opt gwnspfree(real)}}Geometrically weighted nonedgewise shared partners with an ESTIMATED (curved) decay parameter; undirected (UTP) or directed (see {opt type()}); the argument is only a
+starting value for decay, not a fixed value. Both {bf:method(mple)} and {bf:method(mcmle)} are supported (default {bf:mcmle}) - reports {bf:gwnsp_weight}/{bf:gwnsp_decay} in place of a single {opt gwnsp()} coefficient. Cannot
+be combined with {opt gwnsp()} or another curved term{p_end}
 {synopt:{opt gwdsp(real)}}Geometrically weighted dyadwise shared partners, fixed decay; undirected (UTP) or directed (see {opt type()}){p_end}
 {synopt:{opt gwdegree(real)}}Geometrically weighted degree, fixed decay{p_end}
 {synopt:{opt gwodegree(real)}}Geometrically weighted out-degree, fixed decay; directed networks only{p_end}
@@ -121,7 +157,8 @@ Estimation methods (MPLE variants, contrastive divergence, stochastic approximat
 {synopt:{opt kstar(numlist)}}One coefficient per listed k value: count of k-stars ((total) degree choose k, summed over nodes); undirected only{p_end}
 {synopt:{opt ostar(numlist)}}One coefficient per listed k value: count of out-k-stars; directed networks only{p_end}
 {synopt:{opt istar(numlist)}}One coefficient per listed k value: count of in-k-stars; directed networks only{p_end}
-{synopt:{opt degrange(numlist)}}Semi-open-interval degree count: one coefficient per FROM value in this numlist, counting nodes with (total) degree in [from,to); pair with {opt degrangeto()}; undirected only{p_end}
+{synopt:{opt degrange(numlist)}}Semi-open-interval degree count: one coefficient per FROM value in this numlist, counting nodes with (total) degree in [from,to); pair with {opt degrangeto()};
+undirected only{p_end}
 {synopt:{opt degrangeto(numlist)}}TO values pairing with {opt degrange()}, same order/length; omit for an open-ended upper bound{p_end}
 {synopt:{opt odegrange(numlist)}}Semi-open-interval OUT-degree count, paired with {opt odegrangeto()}; directed networks only{p_end}
 {synopt:{opt odegrangeto(numlist)}}TO values pairing with {opt odegrange()}{p_end}
@@ -130,49 +167,84 @@ Estimation methods (MPLE variants, contrastive divergence, stochastic approximat
 
 {marker sharedpartner_effects}{...}
 {syntab:Shared-partner count effects}
-{synopt:{opt esp(numlist)}}One coefficient per listed d value: count of TIED dyads with exactly d shared partners (fixed, non-geometric alternative to {opt gwesp()}); undirected (UTP) or directed (see {opt type()}){p_end}
-{synopt:{opt dsp(numlist)}}One coefficient per listed d value: count of ALL dyads (tied or not) with exactly d shared partners (fixed, non-geometric alternative to {opt gwdsp()}); undirected (UTP) or directed (see {opt type()}). An EXHAUSTIVE d-range (covering every shared-partner value a toggle can produce) is exactly collinear across its own columns - list a subset, not every achievable value{p_end}
-{synopt:{opt type(OTP|ITP|OSP|ISP|RTP)}}Shared-partner definition used by every {opt gwesp()}/{opt gwdsp()}/{opt gwnsp()}/{opt esp()}/{opt dsp()}/{opt gwespfree()} term in the model, on a DIRECTED network only (default {bf:OTP}; silently ignored, matching R ergm's own behaviour, when {bf:netname} is undirected - see the {bf:Remarks} section below for the five definitions){p_end}
+{synopt:{opt esp(numlist)}}One coefficient per listed d value: count of TIED dyads with exactly d shared partners (fixed, non-geometric alternative to {opt gwesp()}); undirected (UTP) or directed (see
+{opt type()}){p_end}
+{synopt:{opt dsp(numlist)}}One coefficient per listed d value: count of ALL dyads (tied or not) with exactly d shared partners (fixed, non-geometric alternative to {opt gwdsp()}); undirected (UTP) or
+directed (see {opt type()}). An EXHAUSTIVE d-range (covering every shared-partner value a toggle can produce) is exactly collinear across its own columns - list a subset, not every achievable
+value{p_end}
+{synopt:{opt type(OTP|ITP|OSP|ISP|RTP)}}Shared-partner definition used by every {opt gwesp()}/{opt gwdsp()}/{opt gwnsp()}/{opt esp()}/{opt dsp()}/{opt gwespfree()}/{opt gwdspfree()}/{opt gwnspfree()}
+term in the model, on a DIRECTED network only (default {bf:OTP}; ignored with a note when {bf:netname} is undirected - see the {bf:Remarks} section below for the five definitions){p_end}
 
 {marker triad_effects_directed}{...}
 {syntab:Triad-closure effects (directed)}
-{synopt:{opt transitiveties}}Count of TIED arcs i->j for which there also exists a two-path i->k->j (an existence/threshold indicator, not a count - contrast with {opt gwesp()}/{opt esp()}); directed networks only{p_end}
+{synopt:{opt transitiveties}}Count of TIED arcs i->j for which there also exists a two-path i->k->j (an existence/threshold indicator, not a count - contrast with {opt gwesp()}/{opt esp()}); directed
+networks only{p_end}
 {synopt:{opt cyclicalties}}Count of TIED arcs i->j for which there also exists a return two-path j->k->i, closing a directed 3-cycle; directed networks only{p_end}
 
 {marker nodelevel_effects}{...}
 {syntab:Dyadic covariate and node-level effects}
-{synopt:{opth hamming(netname)}}Hamming distance to a reference network: count of dyads whose tie state disagrees with the same network's{p_end}
+{synopt:{opth hamming(netname)}}Hamming distance to a reference network: count of dyads whose tie state differs from that dyad's tie state in {it:netname}{p_end}
 {synopt:{opt sender}}One coefficient per node (except a base node) equal to that node's own out-degree; directed networks only{p_end}
 {synopt:{opt receiver}}One coefficient per node (except a base node) equal to that node's own in-degree; directed networks only{p_end}
 
 {marker estimation_control}{...}
 {syntab:Estimation control}
-{synopt:{opt method(mple|mcmle)}}Estimation method; default {it:mcmle} unless the model is dyad-independent, in which case MPLE already is the MLE{p_end}
-{synopt:{opth offset(coefname # [coefname # ...])}}Hold one or more named coefficients fixed at a given value rather than estimating them, matching R ergm's own {cmd:offset()} formula wrapper. {bf:coefname} must be a coefficient this model would otherwise report (an option must still be typed to register the term, e.g. {opt triangle}, before {opt offset(triangle #)} can fix its own coefficient - {opt offset()} names an EXISTING coefficient, it does not add a second copy of the term). Works with both {opt method(mple)} and {opt method(mcmle)}. At least one coefficient in the model must remain free. Not currently supported for a curved (free-decay) term's own weight/decay. The fixed coefficient is reported at exactly the given value with standard error exactly 0 (matching R's own real output) and a zero row/column in {bf:e(V)} - see {bf:Remarks} below{p_end}
+{synopt:{opt method(mple|mcmle|cd)}}Estimation method; default {it:mcmle} unless the model is dyad-independent, in which case MPLE already is the MLE; {cmd:cd} is contrastive divergence. Further
+estimation options ({opt estimate()}, {opt mainmethod()}, {opt init()}, the MPLE and MCMLE controls) are described in {help nwergm_estimation}{p_end}
+{synopt:{opth offset(coefname # [coefname # ...])}}Hold one or more named coefficients fixed at a given value rather than estimating them, matching R ergm's own {cmd:offset()} formula
+wrapper. {bf:coefname} must be a coefficient this model would otherwise report (an option must still be typed to register the term, e.g. {opt triangle}, before {opt offset(triangle #)} can fix its own
+coefficient - {opt offset()} names an EXISTING coefficient, it does not add a second copy of the term). Works with both {opt method(mple)} and {opt method(mcmle)}. At least one coefficient in the
+model must remain free. Not available for a model that contains a curved (free-decay) term. The fixed coefficient is reported at exactly the given value with standard error exactly 0 (matching
+R's own real output) and a zero row/column in {bf:e(V)} - see {bf:Remarks} below{p_end}
 {synopt:{opt nologlik}}Do not evaluate the log-likelihood of a dyad-dependent MCMLE fit by bridge sampling (R: {cmd:eval.loglik=FALSE}); {cmd:e(ll)}, AIC and BIC are then missing{p_end}
 {synopt:{opt bridgesteps(#)}}Number of bridges for the log-likelihood evaluation; default 16 (R: {cmd:bridge.nsteps}){p_end}
 {synopt:{opt bridgesamplesize(#)}}Draws per bridge; default the sample size of the last MCMLE iteration (with {cmd:mcmleeffectivesize(0)}: {opt mcmcsamplesize()}){p_end}
 {synopt:{opt bridgeinterval(#)}}MCMC thinning within the bridges; default the final MCMLE interval divided by the number of bridges{p_end}
 {synopt:{opt mcmcburnin(int)}}MCMC burn-in steps before the recorded draws of each MCMLE iteration (R's {cmd:MCMLE.burnin}); default 16 times {opt mcmcinterval()}, that is 16,384{p_end}
 {synopt:{opt mcmcinterval(int)}}MCMC steps between recorded draws (R's {cmd:MCMLE.interval}); default 1,024. Faster but much less reliable settings are {cmd:mcmcburnin(3000) mcmcinterval(50)}{p_end}
-{synopt:{opt mcmcsamplesize(int)}}Number of recorded MCMC draws per MCMLE iteration. Default as in R ({cmd:MCMLE.samplesize}): the larger of 256 and 32 times the number of parameters, as the base size of an adaptive sample that is extended until the effective sample size reaches {opt mcmleeffectivesize()} (the number of draws kept, {cmd:e(mcmc_samplesize)}, is then usually larger). With {cmd:mcmleeffectivesize(0)} every iteration records exactly this many draws; default 3,000{p_end}
-{synopt:{opt mcmleeffectivesize(#)}}Target effective sample size of the adaptive MCMLE sample (R's {cmd:MCMLE.effectiveSize}); default 64. The effective size is computed as in R, from the multivariate autoregressive spectral density of the estimating equations ({cmd:spectrum0.mvar()}), and the burn-in is checked with the multivariate Geweke test ({cmd:geweke.diag.mv()}). {cmd:0} switches the adaptive sample off and uses fixed-size samples (R: {cmd:MCMLE.effectiveSize=NULL}), with the interval grown when the effective size stays low{p_end}
-{synopt:{opt mcmleiterations(int)}}Maximum MCMLE outer iterations (R's {cmd:MCMLE.maxit}); default 60. When the limit is reached without convergence the fit is reported with a warning and {cmd:e(converged)} = 0{p_end}
-{synopt:{opt proposal(uniform|random|tnt)}}Metropolis-Hastings proposal weights (R's {cmd:MCMC.prop.weights}); default {it:tnt}, which on a one-mode network is R's default SPDyad proposal (tie/no-tie steps mixed with steps on dyads that have a shared partner; {opt mcmcprop(sparse)} gives tie/no-tie steps alone, see {help nwergm_constraints}). All have a masked variant when {opt freedyads()} or {opt blockdiag()} is given{p_end}
-{synopt:{opt constraints(formula)}}Sample-space constraints written as in R's {cmd:constraints=} (edges, degrees, odegrees, idegrees, bd, blocks, blockdiag, fixedas, fixallbut, ...), several at once; see {help nwergm_constraints}{p_end}
+{synopt:{opt mcmcsamplesize(int)}}Number of recorded MCMC draws per MCMLE iteration. Default as in R ({cmd:MCMLE.samplesize}): the larger of 256 and 32 times the number of parameters, as the base size
+of an adaptive sample that is extended until the effective sample size reaches {opt mcmleeffectivesize()} (the number of draws kept, {cmd:e(mcmc_samplesize)}, is then usually larger). With
+{cmd:mcmleeffectivesize(0)} and for fits with {opt obsconstraints()} every iteration records exactly this many draws; default 3,000{p_end}
+{synopt:{opt mcmleeff:ectivesize(#)}}Target effective sample size of the adaptive MCMLE sample (R's {cmd:MCMLE.effectiveSize}); default 64. The effective size is computed as in R, from the multivariate
+autoregressive spectral density of the estimating equations ({cmd:spectrum0.mvar()}), and the burn-in is checked with the multivariate Geweke test ({cmd:geweke.diag.mv()}). {cmd:0} switches the
+adaptive sample off and uses fixed-size samples (R: {cmd:MCMLE.effectiveSize=NULL}), with the interval grown when the effective size stays low{p_end}
+{synopt:{opt mcmleiterations(int)}}Maximum MCMLE outer iterations (R's {cmd:MCMLE.maxit}); default 60. When the limit is reached without convergence the fit is reported with a warning and
+{cmd:e(converged)} = 0{p_end}
+{synopt:{opt proposal(uniform|random|tnt)}}Metropolis-Hastings proposal weights (R's {cmd:MCMC.prop.weights}); default {it:tnt}, which on a one-mode network is R's default SPDyad proposal (tie/no-tie
+steps mixed with steps on dyads that have a shared partner; {opt mcmcprop(sparse)} gives tie/no-tie steps alone, see {help nwergm_constraints}). All have a masked variant when {opt freedyads()} or
+{opt blockdiag()} is given{p_end}
+{synopt:{opt constraints(formula)}}Sample-space constraints written as in R's {cmd:constraints=} (edges, degrees, odegrees, idegrees, bd, blocks, blockdiag, fixedas, fixallbut, ...), several at once;
+see {help nwergm_constraints}{p_end}
 {synopt:{opt obsconstraints(formula)}}Observation-process constraints (R's {cmd:obs.constraints}); see {help nwergm_constraints}{p_end}
-{synopt:{opt mcmcprop(hints)}}R's {cmd:MCMC.prop} hint formula; default {cmd:sparse + .triadic} (SPDyad), {cmd:sparse} for tie/no-tie steps alone, {cmd:triadic(triFocus=}{it:#}{cmd:)} for another share of triadic steps; see {help nwergm_constraints}{p_end}
+{synopt:{opt mcmcprop(hints)}}R's {cmd:MCMC.prop} hint formula; default {cmd:sparse + .triadic} (SPDyad), {cmd:sparse} for tie/no-tie steps alone, {cmd:triadic(triFocus=}{it:#}{cmd:)} for another
+share of triadic steps; see {help nwergm_constraints}{p_end}
 {synopt:{opt mcmcmaxedges(#)}}R's {cmd:MCMC.maxedges}: stop sampling when the network has more ties than this{p_end}
-{synopt:{opth freedyads(netname)}}Restrict the dyad space to fit (see {bf:Remarks}): {bf:netname}'s own ties mark which dyads of the network being fit are free to vary during MCMC; every dyad NOT tied in {bf:netname} is held fixed at its observed value for the rest of the fit (R ergm's own {cmd:fixallbut()} constraint). Compatible with both {opt proposal(uniform)} and {opt proposal(tnt)}, and native (C)-accelerated when otherwise eligible. See {bf:Limitations} below{p_end}
-{synopt:{opth blockdiag(varname)}}Restrict the dyad space to fit (see {bf:Remarks}): only dyads sharing the same value of {bf:varname} are free to vary during MCMC; every cross-value dyad is held fixed at its observed value for the rest of the fit (R ergm's own {cmd:blockdiag()} constraint). Cannot be combined with {opt freedyads()}. Compatible with both {opt proposal(uniform)} and {opt proposal(tnt)}, and native (C)-accelerated when otherwise eligible{p_end}
-{synopt:{opt seed(int)}}Set the random-number seed before simulating. The same call with the same {opt seed()}, data and plugin gives identical coefficients in any session and whatever was loaded or fitted before. A different operating system or plugin build, or different {opt mcmcinterval()}, {opt mcmcsamplesize()} or other controls, gives a different (statistically equivalent) Monte Carlo fit; the stream of random numbers is not the one of R, so results match R only up to Monte Carlo error. Without {opt seed()} the current Stata seed is used{p_end}
+{synopt:{opth freedyads(netname)}}Restrict the dyad space to fit (see {bf:Remarks}): {bf:netname}'s own ties mark which dyads of the network being fit are free to vary during MCMC; every dyad NOT tied
+in {bf:netname} is held fixed at its observed value for the rest of the fit (R ergm's own {cmd:fixallbut()} constraint). Compatible with both {opt proposal(uniform)} and {opt proposal(tnt)}, and
+native (C)-accelerated when otherwise eligible. See {bf:Limitations} below{p_end}
+{synopt:{opth blockdiag(varname)}}Restrict the dyad space to fit (see {bf:Remarks}): only dyads sharing the same value of {bf:varname} are free to vary during MCMC; every cross-value dyad is held
+fixed at its observed value for the rest of the fit (R ergm's own {cmd:blockdiag()} constraint). Cannot be combined with {opt freedyads()}. Compatible with both {opt proposal(uniform)} and
+{opt proposal(tnt)}, and native (C)-accelerated when otherwise eligible{p_end}
+{synopt:{opt seed(int)}}Set the random-number seed before simulating. The same call with the same {opt seed()}, data and plugin gives identical coefficients in any session and whatever was loaded or
+fitted before. A different operating system or plugin build, or different {opt mcmcinterval()}, {opt mcmcsamplesize()} or other controls, gives a different (statistically equivalent) Monte Carlo fit;
+the stream of random numbers is not the one of R, so results match R only up to Monte Carlo error. Without {opt seed()} the current Stata seed is used{p_end}
 {synopt:{opt verbose}}Show MPLE/MCMLE iteration detail{p_end}
-{synopt:{opt spcache}}Enable the incremental shared-partner cache for {opt gwesp()}/{opt gwdsp()}/{opt gwnsp()}/{opt esp()}/{opt dsp()}/{opt triangle}/{opt ctriple} on an undirected network; OFF by default because direct benchmarking found it a net LOSS below roughly average degree 30-40 (the common case) and a net win only above that - enable only for denser undirected networks; no effect on a directed network or without any of those terms{p_end}
-{synopt:{opt fixdensity}}Hold the total tie count fixed during MCMC (R ergm's own {cmd:constraints=~edges}), via a compound tie/non-tie swap proposal rather than the ordinary single-dyad toggle; native (C)-accelerated when otherwise eligible. Requires {opt method(mcmle)} and at least one term besides {opt edges} (which is dropped, not estimated, under this constraint - see {bf:Remarks}). Cannot currently be combined with {opt freedyads()}/{opt blockdiag()} - only one dyad-space constraint may be given at a time{p_end}
-{synopt:{opt nonative}}Force the Mata backend even on an otherwise plugin-eligible model - for testing or direct comparison against the plugin (C) backend; very slow; not needed for ordinary use, since {cmd:nwergm} already picks the native backend automatically whenever a model qualifies{p_end}
-{synopt:{opt nomcmcsample}}Skip posting {bf:e(mcmcsample)} ({bf:method(mcmle)} only). Populating this matrix from Mata is the single slowest step for a fit with a large {opt mcmcsamplesize()} - a genuine Stata matrix-engine cost at bulk-data scale (confirmed by direct timing: over 30 seconds at 100,000 rows), not something {help nwergm_estat:estat mcmcdiag}'s own consumption of it can be blamed for or sped up (reading the already-posted matrix back is fast regardless of size - the cost is entirely in creating it in the first place). Specify {opt nomcmcsample} when fitting with an unusually large {opt mcmcsamplesize()} and you do not need {cmd:estat mcmcdiag} or to inspect the raw sample directly - the coefficient table, standard errors, and every other stored result are completely unaffected{p_end}
+{synopt:{opt spcache}}Enable the incremental shared-partner cache for {opt gwesp()}/{opt gwdsp()}/{opt gwnsp()}/{opt esp()}/{opt dsp()}/{opt triangle}/{opt ctriple} on an undirected network; OFF by
+default because direct benchmarking found it a net LOSS below roughly average degree 30-40 (the common case) and a net win only above that - enable only for denser undirected networks; no effect on a
+directed network or without any of those terms{p_end}
+{synopt:{opt fixdensity}}Hold the total tie count fixed during MCMC (R ergm's own {cmd:constraints=~edges}), via a compound tie/non-tie swap proposal rather than the ordinary single-dyad toggle;
+native (C)-accelerated when otherwise eligible. Requires {opt method(mcmle)} and at least one term besides {opt edges} (which is dropped, not estimated, under this constraint - see
+{bf:Remarks}). Cannot currently be combined with {opt freedyads()}/{opt blockdiag()} - only one dyad-space constraint may be given at a time{p_end}
+{synopt:{opt nonative}}Force the Mata backend even on an otherwise plugin-eligible model - for testing or direct comparison against the plugin (C) backend; very slow; not needed for ordinary use,
+since {cmd:nwergm} already picks the native backend automatically whenever a model qualifies{p_end}
+{synopt:{opt nomcmcsample}}Skip posting {bf:e(mcmcsample)} ({bf:method(mcmle)} only). Populating this matrix from Mata is the single slowest step for a fit with a large {opt mcmcsamplesize()} - a
+genuine Stata matrix-engine cost at bulk-data scale (confirmed by direct timing: over 30 seconds at 100,000 rows), not something {help nwergm_estat:estat mcmcdiag}'s own consumption of it can be
+blamed for or sped up (reading the already-posted matrix back is fast regardless of size - the cost is entirely in creating it in the first place). Specify {opt nomcmcsample} when fitting with an
+unusually large {opt mcmcsamplesize()} and you do not need {cmd:estat mcmcdiag} or to inspect the raw sample directly - the coefficient table, standard errors, and every other stored result are
+completely unaffected{p_end}
 
 {p2colreset}{...}
+
 
 {title:Dialog boxes}
 
@@ -185,15 +257,6 @@ Every term and option of {cmd:nwergm} can be set there.
 {cmd:nwergm simulate} from a fit. The dialogs are installed with the package and appear in the {cmd:Network Analysis} menu when the
 menu is installed with {cmd:nwinstall}.
 
-{title:Version}
-
-{p 8 17 2}
-{cmd:nwergm version}
-{p_end}
-
-{pstd}
-{cmd:nwergm version} displays the installed release of {cmd:nwergm}, the version of the {cmd:nwcommands} core, the license and the version of the R package that the results were compared with, and the native plugin in use. It stores the release in {cmd:r(version)} and {cmd:r(date)}, the core version in {cmd:r(core)}, and the license in {cmd:r(license)}. After estimation, the release that produced the results is in {cmd:e(version)}; quote it when reporting an analysis. {cmd:nwversion} lists the core and all installed model packages.
-{p_end}
 
 {title:Description}
 
@@ -269,13 +332,248 @@ coefficients may be fixed in one model: {bf:offset(mutual 2 gwesp_weight 0.5)}.
 
 {pstd}
 If the Mata library of nwergm (lnwergm.mlib) does not load in your Stata (for example r(3499) because it was built by a newer Stata than yours), build it with your own Stata:
-{cmd:nwinstall, buildmata(nwergm)} fetches the Mata source, compiles it and installs the library; restart Stata afterwards. The library of nwergm is compiled against the core library, so if the core library does not load either, use {cmd:nwinstall, buildmata(all)}, which rebuilds the core first and then the installed model packages.
+{cmd:nwinstall, buildmata(nwergm)} fetches the Mata source, compiles it and installs the library; restart Stata afterwards. The library of nwergm is compiled against the core library, so if the core
+library does not load either, use {cmd:nwinstall, buildmata(all)}, which rebuilds the core first and then the installed model packages.
 The build clears the data and the Mata objects in memory. See {help nwinstall##buildmata:nwinstall}.
 
-{title:Supported network types}
+
+{marker native}{...}
+{title:Performance: the native (C) MCMC backend}
 
 {pstd}
-Binary: yes (only) - MPLE/MCMLE estimation here is for a binary tie-formation model; a valued network's own tie values are not used as an outcome (no weighted ERGM family is implemented); a valued network is fitted as the binary graph (a tie is present when its value is not zero), as R's ergm does without response=; one note says that the tie values are ignored (none when every value is 1). Directed: yes, most terms have both directed and undirected forms (see the term list). Weighted: not applicable (see Binary). Signed: not applicable. Two-mode: yes, undirected only - the two-mode terms are listed in {help nwergm_bipartite:nwergm (two-mode)} (the ones described in this help file are {opt edges}, {opt bcov1()}/{opt bcov2()}/{opt bfactor1()}/{opt bfactor2()}, {opt bdegree1()}/{opt bdegree2()}/{opt bstar1()}/{opt bstar2()}, {opt bnodematch1()}/{opt bnodematch2()}, {opt bgwdegree1()}/{opt bgwdegree2()}); see Limitations below.
+The Metropolis-Hastings sampler, the change statistics of the terms, the observed statistics, the
+pseudolikelihood design matrix and the Newton iterations of curved pseudolikelihood fits are written in C
+and run in a Stata plugin that ships with the package; there is nothing to turn on and no option to set.
+{bf:e(native)} records that the plugin ran. The estimating step of the Monte Carlo algorithm, the covariance,
+the diagnostics and the output are written in Mata and Stata. The sampling and observation constraints
+({opt freedyads()}, {opt blockdiag()}, {opt fixdensity}, {opt constraints()}, {opt obsconstraints()}),
+{opt structural()} and the operators exist in the plugin only and stop with a message when it is missing.
+
+{pstd}
+A slower Mata implementation of the other terms also exists. It is used only when the plugin file
+for the platform is missing, when the option {opt nonative} is given (for testing and comparison), or when a
+model exceeds the capacity of the plugin. The two are statistically indistinguishable for {opt method(mcmle)}
+(independent random-number streams, so not bit-identical sample paths, but the same target distribution) and give a bit-identical design matrix for
+{opt method(mple)}.
+
+{pstd}
+{bf:Warning: the Mata fallback is very slow.} The Mata backend is meant for testing and comparison, not for
+production use. It is typically about a hundred times slower, or more, than the compiled plugin (the Lazega model of the
+manual takes 31 seconds against 0.6 seconds, a fit with {opt bgwdsp1()} had not finished after 29 minutes, and
+a fit with {cmd:constraints(bd(maxout=30))} takes 165 seconds against 0.16 seconds). When a Monte Carlo fit
+({opt method(mcmle)}), {cmd:estat gof} or {cmd:nwergm simulate} runs without the plugin, {cmd:nwergm} prints one
+warning line before the computation starts, giving the reason: option {opt nonative}, the plugin file for the
+platform not found (reinstall the package with {cmd:net install nwergm, replace}; the file
+{cmd:ergm_mcmc_macos.plugin}, {cmd:ergm_mcmc_unix.plugin} or {cmd:ergm_mcmc_windows.plugin} must be on the
+{cmd:adopath}), or a model outside the capacity of the plugin. No warning is printed when the plugin is used.
+
+{pstd}
+The native backend requires a compiled plugin for the current platform (macOS, Linux and Windows plugins
+are built by the package's continuous-integration workflow and ship with the package). Given
+a compiled plugin, every term and every constraint mechanism {cmd:nwergm} implements is
+native-eligible - the one-mode term library ({opt edges}, {opt mutual}, every node-covariate term,
+the full degree-distribution family, and the entire shared-partner family under every
+{opt type()}); the dyadic-covariate terms {opt edgecov()}/{opt hamming()}; the two-mode
+(bipartite) term library ({opt bcov1()}/{opt bcov2()}/{opt bfactor1()}/{opt bfactor2()}/
+{opt bdegree1()}/{opt bdegree2()}/{opt bstar1()}/{opt bstar2()}/{opt bnodematch1()}/
+{opt bnodematch2()}/{opt bgwdegree1()}/{opt bgwdegree2()}); every curved (free-decay) term's own
+raw statistic ({opt gwespfree()}/{opt gwdegreefree()}/{opt gwdspfree()}/{opt gwnspfree()}/
+{opt gwodegreefree()}/{opt gwidegreefree()}); and {opt offset()}/{opt freedyads()}/
+{opt blockdiag()}/{opt fixdensity}, none of which change a model's own native eligibility (a
+masked or fixed-density model runs native exactly when an ordinary model with the same terms
+would - see {bf:Remarks} above for {opt fixdensity}'s own compound tie/non-tie swap proposal,
+which the native backend implements too). A model still falls back to the Mata sampler as a
+whole when it exceeds the native backend's own fixed capacity limits on term/attribute/covariate
+count - the WHOLE model, never "some terms in C, some in Mata", since every term's own change
+statistic must be evaluated on every proposal, and there is no way to cross the Mata/C boundary
+selectively without doing so on every single MCMC step (which would defeat the entire purpose).
+
+{pstd}
+For a curved term ({opt gwespfree()}/{opt gwdegreefree()}/{opt gwdspfree()}/
+{opt gwodegreefree()}/{opt gwidegreefree()}) under {opt method(mple)}, the native backend
+additionally fits the Newton-Raphson optimization itself in C (not just the design-matrix
+build), when eligible - still exposed only via {bf:e(native)}, since a curved fit and its own
+design-matrix build always share the same native-or-Mata routing. On a genuine boundary solution
+(the estimated decay collapsing toward 0, a real, if uncommon, outcome discussed under
+{opt method()} above), the native fit uses the same generalized-inverse handling of a singular
+final Fisher information matrix that Mata's own {cmd:invsym()}-based fit uses, rather than
+falling back to Mata. Under {opt method(mcmle)}, a curved term's MCMC sampling is
+native-accelerated the same way any other {opt method(mcmle)} fit's is; the outer estimating
+step itself (translating each simulated sample into the next coefficient update) always runs in
+Mata, curved or not.
+
+{pstd}
+Speed relative to R's {cmd:ergm} depends on the model. With the default settings on both sides,
+{cmd:nwergm} was 2.8 to 10.2 times faster than {cmd:ergm} 4.12.0 on the eight benchmark models of the
+manual (networks of 30 to 1,000 nodes, median of seven fits); this does not say that every model is
+faster. The cost of a Monte Carlo fit grows with the size of the network, the terms and the number of
+iterations. Check the timing of your own model before relying on it; the website {browse "https://nwcommands.org/nwergm/":nwcommands.org/nwergm} describes the
+comparison with R.
+
+
+{marker pernode}{...}
+{title:Models with one coefficient per node}
+
+{pstd}
+{opt sender} and {opt receiver}, and factor terms on an attribute with many levels, give one coefficient per
+node or level, so a model can have hundreds or thousands of coefficients. A dyad-independent model of this
+kind ({cmd:edges sender receiver}, possibly with node and dyadic covariates) is fitted by the pseudolikelihood,
+which then equals the likelihood; {cmd:nwergm} uses a sparse design for it, and a directed network of 1,000
+nodes (2,000 coefficients) takes a few seconds.
+
+{pstd}
+A dyad-dependent model with such terms (for example {cmd:edges mutual sender receiver}) needs
+{opt method(mcmle)}. As in R's {cmd:ergm}, every iteration draws a sample whose size grows with the number of
+coefficients (32 draws per coefficient), and the work of an iteration grows with the square of that number.
+Such fits are practical up to a few hundred nodes: {cmd:edges mutual sender receiver} on a directed network
+of 100 nodes (200 coefficients) converged after 15 iterations in about 20 minutes. For larger networks,
+replace the per-node terms with node covariates or degree terms ({opt gwodegree()}, {opt gwidegree()}), or
+use {opt method(mple)}; for a dyad-dependent model the pseudolikelihood estimate is only an approximation, and
+its standard errors are too small.
+
+
+{title:Postestimation}
+
+{pstd}
+{help nwergm_estat:estat mcmcdiag} reports basic diagnostics for the final MCMC simulation
+(mean/SD/autocorrelation/effective sample size per statistic, plus the overall acceptance rate)
+after {opt method(mcmle)}. Not available after a pure MPLE fit, which involves no MCMC
+simulation.
+
+{pstd}
+{help nwergm_estat:estat gof} compares networks simulated from the fitted model with the network
+{cmd:nwergm} was fitted on, as R's {cmd:gof()} (degree distributions, shared partners, geodesic
+distances, triad census and the model statistics) - available after either estimation method.
+See {help nwergm_estat} for full details.
+
+{pstd}
+{cmd:estat ic}, {cmd:lrtest} and {cmd:predict} (conditional tie probabilities, as {cmd:predict.ergm} in R) are described in {help nwergm_fit}, which
+also explains how missing dyads and missing covariate values are handled.
+
+
+{title:Simulation}
+
+{p 8 17 2}
+{cmdab: nwergm} {cmd:simulate}
+{it:nodes}
+{cmd:,}
+{opt edges} [{opt mutual}]
+[{it:{help nwergm##simulate_terms:term options}}]
+[{opt type(OTP|ITP|OSP|ISP|RTP)}]
+{opt theta(numlist)}
+[{opt directed}
+{opt bipartite(#)}
+{opt structural(termlist)}
+{opt nsim(int)}
+{opt mcmcburnin(int)}
+{opt mcmcinterval(int)}
+{opt proposal(uniform|tnt)}
+{opt mcmcprop(hints)}
+{opt basis(netname)}
+{opt constraints(formula)}
+{opt seed(int)}
+{opt generate(string)}
+{opt spcache}]
+
+{pstd}
+{cmd:nwergm simulate} draws one or more networks from a fully-specified ERGM (fixed
+coefficients, not estimated) via the same native Metropolis-Hastings sampler {cmd:nwergm}
+itself uses for estimation - matching {cmd:simulate.ergm} of the
+{browse "https://cran.r-project.org/package=ergm":ergm} package. {it:nodes} is the number of nodes to simulate on (no
+existing network is required or read). {opt bipartite(#)} simulates an undirected two-mode network whose first {it:#} nodes
+form mode 1 (needed for the two-mode terms). {opt basis()} starts the chain from an existing network with {it:nodes} nodes
+(the draws get its node names), and {opt constraints()} restricts the sample space as in {help nwergm_constraints}; both need
+the native plugin and cannot be combined with {opt bipartite()}.
+
+{marker simulate_terms}{...}
+{pstd}
+{cmd:nwergm simulate} supports the term options of the {cmd:nwergm} {bf:Syntax} section above with fixed decay, the
+two-mode terms of {help nwergm_bipartite:nwergm (two-mode)} without the curved ones, and {opt structural()}. The
+covariate terms of {help nwergm_covterms} ({opt absdiffcat()}, {opt diff()}, {opt smalldiff()}, {opt sociality()},
+{opt attrcov()}, {opt dyadcov()}, {opt mm()}, the {opt *covrange()} and {opt *factordistinct()} terms), the curved
+(free-decay) terms, {opt operators()}, {opt offset()}, {opt freedyads()}, {opt blockdiag()} and {opt fixdensity} are
+not available here; draw from a fitted model with them by {cmd:nwergm simulate} without {it:nodes} (see {help nwergm_estimation}).
+Each family sources its data the same way it does during estimation:
+
+{p2colset 9 32 34 2}{...}
+{p2col:{it:no external data}}{opt mutual}, {opt concurrent}, {opt triangle}, {opt ctriple},
+{opt transitiveties}, {opt cyclicalties}, {opt degree(numlist)}, {opt odegree(numlist)},
+{opt idegree(numlist)}, {opt kstar(numlist)}, {opt ostar(numlist)}, {opt istar(numlist)},
+{opt degrange(numlist)}/{opt degrangeto(numlist)} (and the {opt o}-/{opt i}- directed
+analogues), {opt esp(numlist)}, {opt dsp(numlist)}, and the full geometrically weighted family
+({opt gwesp}/{opt gwdsp}/{opt gwnsp}/{opt gwdegree}/{opt gwodegree}/{opt gwidegree}, all
+{it:real}, decay value only){p_end}
+{p2col:{it:node covariate}}{opt nodematch(varname)}, {opt nodematchdiff(varname)},
+{opt nodecov(varname)}, {opt nodeicov(varname)}, {opt nodeocov(varname)}, {opt absdist(varname)},
+{opt nodefactor(varname)}, {opt nodeofactor(varname)}, {opt nodeifactor(varname)},
+{opt nodemix(varname)}, {opt sender}, {opt receiver} - read via {cmd:st_data()} from
+{it:the currently active Stata dataset}, exactly as estimation reads them from whatever dataset
+is loaded alongside the network being fit. The active dataset must already have {it:nodes}
+observations with the named variable populated before calling {cmd:simulate} (e.g.
+{cmd:set obs 20} + {cmd:gen mygroup = ...}); {opt sender}/{opt receiver} need no real
+covariate at all, since their own "attribute" is just each node's own index.{p_end}
+{p2col:{it:dyadic covariate}}{opt edgecov(netname)}, {opt hamming(netname)} - read from
+{it:netname}, an already-{help nwset:set}/loaded reference network of the same size as
+{it:nodes}, exactly as estimation reads a dyadic covariate from a second network object.{p_end}
+
+{pstd}
+{opt type()} selects which of the five directed shared-partner definitions (default {bf:OTP}) any
+{opt gwesp}/{opt gwdsp}/{opt gwnsp}/{opt esp()}/{opt dsp()} term simulates under, with {opt directed}
+- exactly the same option, with the same meaning, as {cmd:nwergm}'s own estimation path; see that
+command's own {bf:Remarks} section for the five definitions.
+
+{pstd}
+{opt theta()} supplies one coefficient per resulting model term, in the SAME fixed sequence
+{cmd:nwergm}'s own estimation path itself always processes terms in (edges, mutual, then every
+node-covariate family, then the structural/numlist family, then {opt sender}/{opt receiver},
+then the dyadic-covariate family, then the geometrically weighted family - regardless of the
+order the options happen to be typed on the command line, since Stata's own option parsing does
+not preserve that order to begin with). A term that expands into several coefficients (e.g.
+{opt nodefactor()} with several non-base levels, or {opt degree(2 3 4)}) consumes that many consecutive
+entries from {opt theta()}, in the same left-to-right order its own levels/values are listed.
+There is no per-term coefficient sub-option, by design, so this exactly reuses the same
+term-construction code {cmd:nwergm}'s own estimation path uses rather than a parallel
+implementation.
+
+{pstd}
+{bf:The resulting simulated network's own dataset does not carry the caller's covariate variable(s) forward.} Each simulated draw is built via a fresh {cmd:nwset} call that replaces
+the active dataset with just that network's own bare node/edge structure - any covariate
+variable read during term construction is captured once, in Mata, before that replacement
+happens, and is not itself part of the simulated result. Regenerate it afterward (by node
+index, since simulated node identity is always {cmd:1}..{it:nodes} in the caller's original row
+order) if a postestimation step - e.g. checking the resulting network's own mixing pattern -
+needs it alongside the simulated network.
+
+{pstd}
+{opt nsim(int)} (default 1) draws that many independent networks (a fresh burn-in for each,
+matching {cmd:nwergm}'s own control conventions rather than continuing one long chain), named
+{opt generate()}{cmd:_1}, {opt generate()}{cmd:_2}, ... when {opt nsim()}{cmd: > 1} (default stub
+{cmd:ergmsim}), or plain {opt generate()} (default {cmd:ergmsim}) when {opt nsim(1)}.
+
+{pstd}
+As in R's {cmd:simulate()}, {opt mcmcinterval()} defaults to 1,024 and {opt mcmcburnin()} to 16 times
+the interval (16,384). {cmd:mcmcburnin(3000) mcmcinterval(50)} is faster but much less
+reliable.
+
+{pstd}
+The C source of the plugin comes with the package: {cmd:net get nwergm, from(https://raw.githubusercontent.com/thomas-u-grund/nwergm/main)}
+copies it into the current directory, together with a file that explains how to build the plugin; it is also in the folder
+{cmd:native/} of the repository at {browse "https://github.com/thomas-u-grund/nwergm"}. {cmd:net install} installs the compiled plugins only.
+
+{pstd}
+If the plugin of your platform is missing, older than the {cmd:.ado} files or does not work on your computer, compile it there:
+{cmd:nwinstall, buildplugin(nwergm)} fetches the source, compiles it with the compiler of your computer (macOS and Linux; a C compiler and
+{cmd:make} are needed) and installs the plugin; restart Stata afterwards. See {help nwinstall##buildplugin:nwinstall}.
+
+
+{title:Network types}
+
+{pstd}
+{bf:Directed:} supported; most terms have directed and undirected forms (see the term list). {bf:Valued:} binary model only: a valued network is fitted as its 0/1 graph
+(a tie where the value is not zero), as R's ergm without {cmd:response=}, with a note that the tie values are ignored. {bf:Two-mode:} undirected only, with the terms of
+{help nwergm_bipartite:nwergm (two-mode)} (here: {opt edges} and the {opt bcov}, {opt bfactor}, {opt bdegree}, {opt bstar}, {opt bnodematch} and {opt bgwdegree}
+options for modes 1 and 2); see {help nwergm##limitations:Limitations}. {bf:Signed:} not supported. See {help nwnetworktypes}.{p_end}
+
 
 {title:Limitations}
 
@@ -366,154 +664,6 @@ fixed coefficients with {opt offset()} (see the {cmd:Syntax} block above). Basic
 and basic goodness of fit ({help nwergm_estat:estat gof}) are both available; see
 {help nwergm_estat}.
 
-{marker native}{...}
-{title:Performance: the native (C) MCMC backend}
-
-{pstd}
-The Metropolis-Hastings sampler, the change statistics of the terms, the observed statistics, the
-pseudolikelihood design matrix and the Newton iterations of curved pseudolikelihood fits are written in C
-and run in a Stata plugin that ships with the package; there is nothing to turn on and no option to set.
-{bf:e(native)} records that the plugin ran. The estimating step of the Monte Carlo algorithm, the covariance,
-the diagnostics and the output are written in Mata and Stata. The sampling and observation constraints
-({opt freedyads()}, {opt blockdiag()}, {opt fixdensity}, {opt constraints()}, {opt obsconstraints()}),
-{opt structural()} and the operators exist in the plugin only and stop with a message when it is missing.
-
-{pstd}
-A slower Mata implementation of the other terms also exists. It is used only when the plugin file
-for the platform is missing, when the option {opt nonative} is given (for testing and comparison), or when a
-model exceeds the capacity of the plugin. The two are statistically indistinguishable for {opt method(mcmle)}
-(independent random-number streams, so not bit-identical sample paths, but the same target distribution) and give a bit-identical design matrix for
-{opt method(mple)}.
-
-{pstd}
-{bf:Warning: the Mata fallback is very slow.} The Mata backend is meant for testing and comparison, not for
-production use. It is typically about a hundred times slower, or more, than the compiled plugin (the Lazega model of the
-manual takes 31 seconds against 0.6 seconds, a fit with {opt bgwdsp1()} had not finished after 29 minutes, and
-a fit with {cmd:constraints(bd(maxout=30))} takes 165 seconds against 0.16 seconds). When a Monte Carlo fit
-({opt method(mcmle)}), {cmd:estat gof} or {cmd:nwergm simulate} runs without the plugin, {cmd:nwergm} prints one
-warning line before the computation starts, giving the reason: option {opt nonative}, the plugin file for the
-platform not found (reinstall the package with {cmd:net install nwergm, replace}; the file
-{cmd:ergm_mcmc_macos.plugin}, {cmd:ergm_mcmc_unix.plugin} or {cmd:ergm_mcmc_windows.plugin} must be on the
-{cmd:adopath}), or a model outside the capacity of the plugin. No warning is printed when the plugin is used.
-
-{pstd}
-The native backend requires a compiled plugin for the current platform (macOS, Linux and Windows plugins
-are built by the package's continuous-integration workflow and ship with the package). Given
-a compiled plugin, every term and every constraint mechanism {cmd:nwergm} implements is
-native-eligible - the one-mode term library ({opt edges}, {opt mutual}, every node-covariate term,
-the full degree-distribution family, and the entire shared-partner family under every
-{opt type()}); the dyadic-covariate terms {opt edgecov()}/{opt hamming()}; the two-mode
-(bipartite) term library ({opt bcov1()}/{opt bcov2()}/{opt bfactor1()}/{opt bfactor2()}/
-{opt bdegree1()}/{opt bdegree2()}/{opt bstar1()}/{opt bstar2()}/{opt bnodematch1()}/
-{opt bnodematch2()}/{opt bgwdegree1()}/{opt bgwdegree2()}); every curved (free-decay) term's own
-raw statistic ({opt gwespfree()}/{opt gwdegreefree()}/{opt gwdspfree()}/{opt gwnspfree()}/
-{opt gwodegreefree()}/{opt gwidegreefree()}); and {opt offset()}/{opt freedyads()}/
-{opt blockdiag()}/{opt fixdensity}, none of which change a model's own native eligibility (a
-masked or fixed-density model runs native exactly when an ordinary model with the same terms
-would - see {bf:Remarks} above for {opt fixdensity}'s own compound tie/non-tie swap proposal,
-which the native backend implements too). A model still falls back to the Mata sampler as a
-whole when it exceeds the native backend's own fixed capacity limits on term/attribute/covariate
-count - the WHOLE model, never "some terms in C, some in Mata", since every term's own change
-statistic must be evaluated on every proposal, and there is no way to cross the Mata/C boundary
-selectively without doing so on every single MCMC step (which would defeat the entire purpose).
-
-{pstd}
-For a curved term ({opt gwespfree()}/{opt gwdegreefree()}/{opt gwdspfree()}/
-{opt gwodegreefree()}/{opt gwidegreefree()}) under {opt method(mple)}, the native backend
-additionally fits the Newton-Raphson optimization itself in C (not just the design-matrix
-build), when eligible - still exposed only via {bf:e(native)}, since a curved fit and its own
-design-matrix build always share the same native-or-Mata routing. On a genuine boundary solution
-(the estimated decay collapsing toward 0, a real, if uncommon, outcome discussed under
-{opt method()} above), the native fit uses the same generalized-inverse handling of a singular
-final Fisher information matrix that Mata's own {cmd:invsym()}-based fit uses, rather than
-falling back to Mata. Under {opt method(mcmle)}, a curved term's MCMC sampling is
-native-accelerated the same way any other {opt method(mcmle)} fit's is; the outer estimating
-step itself (translating each simulated sample into the next coefficient update) always runs in
-Mata, curved or not.
-
-{pstd}
-Speed relative to R's {cmd:ergm} depends on the model. With the default settings on both sides,
-{cmd:nwergm} was 2.8 to 10.2 times faster than {cmd:ergm} 4.12.0 on the eight benchmark models of the
-manual (networks of 30 to 1,000 nodes, median of seven fits); this does not say that every model is
-faster. The cost of a Monte Carlo fit grows with the size of the network, the terms and the number of
-iterations. Check the timing of your own model before relying on it; the website {browse "https://nwcommands.org/nwergm/":nwcommands.org/nwergm} describes the
-comparison with R.
-
-{marker pernode}{...}
-{title:Models with one coefficient per node}
-
-{pstd}
-{opt sender} and {opt receiver}, and factor terms on an attribute with many levels, give one coefficient per
-node or level, so a model can have hundreds or thousands of coefficients. A dyad-independent model of this
-kind ({cmd:edges sender receiver}, possibly with node and dyadic covariates) is fitted by the pseudolikelihood,
-which then equals the likelihood; {cmd:nwergm} uses a sparse design for it, and a directed network of 1,000
-nodes (2,000 coefficients) takes a few seconds.
-
-{pstd}
-A dyad-dependent model with such terms (for example {cmd:edges mutual sender receiver}) needs
-{opt method(mcmle)}. As in R's {cmd:ergm}, every iteration draws a sample whose size grows with the number of
-coefficients (32 draws per coefficient), and the work of an iteration grows with the square of that number.
-Such fits are practical up to a few hundred nodes: {cmd:edges mutual sender receiver} on a directed network
-of 100 nodes (200 coefficients) converged after 15 iterations in about 20 minutes. For larger networks,
-replace the per-node terms with node covariates or degree terms ({opt gwodegree()}, {opt gwidegree()}), or
-use {opt method(mple)}; for a dyad-dependent model the pseudolikelihood estimate is only an approximation, and
-its standard errors are too small.
-
-{title:Postestimation}
-
-{pstd}
-{help nwergm_estat:estat mcmcdiag} reports basic diagnostics for the final MCMC simulation
-(mean/SD/autocorrelation/effective sample size per statistic, plus the overall acceptance rate)
-after {opt method(mcmle)}. Not available after a pure MPLE fit, which involves no MCMC
-simulation.
-
-{pstd}
-{help nwergm_estat:estat gof} reports a basic simulation-based goodness-of-fit comparison
-(mean degree, average geodesic distance, complete-triad count) between the fitted model's own
-simulated networks and the network {cmd:nwergm} was fitted on - available after either
-estimation method. See {help nwergm_estat} for full details.
-
-{pstd}
-{cmd:estat ic}, {cmd:lrtest} and {cmd:predict} (conditional tie probabilities, as {cmd:predict.ergm} in R) are described in {help nwergm_fit}, which
-also explains how missing dyads and missing covariate values are handled.
-
-{title:Stored results}
-
-	Scalars
-	  {bf:e(N)}			number of informative dyads (observed, not missing, not constrained)
-	  {bf:e(nmissing)}		number of missing dyads
-	  {bf:e(ll)}, {bf:e(ll_0)}	log-likelihood and null-model log-likelihood; see {help nwergm_fit}
-	  {bf:e(df_m)}, {bf:e(aic)}, {bf:e(bic)}, {bf:e(deviance)}, {bf:e(ll_se)}	see {help nwergm_fit}
-	  {bf:e(nodes)}			number of nodes
-	  {bf:e(trifocus)}		share of triadic steps of the SPDyad proposal (missing when it is not used)
-	  {bf:e(ties)}			number of observed ties
-	  {bf:e(converged)}		1 if MCMLE's own convergence test was satisfied (method(mcmle) only)
-	  {bf:e(mcmle_iterations)}	number of MCMLE outer iterations run (method(mcmle) only)
-	  {bf:e(mcmc_acceptrate)}	Metropolis-Hastings acceptance rate, final simulation (method(mcmle) only)
-	  {bf:e(mcmc_burnin)}		MCMC burn-in steps used (method(mcmle) only)
-	  {bf:e(mcmc_interval)}		MCMC thinning interval requested (method(mcmle) only)
-	  {bf:e(mcmc_interval_final)}	MCMC thinning interval actually used for the last iteration - may
-					exceed e(mcmc_interval) if the adaptive-interval mechanism grew it
-					to reach an adequate effective sample size (method(mcmle) only)
-	  {bf:e(mcmc_samplesize)}	MCMC recorded-draw count used (method(mcmle) only)
-	  {bf:e(native)}		1 if the native (C) backend was used for this run (the MCMC sampler
-					for method(mcmle); the MPLE design-matrix build for method(mple)),
-					0 if the Mata implementation ran instead - purely informational,
-					see {help nwergm##native:Performance} below
-
-	Macros
-	  {bf:e(cmd)}			{bf:nwergm}
-	  {bf:e(title)}			title of estimation
-	  {bf:e(depvar)}		name of the estimated network
-	  {bf:e(method)}		{bf:mple} or {bf:mcmle}
-	  {bf:e(directed)}		{bf:true}/{bf:false}
-	  {bf:e(proposal)}		Metropolis-Hastings proposal weights ({bf:tnt} or {bf:uniform}), also used by {cmd:nwergm simulate} and {cmd:estat gof}
-	  {bf:e(estat_cmd)}		{bf:nwergm_estat} (postestimation dispatch)
-
-	Matrices
-	  {bf:e(b)}			coefficient vector
-	  {bf:e(V)}			variance-covariance matrix
-	  {bf:e(mcmcsample)}		final simulation's sufficient-statistic draws, samplesize x nparam (method(mcmle) only)
 
 {title:Examples}
 
@@ -521,6 +671,56 @@ also explains how missing dyads and missing covariate values are handled.
 	{cmd:. nwergm flomarriage, edges}
 	{cmd:. nwergm flomarriage, edges nodecov(wealth)}
 	{cmd:. nwergm flomarriage, edges gwesp(.5)}
+
+
+{title:Stored results}
+
+{synoptset 30 tabbed}{...}
+{p2col 5 30 34 2: Scalars}{p_end}
+{synopt:{bf:e(N)}}number of informative dyads (observed, not missing, not constrained){p_end}
+{synopt:{bf:e(nmissing)}}number of missing dyads{p_end}
+{synopt:{bf:e(ll)}, {bf:e(ll_0)}}log-likelihood and null-model log-likelihood; see {help nwergm_fit}{p_end}
+{synopt:{bf:e(df_m)}, {bf:e(rank)}, {bf:e(df_resid)}}see {help nwergm_fit}{p_end}
+{synopt:{bf:e(aic)}, {bf:e(bic)}, {bf:e(deviance)}, {bf:e(deviance_0)}, {bf:e(ll_se)}}see {help nwergm_fit}{p_end}
+{synopt:{bf:e(nodes)}}number of nodes{p_end}
+{synopt:{bf:e(trifocus)}}share of triadic steps of the SPDyad proposal (missing when it is not used){p_end}
+{synopt:{bf:e(ties)}}number of observed ties{p_end}
+{synopt:{bf:e(curved)}}1 if the model has a curved (free-decay) term, 0 otherwise{p_end}
+{synopt:{bf:e(converged)}}1 if MCMLE's own convergence test was satisfied (method(mcmle) only){p_end}
+{synopt:{bf:e(mcmle_iterations)}}number of MCMLE outer iterations run (method(mcmle) only){p_end}
+{synopt:{bf:e(mcmc_acceptrate)}}Metropolis-Hastings acceptance rate, final simulation (method(mcmle) only){p_end}
+{synopt:{bf:e(mcmc_burnin)}}MCMC burn-in steps used (method(mcmle) only){p_end}
+{synopt:{bf:e(mcmc_interval)}}MCMC thinning interval requested (method(mcmle) only){p_end}
+{synopt:{bf:e(mcmc_interval_final)}}MCMC thinning interval actually used for the last iteration - may
+exceed e(mcmc_interval) if the adaptive-interval mechanism grew it
+to reach an adequate effective sample size (method(mcmle) only){p_end}
+{synopt:{bf:e(mcmc_samplesize)}}MCMC recorded-draw count used (method(mcmle) only){p_end}
+{synopt:{bf:e(native)}}1 if the native (C) backend was used for this run (the MCMC sampler
+for method(mcmle); the MPLE design-matrix build for method(mple)),
+0 if the Mata implementation ran instead - purely informational,
+see {help nwergm##native:Performance} below{p_end}
+{synopt:{bf:e(spcache)}}1 if the shared-partner cache of {opt spcache} was used (method(mcmle) only){p_end}
+
+{p2col 5 30 34 2: Macros}{p_end}
+{synopt:{bf:e(cmd)}}{bf:nwergm}{p_end}
+{synopt:{bf:e(title)}}title of estimation{p_end}
+{synopt:{bf:e(depvar)}}name of the estimated network{p_end}
+{synopt:{bf:e(version)}}release of {cmd:nwergm} that produced the results{p_end}
+{synopt:{bf:e(method)}}{bf:mple} or {bf:mcmle} (also for contrastive divergence and stochastic approximation){p_end}
+{synopt:{bf:e(estimate)}}{bf:MLE}, {bf:CD} or {bf:SA} (method(mcmle) only){p_end}
+{synopt:{bf:e(constraints)}, {bf:e(obsconstraints)}}the {opt constraints()} and {opt obsconstraints()} given (method(mcmle) only){p_end}
+{synopt:{bf:e(ll_method)}}how {bf:e(ll)} was obtained: {bf:exact}, {bf:pseudolikelihood} or {bf:bridge sampling}{p_end}
+{synopt:{bf:e(predict)}}{bf:nwergm_p} (program used by {cmd:predict}){p_end}
+{synopt:{bf:e(directed)}}{bf:true}/{bf:false}{p_end}
+{synopt:{bf:e(proposal)}}Metropolis-Hastings proposal weights ({bf:tnt} or {bf:uniform}), also used by {cmd:nwergm simulate} and {cmd:estat gof}{p_end}
+{synopt:{bf:e(estat_cmd)}}{bf:nwergm_estat} (postestimation dispatch){p_end}
+
+{p2col 5 30 34 2: Matrices}{p_end}
+{synopt:{bf:e(b)}}coefficient vector{p_end}
+{synopt:{bf:e(V)}}variance-covariance matrix{p_end}
+{synopt:{bf:e(mcmcsample)}}final simulation's sufficient-statistic draws, samplesize x nparam (method(mcmle) only, not with {opt nomcmcsample}){p_end}
+{synopt:{bf:e(obs_stats)}}observed values of the model statistics (method(mple) only){p_end}
+
 
 {marker provenance}{...}
 {title:References}
@@ -560,111 +760,24 @@ Data. {it:Journal of the Royal Statistical Society, Series B}, 54(3), 657-683. (
 {cmd:nwergm} was developed from {cmd:ergm} and is distributed under the same licence, the GNU General Public
 License, version 3. It is not affiliated with or endorsed by the Statnet project.
 
-{title:Simulation}
+
+{title:Version}
 
 {p 8 17 2}
-{cmdab: nwergm} {cmd:simulate}
-{it:nodes}
-{cmd:,}
-{opt edges} [{opt mutual}]
-[{it:{help nwergm##simulate_terms:term options}}]
-[{opt type(OTP|ITP|OSP|ISP|RTP)}]
-{opt theta(numlist)}
-[{opt directed}
-{opt nsim(int)}
-{opt mcmcburnin(int)}
-{opt mcmcinterval(int)}
-{opt proposal(uniform|tnt)}
-{opt mcmcprop(hints)}
-{opt seed(int)}
-{opt generate(string)}
-{opt spcache}]
+{cmd:nwergm version}
+{p_end}
 
 {pstd}
-{cmd:nwergm simulate} draws one or more networks from a fully-specified ERGM (fixed
-coefficients, not estimated) via the same native Metropolis-Hastings sampler {cmd:nwergm}
-itself uses for estimation - matching the {browse "https://cran.r-project.org/package=ergm":Statnet
-ergm} package's own {cmd:simulate.ergm}. {it:nodes} is the number of nodes to simulate on (no
-existing network is required or read).
+{cmd:nwergm version} displays the installed release of {cmd:nwergm}, the version of the {cmd:nwcommands} core, the license and the version of the R package that the results were compared with, and the
+native plugin in use. It stores the release in {cmd:r(version)} and {cmd:r(date)}, the core version in {cmd:r(core)}, the license in {cmd:r(license)},
+the plugin in {cmd:r(plugin)} and the reference R package in {cmd:r(reference)}. After estimation, the release that produced
+the results is in {cmd:e(version)}; quote it when reporting an analysis. {cmd:nwversion} lists the core and all installed model packages.
+{p_end}
 
-{marker simulate_terms}{...}
-{pstd}
-{cmd:nwergm simulate} supports the full {cmd:nwergm} term library - every
-term option listed in the {cmd:nwergm} {bf:Syntax} section above. Each family sources its data the same way it does during estimation:
-
-{p2colset 9 32 34 2}{...}
-{p2col:{it:no external data}}{opt mutual}, {opt concurrent}, {opt triangle}, {opt ctriple},
-{opt transitiveties}, {opt cyclicalties}, {opt degree(numlist)}, {opt odegree(numlist)},
-{opt idegree(numlist)}, {opt kstar(numlist)}, {opt ostar(numlist)}, {opt istar(numlist)},
-{opt degrange(numlist)}/{opt degrangeto(numlist)} (and the {opt o}-/{opt i}- directed
-analogues), {opt esp(numlist)}, {opt dsp(numlist)}, and the full geometrically weighted family
-({opt gwesp}/{opt gwdsp}/{opt gwnsp}/{opt gwdegree}/{opt gwodegree}/{opt gwidegree}, all
-{it:real}, decay value only){p_end}
-{p2col:{it:node covariate}}{opt nodematch(varname)}, {opt nodematchdiff(varname)},
-{opt nodecov(varname)}, {opt nodeicov(varname)}, {opt nodeocov(varname)}, {opt absdist(varname)},
-{opt nodefactor(varname)}, {opt nodeofactor(varname)}, {opt nodeifactor(varname)},
-{opt nodemix(varname)}, {opt sender}, {opt receiver} - read via {cmd:st_data()} from
-{it:the currently active Stata dataset}, exactly as estimation reads them from whatever dataset
-is loaded alongside the network being fit. The active dataset must already have {it:nodes}
-observations with the named variable populated before calling {cmd:simulate} (e.g.
-{cmd:set obs 20} + {cmd:gen mygroup = ...}); {opt sender}/{opt receiver} need no real
-covariate at all, since their own "attribute" is just each node's own index.{p_end}
-{p2col:{it:dyadic covariate}}{opt edgecov(netname)}, {opt hamming(netname)} - read from
-{it:netname}, an already-{help nwset:set}/loaded reference network of the same size as
-{it:nodes}, exactly as estimation reads a dyadic covariate from a second network object.{p_end}
-
-{pstd}
-{opt type()} selects which of the five directed shared-partner definitions (default {bf:OTP}) any
-{opt gwesp}/{opt gwdsp}/{opt gwnsp}/{opt esp()}/{opt dsp()} term simulates under, with {opt directed}
-- exactly the same option, with the same meaning, as {cmd:nwergm}'s own estimation path; see that
-command's own {bf:Remarks} section for the five definitions.
-
-{pstd}
-{opt theta()} supplies one coefficient per resulting model term, in the SAME fixed sequence
-{cmd:nwergm}'s own estimation path itself always processes terms in (edges, mutual, then every
-node-covariate family, then the structural/numlist family, then {opt sender}/{opt receiver},
-then the dyadic-covariate family, then the geometrically weighted family - regardless of the
-order the options happen to be typed on the command line, since Stata's own option parsing does
-not preserve that order to begin with). A term that expands into several coefficients (e.g.
-{opt nodefactor()} with $ categories, or {opt degree(2 3 4)}) consumes that many consecutive
-entries from {opt theta()}, in the same left-to-right order its own levels/values are listed.
-There is no per-term coefficient sub-option, by design, so this exactly reuses the same
-term-construction code {cmd:nwergm}'s own estimation path uses rather than a parallel
-implementation.
-
-{pstd}
-{bf:The resulting simulated network's own dataset does not carry the caller's covariate variable(s) forward.} Each simulated draw is built via a fresh {cmd:nwset} call that replaces
-the active dataset with just that network's own bare node/edge structure - any covariate
-variable read during term construction is captured once, in Mata, before that replacement
-happens, and is not itself part of the simulated result. Regenerate it afterward (by node
-index, since simulated node identity is always {cmd:1}..{it:nodes} in the caller's original row
-order) if a postestimation step - e.g. checking the resulting network's own mixing pattern -
-needs it alongside the simulated network.
-
-{pstd}
-{opt nsim(int)} (default 1) draws that many independent networks (a fresh burn-in for each,
-matching {cmd:nwergm}'s own control conventions rather than continuing one long chain), named
-{opt generate()}{cmd:_1}, {opt generate()}{cmd:_2}, ... when {opt nsim()}{cmd: > 1} (default stub
-{cmd:ergmsim}), or plain {opt generate()} (default {cmd:ergmsim}) when {opt nsim(1)}.
-
-{pstd}
-As in R's {cmd:simulate()}, {opt mcmcinterval()} defaults to 1,024 and {opt mcmcburnin()} to 16 times
-the interval (16,384). {cmd:mcmcburnin(3000) mcmcinterval(50)} is faster but much less
-reliable.
-
-{pstd}
-The C source of the plugin comes with the package: {cmd:net get nwergm, from(https://raw.githubusercontent.com/thomas-u-grund/nwergm/main)}
-copies it into the current directory, together with a file that explains how to build the plugin; it is also in the folder
-{cmd:native/} of the repository at {browse "https://github.com/thomas-u-grund/nwergm"}. {cmd:net install} installs the compiled plugins only.
-
-{pstd}
-If the plugin of your platform is missing, older than the {cmd:.ado} files or does not work on your computer, compile it there:
-{cmd:nwinstall, buildplugin(nwergm)} fetches the source, compiles it with the compiler of your computer (macOS and Linux; a C compiler and
-{cmd:make} are needed) and installs the plugin; restart Stata afterwards. See {help nwinstall##buildplugin:nwinstall}.
 
 {title:See also}
 
 	{help nwqap}, {help nwrandom}, {help nwcug}, {help nwintro##limits:feasible network sizes}
 
 {hline}
-{pstd}{it:nwergm version 1.5.10, 11 November 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.5.11, 12 November 2026}{p_end}{* nwversion}

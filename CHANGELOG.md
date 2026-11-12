@@ -3,6 +3,19 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [1.5.11] - 2026-11-12
+
+### Fixed
+- **Help files checked against the code.** `edges` may be left out with `structural(density)` or `structural(meandeg)`; `gwdspfree()`/`gwnspfree()` work on directed networks; `offset()` is refused for every model with a curved term; `logstat()`/`expstat()` are documented; the syntax of `nwergm simulate` lists `bipartite()`, `structural()`, `basis()` and `constraints()`; `estat gof` is described as it runs (statistics, defaults, plot); abbreviations, defaults and stored results completed; `threepath` is documented as a synonym of `threetrail`. One "Network types" section and the common section order.
+- **Help file layout.** From the option `mcmcmaxedges()` on, the help Viewer ran the option texts together and lost words (very long source lines); stored results and the syntax of `estat gof` wrap at the window width.
+- **Messages printed by the Mata library wrap at word boundaries.** The wording is unchanged.
+- Console Stata on macOS finds the macOS plugin.
+- **Help files describe the current behaviour only**: references to earlier versions and internal files are removed. The paragraph on `init()` had a sentence on curved terms inside the one on `offset()` coefficients; the help file no longer says that `bgwdegree1()` has no curved counterpart (it is `bgwdegreefree1()`).
+
+- `nwergm simulate` with a node count dropped `gwesp()`, `gwdsp()`, `gwnsp()`, `gwdegree()`, `gwodegree()` and `gwidegree()` when the decay was 0, so that `theta()` had one coefficient too many and was refused; a decay of 0 is now a term of the model, as in ergm.
+
+Other results do not change. The Mata library is rebuilt (with Stata 17); the core requirement is unchanged.
+
 ## [1.5.10] - 2026-11-11
 
 ### Fixed

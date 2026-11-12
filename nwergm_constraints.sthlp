@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.5.10  11nov2026 author: Thomas Grund}{...}
+{* *! version 1.5.11  12nov2026 author: Thomas Grund}{...}
 {vieweralsosee "nwergm" "help nwergm"}{...}
 {title:Title}
 
@@ -18,18 +18,24 @@
 {title:Description}
 
 {pstd}
-{opt constraints()} restricts the set of networks the model is defined on, exactly as {cmd:constraints=} does in R's {cmd:ergm} package. The formula is a list of constraint terms joined by {cmd:+} or {cmd:-}.
+{opt constraints()} restricts the set of networks the model is defined on, exactly as {cmd:constraints=} does in R's {cmd:ergm} package. The formula is a list of constraint terms joined by {cmd:+} or
+{cmd:-}.
 Arguments are written as in R, by position or by name ({cmd:name=value}); node attributes are variables of the current dataset, and networks are names of networks in memory.
 The constraints refer to the network being fitted (or, for {cmd:simulate}, to {opt basis()}).
 
 {pstd}
-Constraints that only fix some dyads ({cmd:blocks}, {cmd:blockdiag}, {cmd:fixedas}, {cmd:fixallbut}, {cmd:observed}, {cmd:egocentric}) are combined from left to right: a term with {cmd:+} keeps only the dyads that may vary according to it
-and to everything to its left, a term with {cmd:-} adds the dyads that may vary according to it. Constraints that tie the dyads together ({cmd:edges}, {cmd:degrees}, {cmd:odegrees}, {cmd:idegrees}, {cmd:b1degrees},
-{cmd:b2degrees}, {cmd:degreedist}, {cmd:idegreedist}, {cmd:odegreedist}, {cmd:bd}) always restrict the sample space and may only carry a {cmd:+} sign. Constraints implied by others are dropped, as in R.
+Constraints that only fix some dyads ({cmd:blocks}, {cmd:blockdiag}, {cmd:fixedas}, {cmd:fixallbut}, {cmd:observed}, {cmd:egocentric}) are combined from left to right: a term with {cmd:+} keeps only
+the dyads that may vary according to it
+and to everything to its left, a term with {cmd:-} adds the dyads that may vary according to it. Constraints that tie the dyads together ({cmd:edges}, {cmd:degrees}, {cmd:odegrees}, {cmd:idegrees},
+{cmd:b1degrees},
+{cmd:b2degrees}, {cmd:degreedist}, {cmd:idegreedist}, {cmd:odegreedist}, {cmd:bd}) always restrict the sample space and may only carry a {cmd:+} sign. Constraints implied by others are dropped, as in
+R.
 
 {pstd}
-Statistics that a constraint holds constant (for example {cmd:edges} under {cmd:constraints(edges)} or {cmd:kstar()} under {cmd:constraints(degrees)}) are fixed at zero and ignored in the fit, with a note, as R does.
-A dyad-dependent constraint makes the sample space dyad-dependent: the default method is then {cmd:mcmle}, started from zero or from the values given in {opt init()}, and {cmd:method(mple)} reports the pseudolikelihood over the free dyads.
+Statistics that a constraint holds constant (for example {cmd:edges} under {cmd:constraints(edges)} or {cmd:kstar()} under {cmd:constraints(degrees)}) are fixed at zero and ignored in the fit, with a
+note, as R does.
+A dyad-dependent constraint makes the sample space dyad-dependent: the default method is then {cmd:mcmle}, started from zero or from the values given in {opt init()}, and {cmd:method(mple)} reports
+the pseudolikelihood over the free dyads.
 
 {title:Constraint terms}
 
@@ -39,14 +45,17 @@ A dyad-dependent constraint makes the sample space dyad-dependent: the default m
 {p2col :{cmd:odegrees}, {cmd:idegrees}}keep out-degrees / in-degrees (directed networks){p_end}
 {p2col :{cmd:b1degrees}, {cmd:b2degrees}}keep the degrees of mode-1 / mode-2 nodes (two-mode networks){p_end}
 {p2col :{cmd:degreedist}, {cmd:idegreedist}}keep the degree distribution / in-degree distribution{p_end}
-{p2col :{cmd:bd(}{it:attribs, maxout, maxin, minout, minin}{cmd:)}}bound degrees. {it:attribs} is a list of 0/1 node variables defining the alter groups that are counted (default: all nodes); each bound is a number or
+{p2col :{cmd:bd(}{it:attribs, maxout, maxin, minout, minin}{cmd:)}}bound degrees. {it:attribs} is a list of 0/1 node variables defining the alter groups that are counted (default: all nodes); each
+bound is a number or
 node variable(s); defaults are 0 (minimum) and the number of nodes minus one (maximum){p_end}
-{p2col :{cmd:blocks(}{it:attr, b1levels, b2levels, levels, levels2}{cmd:)}}fix blocks of dyads defined by the mixing of a categorical node variable. {it:levels2} chooses the fixed mixing types: {cmd:TRUE} (all), {cmd:FALSE} (none, the default),
+{p2col :{cmd:blocks(}{it:attr, b1levels, b2levels, levels, levels2}{cmd:)}}fix blocks of dyads defined by the mixing of a categorical node variable. {it:levels2} chooses the fixed mixing
+types: {cmd:TRUE} (all), {cmd:FALSE} (none, the default),
 or their positions {cmd:c(1,2)}, {cmd:-c(1,2)} in R's ordering{p_end}
 {p2col :{cmd:blockdiag(}{it:attr, noncontig}{cmd:)}}only dyads within the same value of {it:attr} may vary; {it:noncontig} is {cmd:merge} (default, values must form runs) or {cmd:split}{p_end}
 {p2col :{cmd:fixedas(}{it:fixed.dyads, present, absent}{cmd:)}}fix the dyads that are ties in the given networks; present/absent dyads must match the network being fitted{p_end}
 {p2col :{cmd:fixallbut(}{it:free.dyads}{cmd:)}}only the dyads that are ties in the given network may vary{p_end}
-{p2col :{cmd:observed}}only the missing dyads may vary (with no missing dyad the constraint is empty and the model is fitted without it, as in R; in {opt constraints()} R itself fails on a network with missing dyads, so use {opt obsconstraints(observed)} there){p_end}
+{p2col :{cmd:observed}}only the missing dyads may vary (with no missing dyad the constraint is empty and the model is fitted without it, as in R; in {opt constraints()} R itself fails on a network
+with missing dyads, so use {opt obsconstraints(observed)} there){p_end}
 {p2col :{cmd:egocentric(}{it:attr, direction}{cmd:)}}fix the dyads of nodes for which the 0/1 node variable {it:attr} is nonzero; {it:direction} is {cmd:both} (default), {cmd:out} or {cmd:in}{p_end}
 {p2col :{cmd:dyadnoise(}{it:p01, p10}{cmd:)}}soft constraint: the sampled network is an observation of the given one with independent dyad errors of those probabilities{p_end}
 {p2colreset}{...}
@@ -57,18 +66,26 @@ or their positions {cmd:c(1,2)}, {cmd:-c(1,2)} in R's ordering{p_end}
 {title:Proposals}
 
 {pstd}
-The proposal is chosen from the constraints and {opt mcmcprop()} with R's rules. No constraint, dyad constraints and {cmd:bd}: toggle one dyad. By default this is R's SPDyad proposal on a one-mode network: with
-probability 0.75 a tie/no-tie step, otherwise a dyad drawn from the dyads whose two nodes have a shared partner (for a directed network: a two-path i->k->j), which helps a model with many triangles to mix;
-{opt mcmcprop(sparse)} uses the tie/no-tie step alone (R's TNT), as do two-mode networks and {cmd:bd} with only maximum bounds. {opt proposal(uniform)} or {opt proposal(random)}: a uniformly drawn dyad.
-{cmd:edges}: swap a tie with a non-tie, also with dyad constraints and {cmd:bd}. {cmd:degrees} (or {cmd:idegrees} with {cmd:odegrees}, or {cmd:b1degrees} with {cmd:b2degrees}): tetrad moves, plus hexad moves for directed networks.
-{cmd:odegrees}, {cmd:idegrees}, {cmd:b1degrees}, {cmd:b2degrees}: move one end of a tie. {cmd:degreedist}, {cmd:idegreedist}: exchange the ends of a tie between nodes whose degrees differ by one. {cmd:dyadnoise}: tie/no-tie
-proposal with the noise likelihood in the acceptance ratio. Other combinations stop with the message R gives. {cmd:odegreedist} and the degree-distribution constraints on two-mode networks are refused (R's released proposals for them fail).
+The proposal is chosen from the constraints and {opt mcmcprop()} with R's rules. No constraint, dyad constraints and {cmd:bd}: toggle one dyad. By default this is R's SPDyad proposal on a one-mode
+network: with
+probability 0.75 a tie/no-tie step, otherwise a dyad drawn from the dyads whose two nodes have a shared partner (for a directed network: a two-path i->k->j), which helps a model with many triangles to
+mix;
+{opt mcmcprop(sparse)} uses the tie/no-tie step alone (R's TNT), as do two-mode networks and {cmd:bd} with only maximum bounds. {opt proposal(uniform)} or {opt proposal(random)}: a uniformly drawn
+dyad.
+{cmd:edges}: swap a tie with a non-tie, also with dyad constraints and {cmd:bd}. {cmd:degrees} (or {cmd:idegrees} with {cmd:odegrees}, or {cmd:b1degrees} with {cmd:b2degrees}): tetrad moves, plus
+hexad moves for directed networks.
+{cmd:odegrees}, {cmd:idegrees}, {cmd:b1degrees}, {cmd:b2degrees}: move one end of a tie. {cmd:degreedist}, {cmd:idegreedist}: exchange the ends of a tie between nodes whose degrees differ by
+one. {cmd:dyadnoise}: tie/no-tie
+proposal with the noise likelihood in the acceptance ratio. Other combinations stop with the message R gives. {cmd:odegreedist} and the degree-distribution constraints on two-mode networks are refused
+(R's released proposals for them fail).
 
 {title:Observation process}
 
 {pstd}
-{opt obsconstraints(formula)} describes how the network was observed (for example the dyads that were not observed, as {cmd:fixallbut(}{it:unobserved}{cmd:)}). Two chains are run at every iteration, one under {opt constraints()} and one
-under {opt constraints()} and {opt obsconstraints()} together, started from the network; the coefficients solve the equation that sets the two expected statistics equal, and the information is the difference of their
+{opt obsconstraints(formula)} describes how the network was observed (for example the dyads that were not observed, as {cmd:fixallbut(}{it:unobserved}{cmd:)}). Two chains are run at every iteration,
+one under {opt constraints()} and one
+under {opt constraints()} and {opt obsconstraints()} together, started from the network; the coefficients solve the equation that sets the two expected statistics equal, and the information is the
+difference of their
 covariances. Requires {cmd:method(mcmle)}.
 
 {title:Sampling controls}
@@ -77,15 +94,18 @@ covariances. Requires {cmd:method(mcmle)}.
 {p2col :{opt mcmcburnin()}}R's {cmd:MCMC.burnin}{p_end}
 {p2col :{opt mcmcinterval()}}R's {cmd:MCMC.interval}{p_end}
 {p2col :{opt mcmcsamplesize()}}R's {cmd:MCMC.samplesize}{p_end}
-{p2col :{opt mcmcprop(hints)}}R's {cmd:MCMC.prop}: {cmd:sparse + .triadic} (default; the SPDyad proposal), {cmd:sparse} (the tie/no-tie proposal), {cmd:triadic(}{it:#}{cmd:)} or {cmd:triadic(triFocus=}{it:#}{cmd:)} for another share
-of triadic steps than 0.25 (shared partners of type OTP on a directed network, as R's default; {cmd:.triadic} is skipped on a two-mode network, {cmd:triadic} is refused there); {cmd:strat} is accepted but not used, with R's note{p_end}
+{p2col :{opt mcmcprop(hints)}}R's {cmd:MCMC.prop}: {cmd:sparse + .triadic} (default; the SPDyad proposal), {cmd:sparse} (the tie/no-tie proposal), {cmd:triadic(}{it:#}{cmd:)} or
+{cmd:triadic(triFocus=}{it:#}{cmd:)} for another share
+of triadic steps than 0.25 (shared partners of type OTP on a directed network, as R's default; {cmd:.triadic} is skipped on a two-mode network, {cmd:triadic} is refused there); {cmd:strat} is accepted
+but not used, with R's note{p_end}
 {p2col :{opt proposal()}}R's {cmd:MCMC.prop.weights}: {cmd:tnt} (default) or {cmd:uniform} ({cmd:random}){p_end}
 {p2col :{opt mcmcmaxedges(#)}}R's {cmd:MCMC.maxedges}: stop sampling if the network gets more ties than this{p_end}
 {p2col :{opt seed(#)}}R's {cmd:seed}{p_end}
 {p2colreset}{...}
 
 {pstd}
-{cmd:nwergm simulate} with {opt basis()} starts one chain from the basis network, burns in once and takes {opt mcmcinterval()} steps between the {opt nsim()} draws, as {cmd:simulate()} in R does. The draws have the node names of the basis network. {cmd:estat gof}
+{cmd:nwergm simulate} with {opt basis()} starts one chain from the basis network, burns in once and takes {opt mcmcinterval()} steps between the {opt nsim()} draws, as {cmd:simulate()} in R does. The
+draws have the node names of the basis network. {cmd:estat gof}
 simulates under the constraints of the fit.
 
 {title:Examples}
@@ -101,4 +121,4 @@ simulates under the constraints of the fit.
 {pstd}Thomas Grund, RWTH Aachen University{p_end}
 
 {hline}
-{pstd}{it:nwergm version 1.5.10, 11 November 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.5.11, 12 November 2026}{p_end}{* nwversion}

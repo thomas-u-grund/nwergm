@@ -1,11 +1,12 @@
 {smcl}
-{* *! version 1.5.10  11nov2026 author: Thomas Grund}{...}
+{* *! version 1.5.11  12nov2026 author: Thomas Grund}{...}
 
 {title:Title}
 
 {p2colset 9 25 26 2}{...}
 {p2col :nwergm postestimation {hline 2}}Postestimation tools for {cmd:nwergm}{p_end}
 {p2colreset}{...}
+
 
 {title:Description}
 
@@ -21,11 +22,6 @@ The following postestimation commands are available after {helpb nwergm}:
 {pstd}
 {cmd:db nwergm_estat} opens a dialog for these commands and for {cmd:nwergm simulate} from the last fit; {cmd:db nwergm_simulate} opens the dialog of {cmd:nwergm simulate} with given coefficients.
 
-{title:Supported network types}
-
-{pstd}
-Not applicable - these postestimation tools operate on the fitted model and its own MCMC/simulation
-output left behind by {help nwergm}, not on a network directly; see that command's own classification.
 
 {title:estat mcmcdiag}
 
@@ -35,7 +31,8 @@ output left behind by {help nwergm}, not on a network directly; see that command
 {pstd}
 {cmd:estat mcmcdiag} reports diagnostics for the final MCMC simulation {cmd:nwergm} ran
 at its converged (or last-tried) coefficient vector: per-statistic mean, standard deviation,
-lag-1 autocorrelation, and the effective sample size (ESS), computed as {cmd:coda}'s {cmd:effectiveSize()} does: n*var(x) divided by the spectral density at frequency 0, estimated from an autoregressive model; the Geweke (1992) z-score and
+lag-1 autocorrelation, and the effective sample size (ESS), computed as {cmd:coda}'s {cmd:effectiveSize()} does: n*var(x) divided by the spectral density at frequency 0, estimated from an
+autoregressive model; the Geweke (1992) z-score and
 the Heidelberger-Welch (1983) stationarity/halfwidth test (the two formal convergence hypothesis
 tests behind R {cmd:ergm}'s own {cmd:mcmc.diagnostics()}, via its {cmd:coda} package
 dependency); plus the overall Metropolis-Hastings acceptance rate and {cmd:nwergm}'s own MCMLE
@@ -82,69 +79,55 @@ A trace plot that drifts or shows long runs at one level, rather than a stationa
 "fuzzy caterpillar", indicates poor mixing even when the numeric diagnostics above look
 acceptable. {opt name()} sets the combined graph's name; default {cmd:mcmcdiag}.
 
+
 {title:estat gof}
 
 {p 8 17 2}
-{cmd:estat gof} {opt [, NSIM(integer 100) SEED(integer -1) GOFBURNIN(integer) GOFINTERVAL(integer) PLOT MAXDEG(integer 15) MAXDIST(integer 6) NAME(string)]}
+{cmd:estat gof} [{cmd:,} {opt gof(statistics)} {opt nsim(#)} {opt seed(#)} {opt gofburnin(#)} {opt gofinterval(#)} {opt plot} {opt maxdeg(#)} {opt maxdist(#)} {opt name(string)}]
 
 {pstd}
-{cmd:estat gof} compares the fitted model's own simulated networks against the network
-{cmd:nwergm} was fitted on, on three dimensions computed via this package's own existing
-commands rather than duplicating their algorithms: mean degree (arithmetic), average geodesic
-distance ({helpb nwgeodesic}), and the full MAN triad census ({helpb nwtriads}).
-{opt nsim()} simulated networks are drawn by continuing the Markov chain from wherever
-{cmd:nwergm}'s own fit left it (for {opt method(mcmle)}) or from the observed network itself
-(for {opt method(mple)}, which never runs MCMC during estimation), recording one snapshot every
-{opt gofinterval()} steps. As in R's {cmd:gof()}, the defaults are 100 draws and the MCMC
-settings of the fit: {opt gofburnin()} defaults to {cmd:e(mcmc_burnin)} and {opt gofinterval()} to
-{cmd:e(mcmc_interval_final)} (for {opt method(mple)} fits, 16,384 and 1,024 before that rescaling).
+{cmd:estat gof} follows R's {cmd:gof()}: it simulates {opt nsim()} networks (default 100, at least 2) from the fitted model and,
+for each requested statistic, shows the observed value, the minimum, mean and maximum over the simulated networks and the Monte Carlo
+p-value; {help nwergm_estimation} describes the tables and the option {opt gof()}. The default statistics are those of R for the type of
+network: {cmd:degree espartners distance} (undirected), {cmd:idegree odegree espartners distance} (directed) and
+{cmd:b1degree b2degree dspartners distance} (two-mode), each together with the model statistics.
+The chain starts from the last network of the fit ({opt method(mcmle)}) or from the observed network ({opt method(mple)}), with the
+proposal and the sample-space constraints of the fit. {opt gofburnin()} defaults to {cmd:e(mcmc_burnin)} (16,384 after
+{opt method(mple)}); {opt gofinterval()} defaults to {cmd:e(mcmc_interval_final)} (1,024 after {opt method(mple)}) times
+{cmd:e(mcmc_samplesize)} / {opt nsim()}, as in R.{p_end}
 
 {pstd}
-{bf:Triad census.} The summary table's own "Complete triads" row is joined by a full breakdown,
-one row per MAN triad type, exactly matching {helpb nwtriads}'s own category set for the
-network's directedness: on a {bf:directed} network, all 16 types ({bf:003}, {bf:012}, {bf:021D},
-{bf:021U}, {bf:021C}, {bf:030T}, {bf:030C}, {bf:102}, {bf:111D}, {bf:111U}, {bf:120D}, {bf:120U},
-{bf:120C}, {bf:210}, {bf:201}, {bf:300}); on an {bf:undirected} network, only the four types a
-0/1/2/3-tie triad can actually be ({bf:003}, {bf:102}, {bf:201}, {bf:300} - the remaining 12
-directed-only types are structurally forced to 0 and omitted, matching {cmd:nwtriads}'s own
-convention). Each row is an observed COUNT vs. a simulated MEAN COUNT (not a proportion), summed
-in {cmd:nwtriads}'s own MAN classification directly - the same simulated draws and the same
-disconnected/zero-tie-network defenses ({opt capture} around each draw's own {cmd:nwtriads} call)
-already used for the plain "Complete triads" row above it.
+On a one-mode network {cmd:estat gof} also returns summary values: the mean degree, the average geodesic distance (over the simulated
+networks that are connected) and the triad census (counts of each MAN triad type: 16 types on a directed network, {bf:003}, {bf:102},
+{bf:201} and {bf:300} on an undirected one; computed only when {cmd:triadcensus} is requested or the network has at most 100 nodes).
+See {it:Stored results} below.{p_end}
 
 {pstd}
-{bf:This is a BASIC check, not a formal test.} A large, systematic gap between the Observed and
-Simulated columns on any row is evidence against the fitted model; rough agreement is evidence
-for it, not proof. A simulated network that happens to be disconnected or edgeless does not
-contribute to the geodesic/triad-census averages respectively (reported in the output) rather
-than being treated as an error.
+{bf:This is a check, not a formal test.} A large, systematic gap between the observed value and the
+simulated ones is evidence against the fitted model; rough agreement is evidence for it, not proof.
+The simulated networks are {opt gofinterval()} Metropolis-Hastings steps apart, not independent draws, so
+for a slowly mixing model (see the autocorrelation and ESS columns of {cmd:estat mcmcdiag}) the simulated
+means can change noticeably between runs; increase {opt nsim()} (and consider {opt gofinterval()})
+before treating a single run as a stable estimate.{p_end}
 
 {pstd}
-{bf:For slowly mixing models, even 100 draws can be too few.} Each simulated draw is
-{opt gofinterval()} Metropolis-Hastings steps apart, not an independent redraw, so a
-statistic with substantial autocorrelation in the underlying chain (visible via
-{help nwergm_estat##mcmcdiag:estat mcmcdiag}'s own Autocorr/ESS columns) can show real
-run-to-run swings in the Simulated column that have nothing to do with model
-fit - confirmed directly: refitting the same model at different seeds moved the simulated mean
-degree from noticeably below the observed value to noticeably above it, purely from Monte Carlo
-noise, before settling down once {opt nsim()} was increased into the hundreds. If the final MCMC
-sample's own autocorrelation is high, increase {opt nsim()} (and consider {opt gofinterval()})
-before treating a single {cmd:estat gof} run's Simulated column as a stable estimate.
+{opt plot} (one-mode networks) draws the degree distribution (in-degree on a directed network) and the
+geodesic-distance distribution across the simulated networks, each as its own panel: a whisker
+(minimum-maximum), a box (interquartile range) and a median marker summarize the simulated networks at each
+value, with the observed proportion overlaid as a connected red line with circle markers, as in
+{cmd:nwsaom}'s goodness-of-fit plots and similar to R's {cmd:plot(gof())}. {opt maxdeg()} (default 15) caps the
+degree axis (values above it are pooled into a single "{it:maxdeg}+" category); {opt maxdist()} (default 6)
+caps the geodesic-distance axis (unreached pairs are pooled into their own "NR" category). {opt name()} sets
+the name of the combined graph; default {cmd:gof}.{p_end}
+
+
+{title:Network types}
 
 {pstd}
-{opt plot} additionally draws the full degree distribution and the full geodesic-distance
-distribution - not just their means - across the {opt nsim()} simulated draws, each as its own
-panel: a whisker (minimum-maximum), a box (interquartile range), and a median marker summarize
-the simulated draws at each value, with the observed network's own proportion overlaid as a
-connected red line with circle markers, as in {cmd:nwsaom}'s goodness-of-fit plots. This is an
-analogous comparison to Statnet's {cmd:plot(gof())} (via R's {cmd:boxplot()} rather than these
-{cmd:graph twoway} primitives), restricted to the two dimensions {cmd:estat gof} already
-computes a mean for - it does not add an edgewise shared-partner panel, the third dimension
-Statnet's own default GOF plot includes. {opt maxdeg()} caps the degree axis (values above it
-are pooled into a single "{it:maxdeg}+" category); {opt maxdist()} similarly caps the
-geodesic-distance axis (unreached pairs, including disconnected ones, are pooled into their own
-"NR" - not reached - category, matching Statnet's own convention). {opt name()} sets the
-combined graph's name; default {cmd:gof}.
+The {cmd:estat} commands use the network and the model of the last fit. {bf:Directed:} {cmd:estat gof} uses in- and out-degrees on a directed fit, degrees on an undirected one.
+{bf:Valued:} the statistics are those of the fitted 0/1 graph. {bf:Two-mode:} {cmd:estat gof} reports the bipartite statistics, as R's {cmd:gof()}.
+{bf:Signed:} not applicable. See {help nwnetworktypes}.{p_end}
+
 
 {title:Examples}
 
@@ -158,42 +141,62 @@ goodness of fit:
 	{cmd:. estat mcmcdiag}
 	{cmd:. estat gof, nsim(50)}
 
+
 {title:Stored results}
 
 {pstd}
 {cmd:estat mcmcdiag} stores the following in {cmd:r()}:
 
-	Scalars
-	  {bf:r(acceptrate)}		Metropolis-Hastings acceptance rate over the final simulation
+{synoptset 20 tabbed}{...}
+{p2col 5 20 24 2: Scalars}{p_end}
+{synopt:{bf:r(acceptrate)}}Metropolis-Hastings acceptance rate over the final simulation{p_end}
 
-	Matrices
-	  {bf:r(ess)}		1 x {it:p} row vector of effective sample sizes, as {cmd:coda}'s {cmd:effectiveSize()}
-	  {bf:r(geweke)}		1 x {it:p} row vector of Geweke z-scores, one per model term (same
-	                    column order as {bf:e(b)})
-	  {bf:r(heidel)}		{it:p} x 6 matrix, one row per model term, columns
-	                    {bf:stest} (1/0, stationarity test passed), {bf:start} (first retained
-	                    iteration, missing if {bf:stest}=0), {bf:teststat} (the retained window's
-	                    own Cramer-von-Mises statistic), {bf:htest} (1/0, halfwidth test passed,
-	                    missing if {bf:stest}=0), {bf:mean} and {bf:halfwidth} of the retained
-	                    window (both missing if {bf:stest}=0)
+{p2col 5 20 24 2: Matrices}{p_end}
+{synopt:{bf:r(ess)}}1 x {it:p} row vector of effective sample sizes, as {cmd:coda}'s {cmd:effectiveSize()}{p_end}
+{synopt:{bf:r(geweke)}}1 x {it:p} row vector of Geweke z-scores, one per model term (same
+column order as {bf:e(b)}){p_end}
+{synopt:{bf:r(heidel)}}{it:p} x 6 matrix, one row per model term, columns
+{bf:stest} (1/0, stationarity test passed), {bf:start} (first retained
+iteration, missing if {bf:stest}=0), {bf:teststat} (the retained window's
+own Cramer-von-Mises statistic), {bf:htest} (1/0, halfwidth test passed,
+missing if {bf:stest}=0), {bf:mean} and {bf:halfwidth} of the retained
+window (both missing if {bf:stest}=0){p_end}
+{synopt:{bf:r(mc_summary)}, {bf:r(mc_quantiles)}}with {opt report}: sample statistics and quantiles of the centered statistics{p_end}
+{synopt:{bf:r(mc_obstest)}, {bf:r(mc_crosscorr)}}with {opt report}: test of the sample statistics against the observed ones, cross-correlations{p_end}
+{synopt:{bf:r(mc_autocorr)}, {bf:r(mc_geweke)}}with {opt report}: autocorrelations and Geweke statistics with p-values{p_end}
 
 {pstd}
 {cmd:estat gof} stores the following in {cmd:r()}:
 
-	Scalars
-	  {bf:r(obs_meandeg)}		observed mean degree
-	  {bf:r(sim_meandeg)}		simulated mean degree, averaged over {opt nsim()} draws
-	  {bf:r(obs_avgpath)}		observed average geodesic distance
-	  {bf:r(sim_avgpath)}		simulated average geodesic distance (missing if every draw was disconnected)
-	  {bf:r(obs_triad300)}		observed complete-triad count
-	  {bf:r(sim_triad300)}		simulated complete-triad count, averaged over contributing draws
-	  {bf:r(obs_triad{it:XXX})}	observed count for MAN triad type {it:XXX} (one per {helpb nwtriads} category
-	                    for the network's directedness - e.g. {bf:r(obs_triad_021D)}, {bf:r(obs_triad_300)})
-	  {bf:r(sim_triad{it:XXX})}	simulated mean count for MAN triad type {it:XXX}, averaged over contributing draws
+{synoptset 20 tabbed}{...}
+{p2col 5 20 24 2: Scalars}{p_end}
+{synopt:{bf:r(nsim)}}number of simulated networks{p_end}
+{synopt:{bf:r(burnin)}}burn-in used{p_end}
+{synopt:{bf:r(interval)}}interval between simulated networks used{p_end}
+{synopt:{bf:r(obs_meandeg)}}observed mean degree (one-mode networks){p_end}
+{synopt:{bf:r(sim_meandeg)}}simulated mean degree, averaged over the {opt nsim()} networks{p_end}
+{synopt:{bf:r(obs_avgpath)}}observed average geodesic distance; -1 if the observed network is not connected{p_end}
+{synopt:{bf:r(sim_avgpath)}}simulated average geodesic distance over the connected simulated networks (missing if none is connected){p_end}
+{synopt:{bf:r(obs_triad300)}}observed complete-triad count (when the triad census is computed){p_end}
+{synopt:{bf:r(sim_triad300)}}simulated complete-triad count, averaged over the simulated networks{p_end}
+{synopt:{bf:r(obs_triad_}{it:XXX}{bf:)}}observed count of MAN triad type {it:XXX}, e.g. {bf:r(obs_triad_021D)}, {bf:r(obs_triad_300)}{p_end}
+{synopt:{bf:r(sim_triad_}{it:XXX}{bf:)}}simulated mean count of MAN triad type {it:XXX}{p_end}
+
+{p2col 5 20 24 2: Matrices}{p_end}
+{synopt:{bf:r(gof_}{it:statistic}{bf:)}}one table per requested statistic ({bf:r(gof_model)}, {bf:r(gof_degree)}, {bf:r(gof_distance)} ...): columns
+observed value, minimum, mean, maximum and Monte Carlo p-value{p_end}
+
+{pstd}
+{cmd:estat ic} stores the following in {cmd:r()}:
+
+{synoptset 20 tabbed}{...}
+{p2col 5 20 24 2: Matrices}{p_end}
+{synopt:{bf:r(S)}}1 x 6 matrix with N, ll(null), ll(model), df, AIC and BIC{p_end}
+
 
 {title:See also}
 
 	{help nwergm}
 
 {hline}
-{pstd}{it:nwergm version 1.5.10, 11 November 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.5.11, 12 November 2026}{p_end}{* nwversion}

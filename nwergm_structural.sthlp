@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.5.10  11nov2026 author: Thomas Grund}{...}
+{* *! version 1.5.11  12nov2026 author: Thomas Grund}{...}
 {title:Title}
 
 {p2colset 9 33 34 2}{...}
@@ -9,10 +9,10 @@
 {title:Syntax}
 
 {p 8 17 2}
-{cmd:nwergm} [{it:{help netname}}]{cmd:,} {opt edges} {opt structural(}{it:termlist}{opt )} [{it:other options}]
+{cmd:nwergm} [{it:{help netname}}]{cmd:,} {opt edges} {cmd:structural(}{it:termlist}{cmd:)} [{it:other options}]
 
 {p 8 17 2}
-{cmd:nwergm simulate} {it:#nodes}{cmd:,} {opt edges} {opt structural(}{it:termlist}{opt )} {opt theta()} [{it:other options}]
+{cmd:nwergm simulate} {it:#nodes}{cmd:,} {opt edges} {cmd:structural(}{it:termlist}{cmd:)} {opt theta()} [{it:other options}]
 
 {pstd}
 {it:termlist} is a list of terms written like R's ergm terms, separated by blanks: {it:term} or {it:term}{cmd:(}{it:arguments}{cmd:)}.
@@ -32,17 +32,23 @@ Terms that depend on more than a dyad's own covariates make the model dyad-depen
 
 {pstd}
 Undirected networks only: {cmd:isolatededges}, {cmd:degree1.5}, {cmd:degcrossprod}, {cmd:degcor}, {cmd:concurrentties}[{cmd:(by=}{it:attr}{cmd:)}], {cmd:concurrent}[{cmd:(by=}{it:attr}{cmd:)}],
-{cmd:altkstar(lambda=}{it:#}{cmd: fixed)} (without {cmd:fixed}: the curved term, see Remarks), {cmd:tripercent}[{cmd:(attr=}{it:attr}[{cmd: diff}]{cmd:)}], {cmd:opentriad}, {cmd:degree(d=}{it:numlist}[{cmd: by=}{it:attr}][{cmd: homophily}]{cmd:)},
+{cmd:altkstar(lambda=}{it:#}{cmd: fixed)} (without {cmd:fixed}: the curved term, see Remarks), {cmd:tripercent}[{cmd:(attr=}{it:attr}[{cmd: diff}]{cmd:)}], {cmd:opentriad},
+{cmd:degree(d=}{it:numlist}[{cmd: by=}{it:attr}][{cmd: homophily}]{cmd:)},
 {cmd:degrange(from=}{it:numlist}[{cmd: to=}{it:numlist}][{cmd: by=}{it:attr}][{cmd: homophily}]{cmd:)}, {cmd:kstar(k=}{it:numlist}[{cmd: attr=}{it:attr}]{cmd:)}.
 
 {pstd}
-Directed networks only: {cmd:m2star}, {cmd:odegree1.5}, {cmd:idegree1.5}, {cmd:asymmetric}[{cmd:(attr=}{it:attr}[{cmd: diff}]{cmd:)}], {cmd:mutual}[{cmd:(same=}{it:attr}[{cmd: diff}]{cmd:)}], {cmd:mutual(by=}{it:attr}{cmd:)},
-{cmd:transitive}, {cmd:intransitive}, {cmd:ttriple}[{cmd:(attr=}{it:attr}[{cmd: diff}]{cmd:)}], {cmd:ctriple}[{cmd:(attr=}{it:attr}[{cmd: diff}]{cmd:)}], {cmd:nearsimmelian}, {cmd:simmelian}, {cmd:simmelianties},
-{cmd:odegree(d=}{it:numlist}[{cmd: by=}{it:attr}][{cmd: homophily}]{cmd:)}, {cmd:idegree(...)}, {cmd:odegrange(...)}, {cmd:idegrange(...)}, {cmd:ostar(k=}{it:numlist}[{cmd: attr=}{it:attr}]{cmd:)}, {cmd:istar(...)}.
+Directed networks only: {cmd:m2star}, {cmd:odegree1.5}, {cmd:idegree1.5}, {cmd:asymmetric}[{cmd:(attr=}{it:attr}[{cmd: diff}]{cmd:)}], {cmd:mutual}[{cmd:(same=}{it:attr}[{cmd: diff}]{cmd:)}],
+{cmd:mutual(by=}{it:attr}{cmd:)},
+{cmd:transitive}, {cmd:intransitive}, {cmd:ttriple}[{cmd:(attr=}{it:attr}[{cmd: diff}]{cmd:)}], {cmd:ctriple}[{cmd:(attr=}{it:attr}[{cmd: diff}]{cmd:)}], {cmd:nearsimmelian}, {cmd:simmelian},
+{cmd:simmelianties},
+{cmd:odegree(d=}{it:numlist}[{cmd: by=}{it:attr}][{cmd: homophily}]{cmd:)}, {cmd:idegree(...)}, {cmd:odegrange(...)}, {cmd:idegrange(...)}, {cmd:ostar(k=}{it:numlist}[{cmd: attr=}{it:attr}]{cmd:)},
+{cmd:istar(...)}.
 
 {pstd}
-Both kinds of network: {cmd:density}, {cmd:meandeg}, {cmd:twopath}, {cmd:isolates}, {cmd:cycle(k=}{it:numlist}[{cmd: semi}]{cmd:)} (semicycles for directed networks), {cmd:triangle}[{cmd:(attr=}{it:attr}[{cmd: diff}]{cmd:)}],
-{cmd:threetrail}[{cmd:(keep=}{it:numlist}{cmd:)}] (four types RRR RRL LRR LRL for directed networks), {cmd:balance} (balanced triads: of type 102 or 300 in a directed network, with an odd number of ties in an undirected one), {cmd:triadcensus}[{cmd:(levels=}{it:numlist or labels}{cmd:)}],
+Both kinds of network: {cmd:density}, {cmd:meandeg}, {cmd:twopath}, {cmd:isolates}, {cmd:cycle(k=}{it:numlist}[{cmd: semi}]{cmd:)} (semicycles for directed networks),
+{cmd:triangle}[{cmd:(attr=}{it:attr}[{cmd: diff}]{cmd:)}],
+{cmd:threetrail}[{cmd:(keep=}{it:numlist}{cmd:)}] (four types RRR RRL LRR LRL for directed networks; {cmd:threepath} is a synonym, as in R), {cmd:balance} (balanced triads: of type 102 or 300 in a directed network, with an odd number of
+ties in an undirected one), {cmd:triadcensus}[{cmd:(levels=}{it:numlist or labels}{cmd:)}],
 {cmd:localtriangle(x=}{it:netname}{cmd:)} (a binary network with the same nodes), {cmd:nsp(d=}{it:numlist}[{cmd: type=}{it:OTP|ITP|OSP|ISP|RTP}]{cmd:)}.
 
 {title:Remarks}
@@ -51,11 +57,13 @@ Both kinds of network: {cmd:density}, {cmd:meandeg}, {cmd:twopath}, {cmd:isolate
 Statistics, maximum pseudolikelihood estimates and maximum likelihood estimates are checked against R's ergm 4.12.0
 (for {cmd:opentriad}, against the development version 4.13.0-8255 of 10 November 2026).
 Two points where the result is not simply R's: (1) {cmd:degcor} and {cmd:degcrossprod} are scaled by quantities of the observed network, as in R,
-and are therefore not available in {cmd:nwergm simulate}. (2) {cmd:altkstar} without {cmd:fixed} is R's default, the curved form with an estimated {cmd:lambda}: it is estimated by {cmd:method(mple)} with starting values given by {cmd:init(}{it:edges weight lambda}{cmd:)}, as R needs them
+and are therefore not available in {cmd:nwergm simulate}. (2) {cmd:altkstar} without {cmd:fixed} is R's default, the curved form with an estimated {cmd:lambda}: it is estimated by {cmd:method(mple)}
+with starting values given by {cmd:init(}{it:edges weight lambda}{cmd:)}, as R needs them
 to fit this term, and has the coefficients {cmd:altkstar} and {cmd:altkstar_lambda}; {cmd:altkstar(lambda=}{it:#} {cmd:fixed)} is the fixed form.
 
 {pstd}
-{cmd:structural()} needs the native plugin that ships with the package; there is no slower fallback. The {cmd:levels=} argument of the attribute terms is not available (all levels of the attribute are used).
+{cmd:structural()} needs the native plugin that ships with the package; there is no slower fallback. The {cmd:levels=} argument of the attribute terms is not available (all levels of the attribute are
+used).
 
 {title:Also see}
 
@@ -63,4 +71,4 @@ to fit this term, and has the coefficients {cmd:altkstar} and {cmd:altkstar_lamb
 {helpb nwergm}, {helpb nwergm_estat}
 
 {hline}
-{pstd}{it:nwergm version 1.5.10, 11 November 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.5.11, 12 November 2026}{p_end}{* nwversion}

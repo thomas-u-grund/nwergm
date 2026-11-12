@@ -1,4 +1,4 @@
-*! version 1.5.10  11nov2026 nwergm
+*! version 1.5.11  12nov2026 nwergm
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -2277,7 +2277,7 @@ program nwergm, eclass
 		}
 		ereturn post `__b_mple' `__V_mple', depname(`netname') obs(`__ergm_nrows')
 		ereturn local cmd "nwergm"
-		ereturn local version "1.5.10"
+		ereturn local version "1.5.11"
 		ereturn local title "Exponential-family random graph model (MPLE)"
 		ereturn local depvar "`netname'"
 		ereturn local method "mple"
@@ -2661,7 +2661,7 @@ program nwergm, eclass
 
 		ereturn post `__b_mcmle' `__V_mcmle', depname(`netname') obs(`__ergm_nrows')
 		ereturn local cmd "nwergm"
-		ereturn local version "1.5.10"
+		ereturn local version "1.5.11"
 		ereturn local title "Exponential-family random graph model (MCMLE)"
 		ereturn local depvar "`netname'"
 		ereturn local method "mcmle"
@@ -2832,7 +2832,7 @@ program nwergm_simulate
 	syntax anything(name=nodes) , edges [mutual ///
 		NODEMATCH(string) NODEMATCHDIFF(string) NODECOV(string) NODEICOV(string) NODEOCOV(string) ///
 		EDGECOV(string) ABSDIST(string) NODEFACTOR(string) NODEMIX(string) ///
-		GWESP(real 0) GWDSP(real 0) GWNSP(real 0) GWDEGREE(real 0) GWODEGREE(real 0) GWIDEGREE(real 0) ///
+		GWESP(string) GWDSP(string) GWNSP(string) GWDEGREE(string) GWODEGREE(string) GWIDEGREE(string) ///
 		DEGREE(string) ODEGREE(string) IDEGREE(string) CONCURRENT TRIANGLE CTRIPLE ///
 		NODEIFACTOR(string) NODEOFACTOR(string) ///
 		KSTAR(string) ISTAR(string) OSTAR(string) ///
@@ -2852,6 +2852,17 @@ program nwergm_simulate
 		THETA(numlist) directed NSIM(integer 1) MCMCBURNIN(integer -1) ///
 		MCMCINTERVAL(integer 1024) PROPOSAL(string) SEED(integer -1) GENERATE(string) SPCACHE ///
 		BASIS(string) CONSTRAINTS(string asis) MCMCPROP(string asis) ]
+	// a geometrically weighted term is in the model when its option is given, also with decay 0 (ergm allows decay 0)
+	foreach __g in gwesp gwdsp gwnsp gwdegree gwodegree gwidegree {
+		local __has_`__g' = ("``__g''" != "")
+		if `__has_`__g'' {
+			capture confirm number ``__g''
+			if _rc {
+				di as err "option {bf:`__g'()} takes one number, the decay"
+				exit 198
+			}
+		}
+	}
 
 	foreach __ergm_o in degree odegree idegree kstar ostar istar degrange degrangeto odegrange odegrangeto idegrange idegrangeto esp dsp bdegree1 bdegree2 bstar1 bstar2 {
 		if `"``__ergm_o''"' != "" & strpos(`"``__ergm_o''"', ",") == 0 {
@@ -2896,7 +2907,7 @@ program nwergm_simulate
 			}
 		}
 		foreach __ergm_bo in gwodegree gwidegree gwdegree {
-			if ``__ergm_bo'' != 0 {
+			if `__has_`__ergm_bo'' {
 				di "{err}In term {bf:`__ergm_bo'}: Term may not be used with networks with bipartite > 0."
 				error 198
 			}
@@ -2921,7 +2932,7 @@ program nwergm_simulate
 		di "{err}option {bf:mutual} requires {bf:directed}."
 		error 198
 	}
-	if (`gwodegree' != 0 | `gwidegree' != 0) & "`directed'" == "" {
+	if (`__has_gwodegree' | `__has_gwidegree') & "`directed'" == "" {
 		di "{p 0 0 2}{err}options {bf:gwodegree()}/{bf:gwidegree()} require {bf:directed}. Use {bf:gwdegree()} for an undirected simulation.{p_end}"
 		error 198
 	}
@@ -2936,7 +2947,7 @@ program nwergm_simulate
 	if `__ergm_type_explicit' & "`directed'" == "" {
 		di "{p 0 0 2}{err}note: option {bf:type()} only affects directed simulation; without {bf:directed}, the undirected shared-partner definition is used regardless.{p_end}"
 	}
-	if `__ergm_type_explicit' & (`gwesp'==0 & `gwdsp'==0 & `gwnsp'==0 & "`esp'`dsp'"=="") {
+	if `__ergm_type_explicit' & (!`__has_gwesp' & !`__has_gwdsp' & !`__has_gwnsp' & "`esp'`dsp'"=="") {
 		di "{p 0 0 2}{err}note: option {bf:type()} has no effect - no {bf:gwesp()}/{bf:gwdsp()}/{bf:gwnsp()}/{bf:esp()}/{bf:dsp()} term was requested.{p_end}"
 	}
 	if ("`nodeicov'" != "" | "`nodeocov'" != "") & "`directed'" == "" {
@@ -3668,7 +3679,7 @@ program nwergm_simulate
 		local __ergm_matatemps "`__ergm_matatemps' `__td_hm`__ergm_termidx''"
 	}
 
-	if `gwesp' != 0 {
+	if `__has_gwesp' {
 		tempname td_gwesp
 		mata: `td_gwesp' = ErgmTermData()
 		mata: `td_gwesp'.decay = `gwesp'
@@ -3679,7 +3690,7 @@ program nwergm_simulate
 		local ntermtok "`ntermtok' gwesp"
 		local __ergm_matatemps "`__ergm_matatemps' `td_gwesp'"
 	}
-	if `gwdsp' != 0 {
+	if `__has_gwdsp' {
 		tempname td_gwdsp
 		mata: `td_gwdsp' = ErgmTermData()
 		mata: `td_gwdsp'.decay = `gwdsp'
@@ -3690,7 +3701,7 @@ program nwergm_simulate
 		local ntermtok "`ntermtok' gwdsp"
 		local __ergm_matatemps "`__ergm_matatemps' `td_gwdsp'"
 	}
-	if `gwnsp' != 0 {
+	if `__has_gwnsp' {
 		tempname td_gwnsp
 		mata: `td_gwnsp' = ErgmTermData()
 		mata: `td_gwnsp'.decay = `gwnsp'
@@ -3701,7 +3712,7 @@ program nwergm_simulate
 		local ntermtok "`ntermtok' gwnsp"
 		local __ergm_matatemps "`__ergm_matatemps' `td_gwnsp'"
 	}
-	if `gwdegree' != 0 {
+	if `__has_gwdegree' {
 		tempname td_gwdeg
 		mata: `td_gwdeg' = ErgmTermData()
 		mata: `td_gwdeg'.decay = `gwdegree'
@@ -3709,7 +3720,7 @@ program nwergm_simulate
 		local ntermtok "`ntermtok' gwdegree"
 		local __ergm_matatemps "`__ergm_matatemps' `td_gwdeg'"
 	}
-	if `gwodegree' != 0 {
+	if `__has_gwodegree' {
 		tempname td_gwod
 		mata: `td_gwod' = ErgmTermData()
 		mata: `td_gwod'.decay = `gwodegree'
@@ -3717,7 +3728,7 @@ program nwergm_simulate
 		local ntermtok "`ntermtok' gwodegree"
 		local __ergm_matatemps "`__ergm_matatemps' `td_gwod'"
 	}
-	if `gwidegree' != 0 {
+	if `__has_gwidegree' {
 		tempname td_gwid
 		mata: `td_gwid' = ErgmTermData()
 		mata: `td_gwid'.decay = `gwidegree'
@@ -3746,7 +3757,7 @@ program nwergm_simulate
 	// times over, against only `mcmcburnin' toggles of benefit per draw
 	// (not an entire MCMLE run's worth) - offered for consistency with
 	// the estimation command, not because it is expected to help here.
-	local __ergm_spcache_relevant = (`gwesp'!=0 | `gwdsp'!=0 | `gwnsp'!=0 | "`esp'"!="" | "`dsp'"!="" | "`triangle'"!="" | "`ctriple'"!="")
+	local __ergm_spcache_relevant = (`__has_gwesp' | `__has_gwdsp' | `__has_gwnsp' | "`esp'"!="" | "`dsp'"!="" | "`triangle'"!="" | "`ctriple'"!="")
 	if "`spcache'" != "" {
 		if "`directed'" != "" {
 			di "{p 0 0 2}{err}note: option {bf:spcache} has no effect on a directed simulation; the incremental shared-partner cache only implements the undirected shared-partner definition.{p_end}"

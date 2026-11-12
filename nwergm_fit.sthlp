@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.5.10  11nov2026 nwergm_fit.sthlp}{...}
+{* *! version 1.5.11  12nov2026 nwergm_fit.sthlp}{...}
 {vieweralsosee "nwergm" "help nwergm"}{...}
 {viewerjumpto "Missing" "nwergm_fit##missing"}{...}
 {viewerjumpto "Fit" "nwergm_fit##fit"}{...}
@@ -43,28 +43,30 @@ Monte Carlo standard error. The null model is the model with all coefficients ze
 
 {p2colset 5 24 26 2}{...}
 {p2col:{cmd:e(ll)}, {cmd:e(ll_0)}}log-likelihood and null log-likelihood{p_end}
-{p2col:{cmd:e(df_m)}, {cmd:e(df_resid)}}estimated coefficients (offsets excluded) and {it:N} - df_m{p_end}
+{p2col:{cmd:e(df_m)}, {cmd:e(rank)}}number of estimated coefficients (offsets excluded){p_end}
+{p2col:{cmd:e(df_resid)}}{it:N} - df_m{p_end}
 {p2col:{cmd:e(deviance)}, {cmd:e(deviance_0)}}residual and null deviance, -2 ll{p_end}
 {p2col:{cmd:e(aic)}, {cmd:e(bic)}}AIC and BIC, BIC with {it:N} = number of informative dyads{p_end}
 {p2col:{cmd:e(ll_se)}}Monte Carlo standard error of {cmd:e(ll)} (0 when exact){p_end}
+{p2col:{cmd:e(ll_method)}}{cmd:exact}, {cmd:pseudolikelihood} or {cmd:bridge sampling}{p_end}
 {p2colreset}{...}
 
 {pstd}
-{cmd:estat ic} displays them and {cmd:lrtest} works between nested fits (same network and the same {it:N}). The likelihood is not evaluated
-for a model with a curved (free-decay) term fitted by MCMLE; the option {opt nologlik} skips the bridge sampling.
+{cmd:estat ic} displays them (and returns them in the matrix {cmd:r(S)}) and {cmd:lrtest} works between nested fits (same network and the same {it:N}). The likelihood is not evaluated
+for a model with a curved (free-decay) term fitted by MCMLE; the option {opt nologlik} skips the bridge sampling. In both cases the results above are not stored.
 
 {marker predict}{...}
 {title:predict}
 
 {pstd}
-{cmd:predict, matrix(}{it:name}{cmd:)} [{opt pr}|{opt xb}] and {cmd:predict, frame(}{it:name}{cmd:)} [{opt pr}|{opt xb}] give the conditional
+{cmd:predict,} {opt mat:rix(name)} [{opt pr}|{opt xb}] and {cmd:predict,} {opt fr:ame(name)} [{opt pr}|{opt xb}] give the conditional
 probability ({opt pr}, the default) or the conditional log-odds ({opt xb}) of each informative dyad given the rest of the observed
 network (R: {cmd:predict.ergm}). The frame holds one row per dyad ({it:tail}, {it:head}, {it:p}); the matrix is {it:n} x {it:n} with missing dyads
-set to missing. The prediction is available for the most recent {cmd:nwergm} fit only.
+set to missing. The prediction is available for the most recent {cmd:nwergm} fit only, and not for a model with a curved (free-decay) term.
 
 {title:References}
 
 {phang}Handcock, M. S. and Gile, K. J. 2010. Modeling social networks from sampled data. {it:Annals of Applied Statistics} 4: 5-25.{p_end}
 
 {hline}
-{pstd}{it:nwergm version 1.5.10, 11 November 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.5.11, 12 November 2026}{p_end}{* nwversion}
