@@ -137,7 +137,7 @@ xt_stat U_gwesp10 U "gwesp(10)" "7 5.99995460007024"
 xt_stat U_gwdsp10 U "gwdsp(10)" "7 10.9999092001405"
 xt_stat U_gwnsp10 U "gwnsp(10)" "7 4.99995460007024"
 xt_stat U_gwdegree10 U "gwdegree(10)" "7 13.9995006069561"
-* CONFIRMED BUG N5: decay 30 loses ~3 digits, decay >= ~37 gives 0 (R gives the limit); naive exp(d)*(1-(1-exp(-d))^k)
+* N5 (fixed, stable kernel): decay 30 loses ~3 digits, decay >= ~37 gives 0 (R gives the limit); naive exp(d)*(1-(1-exp(-d))^k)
 xt_stat U_gwesp30 U "gwesp(30)" "7 5.99999999999991"
 xt_stat U_gwdegree30 U "gwdegree(30)" "7 13.999999999999"
 xt_stat U_gwesp40 U "gwesp(40)" "7 6"
@@ -148,17 +148,12 @@ xt_stat U_gwesp100 U "gwesp(100)" "7 6"
 xt_stat U_gwdegree100 U "gwdegree(100)" "7 14"
 di "PASS block U: geometrically weighted terms, decay 0 to 100"
 
-* a negative decay: R's summary() returns NaN (gwesp(-1, fixed=TRUE) and gwdegree(-1, fixed=TRUE)); there is no R value
-* to match. Record what nwergm does (refusal with 198 or a number) without asserting.
-* TODO-R: decide the wanted behaviour (R: summary(U ~ gwesp(-1, fixed=TRUE)) is NaN; ergm() then fails).
-capture noisily nwergm U, edges gwesp(-1) method(mple)
-local rcneg = _rc
-if `rcneg' == 0 {
-	matrix __S = e(obs_stats)
-	di as txt "SOFT gwesp(-1): accepted, statistic " __S[1,2] " (R: NaN)"
+* a negative decay: R's summary() returns NaN (gwesp(-1, fixed=TRUE)); nwergm refuses it (owner decision 2026-11-12)
+foreach t in gwesp gwdsp gwnsp gwdegree {
+	capture noisily nwergm U, edges `t'(-1) method(mple)
+	assert _rc == 198
 }
-else di as txt "SOFT gwesp(-1): refused with r(`rcneg')"
-di "PASS block U: negative decay recorded"
+di "PASS block U: negative decay refused"
 
 * single-level attribute in nodefactor()/nodemix(): R skips the term ("contributes no statistics"); summary() returns
 * edges only. nwergm should either drop it the same way or refuse it cleanly (a 1-column model, not a Mata error).
@@ -175,11 +170,14 @@ foreach t in nodefactor nodemix {
 	else {
 		* a refusal must be a Stata error code of the input checks, not a Mata failure (3000-3999)
 		if `rc1' >= 3000 & `rc1' <= 3999 {
-			// CONFIRMED BUG N4: single-level factor -> raw Mata error in _ergm_cov_pick (R drops the term)
+			// N4 (fixed): single-level factor -> raw Mata error in _ergm_cov_pick (R drops the term)
 			di as err "FAIL `t'(one): raw Mata error r(`rc1')"
 			global XT_FAILS "$XT_FAILS `t'_onelevel(N4)"
 		}
-		else di as txt "SOFT `t'(one): refused with r(`rc1') (R drops the term with a note)"
+		else {
+			di as err "FAIL `t'(one): refused with r(`rc1') (R drops the term with a note)"
+			global XT_FAILS "$XT_FAILS `t'_onelevel"
+		}
 	}
 }
 * nodematchdiff() with a single level: R nodematch("one", diff=TRUE) = 7 (one column nodematch.one.1)

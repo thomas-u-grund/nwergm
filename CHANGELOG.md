@@ -3,6 +3,35 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+- Geometrically weighted terms with a large decay (`gwesp()`, `gwdsp()`, `gwnsp()`, `gwdegree()` ... from a decay of about 30) are computed in the numerically stable form, as in R: the statistic lost digits from a decay of about 30 and was exactly 0 from about 37 (Mata and the plugin).
+- A negative decay of a geometrically weighted term is refused (r(198)); R gives no number.
+- `triangle` on a directed network is accepted, as in R (transitive plus cyclic triples, the statistic of `structural(triangle)`); it used to be refused.
+- Covariate options read a varlist: ranges (`nodeocov(o1-o3)`) and wildcards (`nodeocov(o*)`) name several variables; `o1-o3` used to be taken as the expression o1 minus o3 (one column), and `o*` failed. Fewer data rows than nodes gives a clear message (r(198)).
+- Coefficient names longer than 32 characters (for example `nodeocov_` plus a long variable name) are cut to 32 characters (numbered when two would be equal) instead of failing with r(198).
+- `nodefactor()` (and the other factor terms) with a single-level attribute drops the term with a note, as in R, instead of a raw Mata error.
+- `estat gof` puts the network of the fit back after its simulation: a second `estat gof` or `nwergm simulate` with the same `seed()` gives the same result.
+- `nwergm simulate` from a given model and a refused `nwergm` call no longer replace the model of the last fit: `estat gof`, `nwergm simulate` and `predict` keep working on it (they used to stop with r(498) or a raw Mata error). After `estimates restore` of an earlier fit they stop with a clear message (r(498)) instead of using the later fit's model.
+- A fit refused because the outcome does not vary (r(2000)) keeps the results of the previous fit in `e()`.
+- `predict` works after a fit with `nologlik` (and after curved fits it gives the nwergm message): `e(predict)` was not set.
+- `nwergm simulate, output(edgelist)` with only empty draws gives an empty data set instead of r(111).
+- `mpletype(penalized)` on a network whose dyads are all untied (or all tied): the Firth-penalised estimate is computed when it is finite (for example `edges` alone), otherwise a clear message explains why there is none (r(2000)).
+- Invalid `proposal()`, `type()` and `method()` give r(198) like the other option errors (was r(6556)).
+- `seed()` accepts integers from 0 to 2147483647 only (in `nwergm`, `nwergm simulate` and `estat gof`); `seed(-1)` used to be ignored silently.
+- `nwergm` without arguments (or with `level()` only) redisplays the last fit, and `estimates replay` works.
+- Long Mata error messages are shown (they were lost with r(3300)).
+- Help: `estat mcmcdiag` prints the full report only with `report`; the order of `theta()` in `nwergm simulate` is described as the code builds it; the default `gofinterval()` after MPLE is 1,024 as in R.
+
+### Results that change
+- `estat gof` after `method(mple)`: the default interval is 1,024 (R's `gof.ergm`), not 1,024 x 1 / `nsim()`.
+- Geometrically weighted statistics with a decay of about 30 or more (R's values now); for smaller decays the change is at the level of rounding (1e-15).
+- `estat gof` and simulations after an earlier `estat gof` start from the fit's network (reproducible with `seed()`).
+- `mpletype(penalized)` on an empty or complete network gives a result where it is finite.
+
+Mata library `lnwergm.mlib` rebuilt with Stata 17; macOS plugin `ergm_mcmc` rebuilt locally (stable kernel of the geometrically weighted terms); the Linux and Windows plugins need the CI build.
+
 ## [1.5.12] - 2026-11-12
 
 ### Fixed

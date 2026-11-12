@@ -9,13 +9,22 @@
 capture program drop nwergm
 program nwergm, eclass
 	version 14
-	local __ne_n = 0
 	gettoken __ergm_t1 : 0, parse(" ,")
 	if word(`"`0'"', 1) == "version" {
 		nwergm_version
 		exit
 	}
 	_nwergm_libcheck
+	// replay: nwergm with no arguments, or with display options only (level()), after an nwergm fit; also what
+	// estimates replay runs
+	if replay() {
+		capture syntax [, Level(cilevel)]
+		if !_rc {
+			if "`e(cmd)'" != "nwergm" error 301
+			_nwergm_replay, level(`level')
+			exit
+		}
+	}
 	if `"`__ergm_t1'"' == "simulate" {
 		gettoken __ergm_sub 0 : 0, parse(" ,")
 		gettoken __ergm_first : 0, parse(" ,")
@@ -23,9 +32,34 @@ program nwergm, eclass
 			_nwergm_simfit `0'
 			exit
 		}
-		nwergm_simulate `0'
+		// simulating from a given model builds its own model in the Mata objects of the last fit: the fit is put
+		// back afterwards, so that estat gof, nwergm simulate and predict still refer to it
+		_nwergm_hold save
+		capture noisily nwergm_simulate `0'
+		local __ergm_rc = _rc
+		_nwergm_hold restore
+		exit `__ergm_rc'
+	}
+	// a fit that is refused leaves the model of the previous fit in place (operator sub-models are handled by
+	// _nwergm_ops)
+	if strpos(`"`0'"', "submodel(") {
+		_nwergm_fit `0'
 		exit
 	}
+	_nwergm_hold save
+	capture noisily _nwergm_fit `0'
+	local __ergm_rc = _rc
+	if `__ergm_rc' {
+		_nwergm_hold restore
+		exit `__ergm_rc'
+	}
+	_nwergm_hold drop
+end
+
+capture program drop _nwergm_fit
+program _nwergm_fit, eclass
+	version 14
+	local __ne_n = 0
 	syntax [anything(name=netname)] [, edges mutual ///
 		NODEMATCH(string) NODEMATCHDIFF(string) NODECOV(string) NODEICOV(string) NODEOCOV(string) ///
 		EDGECOV(string) ABSDIST(string) NODEFACTOR(string) NODEMIX(string) ///
@@ -51,13 +85,18 @@ program nwergm, eclass
 		TYPE(string) FREEDYADS(string) BLOCKDIAG(string) FIXDENSITY ///
 		METHOD(string) MCMCBURNIN(integer -1) MCMCINTERVAL(integer 1024) ///
 		MCMCSAMPLESIZE(integer -1) MCMLEITERATIONS(integer 60) ///
-		PROPOSAL(string) SEED(integer -1) VERBOSE SPCACHE NOMCMCSAMPLE NONATIVE ///
+		PROPOSAL(string) SEED(string) VERBOSE SPCACHE NOMCMCSAMPLE NONATIVE ///
 		OFFSET(string) COEFLABEL(string) LOGSTAT(string) EXPSTAT(string) STRUCTURAL(string asis) OPERATORS(string asis) SUBMODEL(string) NOLOGLIK BRIDGESTEPS(integer 16) BRIDGESAMPLESIZE(integer 0) BRIDGEINTERVAL(integer 0) ///
 		INIT(string) MPLETYPE(string) MPLECHECK(string) MPLECOVariance(string) ESTimate(string) MAINMETHOD(string) ///
 		MCMLETERMination(string) MCMLECONFidence(real 0.99) MCMLESTEPLength(real 1) MCMLESTEPMargin(real 0.05) ///
 		MCMLEEFFectivesize(real -1) CDNSteps(integer 8) CDSAMPLEsize(integer 0) SABURNin(integer 16384) SAINTERval(integer 1024) SAPHASE3(integer 1000) SAGAIN(real 0.1) SANSUB(integer 4) ///
 		CONSTRAINTS(string asis) OBSCONSTRAINTS(string asis) MCMCMAXEDGES(integer 0) MCMCPROP(string asis) ]
 	set more off
+	if `"`seed'"' != "" _nwergm_seed `seed', check
+	_nwergm_decaycheck, gwesp(`gwesp') gwdsp(`gwdsp') gwnsp(`gwnsp') gwdegree(`gwdegree') gwodegree(`gwodegree') gwidegree(`gwidegree') ///
+		gwespfree(`gwespfree') gwdegreefree(`gwdegreefree') gwdspfree(`gwdspfree') gwodegreefree(`gwodegreefree') gwidegreefree(`gwidegreefree') ///
+		gwnspfree(`gwnspfree') bgwdegree1(`bgwdegree1') bgwdegree2(`bgwdegree2') bgwdsp1(`bgwdsp1') bgwdsp2(`bgwdsp2') ///
+		bgwdegreefree1(`bgwdegreefree1') bgwdegreefree2(`bgwdegreefree2') bgwdspfree1(`bgwdspfree1') bgwdspfree2(`bgwdspfree2')
 	// R: MCMLE.burnin = MCMLE.interval * 16 - an unset burn-in follows the interval
 	if `mcmcburnin' < 0 local mcmcburnin = 16 * `mcmcinterval'
 	_nwergm_est opts, estimate(`estimate') method(`method') mainmethod(`mainmethod') mpletype(`mpletype') ///
@@ -131,16 +170,16 @@ program nwergm, eclass
 	// default, `proposal()' defaults to `tnt' exactly as it does without
 	// freedyads().
 	if "`proposal'" == "" local proposal "tnt"
-	_opts_oneof "uniform random tnt" "proposal" "`proposal'" 6556
+	_opts_oneof "uniform random tnt" "proposal" "`proposal'" 198
 	if "`proposal'" == "random" local proposal "uniform"
 	_nwergm_hints, spec(`mcmcprop')
 	if "`method'" != "" {
-		_opts_oneof "mple mcmle cd" "method" "`method'" 6556
+		_opts_oneof "mple mcmle cd" "method" "`method'" 198
 	}
 	local __ergm_type_explicit = ("`type'" != "")
 	local type = upper("`type'")
 	if "`type'" == "" local type "OTP"
-	_opts_oneof "OTP ITP OSP ISP RTP" "type" "`type'" 6556
+	_opts_oneof "OTP ITP OSP ISP RTP" "type" "`type'" 198
 
 	_nwsyntax `netname', max(1)
 	// node attributes are read by row position; see _nwrowalign.ado
@@ -544,9 +583,11 @@ program nwergm, eclass
 		di "{err}option {bf:concurrent} (v1 scope) is undirected only; {bf:`netname'} is directed."
 		error 198
 	}
+	// triangle on a directed network: R's directed triangle (transitive plus cyclic triples), computed by the
+	// structural() term triangle
 	if "`triangle'" != "" & "`directed'" == "true" {
-		di "{p 0 0 2}{err}option {bf:triangle} is undirected only; {bf:`netname'} is directed. Use {bf:ctriple} for a directed network.{p_end}"
-		error 198
+		local structural `"`structural' triangle"'
+		local triangle ""
 	}
 	if "`ctriple'" != "" & "`directed'" != "true" {
 		di "{p 0 0 2}{err}option {bf:ctriple} requires a directed network; {bf:`netname'} is undirected. Use {bf:triangle} for an undirected network.{p_end}"
@@ -583,8 +624,8 @@ program nwergm, eclass
 		error 198
 	}
 
-	if `seed' != -1 {
-		set seed `seed'
+	if `"`seed'"' != "" {
+		_nwergm_seed `seed'
 	}
 
 	// --- build the ErgmGraph from the current NWdef network (one-time
@@ -615,6 +656,7 @@ program nwergm, eclass
 	// own redefinition guard below - this is a single, well-managed
 	// object, not the unmanaged per-call accumulation unit 73 fixed.
 	if !`__sub' {
+		_nwergm_tag clear
 		capture mata: mata drop __nwergm_last_G
 		mata: __nwergm_last_G = ErgmGraph()
 		mata: __nwergm_last_G.init(`nodes', ("`directed'"=="true"))
@@ -830,6 +872,7 @@ program nwergm, eclass
 
 	// --- build the model: one addterm() call per requested term.
 	capture mata: mata drop __nwergm_last_M
+	_nwergm_tag clear
 	mata: __nwergm_last_M = ErgmModel()
 	mata: __nwergm_last_M.init()
 
@@ -1885,6 +1928,8 @@ program nwergm, eclass
 		di "{p 0 0 2}{txt}Note: {bf:method(mple)} requested for a dyad-dependent model - reporting pseudolikelihood, NOT full ERGM maximum likelihood.{p_end}"
 	}
 
+	// coefficient names longer than 32 characters (the limit of Stata matrix names) are cut
+	mata: __nwergm_last_M.coefnames = ergm_coefnames32(__nwergm_last_M.coefnames)
 	if `"`logstat'`expstat'"' != "" & ("`fixdensity'" != "" | `__ergm_curved') {
 		di "{p 0 0 2}{err}options {bf:logstat()}/{bf:expstat()} cannot be combined with {bf:fixdensity} or a curved (free-decay) term.{p_end}"
 		error 198
@@ -2222,7 +2267,12 @@ program nwergm, eclass
 		_nwergm_est mple `__nw_D' `__e7_sb' `__e7_sV' "`mpletype'" "`mplecheck'" `__ergm_has_offset' "`method'"
 		local __e7_special = r(special)
 		local __e7_rcx 0
+		// logit replaces e(): the results of the previous fit are held and put back if this fit is refused
+		tempname __e7_hold
+		local __e7_held 0
 		if !`__e7_special' {
+			_estimates hold `__e7_hold', nullok
+			local __e7_held 1
 			capture qui logit __ergm_y `__ergm_free_xlist', noconstant `__ergm_offset_opt' tolerance(1e-9) ltolerance(1e-11)
 			// near-separated fits may not reach the tight tolerance: fall back to logit's defaults
 			if _rc == 430 capture qui logit __ergm_y `__ergm_free_xlist', noconstant `__ergm_offset_opt'
@@ -2230,6 +2280,7 @@ program nwergm, eclass
 		}
 		if `__e7_rcx' != 0 {
 			local __ergm_mple_rc = `__e7_rcx'
+			if `__e7_held' _estimates unhold `__e7_hold'
 			restore
 			di "{p 0 0 2}{err}The MPLE fit did not converge (outcome does not vary - e.g. a fully edgeless network with no ties at all). Cannot estimate this model.{p_end}"
 			error `__ergm_mple_rc'
@@ -2243,6 +2294,7 @@ program nwergm, eclass
 			_nwergm_getb `__b_mple_free'
 			mata: st_matrix("`__V_mple_free'", st_matrix("e(V)"))
 		}
+		if `__e7_held' _estimates unhold `__e7_hold'
 		restore
 		if `__ergm_has_offset' {
 			mata: ergm_mple_expand_fixed(__nwergm_last_M, st_matrix("`__b_mple_free'"), st_matrix("`__V_mple_free'"), "`__b_mple'", "`__V_mple'")
@@ -2277,6 +2329,7 @@ program nwergm, eclass
 		}
 		ereturn post `__b_mple' `__V_mple', depname(`netname') obs(`__ergm_nrows')
 		ereturn local cmd "nwergm"
+		if !`__sub' _nwergm_tag set
 		ereturn local version "1.5.12"
 		ereturn local title "Exponential-family random graph model (MPLE)"
 		ereturn local depvar "`netname'"
@@ -2661,6 +2714,7 @@ program nwergm, eclass
 
 		ereturn post `__b_mcmle' `__V_mcmle', depname(`netname') obs(`__ergm_nrows')
 		ereturn local cmd "nwergm"
+		if !`__sub' _nwergm_tag set
 		ereturn local version "1.5.12"
 		ereturn local title "Exponential-family random graph model (MCMLE)"
 		ereturn local depvar "`netname'"
@@ -2780,7 +2834,8 @@ end
 
 capture program drop nwergm_display
 program nwergm_display
-	args netname nodes directed method converged niter mcmcsamplesize
+	args netname nodes directed method converged niter mcmcsamplesize level
+	if "`level'" == "" local level = c(level)
 
 	di
 	di "{txt}Exponential-family random graph model"
@@ -2794,7 +2849,7 @@ program nwergm_display
 		di "{txt}MCMC sample size:{col 24}={res}  `mcmcsamplesize'"
 	}
 	di
-	ereturn display
+	ereturn display, level(`level')
 	di
 	if "`method'" == "CD" {
 		di "{txt}{p 0 0 2}Contrastive divergence estimate (`niter' iteration(s)); standard errors come from the covariance of the short-run CD sample.{p_end}"
@@ -2850,8 +2905,11 @@ program nwergm_simulate
 		BDSP1(string) BDSP2(string) BGWDSP1(string) BGWDSP2(string) ///
 		BIPARTITE(integer 0) ///
 		THETA(numlist) directed NSIM(integer 1) MCMCBURNIN(integer -1) ///
-		MCMCINTERVAL(integer 1024) PROPOSAL(string) SEED(integer -1) GENERATE(string) SPCACHE ///
+		MCMCINTERVAL(integer 1024) PROPOSAL(string) SEED(string) GENERATE(string) SPCACHE ///
 		BASIS(string) CONSTRAINTS(string asis) MCMCPROP(string asis) ]
+	if `"`seed'"' != "" _nwergm_seed `seed', check
+	_nwergm_decaycheck, gwesp(`gwesp') gwdsp(`gwdsp') gwnsp(`gwnsp') gwdegree(`gwdegree') gwodegree(`gwodegree') gwidegree(`gwidegree') ///
+		bgwdegree1(`bgwdegree1') bgwdegree2(`bgwdegree2') bgwdsp1(`bgwdsp1') bgwdsp2(`bgwdsp2')
 	// a geometrically weighted term is in the model when its option is given, also with decay 0 (ergm allows decay 0)
 	foreach __g in gwesp gwdsp gwnsp gwdegree gwodegree gwidegree {
 		local __has_`__g' = ("``__g''" != "")
@@ -2943,7 +3001,7 @@ program nwergm_simulate
 	local __ergm_type_explicit = ("`type'" != "")
 	local type = upper("`type'")
 	if "`type'" == "" local type "OTP"
-	_opts_oneof "OTP ITP OSP ISP RTP" "type" "`type'" 6556
+	_opts_oneof "OTP ITP OSP ISP RTP" "type" "`type'" 198
 	if `__ergm_type_explicit' & "`directed'" == "" {
 		di "{p 0 0 2}{err}note: option {bf:type()} only affects directed simulation; without {bf:directed}, the undirected shared-partner definition is used regardless.{p_end}"
 	}
@@ -2967,8 +3025,8 @@ program nwergm_simulate
 		error 198
 	}
 	if "`triangle'" != "" & "`directed'" != "" {
-		di "{err}option {bf:triangle} is undirected only. Use {bf:ctriple} for a directed simulation."
-		error 198
+		local structural `"`structural' triangle"'
+		local triangle ""
 	}
 	if "`ctriple'" != "" & "`directed'" == "" {
 		di "{err}option {bf:ctriple} requires {bf:directed}. Use {bf:triangle} for an undirected simulation."
@@ -3003,20 +3061,21 @@ program nwergm_simulate
 		error 198
 	}
 	if "`proposal'" == "" local proposal "tnt"
-	_opts_oneof "uniform tnt" "proposal" "`proposal'" 6556
+	_opts_oneof "uniform tnt" "proposal" "`proposal'" 198
 	_nwergm_hints, spec(`mcmcprop')
 	if `__spdstrict' & `bipartite' != 0 {
 		di as err "{p 0 0 2}The triadic() hint cannot be used with a bipartite network (use .triadic, which R skips on a bipartite network).{p_end}"
 		error 198
 	}
 	if "`generate'" == "" local generate "ergmsim"
-	if `seed' != -1 {
-		set seed `seed'
+	if `"`seed'"' != "" {
+		_nwergm_seed `seed'
 	}
 
 	local __ergm_matatemps ""
 
 	capture mata: mata drop __nwergm_last_M
+	_nwergm_tag clear
 	mata: __nwergm_last_M = ErgmModel()
 	mata: __nwergm_last_M.init()
 
@@ -3757,6 +3816,7 @@ program nwergm_simulate
 	// times over, against only `mcmcburnin' toggles of benefit per draw
 	// (not an entire MCMLE run's worth) - offered for consistency with
 	// the estimation command, not because it is expected to help here.
+	mata: __nwergm_last_M.coefnames = ergm_coefnames32(__nwergm_last_M.coefnames)
 	local __ergm_spcache_relevant = (`__has_gwesp' | `__has_gwdsp' | `__has_gwnsp' | "`esp'"!="" | "`dsp'"!="" | "`triangle'"!="" | "`ctriple'"!="")
 	if "`spcache'" != "" {
 		if "`directed'" != "" {
@@ -3965,5 +4025,127 @@ program _nwergm_numvar
 	if `__nna' > 0 {
 		di "{p 0 0 2}{err}In term {bf:`term'}: attribute {bf:`v'} has missing data, which is not currently supported by ergm.{p_end}"
 		error 416
+	}
+end
+
+// replay of the last nwergm fit (nwergm alone, nwergm, level(#), estimates replay)
+capture program drop _nwergm_replay
+program _nwergm_replay
+	syntax [, Level(cilevel)]
+	local m = cond("`e(method)'" == "mple", "MPLE", cond("`e(estimate)'" == "CD", "CD", cond("`e(estimate)'" == "SA", "SA", "MCMLE")))
+	nwergm_display "`e(depvar)'" "`=e(nodes)'" "`e(directed)'" "`m'" "`=e(converged)'" "`=e(mcmle_iterations)'" "`=e(mcmc_samplesize)'" "`level'"
+	if "`e(ll)'" != "" & "`e(ll_method)'" != "" {
+		local k = e(df_m)
+		local pd = cond("`e(ll_method)'" == "pseudolikelihood", "Pseudo-", "")
+		di
+		di as txt %28s "Null `pd'`=cond("`pd'"=="","D","d")'eviance: " as res %9.1f e(deviance_0) as txt "  on " as res e(N) as txt " degrees of freedom"
+		di as txt %28s "Residual `pd'`=cond("`pd'"=="","D","d")'eviance: " as res %9.1f e(deviance) as txt "  on " as res e(N) - `k' as txt " degrees of freedom"
+		di
+		di as txt "Log-likelihood: " as res %10.4f e(ll) as txt " (df = `k')   AIC: " as res %9.1f e(aic) as txt "   BIC: " as res %9.1f e(bic)
+		if e(ll_se) > 0 & e(ll_se) < . {
+			di as txt "Monte Carlo standard error of the log-likelihood: " as res %7.5g e(ll_se)
+		}
+		if "`e(method)'" == "mple" & "`e(ll_method)'" != "exact" {
+			di as txt "(For a dyad-dependent model fitted by MPLE, this is the pseudolikelihood.)"
+		}
+	}
+end
+
+// seed(): an integer from 0 to 2147483647; set it (or only check it, option check)
+capture program drop _nwergm_seed
+program _nwergm_seed
+	syntax anything(name=seed) [, CHECK]
+	capture confirm integer number `seed'
+	if _rc | real(`"`seed'"') < 0 | real(`"`seed'"') > 2147483647 {
+		di as error "seed() must be an integer between 0 and 2147483647"
+		exit 198
+	}
+	if "`check'" == "" set seed `seed'
+end
+
+// the decay of a geometrically weighted term must not be negative (R: the statistic is NaN)
+capture program drop _nwergm_decaycheck
+program _nwergm_decaycheck
+	syntax [, *]
+	while `"`options'"' != "" {
+		gettoken opt options : options, bind
+		if regexm(`"`opt'"', "^([a-z0-9]+)\((.*)\)$") {
+			local nm = regexs(1)
+			local val = regexs(2)
+			gettoken first : val, parse(" ,")
+			capture confirm number `first'
+			if !_rc {
+				if `first' < 0 {
+					di as error "{p 0 0 2}option {bf:`nm'()}: the decay must be zero or positive; got `first'.{p_end}"
+					exit 198
+				}
+			}
+		}
+	}
+end
+
+// identification of the fitted model held in Mata (__nwergm_last_M, __nwergm_last_G): set when a fit is posted and
+// stored in e(fittag); cleared when another nwergm call replaces the model. Postestimation commands compare it with
+// e(fittag) (subcommand check).
+capture program drop _nwergm_tag
+program _nwergm_tag, eclass
+	args what
+	if "`what'" == "clear" {
+		mata: __nwergm_last_tag = ""
+	}
+	else if "`what'" == "set" {
+		if "$NWERGM_TAGN" == "" global NWERGM_TAGN 0
+		global NWERGM_TAGN = $NWERGM_TAGN + 1
+		local tag "`c(current_date)' `c(current_time)' $NWERGM_TAGN"
+		mata: __nwergm_last_tag = "`tag'"
+		ereturn local fittag "`tag'"
+	}
+end
+
+// keep the model of the last fit (Mata objects __nwergm_last_M/G, the missing-dyad matrix and the fit tag) while
+// another nwergm call may replace it: save, then restore (call refused, or a simulation from a given model) or drop
+program _nwergm_hold
+	_nwergm_hold_body `0'
+	// the captures in the body leave _rc set; reset it so that a successful nwergm leaves _rc at 0
+	capture confirm number 0
+end
+
+program _nwergm_hold_body
+	args what
+	if "`what'" == "save" {
+		capture mata: mata drop __nwergm_bak_M __nwergm_bak_G
+		capture mata: mata drop __nwergm_bak_mm
+		capture mata: mata drop __nwergm_bak_tag
+		capture mata: st_local("__t", __nwergm_last_tag)
+		if _rc | `"`__t'"' == "" exit
+		capture mata: __nwergm_last_M.nparam()
+		if _rc exit
+		capture mata: __nwergm_last_G.n
+		if _rc exit
+		mata: __nwergm_bak_M = ErgmModel()
+		mata: __nwergm_bak_G = ErgmGraph()
+		mata: ergm_ops_copyM(__nwergm_bak_M, __nwergm_last_M)
+		mata: ergm_ops_copyG(__nwergm_bak_G, __nwergm_last_G)
+		capture mata: __nwergm_bak_mm = __nwergm_missmat
+		mata: __nwergm_bak_tag = __nwergm_last_tag
+	}
+	else if "`what'" == "restore" {
+		capture mata: st_local("__t", __nwergm_bak_tag)
+		if _rc exit
+		capture mata: mata drop __nwergm_last_M
+		capture mata: mata drop __nwergm_last_G
+		mata: __nwergm_last_M = ErgmModel()
+		mata: __nwergm_last_G = ErgmGraph()
+		mata: ergm_ops_copyM(__nwergm_last_M, __nwergm_bak_M)
+		mata: ergm_ops_copyG(__nwergm_last_G, __nwergm_bak_G)
+		capture mata: mata drop __nwergm_missmat
+		capture mata: __nwergm_missmat = __nwergm_bak_mm
+		mata: __nwergm_last_tag = __nwergm_bak_tag
+		_nwergm_hold drop
+	}
+	else {
+		capture mata: mata drop __nwergm_bak_M __nwergm_bak_G
+		capture mata: mata drop __nwergm_bak_mm
+		capture mata: mata drop __nwergm_bak_tag
 	}
 end

@@ -45,6 +45,8 @@ program _nwergm_fitstats, eclass
 		local how "bridge sampling"
 	}
 	mata: mata drop __ergm_fs_b
+	// predict works without a log-likelihood too (nologlik, curved terms)
+	ereturn local predict "nwergm_p"
 	if missing(scalar(`ll')) {
 		exit
 	}

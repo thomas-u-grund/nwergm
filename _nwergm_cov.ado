@@ -26,6 +26,17 @@ program _nwergm_cov, rclass
 	if inlist("`term'", "nodefactor", "nodeifactor", "nodeofactor") & "`base'" == "" local base "1"
 	local temps ""
 	mata: st_local("__c0", strofreal(cols(__nwergm_last_M.coefnames)))
+	// a varlist: ranges (o1-o3) and wildcards (o*) name several variables; a token that is not a varlist stays an
+	// expression (for example o1^2)
+	if !inlist("`term'", "edgecov", "dyadcov") {
+		local __vx ""
+		foreach v of local vars {
+			capture unab __u : `v'
+			if !_rc & "`v'" != "." local __vx "`__vx' `__u'"
+			else local __vx "`__vx' `v'"
+		}
+		local vars "`__vx'"
+	}
 	foreach v of local vars {
 		if inlist("`term'", "edgecov", "dyadcov") {
 			_nwergm_covname
@@ -136,6 +147,7 @@ program _nwergm_cov, rclass
 			if `__ergm_nc' > 0 {
 				mata: __nwergm_last_M.addterm("`__cv_nm'", `__cv_np', &`__cv_sfn'(), &`__cv_cfn'(), `td', tokens("`__cv_names'"))
 			}
+			else di as txt "{p 0 0 2}note: term {bf:`term'(`vn')} has no statistics left (for example a single level, which is the base level) and is dropped, as in R.{p_end}"
 		}
 		local temps "`temps' `td'"
 	}
@@ -157,6 +169,10 @@ end
 capture program drop _nwergm_covattr
 program _nwergm_covattr, rclass
 	syntax anything(name=v), TERM(string) NODES(integer)
+	if _N < `nodes' {
+		di "{p 0 0 2}{err}{bf:`term'(`v')}: the data have `=_N' rows but the network has `nodes' nodes; node attributes need one row per node (see {help nwload}'s {bf:xvars} option).{p_end}"
+		error 198
+	}
 	capture drop __nwergm_tmpattr
 	capture confirm variable `v'
 	if _rc {

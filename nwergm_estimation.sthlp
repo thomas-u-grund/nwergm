@@ -52,7 +52,7 @@ With a curved (free-decay) term, {cmd:init()} is available for {cmd:method(mple)
 {title:Maximum pseudolikelihood}
 
 {phang}
-{opt mpletype(glm|penalized)} ({cmd:MPLE.type=}) {cmd:penalized} is the Firth (Jeffreys-prior) penalised fit, which is finite when the ordinary MPLE does not exist. It cannot be combined with
+{opt mpletype(glm|penalized)} ({cmd:MPLE.type=}) {cmd:penalized} is the Firth (Jeffreys-prior) penalised fit, which is finite when the ordinary MPLE does not exist. On a network whose dyads are all untied (or all tied) the penalised fit is finite only when every model statistic varies over the dyads (for example {opt edges} alone); otherwise {cmd:nwergm} stops with an explanation (error 2000). R's {cmd:ergm} 4.12 fails on such networks. It cannot be combined with
 {opt offset()}.
 
 {phang}
@@ -112,7 +112,7 @@ in {cmd:r(gof_}{it:statistic}{cmd:)}. The summary values ({cmd:r(obs_meandeg)}, 
 {title:estat mcmcdiag}
 
 {pstd}
-After the summary of the final sample, {cmd:estat mcmcdiag} prints the report of {cmd:mcmc.diagnostics()}: mean, standard deviation, naive and time-series standard error and quantiles of the centered
+With the option {opt report}, {cmd:estat mcmcdiag} prints after the summary of the final sample the report of {cmd:mcmc.diagnostics()}: mean, standard deviation, naive and time-series standard error and quantiles of the centered
 statistics, the test that the sample statistics differ from the observed ones (with the Hotelling omnibus test), cross-correlations, autocorrelations at lags of {cmd:interval} proposals, and the
 Geweke
 statistic with individual and joint p-values. The matrices are returned in {cmd:r(mc_summary)}, {cmd:r(mc_quantiles)}, {cmd:r(mc_obstest)}, {cmd:r(mc_crosscorr)}, {cmd:r(mc_autocorr)} and

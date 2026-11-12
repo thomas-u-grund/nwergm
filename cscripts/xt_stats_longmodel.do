@@ -154,35 +154,30 @@ di "PASS long directed model: 40 covariate terms, " colsof(EXPD) " statistics, h
 
 * ---------------------------------------------------------------------------------------------------------------
 * covariate terms are documented with a varlist (help nwergm: nodecov(varlist), nodematch(varlist) ...); a range and a
-* wildcard must give the same model as the variables listed one by one
+* wildcard follow Stata's varlist rules (a range covers the variables between the two in the order of the data) and must
+* give the same model as the same variables listed one by one (E3, fixed)
+global XT_FAILS ""
+foreach vl in "o1-o3" "o*" {
+	unab __vl : `vl'
+	qui nwergm D40, edges nodeocov(`__vl') method(mple)
+	matrix Sexp = e(obs_stats)
+	local cexp : colnames e(b)
+	capture noisily nwergm D40, edges nodeocov(`vl') method(mple)
+	local rcr = _rc
+	local c2 ""
+	if `rcr' == 0 local c2 : colnames e(b)
+	if `rcr' == 0 & "`c2'" == "`cexp'" {
+		matrix S2 = e(obs_stats)
+		assert mreldif(S2, Sexp) < 1e-12
+		di "PASS varlist `vl' in a covariate term"
+	}
+	else {
+		di as err "FAIL nodeocov(`vl'): r(`rcr'), columns `c2' (expected `cexp')"
+		global XT_FAILS "$XT_FAILS E3(`vl')"
+	}
+}
 qui nwergm D40, edges nodeocov(o1 o2 o3) method(mple)
 matrix Sexp = e(obs_stats)
-matrix S2 = Sexp
-local cexp : colnames e(b)
-capture noisily nwergm D40, edges nodeocov(o1-o3) method(mple)
-local rcr = _rc
-// CONFIRMED BUG E3 (notes item 3): o1-o3 is taken as the expression o1 minus o3 (one column nodeocov_o1-o3), silently
-global XT_FAILS ""
-local c2 ""
-if `rcr' == 0 local c2 : colnames e(b)
-if `rcr' == 0 & colsof(e(obs_stats)) == colsof(Sexp) & "`c2'" == "`cexp'" {
-	matrix S2 = e(obs_stats)
-	assert mreldif(S2, Sexp) < 1e-12
-	di "PASS varlist range in a covariate term"
-}
-else {
-	di as err "FAIL nodeocov(o1-o3): r(`rcr'), columns `c2' (expected `cexp'); the help documents a varlist"
-	global XT_FAILS "$XT_FAILS E3-range"
-}
-capture noisily nwergm D40, edges nodeocov(o*) method(mple)
-local rcw = _rc
-local c3 ""
-if `rcw' == 0 local c3 : colnames e(b)
-if `rcw' == 0 & "`c3'" == "`cexp'" di "PASS wildcard o* in a covariate term"
-else {
-	di as err "FAIL nodeocov(o*): r(`rcw'), columns `c3' (expected `cexp')"
-	global XT_FAILS "$XT_FAILS E3-wildcard"
-}
 
 * an expression as attribute (_nwergm_covattr: "neither a variable nor a valid expression"): nodeocov(o1^2)
 qui nwergm D40, edges nodeocov(o1^2) method(mple)
@@ -211,7 +206,10 @@ if `rcl' == 0 {
 	assert mreldif(S, S3) < 1e-12
 	di as txt "PASS 32-character variable names: `cn'"
 }
-else di as txt "SOFT 32-character variable names refused with r(`rcl') (R has no limit)"
+else {
+	di as err "FAIL 32-character variable names refused with r(`rcl')"
+	global XT_FAILS "$XT_FAILS longnames"
+}
 
 * ---------------------------------------------------------------------------------------------------------------
 * a dataset with fewer rows than the network has nodes: the attribute is incomplete. nwergm counts missing values with
@@ -225,7 +223,7 @@ local rcs = _rc
 qui use `full', clear
 assert `rcs' != 0
 assert `rcs' < 3000 | `rcs' > 3999
-if `rcs' != 198 di as txt "SOFT fewer rows than nodes: r(`rcs') (expected 198 from the code)"
+assert `rcs' == 198
 di "PASS dataset with fewer rows than nodes refused"
 
 if "$XT_FAILS" != "" {

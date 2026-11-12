@@ -151,6 +151,9 @@ if _rc == 0 {
 	assert abs(__S[1,2] - 5) < 1e-9
 	di as txt "PASS triangle on a directed network (as R)"
 }
-else di as txt "SOFT triangle on a directed network refused with r(" _rc "); R gives 5 (structural(triangle) works)"
+else {
+	di as err "FAIL triangle on a directed network refused with r(" _rc "); R gives 5"
+	exit 9
+}
 
 di "ALL PASS"

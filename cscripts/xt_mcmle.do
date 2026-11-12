@@ -138,7 +138,7 @@ di "PASS options stored in e()"
 nwergm D12, edges mutual nologlik mcmcinterval(100) seed(4)
 capture noisily predict, matrix(Pn)
 local rcp = _rc
-// CONFIRMED BUG E1: e(predict) is not set after nologlik (_nwergm_fitstats.ado:48-67), Stata's default predict runs
+// E1 (fixed): e(predict) is set after nologlik too; formerly Stata's default predict ran
 global XT_FAILS ""
 if `rcp' != 0 {
 	di as err "FAIL predict after nologlik: r(`rcp'); e(predict) = `e(predict)'"

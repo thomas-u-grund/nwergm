@@ -9,7 +9,7 @@ capture program drop _nwergm_simfit
 program _nwergm_simfit, rclass
 	version 14
 	_nwergm_libcheck
-	syntax [, NSIM(integer 1) SEED(integer -1) OUTput(string) BASIS(string) NOSEQuential ///
+	syntax [, NSIM(integer 1) SEED(string) OUTput(string) BASIS(string) NOSEQuential ///
 		BURNin(integer -1) INTERval(integer -1) GENerate(string) COEF(string) CLEAR]
 	if `"`e(cmd)'"' != "nwergm" {
 		di as err "last nwergm estimates not found"
@@ -24,6 +24,21 @@ program _nwergm_simfit, rclass
 		di as err "option nsim() must be at least 1."
 		exit 198
 	}
+	// the model held in Mata must be the one of these estimates (another nwergm call, or estimates restore of an
+	// earlier fit, replaces or mismatches it)
+	capture mata: st_local("__ftag", __nwergm_last_tag)
+	if _rc | `"`__ftag'"' == "" | `"`__ftag'"' != `"`e(fittag)'"' {
+		di as err "{p 0 0 2}the model of these nwergm estimates is no longer in memory (another nwergm call replaced it, or the estimates were restored); re-fit the model with nwergm first.{p_end}"
+		exit 498
+	}
+	if `"`seed'"' != "" {
+		capture confirm integer number `seed'
+		if _rc | real(`"`seed'"') < 0 | real(`"`seed'"') > 2147483647 {
+			di as error "seed() must be an integer between 0 and 2147483647"
+			exit 198
+		}
+	}
+
 	if "`output'" == "" local output "network"
 	local output = lower("`output'")
 	_opts_oneof "network stats edgelist" "output" "`output'" 198
@@ -32,7 +47,7 @@ program _nwergm_simfit, rclass
 		exit 198
 	}
 	if "`generate'" == "" local generate "sim"
-	if `seed' != -1 set seed `seed'
+	if `"`seed'"' != "" set seed `seed'
 	if `burnin' < 0 {
 		local burnin = 16384
 		if "`e(mcmc_burnin)'" != "" local burnin = e(mcmc_burnin)
@@ -154,16 +169,22 @@ program _nwergm_simfit, rclass
 		di as txt "{p 0 0 2}(`nsim' simulated network(s) created: `generate'" cond(`nsim' > 1, "_1 ... `generate'_`nsim'", "") "){p_end}"
 	}
 	else if "`output'" == "edgelist" {
-		tempname EL
-		matrix `EL' = __simE7_el
-		matrix drop __simE7_el
 		qui drop _all
-		qui svmat double `EL', names(col)
-		capture rename c1 _sim
-		capture rename c2 _tail
-		capture rename c3 _head
-		if _N == 0 {
-			qui set obs 0
+		// every draw empty: there is no tie to list (Mata creates no matrix from a 0 x 3 list)
+		capture confirm matrix __simE7_el
+		if _rc {
+			qui gen double _sim = .
+			qui gen double _tail = .
+			qui gen double _head = .
+		}
+		else {
+			tempname EL
+			matrix `EL' = __simE7_el
+			matrix drop __simE7_el
+			qui svmat double `EL', names(col)
+			capture rename c1 _sim
+			capture rename c2 _tail
+			capture rename c3 _head
 		}
 	}
 	capture mata: mata drop `nets' `A0'

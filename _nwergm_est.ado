@@ -108,6 +108,31 @@ program _nwergm_est_mple, rclass
 	local ok 1
 	mata: __e7_p = cols(`dname') - 1
 	mata: st_local("allsame", strofreal(sum(`dname'[., __e7_p+1]) == 0 | sum(`dname'[., __e7_p+1]) == rows(`dname')))
+	if `allsame' & "`mpletype'" == "penalized" & !`hasoffset' {
+		// all dyads tied or all untied: the plain MPLE does not exist, but the Firth-penalised one can (it is finite
+		// when the design has full column rank); otherwise stop with an explanation
+		mata: __e7_X = `dname'[., 1..__e7_p]
+		mata: st_local("__e7_rk", strofreal(rank(cross(__e7_X, __e7_X)) == __e7_p))
+		mata: mata drop __e7_X
+		if `__e7_rk' {
+			mata: st_local("it", strofreal(ergm_pen_glm(`dname', "`bname'", "`vname'")))
+			capture confirm matrix `bname'
+			if !_rc {
+				mata: st_local("__e7_fin", strofreal(missing(st_matrix("`bname'")) == 0 & missing(st_matrix("`vname'")) == 0))
+				if `__e7_fin' {
+					mata: mata drop __e7_p
+					return scalar special = 1
+					return scalar exists = 0
+					exit
+				}
+			}
+		}
+		mata: mata drop __e7_p
+		di "{p 0 0 2}{err}The penalized pseudolikelihood has no finite maximum here: every dyad of the network is "  ///
+			"tied, or every dyad is untied, and at least one model statistic does not vary over the dyads (or the statistics are collinear). "  ///
+			"Fit a model whose statistics vary over the dyads, or a network with both ties and non-ties.{p_end}"
+		exit 2000
+	}
 	if `allsame' {
 		mata: mata drop __e7_p
 		return scalar special = 0

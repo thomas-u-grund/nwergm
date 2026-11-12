@@ -93,8 +93,8 @@ network: {cmd:degree espartners distance} (undirected), {cmd:idegree odegree esp
 {cmd:b1degree b2degree dspartners distance} (two-mode), each together with the model statistics.
 The chain starts from the last network of the fit ({opt method(mcmle)}) or from the observed network ({opt method(mple)}), with the
 proposal and the sample-space constraints of the fit. {opt gofburnin()} defaults to {cmd:e(mcmc_burnin)} (16,384 after
-{opt method(mple)}); {opt gofinterval()} defaults to {cmd:e(mcmc_interval_final)} (1,024 after {opt method(mple)}) times
-{cmd:e(mcmc_samplesize)} / {opt nsim()}, as in R.{p_end}
+{opt method(mple)}); {opt gofinterval()} defaults to {cmd:e(mcmc_interval_final)} times
+{cmd:e(mcmc_samplesize)} / {opt nsim()} after an MCMC fit and to 1,024 after {opt method(mple)}, as in R.{p_end}
 
 {pstd}
 On a one-mode network {cmd:estat gof} also returns summary values: the mean degree, the average geodesic distance (over the simulated

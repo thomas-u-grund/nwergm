@@ -1582,6 +1582,9 @@ real colvector _ergm_cov_pick(real colvector u, real rowvector idx){
 		for (k=1; k<=cols(neg); k++) {
 			if (-neg[k] <= rows(u)) keep[-neg[k]] = 0
 		}
+		// no level left (for example a single-level attribute with its base level dropped): select() of a 1 x 1
+		// matrix would give a 0 x 0 matrix, not a column vector
+		if (sum(keep) == 0) return(J(0, 1, .))
 		return(select(u, keep))
 	}
 	if (cols(pos) > 0) {
@@ -3030,7 +3033,11 @@ string rowvector _bx_build(class ErgmTermData scalar td, class ErgmGraph scalar 
 			if (cols(TO)==0) TO = J(1, 1, INF)
 			if (cols(TO)==1 & cols(ks)>1) TO = J(1, cols(ks), TO)
 			else if (cols(ks)==1 & cols(TO)>1) ks = J(1, cols(TO), ks)
-			else if (cols(ks)!=cols(TO)) _error(3200, "The arguments of term degrange must have arguments either of the same length, or one of them must have length 1.")
+			else if (cols(ks)!=cols(TO)) {
+				// errprintf() + exit(): _error() fails with r(3300) on texts longer than about 110 characters
+				errprintf("{p 0 0 2}The arguments of term degrange must have arguments either of the same length, or one of them must have length 1.{p_end}\n")
+				exit(3200)
+			}
 			TO = editvalue(TO, ., INF)
 			TO = colmin((TO \ J(1,cols(TO),INF)))
 			if (any(ks :>= TO)) _error(3200, "Term " + pre + "degrange must have from<to.")
@@ -3357,8 +3364,35 @@ real rowvector change_idegrange(class ErgmGraph scalar G, real scalar i, real sc
 	exactly what makes k-star-family fixed-decay terms cheap additions
 	once one of them exists (Stage 6/7 of the roadmap).
 */
+/*
+	ergm_coefnames32(): coefficient names of at most 32 characters (the limit of Stata matrix names); a longer name is
+	cut, and names that become equal get a numbered ending
+*/
+string rowvector ergm_coefnames32(string rowvector cn)
+{
+	string rowvector out
+	real scalar k, j
+	string scalar cand
+
+	out = cn
+	for (k = 1; k <= cols(cn); k++) {
+		if (strlen(cn[k]) <= 32) continue
+		cand = substr(cn[k], 1, 32)
+		j = 1
+		while (sum(out :== cand) > 0) {
+			j++
+			cand = substr(cn[k], 1, 31 - strlen(strofreal(j))) + "_" + strofreal(j)
+		}
+		out[k] = cand
+	}
+	return(out)
+}
+
 real scalar gw_kernel(real scalar d, real scalar decay){
-	return(exp(decay) * (1 - (1-exp(-decay))^d))
+	// exp(decay) * (1 - (1-exp(-decay))^d), evaluated as -exp(decay) * expm1(d * log(1-exp(-decay))): the plain form
+	// loses digits from a decay of about 30 and gives exactly 0 from about 37 on (R uses the stable form)
+	if (decay <= 0 | d <= 0) return(exp(decay) * (1 - (1-exp(-decay))^d))
+	return(-exp(decay) * expm1(d * ergm_log1mexp(decay)))
 }
 
 /*
@@ -5307,7 +5341,9 @@ real scalar ergm_pen_glm(real matrix D, string scalar bname, string scalar Vname
 	y = D[., p+1]
 	x = D[., 1..p]
 	beta = J(p, 1, 0)
-	beta[1] = ln(sum(y) / sum(1 :- y))
+	// all dyads untied (or all tied): start from the Firth-like value ln((s + 1/2) / (n - s + 1/2)), not from -inf/+inf
+	if (sum(y) == 0 | sum(1 :- y) == 0) beta[1] = ln((sum(y) + 0.5) / (sum(1 :- y) + 0.5))
+	else beta[1] = ln(sum(y) / sum(1 :- y))
 	pi = invlogit(x * beta)
 	w = pi :* (1 :- pi)
 	Fisher = cross(x, w, x)
@@ -6184,7 +6220,10 @@ real matrix ergm_spec0_mvar(real matrix Xfull, real scalar infl, real scalar rnk
 				rc = 2
 				return(J(p, p, .))
 			}
-			_error(3498, "Unable to fit ar() even with order 1; this is likely to be due to insufficient sample size or a trend in the data.")
+			{
+				errprintf("{p 0 0 2}Unable to fit ar() even with order 1; this is likely to be due to insufficient sample size or a trend in the data.{p_end}\n")
+				exit(3498)
+			}
 		}
 		ord_ar = ergm_ar_pick(raic, ord, 1)
 		arsum = ARS[(ord_ar*pv2+1)::((ord_ar+1)*pv2), .]
@@ -10654,7 +10693,10 @@ real matrix ErgmMCMCSample(class ErgmModel scalar M, class ErgmGraph scalar G,
 	if (M.native_enabled_sample) {
 		return(ErgmNativeSampleCore(M, G, theta, burnin, interval, samplesize, cur))
 	}
-	if (cols(M.con_par) > 0) _error("constraints and proposals other than the default ones need the native plugin, which is not available for this model or platform (compile it on this computer with: nwinstall, buildplugin(nwergm))")
+	if (cols(M.con_par) > 0) {
+		errprintf("{p 0 0 2}constraints and proposals other than the default ones need the native plugin, which is not available for this model or platform (compile it on this computer with: nwinstall, buildplugin(nwergm)){p_end}\n")
+		exit(3498)
+	}
 
 	// Fixed-density Mata fallback (M.fixed_density, set in nwergm.ado
 	// only for a `fixdensity' model) - reached only when native is
@@ -10803,7 +10845,10 @@ struct ErgmMCMCDiag scalar ErgmMCMCSampleDiag(class ErgmModel scalar M, class Er
 		res.acceptrate = M.native_lastaccept
 		return(res)
 	}
-	if (cols(M.con_par) > 0) _error("constraints and proposals other than the default ones need the native plugin, which is not available for this model or platform (compile it on this computer with: nwinstall, buildplugin(nwergm))")
+	if (cols(M.con_par) > 0) {
+		errprintf("{p 0 0 2}constraints and proposals other than the default ones need the native plugin, which is not available for this model or platform (compile it on this computer with: nwinstall, buildplugin(nwergm)){p_end}\n")
+		exit(3498)
+	}
 
 	// Fixed-density Mata fallback - see ErgmMCMCSample()'s own identical
 	// branch for the full rationale.

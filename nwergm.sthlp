@@ -41,7 +41,7 @@ diagnostic reports are described in {help nwergm_estimation}.{p_end}
 {p2col:{it:{help nwergm##bipartite_effects:bipartite_effects}}}two-mode (bipartite) network terms{p_end}
 {p2col:{it:{help nwergm##gw_effects:gw_effects}}}geometrically weighted shared-partner/degree terms, fixed and curved decay{p_end}
 {p2col:{it:{help nwergm##degree_effects:degree_effects}}}degree-distribution terms{p_end}
-{p2col:{it:{help nwergm##triad_effects:triad_effects}}}undirected triad-closure terms ({opt triangle}, {opt ctriple}){p_end}
+{p2col:{it:{help nwergm##triad_effects:triad_effects}}}triad-closure terms ({opt triangle}, {opt ctriple}){p_end}
 {p2col:{it:{help nwergm##directed_covariate_effects:directed_covariate_effects}}}directed-only covariate factor terms{p_end}
 {p2col:{it:{help nwergm##star_range_effects:star_range_effects}}}k-star and semi-open degree-range terms{p_end}
 {p2col:{it:{help nwergm##sharedpartner_effects:sharedpartner_effects}}}fixed (non-geometric) shared-partner count terms, and the directed shared-partner {opt type()} selector{p_end}
@@ -63,7 +63,8 @@ diagnostic reports are described in {help nwergm_estimation}.{p_end}
 {syntab:Node and dyadic covariate effects}
 {synopt:{opt mutual}}Reciprocated-tie count; directed networks only{p_end}
 {synopt:{opth nodematch(varlist)}}Pooled homophily on each listed categorical node attribute (exact match, one coefficient per variable). All node-attribute terms require {it:numeric} variables;
-{cmd:encode} a string attribute first{p_end}
+{cmd:encode} a string attribute first. The attribute options take a {it:varlist} (ranges such as {cmd:x1-x3} and wildcards such as {cmd:x*}
+follow Stata's varlist rules); a token that is not a varlist is read as an expression (e.g. {cmd:nodecov(x^2)}){p_end}
 {synopt:{opth nodematchdiff(varlist)}}Differential homophily: one coefficient PER DISTINCT LEVEL of each listed attribute, rather than pooled across levels{p_end}
 {synopt:{opth nodecov(varlist)}}Continuous node covariate main effect (sum over tie endpoints){p_end}
 {synopt:{opth nodeicov(varlist)}}Directed receiver-covariate effect; directed networks only{p_end}
@@ -73,7 +74,8 @@ diagnostic reports are described in {help nwergm_estimation}.{p_end}
 {opt nodefactordistinct()}, level selection ({opt levels()}, {opt base()}) and {opt coeflabel()}: see {help nwergm_covterms}{p_end}
 {synopt:{opth absdist(varlist)}}Absolute-difference effect on a continuous node covariate: sum over ties of |x_i - x_j|{p_end}
 {synopt:{opth nodefactor(varlist)}}One coefficient per NON-BASE distinct level of each listed categorical attribute (the lowest-sorted level is omitted, matching R ergm's own default, to avoid exact
-collinearity with edges), each counting total degree among nodes at that level{p_end}
+collinearity with edges), each counting total degree among nodes at that level. An attribute with a single level has no
+level left; as in R, the term is dropped with a note{p_end}
 {synopt:{opth nodemix(varlist)}}Categorical mixing matrix as in R ergm: ordered (tail, head) level cells on a directed network, cells with row level before column level on an undirected one, first
 cell dropped by default; see {help nwergm_covterms}{p_end}
 
@@ -109,6 +111,7 @@ name: {cmd:bgwdegree2_}{it:decay}{p_end}
 
 {marker gw_effects}{...}
 {syntab:Geometrically weighted effects}
+{synopt:}The decay of every geometrically weighted term (fixed decay, or starting value of an estimated one) must be zero or positive; a negative decay is refused (error 198; R gives no number){p_end}
 {synopt:{opt gwesp(real)}}Geometrically weighted edgewise shared partners, fixed decay; undirected (UTP) or directed (shared-partner definition set by {opt type()}, default OTP){p_end}
 {synopt:{opt gwespfree(real)}}Geometrically weighted edgewise shared partners with an ESTIMATED (curved) decay parameter; undirected (UTP), or directed (shared-partner definition set by {opt type()},
 default OTP - all five of OTP/ITP/OSP/ISP/RTP supported). The argument is only a starting value for decay, not a fixed value. Both {bf:method(mple)} and {bf:method(mcmle)} are supported (default
@@ -144,7 +147,7 @@ be combined with {opt gwnsp()} or another curved term{p_end}
 
 {marker triad_effects}{...}
 {syntab:Triad-closure effects}
-{synopt:{opt triangle}}Count of triangles (mutually tied triples); undirected only{p_end}
+{synopt:{opt triangle}}Count of triangles (mutually tied triples); on a directed network, as in R, the number of transitive plus cyclic triples (sets of ties i->j, j->k and either k->i or i->k){p_end}
 {synopt:{opt ctriple}}Count of cyclic triples ((i->j),(j->k),(k->i)); directed networks only{p_end}
 
 {marker directed_covariate_effects}{...}
@@ -227,7 +230,7 @@ fixed at its observed value for the rest of the fit (R ergm's own {cmd:blockdiag
 {opt proposal(tnt)}, and native (C)-accelerated when otherwise eligible{p_end}
 {synopt:{opt seed(int)}}Set the random-number seed before simulating. The same call with the same {opt seed()}, data and plugin gives identical coefficients in any session and whatever was loaded or
 fitted before. A different operating system or plugin build, or different {opt mcmcinterval()}, {opt mcmcsamplesize()} or other controls, gives a different (statistically equivalent) Monte Carlo fit;
-the stream of random numbers is not the one of R, so results match R only up to Monte Carlo error. Without {opt seed()} the current Stata seed is used{p_end}
+the stream of random numbers is not the one of R, so results match R only up to Monte Carlo error. Without {opt seed()} the current Stata seed is used. The seed is an integer from 0 to 2147483647{p_end}
 {synopt:{opt verbose}}Show MPLE/MCMLE iteration detail{p_end}
 {synopt:{opt spcache}}Enable the incremental shared-partner cache for {opt gwesp()}/{opt gwdsp()}/{opt gwnsp()}/{opt esp()}/{opt dsp()}/{opt triangle}/{opt ctriple} on an undirected network; OFF by
 default because direct benchmarking found it a net LOSS below roughly average degree 30-40 (the common case) and a net win only above that - enable only for denser undirected networks; no effect on a
@@ -256,6 +259,20 @@ Every term and option of {cmd:nwergm} can be set there.
 {cmd:db nwergm_estat} the dialog of the postestimation commands {cmd:estat gof}, {cmd:estat mcmcdiag}, {cmd:estat ic} and
 {cmd:nwergm simulate} from a fit. The dialogs are installed with the package and appear in the {cmd:Network Analysis} menu when the
 menu is installed with {cmd:nwinstall}.
+
+
+{title:Replaying results}
+
+{pstd}
+Typed without arguments (or with {opt level(#)} only), {cmd:nwergm} redisplays the results of the last {cmd:nwergm} fit;
+{cmd:estimates replay} works as well. The postestimation commands ({cmd:estat gof}, {cmd:nwergm simulate} from a fit,
+{cmd:predict}) use the model of the last fit, which {cmd:nwergm} keeps in memory; a refused {cmd:nwergm} call and
+{cmd:nwergm simulate} from a given model leave it in place. After {cmd:estimates restore} of an earlier fit they stop
+with an error (r(498)) and ask for a refit.
+
+{pstd}
+Coefficient names longer than 32 characters (the limit of Stata names), for example {cmd:nodecov_} plus a long
+variable name, are cut to 32 characters; names that would then be equal get a numbered ending.
 
 
 {title:Description}
@@ -523,17 +540,19 @@ covariate at all, since their own "attribute" is just each node's own index.{p_e
 command's own {bf:Remarks} section for the five definitions.
 
 {pstd}
-{opt theta()} supplies one coefficient per resulting model term, in the SAME fixed sequence
-{cmd:nwergm}'s own estimation path itself always processes terms in (edges, mutual, then every
-node-covariate family, then the structural/numlist family, then {opt sender}/{opt receiver},
-then the dyadic-covariate family, then the geometrically weighted family - regardless of the
-order the options happen to be typed on the command line, since Stata's own option parsing does
-not preserve that order to begin with). A term that expands into several coefficients (e.g.
-{opt nodefactor()} with several non-base levels, or {opt degree(2 3 4)}) consumes that many consecutive
-entries from {opt theta()}, in the same left-to-right order its own levels/values are listed.
-There is no per-term coefficient sub-option, by design, so this exactly reuses the same
-term-construction code {cmd:nwergm}'s own estimation path uses rather than a parallel
-implementation.
+{opt theta()} supplies one coefficient per model statistic, in the fixed order in which {cmd:nwergm} builds
+the model, not in the order in which the options are typed (Stata's option parsing does not keep that order).
+Broadly: {opt edges}, {opt mutual}, the node-attribute terms ({opt nodematch()}, {opt nodecov()},
+{opt nodefactor()} ...), the degree and triad terms ({opt degree()}, {opt odegree()}, {opt idegree()},
+{opt concurrent}, {opt triangle}, {opt ctriple}), {opt nodeofactor()}/{opt nodeifactor()}, the star terms
+({opt kstar()}, {opt ostar()}, {opt istar()}), the ranges and shared-partner counts ({opt degrange()},
+{opt esp()}, {opt dsp()}), {opt transitiveties}/{opt cyclicalties}, the terms of {opt structural()} (on a
+directed network {opt triangle} is one of them), {opt sender}/{opt receiver}, the dyadic covariates
+({opt edgecov()}, {opt hamming()}) and last the geometrically weighted terms. A term with several
+statistics (e.g. {opt nodefactor()} with several non-base levels, or {opt degree(2 3 4)}) takes that many
+consecutive values, in the order of its levels or values. When {opt theta()} has the wrong number of values,
+{cmd:nwergm simulate} stops with a message that lists the statistics in the expected order; typing the
+command with {cmd:theta(0)} is the quickest way to see that order.
 
 {pstd}
 {bf:The resulting simulated network's own dataset does not carry the caller's covariate variable(s) forward.} Each simulated draw is built via a fresh {cmd:nwset} call that replaces

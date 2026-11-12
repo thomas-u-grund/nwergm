@@ -70,8 +70,7 @@ foreach t in GM GD GE {
 * same seed, same tables; the default statistics include the model
 estat gof, nsim(20) seed(5) gofburnin(2000) gofinterval(64)
 matrix GM2 = r(gof_model)
-// CONFIRMED BUG N6: estat gof moves the stored graph __nwergm_last_G to the last gof draw (ergm_gof_run,
-// unw_ergm.do:5742-5770), so a second estat gof with the same seed starts elsewhere; also nwergm simulate after it
+// N6 (fixed): estat gof puts the stored graph back after its chain, so the same seed gives the same tables
 global XT_FAILS ""
 if mreldif(GM, GM2) != 0 {
 	di as err "FAIL estat gof, seed(5) twice gives different tables (mreldif " mreldif(GM, GM2) ")"
@@ -86,8 +85,8 @@ assert _rc != 0
 * TODO-R: fit <- ergm(nw ~ edges + gwesp(0.5, fixed=TRUE), estimate="MPLE"); trace the MCMC.interval that
 *         gof(fit, control=control.gof.ergm(nsim=20)) passes to simulate() (expected 1024)
 qui estat gof, gof(model) nsim(20) seed(1)
-di as txt "SOFT default gof interval after MPLE with nsim(20): " r(interval) " (R: 1024 expected, see TODO-R)"
-* assert r(interval) == 1024
+di as txt "default gof interval after MPLE with nsim(20): " r(interval) " (R gof.ergm: 1024)"
+assert r(interval) == 1024
 capture noisily estat gof, nsim(1)
 assert _rc == 198
 capture noisily estat gof, gof(idegree) nsim(5)
@@ -134,7 +133,7 @@ matrix T5 = r(stats)
 assert T5[1,1] == 91 & T5[2,1] == 91
 * every draw empty with output(edgelist): no ties to list; the data should be empty, not an error
 * (_nwergm_simfit.ado reads matrix __simE7_el, which a 0 x 3 Mata matrix may not create)
-// CONFIRMED BUG E4: r(111) "__simE7_el not found" (_nwergm_simfit.ado edge-list branch, unw_ergm.do:5955)
+// E4 (fixed): all-empty draws with output(edgelist) give an empty data set
 capture noisily nwergm simulate, nsim(2) output(edgelist) clear coef(CN) seed(1) burnin(2000) interval(100)
 if _rc {
 	di as err "FAIL all-empty draws with output(edgelist): r(`=_rc')"

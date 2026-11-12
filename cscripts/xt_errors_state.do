@@ -103,7 +103,9 @@ end
 
 xt_refuse noedges 198 "nwergm U14, triangle"                                     // nwergm.ado ~95
 xt_refuse mutual_undirected 198 "nwergm U14, edges mutual"                     // ~268
-xt_refuse triangle_directed 198 "nwergm D12, edges triangle"                   // ~548
+* triangle on a directed network is accepted as in R (xt_stats_directed.do checks the statistic)
+xt_refuse gwesp_negative 198 "nwergm U14, edges gwesp(-1)"
+xt_refuse seed_negative 198 "nwergm U14, edges seed(-1)"
 xt_refuse kstar_directed 198 "nwergm D12, edges kstar(2)"                      // ~560
 xt_refuse gwdegree_directed 198 "nwergm D12, edges gwdegree(.5)"               // ~532
 xt_refuse ostar_undirected 198 "nwergm U14, edges ostar(2)"                    // ~564
@@ -115,8 +117,8 @@ xt_refuse missing_attr_dep 416 "nwergm U14, edges triangle nodecov(gm)"
 xt_refuse no_variable 111 "nwergm U14, edges nodecov(nosuchvar)"               // _nwergm_covattr ~166
 xt_refuse method 198 "nwergm U14, edges method(foo)"                           // _nwergm_est.ado _opts_oneof ... 198
 xt_refuse estimate_conflict 198 "nwergm U14, edges estimate(mple) method(cd)"  // _nwergm_est.ado ~22
-xt_refuse proposal 6556 "nwergm U14, edges triangle proposal(foo)"             // nwergm.ado ~135 (_opts_oneof ... 6556)
-xt_refuse type 6556 "nwergm D12, edges gwesp(.5) type(XYZ)"                    // ~143
+xt_refuse proposal 198 "nwergm U14, edges triangle proposal(foo)"             // nwergm.ado ~135 (_opts_oneof ... 6556)
+xt_refuse type 198 "nwergm D12, edges gwesp(.5) type(XYZ)"                    // ~143
 xt_refuse curved_twice 198 "nwergm U14, edges gwesp(.5) gwespfree(.5)"
 xt_refuse offset_odd 198 "nwergm U14, edges triangle offset(triangle)"         // ~1907
 xt_refuse offset_name 198 "nwergm U14, edges triangle offset(nosuch 1)"        // ~1921
@@ -134,9 +136,12 @@ xt_refuse mpletype 198 "nwergm U14, edges mpletype(foo)"
 xt_refuse expstat_log0 198 "nwergm U14, edges kstar(2) method(mple) expstat(kstar_2, log0(-5))"
 xt_refuse edgecov_size 198 "nwergm U14, edges edgecov(U7)"                     // _nwergm_cov.ado ~37
 xt_refuse edgecov_missing 416 "nwergm U14, edges edgecov(M14)"                 // ~58
-* CONFIRMED BUG E5: the r(2000) refusals below clear e() of the previous fit (inner logit)
+* E5 (fixed): the r(2000) refusals below keep e() of the previous fit
 xt_refuse empty_network 2000 "nwergm E5, edges triangle method(mple)"          // nwergm.ado ~2234 (logit: outcome does not vary)
 xt_refuse empty_network_dind 2000 "nwergm E5, edges"
+* penalized MPLE on an empty network: edges alone has a finite Firth estimate; with a statistic that is 0 on every
+* dyad there is none (clean refusal)
+xt_refuse empty_penalized_tri 2000 "nwergm E5, edges triangle mpletype(penalized) method(mple)"
 * a network that does not exist: _nwsyntax stops with "Network ... not found" and error `errNWsNotFound', a local that
 * is not defined in _nwsyntax.ado (core) - the code is whatever "error" with an empty argument gives. Recorded only.
 capture noisily nwergm nosuchnet, edges
@@ -216,7 +221,7 @@ if `rc3' == 0 {
 }
 di as txt "state after simulate N: estat gof rc `rc1' ok `ok1'; simulate rc `rc2' ok `ok2'; predict rc `rc3' ok `ok3'"
 if !(`ok1' & `ok2' & `ok3') {
-	// CONFIRMED BUG E2 (notes item 2)
+	// E2 (fixed)
 	di as err "FAIL nwergm simulate N replaced the fitted model/graph used by estat gof / simulate / predict"
 	global XT_FAILS "$XT_FAILS E2-simulateN"
 }
@@ -229,7 +234,6 @@ gen double g = mod(_n - 1, 2) + 1
 gen double gm = g
 replace gm = . in 3
 qui nwergm U14, edges triangle method(mple)
-* (the E5 refusal (r(2000)) is left out here: it clears e() altogether, CONFIRMED BUG E5 in the block above)
 capture noisily nwergm U7, edges triangle nodematch(gm) method(mple)
 assert _rc == 416
 assert "`e(depvar)'" == "U14"
@@ -251,11 +255,40 @@ if `rc2' == 0 {
 }
 di as txt "state after refused calls: estat gof rc `rc1' ok `ok1'; simulate rc `rc2' ok `ok2'"
 if !(`ok1' & `ok2') {
-	// CONFIRMED BUG E2 (notes item 2)
+	// E2 (fixed)
 	di as err "FAIL a refused nwergm call replaced the fitted model/graph used by estat gof / simulate"
 	global XT_FAILS "$XT_FAILS E2-refused"
 }
 else di "PASS postestimation unaffected by refused calls"
+
+* replay (N1): nwergm alone, nwergm, level(90), estimates replay; postestimation after estimates restore of an earlier
+* fit refuses cleanly (the model held in Mata belongs to the later fit)
+qui nwergm U14, edges triangle method(mple)
+matrix BR = e(b)
+estimates store xtA
+nwergm
+nwergm, level(90)
+estimates replay xtA
+assert mreldif(e(b), BR) == 0
+qui nwergm U14, edges kstar(2) method(mple)
+estimates restore xtA
+capture noisily estat gof, gof(model) nsim(5) seed(1)
+if _rc != 498 {
+	di as err "FAIL estat gof after estimates restore of an earlier fit: r(`=_rc'), expected r(498)"
+	global XT_FAILS "$XT_FAILS restore-mismatch"
+}
+estimates drop xtA
+ereturn clear
+capture nwergm
+if _rc != 301 {
+	di as err "FAIL nwergm alone without estimates: r(`=_rc'), expected r(301)"
+	global XT_FAILS "$XT_FAILS replay301"
+}
+* penalized MPLE on the empty network with edges alone: finite Firth estimate, logit(1/2 / (n + 1/2)) for n = 10 dyads
+* is the closed form of Firth's estimate for an intercept-only model with no events: p = 0.5/(n+1)
+nwergm E5, edges mpletype(penalized) method(mple)
+assert abs(_b[edges] - logit(0.5 / 11)) < 1e-6
+di "PASS replay, restore mismatch, penalized MPLE on an empty network"
 
 if "$XT_FAILS" != "" {
 	di as err "failures:$XT_FAILS"

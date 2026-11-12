@@ -267,3 +267,37 @@ The user-side rebuild of lnwergm.mlib lives in the core (`nwinstall_buildmata.ad
 ## Node i of an ErgmGraph is node i of the network object, whose names need not be n1, n2, ... (2026-11-06)
 
 `ergm_bridge_obs()` and `ergm_bridge_from_netobj()` copy a network into an `ErgmGraph` by its internal node index. A network made from an edge list or loaded from a `.nwdta` file can store its nodes in another order than n1, n2, ... (lazega: n1, n10, n11, ..., n19, n2, ...). Any network written back with `nwset, mat()` must therefore get the names with `labs()` from `netobj->get_nodenames()`; without them it is named n1, n2, ... by position and node-level results are attached to the wrong nodes (`nwergm simulate` up to 1.3.6). `nwset, labsfromvar()` does not help: with `mat()` it falls back to the default names. Test node-level results with lazega, never only with networks whose names are already in natural order. `cscripts/test_nwergm_simnames.do`.
+
+## The model of the last fit lives in fixed-name Mata objects (2026-11-12)
+
+`estat gof`, `nwergm simulate` (from a fit) and `predict` read `__nwergm_last_M` / `__nwergm_last_G`, which every
+`nwergm` call rebuilds. `nwergm` therefore runs a fit as `_nwergm_fit` inside `capture noisily` after saving those
+objects (`_nwergm_hold save`, copies via `ergm_ops_copyM/G()`), restores them when the fit is refused or after
+`nwergm simulate` from a given model, and drops the copy after a successful fit. Every successful fit stores a tag
+in `e(fittag)` and in the Mata string `__nwergm_last_tag`; the postestimation commands refuse (r(498)) when they
+differ (for example after `estimates restore` of an earlier fit). Operator sub-models (`submodel()`) bypass the hold;
+`_nwergm_ops` keeps its own copies.
+The `capture` calls inside the hold leave `_rc` non-zero, and many tests do `qui nwergm ...` then
+`assert _rc == 0`: `_nwergm_hold` therefore ends with `capture confirm number 0` (body in `_nwergm_hold_body`,
+because the body exits early).
+
+## `estat gof` must put the fit's network back
+
+`ergm_gof_run()` runs the chain on `__nwergm_last_G` itself; `_nwergm_gof.ado` saves its tie list before and
+restores it with `ergm_graph_set_ties()` afterwards (as `_nwergm_simfit` does). Without that, a second `estat gof`
+with the same seed started from the last gof draw and gave other tables.
+
+## Geometrically weighted kernel: use the stable form
+
+`exp(d)*(1-(1-exp(-d))^k)` cancels from a decay of about 30 and is exactly 0 from about 37. `gw_kernel()` (Mata) and
+`gw_kernel_raw()` (plugin) compute `-exp(d)*expm1(k*log1mexp(d))`. Change both together.
+
+## Mata `_error("long text")` loses the message (r(3300))
+
+`_error()` fails itself with r(3300) when the text is longer than about 110 characters. Use `errprintf()` and
+`exit(rc)`.
+
+## Mata `select()` of a 1 x 1 matrix with a zero selector gives 0 x 0
+
+`select(u, keep)` with `u` 1 x 1 and `keep` 0 returns a 0 x 0 matrix, not a 0 x 1 column vector; functions declared
+to return a colvector then fail with r(3203). `_ergm_cov_pick()` returns `J(0, 1, .)` when no level is left.

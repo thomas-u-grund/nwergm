@@ -643,8 +643,12 @@ static void spc_free(graph_t *g) {
 	g->spc_n = 0; g->spc_cap = 0; g->spc_on = 0;
 }
 
+static double ergm_log1mexp_c(double a);
 static double gw_kernel_raw(double d, double decay) {
-	return exp(decay) * (1.0 - pow(1.0 - exp(-decay), d));
+	/* exp(decay) * (1 - (1-exp(-decay))^d) in the stable form -exp(decay) * expm1(d * log(1-exp(-decay))), as gw_kernel()
+	   in unw_ergm.do: the plain form loses digits from a decay of about 30 and is exactly 0 from about 37 on */
+	if (decay <= 0.0 || d <= 0.0) return exp(decay) * (1.0 - pow(1.0 - exp(-decay), d));
+	return -exp(decay) * expm1(d * ergm_log1mexp_c(decay));
 }
 
 /* gw_kernel() is evaluated for integer shared-partner counts only; the values are tabulated once per decay with the very same

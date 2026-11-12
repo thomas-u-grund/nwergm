@@ -20,6 +20,13 @@ program nwergm_p
 		di as err "options pr and xb are mutually exclusive"
 		exit 198
 	}
+	// the model held in Mata must be the one of these estimates (another nwergm call, or estimates restore of an
+	// earlier fit, replaces or mismatches it)
+	capture mata: st_local("__ftag", __nwergm_last_tag)
+	if _rc | `"`__ftag'"' == "" | `"`__ftag'"' != `"`e(fittag)'"' {
+		di as err "{p 0 0 2}the model of these nwergm estimates is no longer in memory (another nwergm call replaced it, or the estimates were restored); re-fit the model with nwergm first.{p_end}"
+		exit 498
+	}
 	local depvar "`e(depvar)'"
 	local directed "`e(directed)'"
 	local nodes = e(nodes)

@@ -65,3 +65,14 @@ Counts: CONFIRMED 11 (N5, E3, N6, E2, E5, N4, E1, E4, long names, mcmcdiag doc, 
 | xt_mcmle.do | r(9): E1 |
 | xt_postest_shapes.do | r(9): N6, E4; SOFT gof interval 52 vs R 1024 |
 | xt_errors_state.do | r(9): E5 (two r(2000) refusals clear e()), E2 (simulate N, refused call) |
+
+## Fixes (2026-11-12, Unreleased)
+
+Fixed: N5 (stable gw kernel, Mata and plugin), E3 (varlist ranges/wildcards; fewer rows r(198)), N6 (gof restores the
+fit's network), E2 (model of the last fit saved and restored around refused fits and simulate N; tag check after
+estimates restore), E5 (e() held around logit), N4 (term dropped with a note), E1, E4, long names (cut to 32,
+numbered), mcmcdiag doc, seed(-1) (0..2147483647), replay (N1). Owner policy decisions: gof interval after MPLE 1024;
+directed triangle accepted (= structural(triangle), R's ttriple + ctriple; xt_stats_directed checks 5); negative decay
+r(198); proposal()/type()/method() r(198). Unclear items: theta() order help rewritten from runtime checks (the order
+is the build order; the wrong-length message lists it); penalized MPLE on an empty network gives the finite Firth
+estimate when it exists (edges alone: logit(0.5/(n+1))), else a clear r(2000).

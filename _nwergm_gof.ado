@@ -7,7 +7,7 @@
 * or FITNESS FOR A PARTICULAR PURPOSE. See the file LICENSE for the full text.
 capture program drop _nwergm_gof
 program _nwergm_gof, rclass
-	syntax [, NSIM(integer 100) SEED(integer -1) GOFBURNIN(integer -1) GOFINTERVAL(integer -1) ///
+	syntax [, NSIM(integer 100) SEED(string) GOFBURNIN(integer -1) GOFINTERVAL(integer -1) ///
 		PLOT MAXDEG(integer 15) MAXDIST(integer 6) NAME(string) GOF(string) ]
 	if `"`e(cmd)'"' != "nwergm" {
 		di as err "last nwergm estimates not found"
@@ -22,20 +22,36 @@ program _nwergm_gof, rclass
 		di as err "option nsim() must be at least 2."
 		exit 198
 	}
+	// the model held in Mata must be the one of these estimates (another nwergm call, or estimates restore of an
+	// earlier fit, replaces or mismatches it)
+	capture mata: st_local("__ftag", __nwergm_last_tag)
+	if _rc | `"`__ftag'"' == "" | `"`__ftag'"' != `"`e(fittag)'"' {
+		di as err "{p 0 0 2}the model of these nwergm estimates is no longer in memory (another nwergm call replaced it, or the estimates were restored); re-fit the model with nwergm first.{p_end}"
+		exit 498
+	}
+	if `"`seed'"' != "" {
+		capture confirm integer number `seed'
+		if _rc | real(`"`seed'"') < 0 | real(`"`seed'"') > 2147483647 {
+			di as error "seed() must be an integer between 0 and 2147483647"
+			exit 198
+		}
+	}
+
 	if `gofburnin' < 0 {
 		local gofburnin = 16384
 		if "`e(mcmc_burnin)'" != "" local gofburnin = e(mcmc_burnin)
 	}
 	if `gofinterval' < 0 {
 		// R: the fit's interval, rescaled by (estimation sample size / gof sample size)
+		// after MPLE there is no MCMC sample: R's gof.ergm() uses its default interval of 1024
 		local gofinterval = 1024
 		if "`e(mcmc_interval_final)'" != "" local gofinterval = e(mcmc_interval_final)
 		else if "`e(mcmc_interval)'" != "" local gofinterval = e(mcmc_interval)
-		local __ss = 1
-		if "`e(mcmc_samplesize)'" != "" local __ss = e(mcmc_samplesize)
-		local gofinterval = max(ceil(`gofinterval' * `__ss' / `nsim'), 1)
+		if "`e(mcmc_samplesize)'" != "" & "`e(method)'" != "mple" {
+			local gofinterval = max(ceil(`gofinterval' * e(mcmc_samplesize) / `nsim'), 1)
+		}
 	}
-	if `seed' != -1 set seed `seed'
+	if `"`seed'"' != "" set seed `seed'
 
 	local depvar `"`e(depvar)'"'
 	local edirected `"`e(directed)'"'
@@ -172,7 +188,13 @@ program _nwergm_gof, rclass
 	tempname bmat
 	_nwergm_getb `bmat'
 	mata: __gof_groups = tokens("`simgroups'")
+	// the chain changes the network the fit leaves behind (and the order of its ties steers the TNT proposal): put it
+	// back exactly afterwards, so that a later estat gof or nwergm simulate starts where the fit ended
+	tempname Afit
+	mata: `Afit' = __nwergm_last_G.all_ties()
 	mata: ergm_gof_run(__nwergm_last_M, __nwergm_last_G, `obsmat', `obsstat', st_matrix("`bmat'"), `nsim', `gofburnin', `gofinterval', `propfn', `dir', `n1', __gof_groups, "__gofE7")
+	mata: ergm_graph_set_ties(__nwergm_last_G, `Afit')
+	mata: mata drop `Afit'
 	mata: mata drop __gof_groups `obsmat' `obsstat'
 
 	// ---- print in R's order

@@ -35,7 +35,7 @@ foreach t in OTP otp ITP itp OSP osp ISP isp {
 * --- invalid type() is rejected (same _opts_oneof convention as
 * proposal()/method()) ---
 capture qui nwergm mydirnet, edges gwesp(0.5) type(bogus)
-assert _rc == 6556
+assert _rc == 198
 
 * --- type() on an undirected network is accepted (no error) - R
 * ergm's own documented override, silently using UTP regardless -
