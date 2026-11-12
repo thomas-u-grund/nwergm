@@ -3,7 +3,7 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.5.12] - 2026-11-12
 
 ### Fixed
 - `nwergm ..., expstat()` with the suboption `log0()` stops with an error; `log0()` belongs to `logstat()` only (as in R, where `Exp()` has no `log0` argument). Before, `log0()` was silently ignored.
