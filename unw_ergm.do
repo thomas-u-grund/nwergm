@@ -7520,6 +7520,8 @@ string scalar ErgmNativePluginFilename(){
 	string scalar os
 
 	os = st_global("c(os)")
+	// console Stata on macOS reports c(os) = "Unix"; c(machine_type) still starts with "Mac"
+	if (os == "Unix" & substr(st_global("c(machine_type)"), 1, 3) == "Mac") os = "MacOSX"
 	if (os == "Windows") return("ergm_mcmc_windows.plugin")
 	if (os == "Unix") return("ergm_mcmc_unix.plugin")
 	return("ergm_mcmc_macos.plugin")
@@ -7529,6 +7531,8 @@ string scalar ErgmNativePluginSubdir(){
 	string scalar os
 
 	os = st_global("c(os)")
+	// console Stata on macOS reports c(os) = "Unix"; c(machine_type) still starts with "Mac"
+	if (os == "Unix" & substr(st_global("c(machine_type)"), 1, 3) == "Mac") os = "MacOSX"
 	if (os == "Windows") return("windows")
 	if (os == "Unix") return("unix")
 	return("macos")

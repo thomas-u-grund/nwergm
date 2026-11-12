@@ -11,7 +11,7 @@
 capture program drop _nwergm_slowwarn
 program _nwergm_slowwarn
 	args what nonative
-	local os = cond(c(os) == "Windows", "windows", cond(c(os) == "MacOSX", "macos", "unix"))
+	local os = cond(c(os) == "Windows", "windows", cond(c(os) == "MacOSX" | substr(c(machine_type), 1, 3) == "Mac", "macos", "unix"))
 	if "`nonative'" == "fit" local why "the fit ran without it"
 	else if "`nonative'" != "" local why "option nonative"
 	else {
