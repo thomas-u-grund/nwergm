@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.7.0  13nov2026 author: Thomas Grund}{...}
+{* *! version 1.7.1  13nov2026 author: Thomas Grund}{...}
 {vieweralsosee "nwergm" "help nwergm"}{...}
 {vieweralsosee "nwergm postestimation" "help nwergm_estat"}{...}
 {title:Title}
@@ -129,4 +129,4 @@ Konis, K. 2007. {it:Linear Programming Algorithms for Detecting Separated Data i
 Snijders, T. A. B. 2002. Markov chain Monte Carlo estimation of exponential random graph models. {it:Journal of Social Structure} 3(2).{p_end}
 
 {hline}
-{pstd}{it:nwergm version 1.7.0, 13 November 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.7.1, 13 November 2026}{p_end}{* nwversion}
