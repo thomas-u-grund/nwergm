@@ -19,6 +19,7 @@ f _nwergm_getb.ado
 f _nwergm_gof.ado
 f _nwergm_gofplot.ado
 f _nwergm_hints.ado
+f _nwergm_dupopt.ado
 f _nwergm_mcdiag.ado
 f _nwergm_miss.ado
 f _nwergm_slowwarn.ado

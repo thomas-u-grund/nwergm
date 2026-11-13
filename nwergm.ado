@@ -9,6 +9,8 @@
 capture program drop nwergm
 program nwergm, eclass
 	version 14
+	* an option given twice (edgecov(a) edgecov(b)) gets a clear error instead of "option edgecov() not allowed"
+	_nwergm_dupopt `0'
 	gettoken __ergm_t1 : 0, parse(" ,")
 	if word(`"`0'"', 1) == "version" {
 		nwergm_version

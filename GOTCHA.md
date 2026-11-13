@@ -318,3 +318,7 @@ reads them from the scalars `__ergm_native_curved_fix<k>` and confirms with `__e
 `edges + offset(gwesp(0.5, fixed=TRUE))` on flomarriage: R 4.12.0 reports -54.27 after MCMLE, nwergm -55.12 (MC s.e. 0.07); the MPLE
 pseudolikelihoods agree. nwergm's value is the plausible one (the unconstrained fit has -54.00 and the offset lies 1.7 s.e. from its
 estimate), so R's bridge from the dyad-independent submodel seems to mishandle the offset. Not changed; check before "fixing".
+
+## Stata's `syntax` reports a repeated option as "option X() not allowed"
+
+`nwergm net, edges edgecov(a) edgecov(b)` stopped with "option edgecov() not allowed", which reads as if the term did not exist (a reader of the book was told to add "a second edgecov()"). `syntax` rejects any option given twice with that message. Since 1.5.11 `nwergm` first calls `_nwergm_dupopt`, which scans the top-level options (not names inside `structural()` or other parentheses) and stops with r(198) and "Give it once and list the networks in it: edgecov(a b)". Several networks or variables always go into one option.

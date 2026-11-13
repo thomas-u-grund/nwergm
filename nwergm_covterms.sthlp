@@ -55,7 +55,8 @@ networks; dyad-dependent{p_end}
 count.
 {opt nodes(numlist)} selects node positions, default {cmd:nodes(-1)} (first node dropped){p_end}
 {synopt:{opt attrcov(vars, mat(matname))}}edge covariate x(i,j) = mat(level of i, level of j) with a Stata matrix with one row and column per distinct level{p_end}
-{synopt:{opt edgecov(netname|matname)}}edge covariate from a network or an n x n Stata matrix (undirected: upper triangle){p_end}
+{synopt:{opt edgecov(netnames|matnames)}}edge covariate from a network or an n x n Stata matrix (undirected: upper triangle); one coefficient each.
+Several networks or matrices go into one option, {cmd:edgecov(lazega_fr lazega_cow)}; {opt edgecov()} given twice is an error{p_end}
 {synopt:{opt dyadcov(netname|matname)}}directed networks: three coefficients (mutual, utri, ltri); undirected: same as {opt edgecov()}.
 An asymmetric directed covariate uses its upper triangle, as in R{p_end}
 {synoptline}

@@ -69,7 +69,9 @@ follow Stata's varlist rules); a token that is not a varlist is read as an expre
 {synopt:{opth nodecov(varlist)}}Continuous node covariate main effect (sum over tie endpoints){p_end}
 {synopt:{opth nodeicov(varlist)}}Directed receiver-covariate effect; directed networks only{p_end}
 {synopt:{opth nodeocov(varlist)}}Directed sender-covariate effect; directed networks only{p_end}
-{synopt:{opth edgecov(netname)}}Dyadic covariate effect, taken from an already-loaded network's own tie values{p_end}
+{synopt:{opt edgecov(netnames)}}Dyadic covariate effect, taken from an already-loaded network's own tie values; one coefficient per network. Several
+networks go into ONE {opt edgecov()}, for example {cmd:edgecov(lazega_fr lazega_cow)}; giving the option twice ({cmd:edgecov(lazega_fr) edgecov(lazega_cow)})
+is an error. The same holds for every option: list all variables or networks of a term in one option{p_end}
 {synopt:{it:more covariate terms}}{opt absdiffcat()}, {opt diff()}, {opt smalldiff()}, {opt sociality()}, {opt attrcov()}, {opt dyadcov()}, {opt mm()}, {opt nodecovrange()},
 {opt nodefactordistinct()}, level selection ({opt levels()}, {opt base()}) and {opt coeflabel()}: see {help nwergm_covterms}{p_end}
 {synopt:{opth absdist(varlist)}}Absolute-difference effect on a continuous node covariate: sum over ties of |x_i - x_j|{p_end}
@@ -546,7 +548,7 @@ is loaded alongside the network being fit. The active dataset must already have 
 observations with the named variable populated before calling {cmd:simulate} (e.g.
 {cmd:set obs 20} + {cmd:gen mygroup = ...}); {opt sender}/{opt receiver} need no real
 covariate at all, since their own "attribute" is just each node's own index.{p_end}
-{p2col:{it:dyadic covariate}}{opt edgecov(netname)}, {opt hamming(netname)} - read from
+{p2col:{it:dyadic covariate}}{opt edgecov(netnames)}, {opt hamming(netnames)} (several networks in one option) - read from
 {it:netname}, an already-{help nwset:set}/loaded reference network of the same size as
 {it:nodes}, exactly as estimation reads a dyadic covariate from a second network object.{p_end}
 
