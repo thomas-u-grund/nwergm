@@ -19,6 +19,7 @@
    Minimum value:  0
    Maximum value:  1
    Density:  .167
+   Mean degree:  2.50
    Temporal: false
 
 . summarize wealth

@@ -25,5 +25,4 @@ Maximum pseudolikelihood estimate; this is the maximum likelihood estimate only 
 
 Log-likelihood:   -51.5184 (df = 4)   AIC:     111.0   BIC:     122.2
 (For a dyad-dependent model fitted by MPLE, this is the pseudolikelihood.)
-(decay is an estimated curved parameter here - see help nwergm, gw_effects for how this differs from R ergm's own BFGS-ba
-> sed fit)
+(The decay of the curved term is estimated; see help nwergm, gw_effects.)

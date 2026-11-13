@@ -20,8 +20,8 @@ The convergence test of MCMLE was satisfied after 6 iterations. This is necessar
 sufficient for convergence; option plot draws the trace plots.
 If the ESS is low, raise mcmleeffectivesize(); after mcmleeffectivesize(0), raise
 mcmcsamplesize() or mcmcinterval().
-(plot saved as mcmcdiag; each row is one model statistic's MCMC trace and density from the final
->  simulation)
+(plot saved as mcmcdiag; each row is one model statistic's MCMC trace and density from the
+final simulation)
 
 . graph display mcmcdiag, xsize(6.5) ysize(7.5)
 

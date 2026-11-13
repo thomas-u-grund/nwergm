@@ -30,6 +30,8 @@ The messages that the examples of this manual produced, and the usual remedy.
 Message (return code) & Meaning and remedy\\
 \midrule\endhead
 \texttt{option edges is required} (198) & Every model has the term \opt{edges}; \opt{structural(density)} or \opt{structural(meandeg)} can stand in for it.\\
+\texttt{option gwesp(): the decay must be zero or positive} (198) & A geometrically weighted term was given a negative decay, for which the weights are not defined (Section~\ref{sec:curved}).\\
+\texttt{note: term nodefactor(x) has no statistics left \ldots{} and is dropped, as in R.} & The attribute has a single level, which is the base level; the term contributes nothing and is left out of the model.\\
 \texttt{option base() not allowed} (198) & A suboption was typed outside the parentheses of its term. Write \opt{nodefactor(x, base(0))}, not \opt{nodefactor(x) base(0)}.\\
 \texttt{In term nodecov: attribute wealth has missing data, which is not currently supported.} (416) & A node attribute that a term uses has a missing value, as in \ergm{}. Drop or impute it (Section~\ref{sec:missing}).\\
 \texttt{Unconstrained MCMC sampling did not mix at all. Optimization cannot continue.} (498) & The statistics of the sample do not vary: the model is degenerate or the starting values are far from any fit. Simplify the model, replace a count term by its geometrically weighted version, or give starting values with \opt{init()} (Section~\ref{sec:kapferer}).\\
@@ -38,6 +40,7 @@ Message (return code) & Meaning and remedy\\
 \texttt{Note: method(mple) requested for a dyad-dependent model} & The pseudolikelihood is not the likelihood and its standard errors are not valid (Section~\ref{sec:mple}).\\
 \texttt{The MPLE does not exist!} (warning) & The data are separated for this model. Use \opt{mpletype(penalized)} or drop the term (Section~\ref{sec:mple}).\\
 \texttt{Note: network \ldots{} has 3 missing dyad(s)} & Missing dyads are excluded from the likelihood and handled as in \ergm{} (Section~\ref{sec:missing}).\\
+\texttt{the model of these nwergm estimates is no longer in memory \ldots} (498) & \texttt{estat gof}, \texttt{nwergm simulate} or \texttt{predict} after \texttt{estimates restore} of an earlier fit. Refit the model (Section~\ref{sec:replay}).\\
 \texttt{estat mcmcdiag is only available after method(mcmle)} (498) & There is no Markov chain after a pseudolikelihood fit; also not available after \opt{nomcmcsample}.\\
 \texttt{\ldots{} need the native plugin} (198) & The option exists only in the plugin, and no plugin is available for the model or the platform, or \opt{nonative} was given (Section~\ref{sec:platforms}).\\
 \texttt{The installed core nwcommands and nwergm were built for different versions} (3021 or 3260) & The Mata libraries of the core and of \nwergm{} do not match. Reinstall the models with \texttt{nwinstall, models} or all packages with \texttt{nwinstall, everything} (Section~\ref{sec:platforms}).\\

@@ -30,7 +30,8 @@ macros:
              e(method) : "mple"
              e(depvar) : "flomarriage"
               e(title) : "Exponential-family random graph model (MPLE)"
-            e(version) : "1.5.7"
+            e(version) : "1.6.0"
+             e(fittag) : "13 Nov 2026 09:55:38 13"
                 e(cmd) : "nwergm"
          e(properties) : "b V"
 

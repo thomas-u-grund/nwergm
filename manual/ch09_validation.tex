@@ -4,7 +4,7 @@
 
 \section{How the comparison was done}\label{sec:howvalidated}
 
-The reference is \ergm{}~\ergmver{} (R~4.6). The comparisons are of four kinds, from the strictest to the loosest. The first three are scripted and rerun by the test suite of the package, 66 do-files in the directory \texttt{cscripts}; the generators of the R reference values are in the directory \texttt{dev}.
+The reference is \ergm{}~\ergmver{} (R~4.6). The comparisons are of four kinds, from the strictest to the loosest. The first three are scripted and rerun by the test suite of the package, 69 do-files in the directory \texttt{cscripts}; the generators of the R reference values are in the directory \texttt{dev}.
 
 \begin{enumerate}[nosep]
   \item \textbf{Observed statistics.} For every term, the observed statistic of test networks is computed by \nwergm{} and by \texttt{summary()} of \ergm{}. The test networks are random undirected, directed and two-mode networks with 14 to 100 nodes and the real networks of the statnet examples (the Florentine marriages, Sampson's monastery, the Kapferer tailor shop, Mesa High School). The statistics agree exactly, or to the floating-point precision of the statistic (at most $2\times10^{-7}$, for the term that \ergm{} computes in single precision).

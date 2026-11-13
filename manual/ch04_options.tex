@@ -6,13 +6,14 @@ This chapter lists every option of \texttt{nwergm} and of its subcommands. The t
 
 \begin{lstlisting}
 nwergm [netname], edges [terms] [estimation options]
+nwergm [, level(#)]                                                 (replays the last fit)
 nwergm simulate [nodes], edges [terms] theta(numlist) [simulation options]
 nwergm simulate, [nsim(#) output(network|stats|edgelist) ...]     (from the last fit)
 estat gof | estat mcmcdiag | estat ic
 predict, [pr|xb] matrix(name) | frame(name)
 nwergm version
 \end{lstlisting}
-\emph{netname} is the network to fit; the default is the current network. The option \opt{edges} is required (see Chapter~\ref{ch:start}). All other options are optional and can be given in any order. Options that take a \emph{varlist} take numeric node variables; options that take a \emph{numlist} accept ranges as in Stata, \opt{degree(0/3)} for R's \texttt{d=0:3}. In the tables, \emph{netname} is a network in memory and \emph{matname} a Stata matrix.
+\emph{netname} is the network to fit; the default is the current network. The option \opt{edges} is required (see Chapter~\ref{ch:start}). All other options are optional and can be given in any order. Options that take a \emph{varlist} take numeric node variables (ranges such as \texttt{x1-x3} and wildcards such as \texttt{x*} are expanded as in Stata; a token that is not a varlist is read as an expression, Section~\ref{sec:data}); options that take a \emph{numlist} accept ranges as in Stata, \opt{degree(0/3)} for R's \texttt{d=0:3}. In the tables, \emph{netname} is a network in memory and \emph{matname} a Stata matrix.
 
 \section{Terms}
 
@@ -28,9 +29,9 @@ Option & Description\\
 \opt{mutual} & Number of reciprocated pairs. Directed networks.\\
 \opt{nodematch(varlist)} & Homophily: ties between nodes with equal values; one coefficient per variable. Suboptions \opt{diff}, \opt{keep()}, \opt{levels()}, \opt{levelvalues()}.\\
 \opt{nodematchdiff(varlist)} & Differential homophily: one coefficient per level (R's \texttt{diff=TRUE}).\\
-\opt{nodecov(varlist)} & Main effect of a numeric covariate (sum over the ties of the values of both endpoints). Stata expressions are allowed.\\
+\opt{nodecov(varlist)} & Main effect of a numeric covariate (sum over the ties of the values of both endpoints). Stata expressions are allowed, for example \opt{nodecov(wealth\textasciicircum2)}.\\
 \opt{nodeicov(varlist)}, \opt{nodeocov(varlist)} & Receiver and sender covariate effects. Directed networks.\\
-\opt{nodefactor(varlist)} & One coefficient per level but the first: number of tie endpoints at the level. Suboptions \opt{levels()}, \opt{levelvalues()}, \opt{base()}.\\
+\opt{nodefactor(varlist)} & One coefficient per level but the first: number of tie endpoints at the level. Suboptions \opt{levels()}, \opt{levelvalues()}, \opt{base()}. An attribute with a single level leaves no statistic; the term is dropped with a note, as in R (the same holds for the other factor terms).\\
 \opt{nodeofactor(varlist)}, \opt{nodeifactor(varlist)} & The same for out-ties and in-ties. Directed networks.\\
 \opt{nodemix(varlist)} & Mixing matrix: ties between each pair of levels (ordered pairs in directed networks, the first cell omitted). Suboptions \opt{levels()}, \opt{levelvalues()}, \opt{levels2()}, \opt{base()}.\\
 \opt{mm(var)} & Mixing matrix of one attribute (the cells of \opt{nodemix()}). Suboptions \opt{levels()}, \opt{levels2()}.\\
@@ -67,7 +68,7 @@ Option & Description\\
 \bottomrule
 \end{longtable}
 \normalsize
-Only one curved term can be in a model, and it cannot be combined with the fixed-decay or count terms of its own family (\opt{gwespfree()} with \opt{gwesp()} or \opt{esp()}, \opt{gwdegreefree()} with \opt{gwdegree()} or \opt{degree()}, and so on); see Section~\ref{sec:curved}.
+The decay (fixed, or the starting value of an estimated one) must be zero or positive; a negative decay is refused (return code 198), as R gives no number for it. Only one curved term can be in a model, and it cannot be combined with the fixed-decay or count terms of its own family (\opt{gwespfree()} with \opt{gwesp()} or \opt{esp()}, \opt{gwdegreefree()} with \opt{gwdegree()} or \opt{degree()}, and so on); see Section~\ref{sec:curved}.
 
 \subsection{Degree, star, triad and shared-partner terms}
 \footnotesize
@@ -84,7 +85,7 @@ Option & Description\\
 \opt{odegrange()} \opt{odegrangeto()}, \opt{idegrange()} \opt{idegrangeto()} & The same for out- and in-degree. Directed.\\
 \opt{esp(numlist)} & One coefficient per $d$: tied dyads with exactly $d$ shared partners.\\
 \opt{dsp(numlist)} & One coefficient per $d$: all dyads with exactly $d$ shared partners. An exhaustive list of $d$ is collinear.\\
-\opt{triangle} & Number of triangles. Undirected.\\
+\opt{triangle} & Number of triangles. On a directed network, as in R, the number of transitive plus cyclic triples (the statistic of \opt{structural(triangle)}).\\
 \opt{ctriple} & Number of cyclic triples. Directed.\\
 \opt{transitiveties}, \opt{cyclicalties} & Tied arcs $i\to j$ for which a two-path $i\to k\to j$ (resp.\ $j\to k\to i$) exists. Directed.\\
 \bottomrule
@@ -131,7 +132,7 @@ Option & Description\\
 \opt{coeflabel(old new \ldots)} & Renames coefficients (R's \texttt{Label()}).\\
 \opt{logstat(names)}, \opt{expstat(names)} & Replaces the statistic of each named coefficient by its natural logarithm (suboption \opt{log0(\#)} for the value of $\log 0$, default $-1/\sqrt{\epsilon}$) or by its exponential (R's \texttt{Log()}, \texttt{Exp()} applied to one term of the model). Cannot be combined with \opt{fixdensity} or a curved term.\\
 \opt{submodel()} & Internal option used by \opt{operators()}; not for direct use.\\
-\opt{offset(coefname \# \ldots)} & Fixes coefficients at known values (R's \texttt{offset()} with \texttt{offset.coef}). Section~\ref{sec:offset}.\\
+\opt{offset(coefname \# \ldots)} & Fixes coefficients at known values (R's \texttt{offset()} with \texttt{offset.coef}). Not available for a model with a curved term. Section~\ref{sec:offset}.\\
 \bottomrule
 \end{longtable}
 \normalsize
@@ -162,7 +163,7 @@ The character-valued \texttt{levels2} of R (grouping of cells), the \texttt{form
 Option & Description\\
 \midrule\endhead
 \opt{estimate(mle|mple|cd)} & R's \texttt{estimate=}. \texttt{mle} (default): pseudolikelihood for a dyad-independent model, Monte Carlo maximum likelihood otherwise; \texttt{mple}: pseudolikelihood; \texttt{cd}: contrastive divergence.\\
-\opt{method(mple|mcmle|cd)} & Older spelling of \opt{estimate()}; contradicting values are refused.\\
+\opt{method(mple|mcmle|cd)} & Another spelling of \opt{estimate()}; contradicting values are refused.\\
 \opt{mainmethod(mcmle|sa)} & R's \texttt{main.method=}: Monte Carlo maximum likelihood (default) or stochastic approximation.\\
 \opt{init(numlist)} & Starting values, one per coefficient, \texttt{.} or \texttt{NA} for a value to be estimated (Section~\ref{sec:estimators}).\\
 \opt{mpletype(glm|penalized)} & \texttt{MPLE.type}: ordinary or Firth-penalized pseudolikelihood.\\
@@ -202,7 +203,7 @@ Option & Description (default)\\
 \opt{mcmcinterval(\#)} & Proposals between recorded draws (1024; \texttt{MCMLE.interval}). The interval of the first iteration. Each later iteration starts from half the interval of the previous sample; thinning by two doubles it when the sample has doubled (Section~\ref{sec:adaptive}). In a fixed-size fit it grows when the effective sample size stays low.\\
 \opt{mcmcsamplesize(\#)} & Base size of the sample of each iteration (the larger of 256 and 32 times the number of coefficients; \texttt{MCMLE.samplesize}); the adaptive sample is extended beyond it until the target effective size is reached, and the number of draws kept is \texttt{e(mcmc\_samplesize)}. With \opt{mcmleeffectivesize(0)}, the exact number of draws per iteration (3000 by default; \texttt{MCMC.samplesize}).\\
 \opt{proposal(uniform|random|tnt)} & Proposal weights (\texttt{tnt}; \texttt{MCMC.prop.weights}). \texttt{random} is a synonym of \texttt{uniform}. Masked variants are used when dyads are constrained. With \texttt{tnt} on a one-mode network the default hints of \opt{mcmcprop()} give SPDyad.\\
-\opt{seed(\#)} & Seed of the sampler; without it the current Stata seed is used (Section~\ref{sec:seed}).\\
+\opt{seed(\#)} & Seed of the sampler, an integer from 0 to 2147483647; without it the current Stata seed is used (Section~\ref{sec:seed}).\\
 \opt{mcmcprop(hints)} & R's \texttt{MCMC.prop} hint formula (\texttt{sparse+.triadic}, R's default: the SPDyad proposal with a share 0.25 of triadic steps on one-mode networks). \texttt{sparse} gives the tie/no-tie proposal alone; \texttt{triadic(triFocus=}\#\texttt{)} another share of triadic steps (Chapter~\ref{ch:model}).\\
 \opt{mcmcmaxedges(\#)} & R's \texttt{MCMC.maxedges}: stop sampling when the network has more ties.\\
 \opt{verbose} & Shows iteration detail.\\
@@ -276,7 +277,7 @@ Option & Description (default)\\
 nwergm simulate, [nsim(#) output(network|stats|edgelist) basis(netname) nosequential
                   seed(#) burnin(#) interval(#) coef(matname) generate(name) clear]
 \end{lstlisting}
-Without a number of nodes, \texttt{nwergm simulate} draws from the model of the last \texttt{nwergm} fit (R's \texttt{simulate.ergm()}), starting from the last network of the fit or from \opt{basis()}, at the fitted coefficients or at \opt{coef()} (a row vector with one value per coefficient). The chain is sequential (burn-in once, \opt{interval()} proposals between draws) unless \opt{nosequential} restarts every draw from the starting network. The defaults of \opt{burnin()} and \opt{interval()} are those of the fit, or 16384 and 1024 for a fit without a Monte Carlo sample. \opt{output(network)} (default) creates the networks \emph{name}\texttt{\_1}, \emph{name}\texttt{\_2}, \ldots\ (\opt{generate()}, default \texttt{sim}); \opt{output(stats)} returns the statistics in \texttt{r(stats)}; \opt{output(edgelist)} replaces the data with the variables \texttt{\_sim}, \texttt{\_tail}, \texttt{\_head} (specify \opt{clear}). The constraints of the fit stay in force. Simulating a two-mode fit with \opt{output(network)} creates one-mode undirected networks on all nodes (not declared two-mode); use \opt{output(stats)} or \opt{output(edgelist)}.
+Without a number of nodes, \texttt{nwergm simulate} draws from the model of the last \texttt{nwergm} fit (R's \texttt{simulate.ergm()}), starting from the last network of the fit or from \opt{basis()}, at the fitted coefficients or at \opt{coef()} (a row vector with one value per coefficient). The chain is sequential (burn-in once, \opt{interval()} proposals between draws) unless \opt{nosequential} restarts every draw from the starting network. The defaults of \opt{burnin()} and \opt{interval()} are those of the fit, or 16384 and 1024 for a fit without a Monte Carlo sample. \opt{output(network)} (default) creates the networks \emph{name}\texttt{\_1}, \emph{name}\texttt{\_2}, \ldots\ (\opt{generate()}, default \texttt{sim}); \opt{output(stats)} returns the statistics in \texttt{r(stats)}; \opt{output(edgelist)} replaces the data with the variables \texttt{\_sim}, \texttt{\_tail}, \texttt{\_head} (specify \opt{clear}). Every call starts from the same network: the fit's network is not changed by \texttt{nwergm simulate} or \texttt{estat gof}, so that the same \opt{seed()} gives the same draws however often it is run. The constraints of the fit stay in force. Simulating a two-mode fit with \opt{output(network)} creates one-mode undirected networks on all nodes (not declared two-mode); use \opt{output(stats)} or \opt{output(edgelist)}.
 
 \section{Postestimation options}
 \footnotesize
@@ -285,8 +286,8 @@ Without a number of nodes, \texttt{nwergm simulate} draws from the model of the 
 Command and option & Description (default)\\
 \midrule\endhead
 \texttt{estat gof} \opt{gof(statistics)} & Statistics to compare: \texttt{degree idegree odegree b1degree b2degree espartners dspartners distance triadcensus model}; a minus sign drops \texttt{model}. The default is that of R for the type of network.\\
-\opt{nsim(\#)}, \opt{seed(\#)} & Number of simulated networks (100) and seed.\\
-\opt{gofburnin(\#)}, \opt{gofinterval(\#)} & Burn-in and interval; default those of the fit (\texttt{e(mcmc\_burnin)}, \texttt{e(mcmc\_interval\_final)}; 16384 and 1024 after a pseudolikelihood fit).\\
+\opt{nsim(\#)}, \opt{seed(\#)} & Number of simulated networks (100, at least 2) and seed.\\
+\opt{gofburnin(\#)}, \opt{gofinterval(\#)} & Burn-in and interval. After a Monte Carlo fit the burn-in is \texttt{e(mcmc\_burnin)} and the interval \texttt{e(mcmc\_interval\_final)} times \texttt{e(mcmc\_samplesize)}$/$\opt{nsim()}, as in R; after a pseudolikelihood fit 16384 and 1024.\\
 \opt{plot}, \opt{maxdeg(\#)}, \opt{maxdist(\#)}, \opt{name(string)} & Graph of the degree and geodesic distributions (maximum degree 15, maximum distance 6, name \texttt{gof}).\\
 \texttt{estat mcmcdiag} \opt{heidel} & Adds the Heidelberger--Welch test.\\
 \opt{report} & Adds the report of R's \texttt{mcmc.diagnostics()}.\\

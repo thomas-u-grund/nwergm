@@ -19,4 +19,5 @@
    Minimum value:  0
    Maximum value:  1
    Density:  .21
+   Mean degree:  8.84
    Temporal: false

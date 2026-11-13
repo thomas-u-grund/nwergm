@@ -70,8 +70,8 @@ Goodness of fit: edgewise shared partner (100 simulated networks)
           10 |         0         0      0.01         1        1.00
           12 |         0         0      0.01         1        1.00
 ------------------------------------------------------------------
-(plot saved as gof; box and whiskers summarize the simulated draws, the dashed line is the obser
-> ved network)
+(plot saved as gof; box and whiskers summarize the simulated draws, the red line with circles
+is the observed network)
 
 . graph export "../fig/gof.pdf", name(gof) replace
 file ../fig/gof.pdf saved as PDF format

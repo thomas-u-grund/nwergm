@@ -1,6 +1,6 @@
 \chapter{Worked examples}\label{ch:examples}
 
-All output in this chapter was produced by the do-files in the directory \texttt{manual/ex} of the repository, run with \nwergm{}~\pkgversion{} and the \texttt{nwcommands} core~3.17.2 in Stata/BE~18 on macOS, with the native plugin. Every Monte Carlo fit has a \opt{seed()}, so that the output can be reproduced on the same platform. The data are example networks of \texttt{nwcommands}, which are loaded from the web with \texttt{nwwebuse}; the Florentine marriage network, the Mesa High School network and the second Kapferer network are the networks \texttt{flomarriage}, \texttt{faux.mesa.high} and \texttt{kapferer2} of \ergm{}. Nothing in this chapter is a substantive analysis; the models are chosen to show the commands.
+All output in this chapter was produced by the do-files in the directory \texttt{manual/ex} of the repository, run with \nwergm{}~\pkgversion{} and the \texttt{nwcommands} core~3.22.0 in Stata/BE~18 on macOS (Apple silicon), with the native plugin. Every Monte Carlo fit has a \opt{seed()}, so that the output can be reproduced on the same platform. The networks are loaded with their nodes in the saved order; Monte Carlo output depends on that order (Section~\ref{sec:seed}). The data are example networks of \texttt{nwcommands}, which are loaded from the web with \texttt{nwwebuse}; the Florentine marriage network, the Mesa High School network and the second Kapferer network are the networks \texttt{flomarriage}, \texttt{faux.mesa.high} and \texttt{kapferer2} of \ergm{}. Nothing in this chapter is a substantive analysis; the models are chosen to show the commands.
 
 \section{The Florentine families: estimation methods and stored results}\label{sec:florentine}
 
@@ -102,7 +102,7 @@ The network is the tailor-shop network of Kapferer~\cite{kapferer1972} at the se
 \showlog{kap_tri}
 The message \emph{unconstrained MCMC sampling did not mix at all} is the error of \ergm{} for this situation, and the return code is 498. The remedy is the geometrically weighted version of the triangle term, which discounts additional shared partners:
 \showlog{kap_gw}
-The model converges (after six iterations). The goodness-of-fit table shows, however, that the fitted model is not far from the degenerate region: the simulated networks range from 135 to 227 ties against the observed 190, and many simulated networks leave pairs unconnected (49 pairs on average), which the observed network does not.
+The model converges (after six iterations). The goodness-of-fit table shows, however, that the fitted model is not far from the degenerate region: the simulated networks range from 152 to 236 ties against the observed 190, and many simulated networks leave pairs unconnected (37 pairs on average, up to 162), which the observed network does not.
 \showlogpart{kap_gof}{1}{22}
 Such a model should be checked with a longer chain and with the diagnostics before it is interpreted.
 

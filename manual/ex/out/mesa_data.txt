@@ -7,7 +7,7 @@
 
 . describe, short
 
-Contains data from https://raw.githubusercontent.com/thomas-u-grund/nwcommands/main/data/mesa.nwdta
+Contains data from https://nwcommands.org/examples/mesa.nwdta
  Observations:           205                  
     Variables:             5                  1 Sep 2026 21:41
 Sorted by: 

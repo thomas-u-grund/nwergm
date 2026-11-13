@@ -13,6 +13,7 @@
    Minimum value:  0
    Maximum value:  2
    Density:  .172
+   Mean degree:  6.70
    Temporal: false
 
 . nwergm val, edges

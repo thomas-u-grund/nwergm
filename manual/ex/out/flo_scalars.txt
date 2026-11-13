@@ -5,7 +5,7 @@ converged: 1   iterations: 1   native: 1
 sample size: 243   burn-in: 16384   interval: 1024
 
 . display "version: " e(version)
-version: 1.5.7
+version: 1.6.0
 
 . matrix list e(b)
 

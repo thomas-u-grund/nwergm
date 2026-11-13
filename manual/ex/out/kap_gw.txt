@@ -7,20 +7,20 @@ Nodes:                 =  43
 Ties:                  =  190
 Directed:              =  No
 Estimation:            =  MCMLE
-MCMC sample size:      =  497
+MCMC sample size:      =  441
 
 ------------------------------------------------------------------------------
  kapferer_t2 | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
-       edges |  -4.282998   .4164744   -10.28   0.000    -5.099272   -3.466723
-   gwesp_0.5 |   1.518992   .2358945     6.44   0.000     1.056648    1.981337
+       edges |  -4.246618   .4222083   -10.06   0.000    -5.074131   -3.419105
+   gwesp_0.5 |   1.498293   .2426614     6.17   0.000     1.022685    1.973901
 ------------------------------------------------------------------------------
 
 MCMLE converged after 6 iteration(s).
 Evaluating log-likelihood at the estimate (bridge sampling with 16 bridges) ...
 
              Null Deviance:    1251.8  on 903 degrees of freedom
-         Residual Deviance:     859.4  on 901 degrees of freedom
+         Residual Deviance:     858.0  on 901 degrees of freedom
 
-Log-likelihood:  -429.6927 (df = 2)   AIC:     863.4   BIC:     873.0
-Monte Carlo standard error of the log-likelihood:   .1643
+Log-likelihood:  -429.0194 (df = 2)   AIC:     862.0   BIC:     871.7
+Monte Carlo standard error of the log-likelihood:  .11996
