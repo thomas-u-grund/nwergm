@@ -3,7 +3,13 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.6.0] - 2026-11-13
+
+### Results that change (read before you re-run old analyses)
+- `estat gof` after `method(mple)`: the default interval is 1,024 (R's `gof.ergm`), not 1,024 x 1 / `nsim()`.
+- Geometrically weighted statistics with a decay of about 30 or more (R's values now); for smaller decays the change is at the level of rounding (1e-15).
+- `estat gof` and simulations after an earlier `estat gof` start from the fit's network (reproducible with `seed()`).
+- `mpletype(penalized)` on an empty or complete network gives a result where it is finite.
 
 ### Fixed
 - Geometrically weighted terms with a large decay (`gwesp()`, `gwdsp()`, `gwnsp()`, `gwdegree()` ... from a decay of about 30) are computed in the numerically stable form, as in R: the statistic lost digits from a decay of about 30 and was exactly 0 from about 37 (Mata and the plugin).
@@ -24,13 +30,12 @@ project uses [Semantic Versioning](https://semver.org/).
 - Long Mata error messages are shown (they were lost with r(3300)).
 - Help: `estat mcmcdiag` prints the full report only with `report`; the order of `theta()` in `nwergm simulate` is described as the code builds it; the default `gofinterval()` after MPLE is 1,024 as in R.
 
-### Results that change
-- `estat gof` after `method(mple)`: the default interval is 1,024 (R's `gof.ergm`), not 1,024 x 1 / `nsim()`.
-- Geometrically weighted statistics with a decay of about 30 or more (R's values now); for smaller decays the change is at the level of rounding (1e-15).
-- `estat gof` and simulations after an earlier `estat gof` start from the fit's network (reproducible with `seed()`).
-- `mpletype(penalized)` on an empty or complete network gives a result where it is finite.
+### Changed
+- Rebuilt for nwcommands 3.22.0; requires core 3.22.0 or later.
 
-Mata library `lnwergm.mlib` rebuilt with Stata 17; macOS plugin `ergm_mcmc` rebuilt locally (stable kernel of the geometrically weighted terms); the Linux and Windows plugins need the CI build.
+Mata library `lnwergm.mlib` rebuilt with Stata 17; native plugin `ergm_mcmc` rebuilt for macOS, Linux and Windows (stable kernel of the geometrically weighted terms).
+
+Tested on macOS with Stata 17 BE, Stata 18 BE and StataNow 19.5 MP (the full test suite) and on Windows 11 with StataNow 19.5 MP. Linux: plugins built by CI, not tested in Stata.
 
 ## [1.5.12] - 2026-11-12
 
