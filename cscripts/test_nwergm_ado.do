@@ -1077,9 +1077,14 @@ capture noisily nwergm offsetnet, edges offset(edges 1)
 assert _rc == 198
 nwclear
 nwset, mat((0,1,0,1\1,0,1,0\0,1,0,1\1,0,1,0)) undirected name(tinycurvednet)
-capture noisily nwergm tinycurvednet, edges gwespfree(0.7) offset(gwesp_weight 0.5)
-assert _rc == 198
-di "=== offset() error paths (unknown coefname, non-numeric value, odd token count, duplicate coefname, fixing every coefficient, curved model) all verified ==="
+* offset() with a curved term is allowed (as in R); a curved block with a single eta column is still a curved model
+capture noisily nwergm tinycurvednet, edges gwespfree(0.7) offset(gwesp_weight 0.5) estimate(mple)
+assert _rc == 0
+assert _b[gwesp_weight] == 0.5 & el(e(V), 2, 2) == 0
+capture noisily nwergm tinycurvednet, edges gwespfree(0.7) offset(gwesp_weight 0.5) mcmleiterations(3)
+assert _rc == 0
+assert _b[gwesp_weight] == 0.5 & colsof(e(b)) == 3
+di "=== offset() error paths (unknown coefname, non-numeric value, odd token count, duplicate coefname, fixing every coefficient) and offsets of a curved model all verified ==="
 
 * --- BUGFIX (2026-09-30): MCMLE standard errors. The AR(p) autocorrelation
 * factor used to inflate the Fisher information itself, shrinking every SE

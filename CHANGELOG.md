@@ -3,6 +3,14 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+- `offset()` works in a model with a curved (free-decay) term, as R's `offset()` does: the weight and the decay of the curved term (`gwesp_weight`, `gwesp_decay`, ...) can be fixed together or one at a time (R: `offset(gwesp(fixed=FALSE))`, with `which=` for one of them), and other coefficients can be fixed while the curved term is estimated. Fixed parameters keep their values in the pseudolikelihood fit and the Monte Carlo steps, have a zero row and column in `e(V)` and are not counted in the degrees of freedom; a value in `init()` replaces the `offset()` value. A negative decay is refused (r(198)). The pseudolikelihood fits equal R's (ergm 4.12.0), including the direction of the first trust-region step when only two parameters are estimated.
+
+### Fixed
+- A Monte Carlo fit with a curved term on a network where no tie has more than one shared partner stopped with a raw Mata error (r(3301)); it was not recognised as curved.
+
 ## [1.6.0] - 2026-11-13
 
 ### Results that change (read before you re-run old analyses)

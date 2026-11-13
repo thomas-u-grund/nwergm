@@ -132,7 +132,7 @@ Option & Description\\
 \opt{coeflabel(old new \ldots)} & Renames coefficients (R's \texttt{Label()}).\\
 \opt{logstat(names)}, \opt{expstat(names)} & Replaces the statistic of each named coefficient by its natural logarithm (suboption \opt{log0(\#)} for the value of $\log 0$, default $-1/\sqrt{\epsilon}$) or by its exponential (R's \texttt{Log()}, \texttt{Exp()} applied to one term of the model). Cannot be combined with \opt{fixdensity} or a curved term.\\
 \opt{submodel()} & Internal option used by \opt{operators()}; not for direct use.\\
-\opt{offset(coefname \# \ldots)} & Fixes coefficients at known values (R's \texttt{offset()} with \texttt{offset.coef}). Not available for a model with a curved term. Section~\ref{sec:offset}.\\
+\opt{offset(coefname \# \ldots)} & Fixes coefficients at known values (R's \texttt{offset()} with \texttt{offset.coef}); with a curved term, its weight, its decay or both. Section~\ref{sec:offset}.\\
 \bottomrule
 \end{longtable}
 \normalsize

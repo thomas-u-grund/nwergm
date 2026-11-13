@@ -1943,20 +1943,21 @@ program _nwergm_fit, eclass
 	if `"`coeflabel'"' != "" {
 		_nwergm_coeflabel `coeflabel'
 	}
-	// offset() (harmonisation unit 183, the development notes' own
-	// "Offsets/fixed-coefficient terms" row) - holds one or more named
-	// coefficients fixed at a user-supplied value rather than
-	// estimating them, matching R ergm's own `offset()' formula
-	// wrapper (verified directly against a real R fit: the offset
-	// coefficient is reported at exactly the given value, with SE
-	// exactly 0 and an entirely zero row/column in the full vcov - see
-	// unw_ergm.do's own ErgmMCMLE()/the MPLE branch below for where
-	// that is reproduced). v1 scope: ordinary (non-curved) coefficients
-	// only - a curved term's own weight/decay are not addressable here.
+	// offset() - holds one or more named coefficients fixed at a
+	// user-supplied value rather than estimating them, matching R ergm's
+	// own `offset()' formula wrapper (the offset coefficient is reported
+	// at exactly the given value, with an entirely zero row/column in
+	// the vcov). In a model with a curved term the names are those of
+	// the reported (theta-space) parameters, e.g. gwesp_weight and
+	// gwesp_decay: either or both of a curved term's parameters can be
+	// fixed (R: offset(gwesp(fixed=FALSE)), with which= for one of
+	// them), and so can the other terms while the curved one is
+	// estimated. They go to __nwergm_last_M.thfixed/thfixedvalue
+	// (isfixed stays 0 for a curved model).
 	if "`offset'" != "" {
 		if `__ergm_curved' {
-			di "{p 0 0 2}{err}option {bf:offset()} is not currently supported for a model containing a curved (free-decay) term.{p_end}"
-			error 198
+			mata: __nwergm_last_M.thfixed = J(1, __nwergm_last_M.ntheta(), 0)
+			mata: __nwergm_last_M.thfixedvalue = J(1, __nwergm_last_M.ntheta(), 0)
 		}
 		local __ergm_noffset : word count `offset'
 		if mod(`__ergm_noffset', 2) != 0 {
@@ -1972,19 +1973,35 @@ program _nwergm_fit, eclass
 				di "{p 0 0 2}{err}option {bf:offset()}: `__ergm_off_val' is not a valid number - expected coefname/value pairs, e.g. {bf:offset(mutual 2)}.{p_end}"
 				error 198
 			}
-			mata: st_local("__ergm_off_colpos", strofreal(__nwergm_last_M.findcoef("`__ergm_off_name'")))
+			if `__ergm_curved' {
+				mata: st_local("__ergm_off_colpos", strofreal(sum(selectindex(__nwergm_last_M.theta_coefnames() :== "`__ergm_off_name'"))))
+			}
+			else {
+				mata: st_local("__ergm_off_colpos", strofreal(__nwergm_last_M.findcoef("`__ergm_off_name'")))
+			}
 			if `__ergm_off_colpos' == 0 {
 				di "{err}option {bf:offset()}: `__ergm_off_name' is not a coefficient name in this model."
 				error 198
 			}
-			mata: st_local("__ergm_off_dup", strofreal(__nwergm_last_M.isfixed[`__ergm_off_colpos']))
+			if `__ergm_curved' mata: st_local("__ergm_off_dup", strofreal(__nwergm_last_M.thfixed[`__ergm_off_colpos']))
+			else mata: st_local("__ergm_off_dup", strofreal(__nwergm_last_M.isfixed[`__ergm_off_colpos']))
 			if `__ergm_off_dup' {
 				di "{err}option {bf:offset()}: `__ergm_off_name' is given more than once."
 				error 198
 			}
-			mata: __nwergm_last_M.mark_fixed(`__ergm_off_colpos', `__ergm_off_val')
+			if `__ergm_curved' {
+				// the decay of a geometrically weighted term must not be negative (as for gwesp() etc.)
+				if substr("`__ergm_off_name'", -6, .) == "_decay" & `__ergm_off_val' < 0 {
+					di "{p 0 0 2}{err}option {bf:offset()}: the decay `__ergm_off_name' must not be negative.{p_end}"
+					error 198
+				}
+				mata: __nwergm_last_M.thfixed[`__ergm_off_colpos'] = 1
+				mata: __nwergm_last_M.thfixedvalue[`__ergm_off_colpos'] = `__ergm_off_val'
+			}
+			else mata: __nwergm_last_M.mark_fixed(`__ergm_off_colpos', `__ergm_off_val')
 		}
-		mata: st_local("__ergm_nfree", strofreal(cols(__nwergm_last_M.freeidx())))
+		if `__ergm_curved' mata: st_local("__ergm_nfree", strofreal(cols(ergm_thfree(__nwergm_last_M))))
+		else mata: st_local("__ergm_nfree", strofreal(cols(__nwergm_last_M.freeidx())))
 		if `__ergm_nfree' == 0 {
 			di "{p 0 0 2}{err}option {bf:offset()} cannot fix every coefficient in the model - at least one must remain free to estimate.{p_end}"
 			error 198
@@ -2046,6 +2063,8 @@ program _nwergm_fit, eclass
 				di "{err}option {bf:init()} needs one value (or .) for each parameter of the curved model."
 				error 198
 			}
+			// offsets take their value from init() when it gives one (as in R)
+			mata: ergm_thfix_init(__nwergm_last_M, __ergm_curved_init)
 		}
 		else {
 			_nwergm_est init `"`init'"' "`method'"
@@ -2360,7 +2379,9 @@ program _nwergm_fit, eclass
 		}
 		else _nwergm_fitstats, dmat(`__nw_D') method(mple) dind(`__ergm_dind') curved(`__ergm_curved')
 		if `__ergm_curved' {
-			di as text "{p 0 1 2}(The decay of the curved term is estimated; see {help nwergm##gw_effects:help nwergm, gw_effects}.){p_end}"
+			// not when offset() fixes the decay (the last parameter)
+			mata: st_local("__ergm_decayfree", strofreal(anyof(ergm_thfree(__nwergm_last_M), __nwergm_last_M.ntheta())))
+			if `__ergm_decayfree' di as text "{p 0 1 2}(The decay of the curved term is estimated; see {help nwergm##gw_effects:help nwergm, gw_effects}.){p_end}"
 		}
 	}
 	else {
@@ -2657,9 +2678,7 @@ program _nwergm_fit, eclass
 				error 430
 			}
 			mata: st_matrix("`__b_mcmle'", `__fit'.coef_theta)
-			mata: __ergm_Jac_mcmle = __nwergm_last_M.theta_to_eta_jacobian(`__fit'.coef_theta)
-			mata: st_matrix("`__V_mcmle'", invsym(__ergm_Jac_mcmle' * invsym(`__fit'.vcov) * __ergm_Jac_mcmle))
-			mata: mata drop __ergm_Jac_mcmle
+			mata: st_matrix("`__V_mcmle'", ergm_curved_vtheta(__nwergm_last_M, `__fit'.coef_theta, `__fit'.vcov))
 			mata: st_local("__ergm_curved_vcov_degenerate", strofreal(missing(st_matrix("`__V_mcmle'")) > 0))
 			if `__ergm_curved_vcov_degenerate' {
 				di "{p 0 0 2}{err}The curved MCMLE fit did not produce a valid result - the final variance-covariance simulation landed at a near-degenerate (frozen) point, leaving the theta-space variance-covariance matrix undefined after the delta-method transform. Try a different starting decay value, a longer {bf:mcmcburnin()}, a larger {bf:mcmcsamplesize()}, or a simpler model.{p_end}"
@@ -2825,7 +2844,9 @@ program _nwergm_fit, eclass
 		mata: st_local("__ergm_hassp", strofreal(findexternal("__nwergm_sp") != NULL))
 		if `__ergm_hassp' mata: mata drop __nwergm_sp
 		if `__ergm_curved' {
-			di as text "{p 0 1 2}(The decay of the curved term is estimated; see {help nwergm##gw_effects:help nwergm, gw_effects}.){p_end}"
+			// not when offset() fixes the decay (the last parameter)
+			mata: st_local("__ergm_decayfree", strofreal(anyof(ergm_thfree(__nwergm_last_M), __nwergm_last_M.ntheta())))
+			if `__ergm_decayfree' di as text "{p 0 1 2}(The decay of the curved term is estimated; see {help nwergm##gw_effects:help nwergm, gw_effects}.){p_end}"
 		}
 	}
 

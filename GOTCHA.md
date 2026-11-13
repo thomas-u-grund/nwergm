@@ -301,3 +301,20 @@ with the same seed started from the last gof draw and gave other tables.
 
 `select(u, keep)` with `u` 1 x 1 and `keep` 0 returns a 0 x 0 matrix, not a 0 x 1 column vector; functions declared
 to return a colvector then fail with r(3203). `_ergm_cov_pick()` returns `J(0, 1, .)` when no level is left.
+
+## Curved MPLE: the first trust-region step follows the sign of LAPACK's eigenvector (found 2026-11-13)
+
+The curved pseudolikelihood fit starts with the weight at 0, so the decay column of the Jacobian is 0 and the Hessian has an exact zero
+eigenvalue; R's `trust` then takes its "hard case" step along that eigenvector, whose sign is whatever `eigen()` (LAPACK) returns. For a
+2 x 2 problem (two estimated parameters, e.g. `offset(edges)` + `gwesp(fixed=FALSE)`) LAPACK returns it with its largest entry negative
+(R: `eigen(diag(c(a, 0)))` gives `(0, -1)`), for 3 x 3 and larger positive. The step direction decides where the trust region ends on a
+flat likelihood (decay 0.96 up instead of down gave weight 0.2187 instead of R's 0.2500). `ErgmCurvedMPLEFit()` and `curved_mple_fit_c()`
+flip the vector for n = 2. Offsets of a curved model live in `ErgmModel.thfixed/thfixedvalue` (theta space), not in `isfixed`; the plugin
+reads them from the scalars `__ergm_native_curved_fix<k>` and confirms with `__ergm_native_curved_fixok`, without which Mata fits. Test:
+`cscripts/test_nwergm_offsetcurved.do`.
+
+## Log-likelihood with an offset on a dyad-dependent term differs from R (open, 2026-11-13)
+
+`edges + offset(gwesp(0.5, fixed=TRUE))` on flomarriage: R 4.12.0 reports -54.27 after MCMLE, nwergm -55.12 (MC s.e. 0.07); the MPLE
+pseudolikelihoods agree. nwergm's value is the plausible one (the unconstrained fit has -54.00 and the offset lies 1.7 s.e. from its
+estimate), so R's bridge from the dyad-independent submodel seems to mishandle the offset. Not changed; check before "fixing".

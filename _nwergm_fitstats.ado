@@ -52,7 +52,7 @@ program _nwergm_fitstats, eclass
 	}
 	mata: st_local("nfix", strofreal(sum(__nwergm_last_M.isfixed)))
 	local k = colsof(`b') - `nfix'
-	if `curved' local k = colsof(`b')
+	if `curved' mata: st_local("k", strofreal(cols(ergm_thfree(__nwergm_last_M))))
 	tempname ll0
 	scalar `ll0' = `N' * ln(0.5)
 	ereturn scalar ll = scalar(`ll')

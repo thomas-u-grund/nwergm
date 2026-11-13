@@ -4938,6 +4938,12 @@ class ErgmModel {
 	pointer scalar obs_propfn
 	real matrix obs_mask
 	real rowvector fixedvalue
+	// offsets of a model with a curved term, in theta space (length ntheta(), the
+	// order of theta_coefnames()): thfixed[k] == 1 holds parameter k at
+	// thfixedvalue[k] (R: offset() on the term, all its parameters or which=).
+	// Empty (0 columns) when nothing is fixed; isfixed stays 0 for such a model.
+	real rowvector thfixed
+	real rowvector thfixedvalue
 	// statistic transforms (R's Log()/Exp() operators), per coefficient
 	// column: opkind 0 = none, 1 = log, 2 = exp; opparam = log0.  Empty
 	// (0 columns) unless nwergm's logstat()/expstat() set them.
@@ -4986,6 +4992,8 @@ void ErgmModel::init(){
 	curved = J(1, 0, .)
 	isfixed = J(1, 0, .)
 	fixedvalue = J(1, 0, .)
+	thfixed = J(1, 0, .)
+	thfixedvalue = J(1, 0, .)
 	opkind = J(1, 0, .)
 	opparam = J(1, 0, .)
 	empty_stat = J(1, 0, .)
@@ -6429,6 +6437,48 @@ void ergm_mcdiag_geweke(real matrix C, string scalar name){
 	st_matrix(name, out)
 }
 
+// theta-space parameters of a curved model that are estimated (all but its offsets)
+real rowvector ergm_thfree(class ErgmModel scalar M){
+	if (cols(M.thfixed) != M.ntheta()) return(1..M.ntheta())
+	return(selectindex(!M.thfixed))
+}
+
+// Jacobian d eta / d theta of a curved model, columns of the estimated parameters only
+real matrix ergm_thjac(class ErgmModel scalar M, real rowvector theta){
+	real matrix Jac
+	Jac = M.theta_to_eta_jacobian(theta)
+	return(Jac[., ergm_thfree(M)])
+}
+
+// theta-space covariance of a curved MCMLE fit from the eta-space one (delta method), zero rows and columns
+// for the offsets; the estimated block inverts the information of the estimated parameters
+real matrix ergm_curved_vtheta(class ErgmModel scalar M, real rowvector theta, real matrix Veta){
+	real matrix Jf, V
+	real rowvector fr
+	fr = ergm_thfree(M)
+	Jf = ergm_thjac(M, theta)
+	V = J(M.ntheta(), M.ntheta(), 0)
+	V[fr, fr] = invsym(Jf' * invsym(Veta) * Jf)
+	return(V)
+}
+
+// init() of a curved model: a value given for an offset parameter replaces its offset() value (as in R)
+void ergm_thfix_init(class ErgmModel scalar M, real rowvector init){
+	real scalar k
+	if (cols(M.thfixed) != cols(init)) return
+	for (k=1; k<=cols(init); k++) if (M.thfixed[k] & init[k] < .) M.thfixedvalue[k] = init[k]
+}
+
+// the theta-space vector with the offset values of a curved model put in
+real rowvector ergm_thfix_apply(class ErgmModel scalar M, real rowvector theta){
+	real rowvector th
+	real scalar k
+	th = theta
+	if (cols(M.thfixed) != M.ntheta() | cols(th) != M.ntheta()) return(th)
+	for (k=1; k<=cols(th); k++) if (M.thfixed[k]) th[k] = M.thfixedvalue[k]
+	return(th)
+}
+
 real scalar ErgmModel::nparam(){
 	return(sum(npar))
 }
@@ -6900,6 +6950,7 @@ void ErgmCurvedMPLEFit(class ErgmModel scalar M, real matrix D,
 	real scalar ncol, alpha_pos, r, rmax, iter, accept, f, ftry, val, valtry, rho, preddiff
 	real scalar isnewton, lmin, C1, C2, C3, bdn, bup, root, utry, fterm, mterm, term, conv, EPS, k
 	real colvector imin
+	real rowvector fr
 
 	EPS = 2.220446049250313e-16
 	ncol = cols(D) - 1
@@ -6919,6 +6970,10 @@ void ErgmCurvedMPLEFit(class ErgmModel scalar M, real matrix D,
 			theta[alpha_pos] = max((theta[alpha_pos], sqrt(EPS)))
 		}
 	}
+	// offsets (R: offset() on a term of a curved model): held at their values, the trust region works on the
+	// other parameters only (R's ergm.logitreg optimises theta[!offsettheta])
+	theta = ergm_thfix_apply(M, theta)
+	fr = ergm_thfree(M)
 	fterm = sqrt(EPS)
 	mterm = sqrt(EPS)
 	r = 1
@@ -6928,8 +6983,8 @@ void ErgmCurvedMPLEFit(class ErgmModel scalar M, real matrix D,
 	conv = 0
 	for (iter=1; iter<=maxit; iter++) {
 		if (accept) {
-			B = -hess
-			g = -grad
+			B = -hess[fr, fr]
+			g = -grad[fr]
 			f = -val
 			symeigensystem(B, V, L)
 			ev = L'
@@ -6963,12 +7018,20 @@ void ErgmCurvedMPLEFit(class ErgmModel scalar M, real matrix D,
 				utry = sqrt(r^2 - sum(ptry:^2))
 				if (utry > 0) {
 					vtry = V[., selectindex(imin)[1]]
+					// R's eigen() (LAPACK) returns this vector with its largest entry negative for a 2 x 2 matrix
+					// (two estimated parameters, e.g. an offset on every other term); the sign sets the direction
+					// of the step
+					if (rows(vtry) == 2) {
+						k = (abs(vtry[1]) >= abs(vtry[2]) ? 1 : 2)
+						if (vtry[k] > 0) vtry = -vtry
+					}
 					ptry = ptry + utry * vtry
 				}
 			}
 		}
 		preddiff = sum(ptry :* (g + (B * ptry)/2))
-		theta_try = theta + ptry'
+		theta_try = theta
+		theta_try[fr] = theta[fr] + ptry'
 		_ergm_curved_obj(M, X, y, theta_try, alpha_pos, valtry, grad, hesst)
 		ftry = -valtry
 		rho = (ftry - f)/preddiff
@@ -7008,7 +7071,9 @@ void ErgmCurvedMPLEFit(class ErgmModel scalar M, real matrix D,
 	// R re-evaluates the objective at the final theta; covariance = generalized inverse of -Hessian
 	_ergm_curved_obj(M, X, y, theta, alpha_pos, val, grad, hess)
 	st_matrix(theta_matname, theta)
-	st_matrix(V_theta_matname, invsym(-hess))
+	B = J(cols(theta), cols(theta), 0)
+	B[fr, fr] = invsym(-hess[fr, fr])
+	st_matrix(V_theta_matname, B)
 	st_matrix(converged_matname, (conv))
 }
 
@@ -10051,7 +10116,8 @@ real scalar ErgmNativeCurvedMPLEFit(class ErgmModel scalar M, class ErgmGraph sc
 		string scalar V_matname, string scalar converged_matname){
 
 	real matrix ties, attrpad, theta_out, V_out
-	real scalar n, directed, nties, p, nattr, ncovmat, nobs_needed, i, j, k, __junk, ncurved, ntheta, rc
+	real scalar n, directed, nties, p, nattr, ncovmat, nobs_needed, i, j, k, __junk, ncurved, ntheta, rc, nfix
+	real matrix fok
 	string scalar origframe, argstr, cmd, attrvarlist, covmatvarlist, modevarlist
 	real scalar ncovcols
 	string scalar covtok
@@ -10161,14 +10227,28 @@ real scalar ErgmNativeCurvedMPLEFit(class ErgmModel scalar M, class ErgmGraph sc
 
 	stata("capture program ergmnativemcmc, plugin using(" + char(34) + ErgmNativePluginPath() + char(34) + ")")
 
+	// offsets (theta space): one scalar per parameter, the value of an offset, missing for an estimated one
+	nfix = (cols(M.thfixed) == M.ntheta() ? sum(M.thfixed) : 0)
+	for (i=1; i<=M.ntheta(); i++) {
+		st_numscalar("__ergm_native_curved_fix" + strofreal(i), (nfix > 0 ? (M.thfixed[i] ? M.thfixedvalue[i] : .) : .))
+	}
+	stata("capture scalar drop __ergm_native_curved_fixok")
+
 	cmd = "plugin call ergmnativemcmc v1 v2" + modevarlist + attrvarlist + covmatvarlist + ttabvars + ", " + char(34) + argstr + char(34)
 	stata(cmd)
 
 	st_framecurrent(origframe)
 	stata("capture frame drop __ergm_native")
+	for (i=1; i<=M.ntheta(); i++) stata("capture scalar drop __ergm_native_curved_fix" + strofreal(i))
 
 	rc = st_numscalar("__ergm_native_curved_rc")
 	if (rc != 0) return(0)
+	// a plugin that does not read the offsets: the Mata fit, which does
+	if (nfix > 0) {
+		fok = st_numscalar("__ergm_native_curved_fixok")
+		if (rows(fok) == 0) return(0)
+		if (fok != 1) return(0)
+	}
 
 	ntheta = st_numscalar("__ergm_native_curved_ntheta_out")
 	theta_out = J(1, ntheta, .)
@@ -12564,7 +12644,7 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 	real scalar ptest_const
 	real rowvector theta_c_try
 	real scalar bt_domain
-	real rowvector freeidx, delta_apply
+	real rowvector freeidx, delta_apply, thf
 	real rowvector ctl
 	real scalar term, conv_now, last_ok, pval, minpval, hmargin, hmax
 	real scalar adaptive, esstarget, ss_base, ss_base0, ess0, final_int, ess_ach, acc_last, next_int, interval_used, bboost
@@ -12651,7 +12731,8 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 	// curved model, a generic fallback start is derived instead so
 	// this optional argument never being supplied cannot itself cause
 	// a crash, only a possibly-slower first projection.
-	is_curved = (M.ntheta() < p)
+	// a curved term whose block has a single eta column (a network with at most one shared partner) has ntheta() == p
+	is_curved = (sum(M.curved :> 0) > 0)
 	if (is_curved) {
 		// an omitted optional argument arrives as a 0x0 empty matrix in
 		// Mata (there is no separate "was this supplied" sentinel/
@@ -12660,6 +12741,7 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 		// shape" check in one.
 		if (cols(theta_c0)==M.ntheta()) theta_c = theta_c0
 		else theta_c = J(1, M.ntheta(), 0)
+		theta_c = ergm_thfix_apply(M, theta_c)
 	}
 	// matches Statnet's own default "confidence" termination method's
 	// own reported confidence level (observed directly in real ergm()
@@ -12700,6 +12782,8 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 	// here) - `is_curved' and `M.isfixed' are never both nontrivial in
 	// practice, so no combined-reduction case needs designing.
 	freeidx = M.freeidx()
+	// the estimated theta-space parameters of a curved model (offsets left out, as R's ergm.MCMLE does)
+	thf = ergm_thfree(M)
 
 	// `ptest_const' is the dimension the Newton step/Hummel/convergence
 	// test actually operate in (harmonisation unit 180 - see the loop's
@@ -12709,7 +12793,7 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 	// ordinary coefficients are held fixed via offset() (unit 183) -
 	// constant across iterations, computed once here rather than
 	// requeried every iteration.
-	ptest_const = (is_curved ? M.ntheta() : cols(freeidx))
+	ptest_const = (is_curved ? cols(thf) : cols(freeidx))
 	min_neff = max((200, 64*ptest_const))
 	if (ctl[5] < .) min_neff = ctl[5]
 	interval_cap = 20000
@@ -12758,7 +12842,7 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 	for (iter=1; iter<=maxit; iter++) {
 		theta_old = theta	// the eta point THIS iteration's sample was actually drawn at - needed below to reweight that (by-then-stale) sample toward the point the Newton step is about to propose, mirroring R's own importance-sampling reweighting.
 		if (adaptive) {
-			samp = ErgmMCMCSampleAdaptive(M, G, theta, interval, ss_base, esstarget, freeidx, (is_curved ? M.theta_to_eta_jacobian(theta_c) : J(0, 0, .)), proposalfn, verbose, final_int, ess_ach, acc_last, curstat, tiesc)
+			samp = ErgmMCMCSampleAdaptive(M, G, theta, interval, ss_base, esstarget, freeidx, (is_curved ? ergm_thjac(M, theta_c) : J(0, 0, .)), proposalfn, verbose, final_int, ess_ach, acc_last, curstat, tiesc)
 			samplesize = rows(samp)
 			curstat = (has_obs ? J(1, 0, .) : samp[rows(samp), .])
 			interval_used = final_int
@@ -12816,7 +12900,7 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 		// information any standard MCMLE reference derives for a
 		// reparameterized exponential family.
 		if (is_curved) {
-			Jac = M.theta_to_eta_jacobian(theta_c)
+			Jac = ergm_thjac(M, theta_c)
 			Dtest = D * Jac
 			if (has_obs) Dtesto = Dobs * Jac
 		}
@@ -12958,11 +13042,13 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 			// missing values as satisfying the convergence test) - the
 			// fit was reported `converged=1' with a missing `theta'.
 			theta_c_prev = theta_c
-			theta_c_try = theta_c + gamma*delta
+			theta_c_try = theta_c
+			theta_c_try[thf] = theta_c[thf] + gamma*delta
 			for (bt_domain=1; bt_domain<=30; bt_domain++) {
 				if (missing(M.theta_to_eta(theta_c_try)) == 0) break
 				gamma = gamma / 2
-				theta_c_try = theta_c + gamma*delta
+				theta_c_try = theta_c
+				theta_c_try[thf] = theta_c[thf] + gamma*delta
 			}
 			if (missing(M.theta_to_eta(theta_c_try)) > 0) {
 				// no valid step exists even after 30 halvings - graceful
@@ -13460,7 +13546,7 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 		// R reports the covariance from the last iteration's own sample; a sample drawn at the final point is only
 		// needed when the iterations ran out before convergence
 		if (!converged) {
-			samp = ErgmMCMCSampleAdaptive(M, G, theta, interval, ss_base, esstarget, freeidx, (is_curved ? M.theta_to_eta_jacobian(theta_c) : J(0, 0, .)), proposalfn, verbose, final_int, ess_ach, acc_last, curstat, tiesc)
+			samp = ErgmMCMCSampleAdaptive(M, G, theta, interval, ss_base, esstarget, freeidx, (is_curved ? ergm_thjac(M, theta_c) : J(0, 0, .)), proposalfn, verbose, final_int, ess_ach, acc_last, curstat, tiesc)
 			interval_used = final_int
 			next_int = max((round(final_int / 2), 1))
 			interval = next_int

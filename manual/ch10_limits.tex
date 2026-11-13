@@ -31,6 +31,7 @@ Message (return code) & Meaning and remedy\\
 \midrule\endhead
 \texttt{option edges is required} (198) & Every model has the term \opt{edges}; \opt{structural(density)} or \opt{structural(meandeg)} can stand in for it.\\
 \texttt{option gwesp(): the decay must be zero or positive} (198) & A geometrically weighted term was given a negative decay, for which the weights are not defined (Section~\ref{sec:curved}).\\
+\texttt{option offset(): the decay gwesp\_decay must not be negative} (198) & An offset gave the decay of a curved term a negative value, for which the weights are not defined (Section~\ref{sec:curved}).\\
 \texttt{note: term nodefactor(x) has no statistics left \ldots{} and is dropped, as in R.} & The attribute has a single level, which is the base level; the term contributes nothing and is left out of the model.\\
 \texttt{option base() not allowed} (198) & A suboption was typed outside the parentheses of its term. Write \opt{nodefactor(x, base(0))}, not \opt{nodefactor(x) base(0)}.\\
 \texttt{In term nodecov: attribute wealth has missing data, which is not currently supported.} (416) & A node attribute that a term uses has a missing value, as in \ergm{}. Drop or impute it (Section~\ref{sec:missing}).\\

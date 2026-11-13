@@ -47,7 +47,8 @@ set SA.burnin, SA.interval, SA.phase3_n, SA.initial_gain and SA.nsubphases (defa
 every
 value is given the pseudolikelihood start is skipped. With {cmd:estimate(mple)} only the offset values are used.
 With a curved (free-decay) term, {cmd:init()} is available for {cmd:method(mple)} and needs one value (or
-{cmd:.}) for each parameter of the model, the curved term's weight and decay or lambda last; it is the starting point of the pseudolikelihood fit.
+{cmd:.}) for each parameter of the model, the curved term's weight and decay or lambda last; it is the starting point of the pseudolikelihood fit. A value given for an
+{opt offset()} parameter replaces its {opt offset()} value.
 
 {title:Maximum pseudolikelihood}
 

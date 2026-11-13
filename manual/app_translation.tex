@@ -19,6 +19,7 @@ R (\texttt{ergm}, \texttt{statnet}) & \texttt{nwergm}\\
 \texttt{Symmetrize(\textasciitilde triangle, rule="strong")} & \texttt{operators(Symmetrize(triangle, rule(strong)))}\\
 \texttt{Sum(\textasciitilde edges | \textasciitilde triangle, label="a")} & \texttt{operators(Sum(edges | triangle, label(a)))}\\
 \texttt{offset(edges)} with \texttt{offset.coef} & \texttt{offset(edges \#)}\\
+\texttt{offset(gwesp(fixed=FALSE), which=2)}, \texttt{offset.coef=0.5} & \texttt{gwespfree(0.5) offset(gwesp\_decay 0.5)} (\texttt{which=1}: \texttt{gwesp\_weight}; both: name both)\\
 \texttt{Label(\textasciitilde nodematch("sex"), "same")} & \texttt{coeflabel(nodematch\_sex same)} or \texttt{operators(Label(\ldots))}\\
 \texttt{ergm(\ldots, estimate="MPLE")} & \texttt{estimate(mple)}\\
 \texttt{ergm(\ldots, estimate="CD")} & \texttt{estimate(cd)}\\

@@ -197,7 +197,8 @@ estimation options ({opt estimate()}, {opt mainmethod()}, {opt init()}, the MPLE
 {synopt:{opth offset(coefname # [coefname # ...])}}Hold one or more named coefficients fixed at a given value rather than estimating them, matching R ergm's own {cmd:offset()} formula
 wrapper. {bf:coefname} must be a coefficient this model would otherwise report (an option must still be typed to register the term, e.g. {opt triangle}, before {opt offset(triangle #)} can fix its own
 coefficient - {opt offset()} names an EXISTING coefficient, it does not add a second copy of the term). Works with both {opt method(mple)} and {opt method(mcmle)}. At least one coefficient in the
-model must remain free. Not available for a model that contains a curved (free-decay) term. The fixed coefficient is reported at exactly the given value with standard error exactly 0 (matching
+model must remain free. In a model with a curved (free-decay) term the names are those of the coefficient table: the weight and the decay of the curved term
+(e.g. {bf:gwesp_weight} and {bf:gwesp_decay}) can be fixed together or one at a time, and other coefficients can be fixed while the curved term is estimated; a decay must not be negative. The fixed coefficient is reported at exactly the given value with standard error exactly 0 (matching
 R's own real output) and a zero row/column in {bf:e(V)} - see {bf:Remarks} below{p_end}
 {synopt:{opt nologlik}}Do not evaluate the log-likelihood of a dyad-dependent MCMLE fit by bridge sampling (R: {cmd:eval.loglik=FALSE}); {cmd:e(ll)}, AIC and BIC are then missing{p_end}
 {synopt:{opt bridgesteps(#)}}Number of bridges for the log-likelihood evaluation; default 16 (R: {cmd:bridge.nsteps}){p_end}
@@ -344,6 +345,22 @@ the free coefficients only, while the fixed term's own contribution still fully 
 MCMC sampling (fixing a coefficient does not remove its term from the model - the network is
 still simulated as if that effect were really present at the given strength). Multiple
 coefficients may be fixed in one model: {bf:offset(mutual 2 gwesp_weight 0.5)}.
+
+{pstd}
+With a curved (free-decay) term, {opt offset()} names the parameters of the coefficient table, as R's
+{cmd:offset()} does for the term's parameters:
+
+{phang2}{cmd:. nwergm lazega_fr, edges mutual gwespfree(0.5) offset(gwesp_weight 0.8 gwesp_decay 0.5)}{p_end}
+{phang2}{cmd:. nwergm lazega_fr, edges mutual gwespfree(0.5) offset(gwesp_decay 0.5)}{p_end}
+{phang2}{cmd:. nwergm lazega_fr, edges mutual gwespfree(0.5) offset(mutual 2 gwesp_weight 0.8)}{p_end}
+
+{pstd}
+The first fixes the whole term (R: {cmd:offset(gwesp(fixed=FALSE))} with {cmd:offset.coef=c(0.8, 0.5)}); the
+second fixes the decay and estimates the weight (R: {cmd:offset(gwesp(fixed=FALSE), which=2)}), which gives
+the same fit as {opt gwesp(0.5)}; the third fixes {opt mutual} and the weight and estimates the decay (R:
+{cmd:which=1}). The pseudolikelihood fit and the Monte Carlo steps work on the estimated parameters only;
+the offsets keep their values throughout, and the degrees of freedom of the log-likelihood count the
+estimated parameters only. A decay must be 0 or positive (as for {opt gwesp()}; error 198 otherwise).
 
 {marker limitations}{...}
 

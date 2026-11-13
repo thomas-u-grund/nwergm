@@ -2936,6 +2936,20 @@ static void curved_obj_c(cobj_t *o, const double *theta, double *val, double *gr
 	free(Jac); free(XJ);
 }
 
+/* the objective on the estimated parameters only (offsets held at their values in `full'):
+   R's ergm.logitreg optimises theta[!offsettheta] with the gradient and Hessian restricted to them */
+static void curved_obj_free(cobj_t *o, const double *thf, const long *fidx, long nf, double *full,
+		double *val, double *gradf, double *Hf, double *gfull, double *Hfull) {
+	long i, j, nt = o->ntheta;
+	for (i = 0; i < nf; i++) full[fidx[i]] = thf[i];
+	curved_obj_c(o, full, val, gfull, Hfull);
+	if (*val <= -1e299) return;
+	for (i = 0; i < nf; i++) {
+		gradf[i] = gfull[fidx[i]];
+		for (j = 0; j < nf; j++) Hf[i*nf+j] = Hfull[fidx[i]*nt + fidx[j]];
+	}
+}
+
 /* symmetric eigendecomposition (cyclic Jacobi); eigenvalues returned in
    decreasing order, eigenvectors as columns of V (row-major n x n) */
 static void sym_eigen(const double *A0, long n, double *vals, double *V) {
@@ -3030,25 +3044,38 @@ static double trust_uniroot(double ax, double bx, const double *gq, const double
 }
 
 static int curved_mple_fit_c(const double *X, const double *y, long ndyads, long nterms,
-		long ncurved, double curved_decay_start,
+		long ncurved, double curved_decay_start, const int *isfix, const double *fixval,
 		double *theta_out, double *V_out, long *converged_out) {
 	long ntheta = (nterms - ncurved) + 2;
-	long n = ntheta, i, j, k, iter, maxit = 10000;
+	long n, i, j, k, iter, maxit = 10000;
+	long *fidx = (long *)malloc((size_t)ntheta * sizeof(long));
+	double *full = (double *)calloc((size_t)ntheta, sizeof(double));
+	double *gfull = (double *)calloc((size_t)ntheta, sizeof(double));
+	double *Hfull = (double *)calloc((size_t)ntheta*ntheta, sizeof(double));
 	double EPS = 2.220446049250313e-16, fterm = sqrt(EPS), mterm = sqrt(EPS);
 	cobj_t o;
-	double *theta = (double *)calloc((size_t)n, sizeof(double)), *theta_try = (double *)calloc((size_t)n, sizeof(double));
-	double *grad = (double *)calloc((size_t)n, sizeof(double)), *gradt = (double *)calloc((size_t)n, sizeof(double));
-	double *H = (double *)calloc((size_t)n*n, sizeof(double)), *Ht = (double *)calloc((size_t)n*n, sizeof(double));
-	double *B = (double *)calloc((size_t)n*n, sizeof(double)), *g = (double *)calloc((size_t)n, sizeof(double));
-	double *ev = (double *)calloc((size_t)n, sizeof(double)), *V = (double *)calloc((size_t)n*n, sizeof(double));
-	double *gq = (double *)calloc((size_t)n, sizeof(double)), *ptry = (double *)calloc((size_t)n, sizeof(double));
-	double *beta = (double *)calloc((size_t)n, sizeof(double)), *wtry = (double *)calloc((size_t)n, sizeof(double));
+	long nt = ntheta;
+	double *theta = (double *)calloc((size_t)nt, sizeof(double)), *theta_try = (double *)calloc((size_t)nt, sizeof(double));
+	double *grad = (double *)calloc((size_t)nt, sizeof(double)), *gradt = (double *)calloc((size_t)nt, sizeof(double));
+	double *H = (double *)calloc((size_t)nt*nt, sizeof(double)), *Ht = (double *)calloc((size_t)nt*nt, sizeof(double));
+	double *B = (double *)calloc((size_t)nt*nt, sizeof(double)), *g = (double *)calloc((size_t)nt, sizeof(double));
+	double *ev = (double *)calloc((size_t)nt, sizeof(double)), *V = (double *)calloc((size_t)nt*nt, sizeof(double));
+	double *gq = (double *)calloc((size_t)nt, sizeof(double)), *ptry = (double *)calloc((size_t)nt, sizeof(double));
+	double *beta = (double *)calloc((size_t)nt, sizeof(double)), *wtry = (double *)calloc((size_t)nt, sizeof(double));
 	double r = 1.0, rmax = 100.0, val, valt, f = 0.0, ftry, rho, preddiff;
 	int accept = 1, isnewton, term, conv = 0;
 	(void)curved_decay_start; /* R ignores a user decay start in the MPLE (decay= has no effect when fixed=FALSE) */
 	o.X = X; o.y = y; o.nd = ndyads; o.nterms = nterms; o.ntheta = ntheta; o.ncurved = ncurved;
-	theta[n-1] = sqrt(EPS);
-	curved_obj_c(&o, theta, &val, grad, H);
+	/* start: 0, the decay at sqrt(eps) (R: .constrain_init); offsets at their values and left out of the
+	   trust region, which works on the n estimated parameters */
+	full[ntheta-1] = sqrt(EPS);
+	n = 0;
+	for (i = 0; i < ntheta; i++) {
+		if (isfix && isfix[i]) full[i] = fixval[i];
+		else fidx[n++] = i;
+	}
+	for (i = 0; i < n; i++) theta[i] = full[fidx[i]];
+	curved_obj_free(&o, theta, fidx, n, full, &val, grad, H, gfull, Hfull);
 	for (iter = 1; iter <= maxit; iter++) {
 		if (accept) {
 			for (i = 0; i < n*n; i++) B[i] = -H[i];
@@ -3092,8 +3119,15 @@ static int curved_mple_fit_c(const double *X, const double *y, long ndyads, long
 				utry = sqrt(r*r - ss);
 				if (utry > 0.0) {
 					long first = 0;
+					double sgn = 1.0;
 					for (i = 0; i < n; i++) if (imin[i]) { first = i; break; }
-					for (k = 0; k < n; k++) ptry[k] += utry * V[k*n+first];
+					/* R's eigen() (LAPACK) returns this vector with its largest entry negative for a 2 x 2
+					   matrix (two estimated parameters); the sign sets the direction of the step */
+					if (n == 2) {
+						long big = (fabs(V[0*n+first]) >= fabs(V[1*n+first])) ? 0 : 1;
+						if (V[big*n+first] > 0.0) sgn = -1.0;
+					}
+					for (k = 0; k < n; k++) ptry[k] += sgn * utry * V[k*n+first];
 				}
 			}
 			free(imin);
@@ -3105,7 +3139,7 @@ static int curved_mple_fit_c(const double *X, const double *y, long ndyads, long
 			preddiff += ptry[i] * (g[i] + Bp/2.0);
 		}
 		for (i = 0; i < n; i++) theta_try[i] = theta[i] + ptry[i];
-		curved_obj_c(&o, theta_try, &valt, gradt, Ht);
+		curved_obj_free(&o, theta_try, fidx, n, full, &valt, gradt, Ht, gfull, Hfull);
 		ftry = -valt;
 		rho = (ftry - f)/preddiff;
 		if (ftry < 1e299) term = (fabs(ftry - f) < fterm || fabs(preddiff) < mterm);
@@ -3128,13 +3162,16 @@ static int curved_mple_fit_c(const double *X, const double *y, long ndyads, long
 		}
 		if (term) { conv = 1; break; }
 	}
-	curved_obj_c(&o, theta, &val, grad, H);
-	for (i = 0; i < n; i++) theta_out[i] = theta[i];
-	for (i = 0; i < n*n; i++) V_out[i] = -H[i];
-	invert_matrix(V_out, n);
+	curved_obj_free(&o, theta, fidx, n, full, &val, grad, H, gfull, Hfull);
+	for (i = 0; i < ntheta; i++) theta_out[i] = full[i];
+	for (i = 0; i < n*n; i++) B[i] = -H[i];
+	invert_matrix(B, n);
+	for (i = 0; i < ntheta*ntheta; i++) V_out[i] = 0.0;
+	for (i = 0; i < n; i++) for (k = 0; k < n; k++) V_out[fidx[i]*ntheta + fidx[k]] = B[i*n+k];
 	*converged_out = conv;
 	free(theta); free(theta_try); free(grad); free(gradt); free(H); free(Ht); free(B); free(g);
 	free(ev); free(V); free(gq); free(ptry); free(beta); free(wtry);
+	free(fidx); free(full); free(gfull); free(Hfull);
 	(void)j;
 	return 0;
 }
@@ -4003,8 +4040,23 @@ STDLL stata_call(int argc, char *argv[]) {
 			}
 		}
 
-		fit_rc = curved_mple_fit_c(X, Y, ndyads, nterms, ncurved, curved_decay_start,
-			theta_out, V_out, &converged_out);
+		/* offsets of the curved model: Stata scalars __ergm_native_curved_fix<k> (k = 1..ntheta) hold the
+		   value of an offset parameter, missing (or absent) for an estimated one; the plugin confirms that it
+		   read them by setting __ergm_native_curved_fixok = 1 (a plugin without this support leaves it unset) */
+		{
+			int isfix[MAXTERMS_NARROW];
+			double fixval[MAXTERMS_NARROW];
+			char fname[64];
+			for (i = 0; i < ntheta; i++) {
+				ST_double v;
+				isfix[i] = 0; fixval[i] = 0.0;
+				snprintf(fname, sizeof(fname), "__ergm_native_curved_fix%ld", i + 1);
+				if (SF_scal_use(fname, &v) == 0 && !SF_is_missing(v)) { isfix[i] = 1; fixval[i] = (double)v; }
+			}
+			fit_rc = curved_mple_fit_c(X, Y, ndyads, nterms, ncurved, curved_decay_start, isfix, fixval,
+				theta_out, V_out, &converged_out);
+			SF_scal_save("__ergm_native_curved_fixok", (ST_double)1);
+		}
 		free(X); free(Y);
 
 		if (fit_rc == 0) {
