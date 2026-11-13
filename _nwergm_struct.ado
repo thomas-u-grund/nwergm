@@ -30,6 +30,14 @@ program _nwergm_struct, rclass
 			local rest = trim(substr(`"`rest'"', `pos' + 1, .))
 		}
 		local ++nterm
+		// a model term of nwergm's own (gwesp(), nodematch(), ...) given inside
+		// structural(): say that it is an option of its own
+		local __optonly "edges gwesp gwdsp gwnsp gwdegree gwodegree gwidegree gwespfree gwdegreefree gwdspfree gwodegreefree gwidegreefree gwnspfree esp dsp nodematch nodematchdiff nodecov nodeicov nodeocov nodecovrange edgecov absdist nodefactor nodeifactor nodeofactor nodemix absdiffcat smalldiff sociality attrcov dyadcov degrangeto odegrangeto idegrangeto transitiveties cyclicalties hamming sender receiver"
+		if `: list tname in __optonly' {
+			local __shown = cond(`"`args'"' == "", "`tname'", `"`tname'(`args')"')
+			di as err `"{p 0 0 2}structural(): {bf:`tname'} is not a structural() term but an option of nwergm itself. Give it outside structural(), for example: nwergm `netname', edges `__shown'{p_end}"'
+			exit 198
+		}
 		_nwergm_struct_args `tname' , args(`args')
 		local ATTR "`r(attr)'"
 		local DIFF = r(diff)

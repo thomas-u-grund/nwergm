@@ -62,6 +62,8 @@ with starting values given by {cmd:init(}{it:edges weight lambda}{cmd:)}, as R n
 to fit this term, and has the coefficients {cmd:altkstar} and {cmd:altkstar_lambda}; {cmd:altkstar(lambda=}{it:#} {cmd:fixed)} is the fixed form.
 
 {pstd}
+The terms that are options of {cmd:nwergm} itself ({opt gwesp()}, {opt gwdsp()}, {opt esp()}, {opt nodematch()}, {opt nodecov()}, {opt edgecov()} and the other options listed in {helpb nwergm}) are given as options, not inside {cmd:structural()}: {cmd:nwergm mynet, edges gwesp(.5) structural(twopath)}. Inside {cmd:structural()} they stop with a message saying so.
+{pstd}
 {cmd:structural()} needs the native plugin that ships with the package; there is no slower fallback. The {cmd:levels=} argument of the attribute terms is not available (all levels of the attribute are
 used).
 

@@ -69,6 +69,7 @@ Other results do not change. The Mata library is rebuilt (with Stata 17); the co
 
 ### Fixed
 - **An option given twice says how to give it once.** `nwergm lazega_adv, edges edgecov(lazega_fr) edgecov(lazega_cow)` stopped with Stata's "option edgecov() not allowed", which reads as if `edgecov()` did not exist. A repeated option now stops (r(198)) with "option edgecov() is given more than once. Give it once and list the networks in it: edgecov(lazega_fr lazega_cow)." The same holds for every term option (`nodecov(seniority) nodecov(age)` points to `nodecov(seniority age)`). Calls without repeated options are unchanged. The help files say that several networks go into one `edgecov()`, with an example. New test `test_nwergm_dupopt`.
+- `structural()` given a term that is an option of nwergm itself (for example `structural(gwesp(.5))`) said "unknown or unsupported term"; it now says that the term is an option and shows how to give it (`nwergm net, edges gwesp(.5)`). Help nwergm_structural says so.
 
 ## [1.5.10] - 2026-11-11
 
