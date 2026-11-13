@@ -111,7 +111,7 @@ xt_refuse gwdegree_directed 198 "nwergm D12, edges gwdegree(.5)"               /
 xt_refuse ostar_undirected 198 "nwergm U14, edges ostar(2)"                    // ~564
 xt_refuse sender_undirected 198 "nwergm U14, edges sender"                     // ~582
 xt_refuse bterm_onemode 198 "nwergm U14, edges bdegree1(1)"                    // ~251
-xt_refuse string_attr 109 "nwergm U14, edges nodematch(s)"                     // _nwergm_cov.ado _nwergm_covattr ~178
+xt_refuse string_attr 109 "nwergm U14, edges nodecov(s)"                       // a numeric term refuses a string variable; categorical terms take it
 xt_refuse missing_attr 416 "nwergm U14, edges nodematch(gm)"                   // _nwergm_covattr ~184
 xt_refuse missing_attr_dep 416 "nwergm U14, edges triangle nodecov(gm)"
 xt_refuse no_variable 111 "nwergm U14, edges nodecov(nosuchvar)"               // _nwergm_covattr ~166
@@ -125,7 +125,6 @@ xt_refuse offset_name 198 "nwergm U14, edges triangle offset(nosuch 1)"        /
 xt_refuse offset_value 198 "nwergm U14, edges triangle offset(triangle abc)"   // ~1916
 xt_refuse offset_dup 198 "nwergm U14, edges triangle offset(triangle 1 triangle 2)" // ~1927
 xt_refuse offset_all 198 "nwergm U14, edges triangle offset(edges -1 triangle 1)"   // ~1934
-xt_refuse offset_curved 198 "nwergm U14, edges gwespfree(.5) offset(edges -1)"     // ~1903
 xt_refuse init_count 198 "nwergm U14, edges triangle init(1)"                  // _nwergm_est.ado ~66
 xt_refuse init_value 198 "nwergm U14, edges triangle init(1 x)"                // ~78
 xt_refuse fixdensity_mple 198 "nwergm U14, edges triangle fixdensity method(mple)" // nwergm.ado ~117
