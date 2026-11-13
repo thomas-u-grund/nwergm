@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.6.0  13nov2026 version 1.0.0  author: Thomas Grund}{...}
+{* *! version 1.7.0  13nov2026 version 1.0.0  author: Thomas Grund}{...}
 {title:Title}
 
 {p2colset 9 32 33 2}{...}
@@ -80,4 +80,4 @@ etc. is only the starting value for MCMLE.
 {helpb nwergm}, {helpb nwergm_estat}
 
 {hline}
-{pstd}{it:nwergm version 1.6.0, 13 November 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.7.0, 13 November 2026}{p_end}{* nwversion}
