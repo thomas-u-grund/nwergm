@@ -70,8 +70,6 @@ Tested on macOS with Stata 17 BE, Stata 18 BE and StataNow 19.5 MP (the full tes
 
 Other results do not change. The Mata library is rebuilt (with Stata 17); the core requirement is unchanged.
 
-### Fixed
-
 ## [1.5.10] - 2026-11-11
 
 ### Fixed
