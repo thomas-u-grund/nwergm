@@ -3,6 +3,12 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+- Coefficient tables show the coefficient names in full by default: the confidence intervals are left out, as with `noci`, at a `linesize` below 100 (where names of up to 32 characters do not fit next to them); before, long names were cut (e.g. `nodematch_o~e`). The new option `ci`, or `level(#)` given explicitly, shows the intervals as before. The display options of Stata's estimation commands (`noci`, `nopvalues`, `cformat()`, `pformat()`, `sformat()` and the others of `ereturn display`) are accepted in fits and in the replay (`nwergm` alone, `estimates replay`). Tables whose names all fit, and all output outside the coefficient tables, are unchanged.
+- `nwergm simulate` with a number of nodes keeps the data in memory (all variables, in their row order) when the draws are on its nodes: with `basis()` (the rows are the nodes of the basis network), without `basis()` when the networks in memory are on the same number of nodes (the draws then get the node names of the rows, as the node-attribute terms read row i for node i), and when no network is in memory and the data has one row per node (`set obs` and `generate`). It used to replace the data with the node data of the draws, so that, for example, `status` was gone after `nwergm simulate 71, ... basis(lazega_adv) constraints(degrees)`. The ties of the draws are unchanged. Simulating on another number of nodes replaces the data as before.
+
 ## [1.7.1] - 2026-11-13
 
 ### Changed

@@ -73,13 +73,13 @@ program _nwergm_run, eclass
 		exit
 	}
 	_nwergm_libcheck
-	// replay: nwergm with no arguments, or with display options only (level()), after an nwergm fit; also what
-	// estimates replay runs
+	// replay: nwergm with no arguments, or with display options only (ci, level(), noci, nopvalues, cformat() and the
+	// other options of Stata's ereturn display), after an nwergm fit; also what estimates replay runs
 	if replay() {
-		capture syntax [, Level(cilevel)]
+		capture _nwergm_tabopts __ergm_t check `0'
 		if !_rc {
 			if "`e(cmd)'" != "nwergm" error 301
-			_nwergm_replay, level(`level')
+			_nwergm_replay `0'
 			exit
 		}
 	}
@@ -148,7 +148,11 @@ program _nwergm_fit, eclass
 		INIT(string) MPLETYPE(string) MPLECHECK(string) MPLECOVariance(string) ESTimate(string) MAINMETHOD(string) ///
 		MCMLETERMination(string) MCMLECONFidence(real 0.99) MCMLESTEPLength(real 1) MCMLESTEPMargin(real 0.05) ///
 		MCMLEEFFectivesize(real -1) CDNSteps(integer 8) CDSAMPLEsize(integer 0) SABURNin(integer 16384) SAINTERval(integer 1024) SAPHASE3(integer 1000) SAGAIN(real 0.1) SANSUB(integer 4) ///
-		CONSTRAINTS(string asis) OBSCONSTRAINTS(string asis) MCMCMAXEDGES(integer 0) MCMCPROP(string asis) ]
+		CONSTRAINTS(string asis) OBSCONSTRAINTS(string asis) MCMCMAXEDGES(integer 0) MCMCPROP(string asis) * ]
+	// display options of the coefficient table (ci, level(), noci, nopvalues, cformat(), ...); any other option is
+	// refused here with Stata's usual message
+	local __ergm_tabopts `"`options'"'
+	_nwergm_tabopts __ergm_chk check, `__ergm_tabopts'
 	set more off
 	if `"`seed'"' != "" _nwergm_seed `seed', check
 	_nwergm_decaycheck, gwesp(`gwesp') gwdsp(`gwdsp') gwnsp(`gwnsp') gwdegree(`gwdegree') gwodegree(`gwodegree') gwidegree(`gwidegree') ///
@@ -2429,7 +2433,7 @@ program _nwergm_fit, eclass
 		// was actually used for it.
 		ereturn scalar native = `__ergm_mple_native_used'
 
-		nwergm_display "`netname'" "`nodes'" "`directed'" "MPLE" "" ""
+		nwergm_display "`netname'" "`nodes'" "`directed'" "MPLE" "" "" "" "`__ergm_tabopts'"
 		if `__ergm_sparse' {
 			_nwergm_fitstats, dmat(__nwergm_sp) method(mple) dind(`__ergm_dind') curved(0) sparse
 			mata: st_local("__ergm_hassp", strofreal(findexternal("__nwergm_sp") != NULL))
@@ -2885,7 +2889,7 @@ program _nwergm_fit, eclass
 			di "{p 0 0 2}{err}Results are reported but should not be treated as a converged fit - consider increasing mcmleiterations()/mcmcsamplesize().{p_end}"
 		}
 
-		nwergm_display "`netname'" "`nodes'" "`directed'" "`=cond("`method'"=="cd","CD",cond("`mainmethod'"=="sa","SA","MCMLE"))'" "`__ergm_converged'" "`__ergm_niter'" "`mcmcsamplesize'"
+		nwergm_display "`netname'" "`nodes'" "`directed'" "`=cond("`method'"=="cd","CD",cond("`mainmethod'"=="sa","SA","MCMLE"))'" "`__ergm_converged'" "`__ergm_niter'" "`mcmcsamplesize'" "`__ergm_tabopts'"
 		local __dcname ""
 		if "`__ergm_dcomp'" == "1" local __dcname "`__nw_Dc'"
 		if `__ss_adapt' local __ergm_interval_bridge `__br_int'
@@ -2913,8 +2917,7 @@ end
 
 capture program drop nwergm_display
 program nwergm_display
-	args netname nodes directed method converged niter mcmcsamplesize level
-	if "`level'" == "" local level = c(level)
+	args netname nodes directed method converged niter mcmcsamplesize tabopts
 
 	di
 	di "{txt}Exponential-family random graph model"
@@ -2928,7 +2931,8 @@ program nwergm_display
 		di "{txt}MCMC sample size:{col 24}={res}  `mcmcsamplesize'"
 	}
 	di
-	ereturn display, level(`level')
+	_nwergm_tabopts __t, `tabopts'
+	ereturn display, `__t'
 	di
 	if "`method'" == "CD" {
 		di "{txt}{p 0 0 2}Contrastive divergence estimate (`niter' iteration(s)); standard errors come from the covariance of the short-run CD sample.{p_end}"
@@ -3966,6 +3970,32 @@ program nwergm_simulate
 		}
 		local __sim_con 1
 	}
+	// the data in memory is kept (all variables, in their row order) when the draws are on its nodes, that is when it
+	// has one row per node and either holds no network (node attributes made with set obs, as for nodematch()), or
+	// basis() names a network whose nodes are the rows, in the order of the rows, or (without basis()) the networks in
+	// memory are on these rows: the draws then get the node names of the rows (_nwnode), since the node-attribute terms
+	// read row i for node i. Otherwise (another number of nodes) the data is replaced by the node data of the draws.
+	local __keepdata 0
+	if _N == `nodes' & `nodes' > 0 {
+		capture mata: st_local("__nnets", strofreal(__nw.nws.get_number()))
+		if _rc local __nnets 0
+		if "`__nnets'" == "" local __nnets 0
+		if `__nnets' == 0 local __keepdata 1
+		else if `bipartite' == 0 {
+			capture confirm string variable _nwnode, exact
+			if !_rc {
+				mata: st_local("__rowlabs", invtokens(st_sdata(., "_nwnode")', ","))
+				if "`basis'" != "" {
+					if `"`__rowlabs'"' == `"`__simlabs'"' local __keepdata 1
+				}
+				else {
+					local __simlabs `"`__rowlabs'"'
+					local __keepdata 1
+				}
+			}
+		}
+	}
+	if `__keepdata' preserve
 	forvalues __s = 1/`nsim' {
 		if !`__sim_con' {
 		capture mata: mata drop __nwergm_last_G
@@ -4029,6 +4059,7 @@ program nwergm_simulate
 			nwset, mat(`__ergm_simmat') `=cond("`directed'"!="","directed","undirected")' name(`__ergm_simname') `=cond(`"`__simlabs'"' != "", `"labs(`__simlabs')"', "")'
 		}
 	}
+	if `__keepdata' restore
 
 	// `__ergm_simmat_bip' is only ever assigned inside the `bipartite'!=0
 	// branch above - dropped conditionally on the SAME test, rather than
@@ -4107,12 +4138,12 @@ program _nwergm_numvar
 	}
 end
 
-// replay of the last nwergm fit (nwergm alone, nwergm, level(#), estimates replay)
+// replay of the last nwergm fit (nwergm alone, nwergm, level(#) and other display options, estimates replay)
 capture program drop _nwergm_replay
 program _nwergm_replay
-	syntax [, Level(cilevel)]
+	syntax [, *]
 	local m = cond("`e(method)'" == "mple", "MPLE", cond("`e(estimate)'" == "CD", "CD", cond("`e(estimate)'" == "SA", "SA", "MCMLE")))
-	nwergm_display "`e(depvar)'" "`=e(nodes)'" "`e(directed)'" "`m'" "`=e(converged)'" "`=e(mcmle_iterations)'" "`=e(mcmc_samplesize)'" "`level'"
+	nwergm_display "`e(depvar)'" "`=e(nodes)'" "`e(directed)'" "`m'" "`=e(converged)'" "`=e(mcmle_iterations)'" "`=e(mcmc_samplesize)'" "`options'"
 	if "`e(ll)'" != "" & "`e(ll_method)'" != "" {
 		local k = e(df_m)
 		local pd = cond("`e(ll_method)'" == "pseudolikelihood", "Pseudo-", "")
@@ -4128,6 +4159,53 @@ program _nwergm_replay
 			di as txt "(For a dyad-dependent model fitted by MPLE, this is the pseudolikelihood.)"
 		}
 	}
+end
+
+// the options of ereturn display for the coefficient table. The coefficient names are shown in full: the
+// confidence intervals are left out (noci) at a linesize below 100, where names of up to 32 characters do not fit next
+// to them. ci, or level(#) given explicitly, shows the intervals (long names are then cut, e.g. nodematch_o~e); noci,
+// nopvalues, cformat() and the other display options of Stata's estimation commands are passed on. With check, only
+// the options are checked (before a fit).
+// Use: _nwergm_tabopts <local> [check] [, options]; the options for ereturn display are returned in <local>.
+capture program drop _nwergm_tabopts
+program _nwergm_tabopts
+	version 14
+	gettoken __mac 0 : 0, parse(" ,")
+	gettoken __chk : 0, parse(" ,")
+	if `"`__chk'"' == "check" gettoken __chk 0 : 0, parse(" ,")
+	else local __chk
+	syntax [, Level(string) *]
+	local __lev `"`level'"'
+	// ci is picked out by hand: declared to syntax, ci would also take noci (as its negation)
+	local ci
+	local __rest
+	while `"`options'"' != "" {
+		gettoken __o options : options, bind
+		if strlower(`"`__o'"') == "ci" local ci ci
+		else local __rest `"`__rest' `__o'"'
+	}
+	_get_diopts __di, `__rest'
+	local __noci : list posof "noci" in __di
+	local __nopv : list posof "nopvalues" in __di
+	if "`ci'" != "" & `__noci' {
+		di as err "only one of options ci or noci is allowed"
+		exit 198
+	}
+	local __show = ("`ci'" != "" | `"`__lev'"' != "")
+	if `"`__lev'"' != "" {
+		local 0 , level(`__lev')
+		syntax [, Level(cilevel)]
+		local __lev `level'
+	}
+	else local __lev = c(level)
+	if "`__chk'" != "" exit
+	local __add
+	if !`__show' & !`__noci' & !`__nopv' {
+		// full names: at a linesize below 100 (or with lstretch off) the names of up to 32 characters do not fit next
+		// to the intervals; from 100 on both fit
+		if c(linesize) < 100 | c(lstretch) == "off" | `: list posof "nolstretch" in __di' local __add noci
+	}
+	c_local `__mac' `"level(`__lev') `__di' `__add'"'
 end
 
 // seed(): an integer from 0 to 2147483647; set it (or only check it, option check)

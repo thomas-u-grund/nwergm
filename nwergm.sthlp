@@ -247,6 +247,9 @@ genuine Stata matrix-engine cost at bulk-data scale (confirmed by direct timing:
 blamed for or sped up (reading the already-posted matrix back is fast regardless of size - the cost is entirely in creating it in the first place). Specify {opt nomcmcsample} when fitting with an
 unusually large {opt mcmcsamplesize()} and you do not need {cmd:estat mcmcdiag} or to inspect the raw sample directly - the coefficient table, standard errors, and every other stored result are
 completely unaffected{p_end}
+{synopt:{opt ci}}Show the confidence intervals in the coefficient table. By default the table shows the coefficient names in full, and the intervals are left out (as with {opt noci}) at a {cmd:set linesize} below 100, where names of up to 32 characters do not fit next to them. With {opt ci} the intervals are shown and long names are cut (e.g. {cmd:nodematch_o~e}){p_end}
+{synopt:{opt level(#)}}Confidence level of the intervals; giving it also shows them, as {opt ci}; default {cmd:level(95)} or as set by {cmd:set level}{p_end}
+{synopt:{it:{help estimation_options##display_options:display_options}}}{opt noci}, {opt nopvalues}, {opt cformat(%fmt)}, {opt pformat(%fmt)}, {opt sformat(%fmt)} and the other display options of Stata's estimation commands{p_end}
 
 {p2colreset}{...}
 
@@ -266,7 +269,7 @@ menu is installed with {cmd:nwinstall}.
 {title:Replaying results}
 
 {pstd}
-Typed without arguments (or with {opt level(#)} only), {cmd:nwergm} redisplays the results of the last {cmd:nwergm} fit;
+Typed without arguments (or with display options only: {opt ci}, {opt level(#)}, {opt nopvalues}, {opt cformat()}, ...), {cmd:nwergm} redisplays the results of the last {cmd:nwergm} fit;
 {cmd:estimates replay} works as well. The postestimation commands ({cmd:estat gof}, {cmd:nwergm simulate} from a fit,
 {cmd:predict}) use the model of the last fit, which {cmd:nwergm} keeps in memory; a refused {cmd:nwergm} call and
 {cmd:nwergm simulate} from a given model leave it in place. After {cmd:estimates restore} of an earlier fit they stop
@@ -573,13 +576,14 @@ consecutive values, in the order of its levels or values. When {opt theta()} has
 command with {cmd:theta(0)} is the quickest way to see that order.
 
 {pstd}
-{bf:The resulting simulated network's own dataset does not carry the caller's covariate variable(s) forward.} Each simulated draw is built via a fresh {cmd:nwset} call that replaces
-the active dataset with just that network's own bare node/edge structure - any covariate
-variable read during term construction is captured once, in Mata, before that replacement
-happens, and is not itself part of the simulated result. Regenerate it afterward (by node
-index, since simulated node identity is always {cmd:1}..{it:nodes} in the caller's original row
-order) if a postestimation step - e.g. checking the resulting network's own mixing pattern -
-needs it alongside the simulated network.
+{bf:The data in memory.} When the draws are on the nodes of the data in memory, the data is kept: all variables, in
+their row order. That is the case when the data has {it:nodes} observations and either holds no network (node attributes
+made with {cmd:set obs} and {cmd:generate}), or {opt basis()} names a network whose nodes are the rows, or the networks in
+memory are on these rows; without {opt basis()} the draws then get the node names of the rows ({cmd:_nwnode}), since node
+{it:i} of a draw is row {it:i}, whose attributes the node-attribute terms read. Simulating on another number of nodes replaces
+the data with the node data of the draws (the node names and {cmd:_nwinclude}); the covariates read for the terms are
+not carried over. {cmd:nwergm simulate} from a fitted model (without {it:nodes}) keeps the data, except with
+{cmd:output(edgelist)}, which replaces it by the list of ties.
 
 {pstd}
 {opt nsim(int)} (default 1) draws that many independent networks (a fresh burn-in for each,

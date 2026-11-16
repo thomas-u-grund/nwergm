@@ -544,8 +544,8 @@ set obs 8
 gen xrt = _n
 set seed 7007
 qui nwergm simulate 8, edges bcov1(xrt) bipartite(5) theta(-1.2 .3) nsim(1) mcmcburnin(4000) generate(rtsim)
-qui set obs 8
-qui gen xrt = _n
+* the data in memory (one row per node, no network) is kept by simulate (it was replaced up to 1.7.1)
+assert _N == 8 & xrt == _n
 qui nwergm rtsim, edges bcov1(xrt) method(mple)
 assert _rc == 0
 assert e(nodes) == 8
