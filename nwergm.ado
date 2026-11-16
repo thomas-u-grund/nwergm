@@ -3161,6 +3161,11 @@ program nwergm_simulate
 	_nwergm_tag clear
 	mata: __nwergm_last_M = ErgmModel()
 	mata: __nwergm_last_M.init()
+	// the graph of an earlier fit must not stay in memory while the terms are read: _nwergm_numvar takes the number
+	// of observations to check from __nwergm_last_G.n, which would be the size of that fit (not of this simulation)
+	capture mata: mata drop __nwergm_last_G
+	mata: __nwergm_last_G = ErgmGraph()
+	mata: __nwergm_last_G.init(`nodes', ("`directed'"!=""))
 
 	tempname td_edges
 	mata: `td_edges' = ErgmTermData()
@@ -4125,6 +4130,10 @@ program _nwergm_numvar
 	}
 	local __nn = _N
 	capture mata: st_local("__nn", strofreal(__nwergm_last_G.n, "%18.0g"))
+	if `__nn' > _N {
+		di "{p 0 0 2}{err}In term {bf:`term'}: the model has `__nn' nodes, but the data in memory has only `=_N' observations; the attribute {bf:`v'} is read from the first `__nn' observations (one row per node).{p_end}"
+		error 198
+	}
 	qui count if missing(`v') in 1/`__nn'
 	local __nna = r(N)
 	if `__nna' > 0 & inlist("`term'", "bcov1", "bfactor1", "bnodematch1", "bcov2", "bfactor2", "bnodematch2") {
