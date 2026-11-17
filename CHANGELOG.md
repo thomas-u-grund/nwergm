@@ -3,12 +3,18 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.8.0] - 2026-11-17
 
 ### Changed
-- **`nwergm simulate N, ...` after an earlier fit** stopped with r(198) "observation numbers out of range" when the data had fewer rows than the nodes of that fit (node attributes made with `set obs` and `generate`), and, with more rows, checked the attribute for missing values only in the first rows (the number of nodes of the earlier fit). The check now reads the number of nodes of the simulation. A message names the problem when the data have fewer rows than the nodes. The draws are unchanged.
-- Coefficient tables show the coefficient names in full by default: the confidence intervals are left out, as with `noci`, at a `linesize` below 100 (where names of up to 32 characters do not fit next to them); before, long names were cut (e.g. `nodematch_o~e`). The new option `ci`, or `level(#)` given explicitly, shows the intervals as before. The display options of Stata's estimation commands (`noci`, `nopvalues`, `cformat()`, `pformat()`, `sformat()` and the others of `ereturn display`) are accepted in fits and in the replay (`nwergm` alone, `estimates replay`). Tables whose names all fit, and all output outside the coefficient tables, are unchanged.
+- **The default table format changed.** Coefficient tables show the coefficient names in full by default: the confidence intervals are left out, as with `noci`, at a `linesize` below 100 (where names of up to 32 characters do not fit next to them); before, long names were cut (e.g. `nodematch_o~e`). The new option `ci`, or `level(#)` given explicitly, shows the intervals as before. The display options of Stata's estimation commands (`noci`, `nopvalues`, `cformat()`, `pformat()`, `sformat()` and the others of `ereturn display`) are accepted in fits and in the replay (`nwergm` alone, `estimates replay`). Tables whose names all fit, and all output outside the coefficient tables, are unchanged.
 - `nwergm simulate` with a number of nodes keeps the data in memory (all variables, in their row order) when the draws are on its nodes: with `basis()` (the rows are the nodes of the basis network), without `basis()` when the networks in memory are on the same number of nodes (the draws then get the node names of the rows, as the node-attribute terms read row i for node i), and when no network is in memory and the data has one row per node (`set obs` and `generate`). It used to replace the data with the node data of the draws, so that, for example, `status` was gone after `nwergm simulate 71, ... basis(lazega_adv) constraints(degrees)`. The ties of the draws are unchanged. Simulating on another number of nodes replaces the data as before.
+
+### Fixed
+- **`nwergm simulate N, ...` after an earlier fit** stopped with r(198) "observation numbers out of range" when the data had fewer rows than the nodes of that fit (node attributes made with `set obs` and `generate`), and, with more rows, checked the attribute for missing values only in the first rows (the number of nodes of the earlier fit). The check now reads the number of nodes of the simulation. A message names the problem when the data have fewer rows than the nodes. The draws are unchanged.
+
+Tested on macOS with Stata 17 BE, Stata 18 BE and StataNow 19.5 MP (the full test suite). Windows and Linux: not tested for this version.
+
+## [Unreleased]
 
 ## [1.7.1] - 2026-11-13
 
