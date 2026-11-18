@@ -1,4 +1,5 @@
-. nwergm flomarriage, edges nodecov(wealth) gwesp(0.5) offset(nodecov_wealth 0.01) seed(1)
+. nwergm flomarriage, edges nodecov(wealth) gwesp(0.5) offset(nodecov_wealth 0.01)
+>  seed(1)
 
 Exponential-family random graph model
 
@@ -9,13 +10,13 @@ Directed:              =  No
 Estimation:            =  MCMLE
 MCMC sample size:      =  243
 
---------------------------------------------------------------------------------
-   flomarriage | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
----------------+----------------------------------------------------------------
-         edges |  -2.520162   .3759037    -6.70   0.000    -3.256919   -1.783404
-nodecov_wealth |        .01          .        .       .            .           .
-     gwesp_0.5 |  -.0098068   .2417939    -0.04   0.968    -.4837142    .4641005
---------------------------------------------------------------------------------
+-------------------------------------------------------
+   flomarriage | Coefficient  Std. err.      z    P>|z|
+---------------+---------------------------------------
+         edges |  -2.520162   .3759037    -6.70   0.000
+nodecov_wealth |        .01          .        .       .
+     gwesp_0.5 |  -.0098068   .2417939    -0.04   0.968
+-------------------------------------------------------
 
 MCMLE converged after 1 iteration(s).
 Evaluating log-likelihood at the estimate (bridge sampling with 16 bridges) ...

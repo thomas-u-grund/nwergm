@@ -8,14 +8,15 @@ Ties:                  =  72
 Directed:              =  No
 Estimation:            =  MPLE
 
---------------------------------------------------------------------------------
-         clubs | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
----------------+----------------------------------------------------------------
-         edges |  -1.396876   .1629103    -8.57   0.000    -1.716175   -1.077578
-edgecov_visits |   .0307848   .2770268     0.11   0.912    -.5121777    .5737473
---------------------------------------------------------------------------------
+-------------------------------------------------------
+         clubs | Coefficient  Std. err.      z    P>|z|
+---------------+---------------------------------------
+         edges |  -1.396876   .1629103    -8.57   0.000
+edgecov_visits |   .0307848   .2770268     0.11   0.912
+-------------------------------------------------------
 
-Maximum pseudolikelihood estimate; this is the maximum likelihood estimate only if the model is dyad-independent.
+Maximum pseudolikelihood estimate; this is the maximum likelihood estimate only
+if the model is dyad-independent.
 
              Null Deviance:     499.1  on 360 degrees of freedom
          Residual Deviance:     360.3  on 358 degrees of freedom

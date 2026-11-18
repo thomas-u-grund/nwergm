@@ -8,14 +8,15 @@ Ties:                  =  20
 Directed:              =  No
 Estimation:            =  MPLE
 
-------------------------------------------------------------------------------------
-       flomarriage | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
--------------------+----------------------------------------------------------------
-             edges |  -2.825678   .5559189    -5.08   0.000    -3.915259   -1.736097
-log_nodecov_wealth |   28.08384   10.41224     2.70   0.007     7.676222    48.49145
-------------------------------------------------------------------------------------
+-----------------------------------------------------------
+       flomarriage | Coefficient  Std. err.      z    P>|z|
+-------------------+---------------------------------------
+             edges |  -2.825678   .5559189    -5.08   0.000
+log_nodecov_wealth |   28.08384   10.41224     2.70   0.007
+-----------------------------------------------------------
 
-Maximum pseudolikelihood estimate; this is the maximum likelihood estimate only if the model is dyad-independent.
+Maximum pseudolikelihood estimate; this is the maximum likelihood estimate only
+if the model is dyad-independent.
 
              Null Deviance:     166.4  on 120 degrees of freedom
          Residual Deviance:     100.8  on 118 degrees of freedom

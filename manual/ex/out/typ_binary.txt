@@ -12,13 +12,14 @@ Ties:                  =  134
 Directed:              =  No
 Estimation:            =  MPLE
 
-------------------------------------------------------------------------------
-        val1 | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
--------------+----------------------------------------------------------------
-       edges |   -1.57296   .0949246   -16.57   0.000    -1.759008   -1.386911
-------------------------------------------------------------------------------
+-----------------------------------------------------
+        val1 | Coefficient  Std. err.      z    P>|z|
+-------------+---------------------------------------
+       edges |   -1.57296   .0949246   -16.57   0.000
+-----------------------------------------------------
 
-Maximum pseudolikelihood estimate; this is the maximum likelihood estimate only if the model is dyad-independent.
+Maximum pseudolikelihood estimate; this is the maximum likelihood estimate only
+if the model is dyad-independent.
 
              Null Deviance:    1081.3  on 780 degrees of freedom
          Residual Deviance:     715.6  on 779 degrees of freedom

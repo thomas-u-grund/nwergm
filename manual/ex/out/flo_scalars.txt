@@ -1,11 +1,13 @@
-. display "converged: " e(converged) "   iterations: " e(mcmle_iterations) "   native: " e(native)
+. display "converged: " e(converged) "   iterations: " e(mcmle_iterations) "   nat
+> ive: " e(native)
 converged: 1   iterations: 1   native: 1
 
-. display "sample size: " e(mcmc_samplesize) "   burn-in: " e(mcmc_burnin) "   interval: " e(mcmc_interval_final)
+. display "sample size: " e(mcmc_samplesize) "   burn-in: " e(mcmc_burnin) "   int
+> erval: " e(mcmc_interval_final)
 sample size: 243   burn-in: 16384   interval: 1024
 
 . display "version: " e(version)
-version: 1.7.0
+version: 1.8.1
 
 . matrix list e(b)
 

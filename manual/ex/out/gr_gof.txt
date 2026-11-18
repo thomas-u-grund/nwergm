@@ -74,4 +74,4 @@ Goodness of fit: edgewise shared partner (100 simulated networks)
 is the observed network)
 
 . graph export "../fig/gof.pdf", name(gof) replace
-file ../fig/gof.pdf saved as PDF format
+file /Users/tgrund/FILES_NEW/SOFTWARE/nwergm/manual/ex/../fig/gof.pdf saved as PDF format

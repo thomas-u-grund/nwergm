@@ -1,5 +1,6 @@
 . predict, frame(pp) pr
-(frame pp contains one row per informative dyad: tail, head, p = conditional tie probability)
+(frame pp contains one row per informative dyad: tail, head, p = conditional tie
+probability)
 
 . frame pp: summarize p
 

@@ -8,14 +8,15 @@ Ties:                  =  203
 Directed:              =  No
 Estimation:            =  MPLE
 
----------------------------------------------------------------------------------
-           mesa | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
-----------------+----------------------------------------------------------------
-          edges |  -6.034045   .1583032   -38.12   0.000    -6.344314   -5.723776
-nodematch_grade |   2.830999   .1773251    15.97   0.000     2.483449     3.17855
----------------------------------------------------------------------------------
+--------------------------------------------------------
+           mesa | Coefficient  Std. err.      z    P>|z|
+----------------+---------------------------------------
+          edges |  -6.034045   .1583032   -38.12   0.000
+nodematch_grade |   2.830999   .1773251    15.97   0.000
+--------------------------------------------------------
 
-Maximum pseudolikelihood estimate; this is the maximum likelihood estimate only if the model is dyad-independent.
+Maximum pseudolikelihood estimate; this is the maximum likelihood estimate only
+if the model is dyad-independent.
 
              Null Deviance:   28987.4  on 20910 degrees of freedom
          Residual Deviance:    1939.5  on 20908 degrees of freedom

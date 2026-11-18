@@ -1,5 +1,6 @@
 . nwergm flomiss, edges nodecov(wealth) gwesp(0.5) seed(1)
-Note: network flomiss has 3 missing dyad(s); they are left out of the likelihood, as in ergm.
+Note: network flomiss has 3 missing dyad(s); they are left out of the
+      likelihood, as in ergm.
 
 Exponential-family random graph model
 
@@ -10,13 +11,13 @@ Directed:              =  No
 Estimation:            =  MCMLE
 MCMC sample size:      =  486
 
---------------------------------------------------------------------------------
-       flomiss | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
----------------+----------------------------------------------------------------
-         edges |  -2.678908   .5691385    -4.71   0.000    -3.794399   -1.563417
-nodecov_wealth |   .0105619   .0054018     1.96   0.051    -.0000255    .0211493
-     gwesp_0.5 |   .0452257   .2927755     0.15   0.877    -.5286037    .6190551
---------------------------------------------------------------------------------
+-------------------------------------------------------
+       flomiss | Coefficient  Std. err.      z    P>|z|
+---------------+---------------------------------------
+         edges |  -2.678908   .5691385    -4.71   0.000
+nodecov_wealth |   .0105619   .0054018     1.96   0.051
+     gwesp_0.5 |   .0452257   .2927755     0.15   0.877
+-------------------------------------------------------
 
 MCMLE converged after 1 iteration(s).
 Evaluating log-likelihood at the estimate (bridge sampling with 16 bridges) ...

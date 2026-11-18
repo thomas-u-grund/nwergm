@@ -8,14 +8,15 @@ Ties:                  =  20
 Directed:              =  No
 Estimation:            =  MPLE
 
---------------------------------------------------------------------------------
-   flomarriage | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
----------------+----------------------------------------------------------------
-         edges |  -2.594929   .5360561    -4.84   0.000     -3.64558   -1.544278
-nodecov_wealth |   .0105459   .0046743     2.26   0.024     .0013845    .0197073
---------------------------------------------------------------------------------
+-------------------------------------------------------
+   flomarriage | Coefficient  Std. err.      z    P>|z|
+---------------+---------------------------------------
+         edges |  -2.594929   .5360561    -4.84   0.000
+nodecov_wealth |   .0105459   .0046743     2.26   0.024
+-------------------------------------------------------
 
-Maximum pseudolikelihood estimate; this is the maximum likelihood estimate only if the model is dyad-independent.
+Maximum pseudolikelihood estimate; this is the maximum likelihood estimate only
+if the model is dyad-independent.
 
              Null Deviance:     166.4  on 120 degrees of freedom
          Residual Deviance:     103.1  on 118 degrees of freedom
@@ -23,7 +24,8 @@ Maximum pseudolikelihood estimate; this is the maximum likelihood estimate only 
 Log-likelihood:   -51.5543 (df = 2)   AIC:     107.1   BIC:     112.7
 
 . nwergm flomiss, edges nodecov(wealth)
-Note: network flomiss has 3 missing dyad(s); they are left out of the likelihood, as in ergm.
+Note: network flomiss has 3 missing dyad(s); they are left out of the
+      likelihood, as in ergm.
 
 Exponential-family random graph model
 
@@ -33,14 +35,15 @@ Ties:                  =  19
 Directed:              =  No
 Estimation:            =  MPLE
 
---------------------------------------------------------------------------------
-       flomiss | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
----------------+----------------------------------------------------------------
-         edges |  -2.692927    .552001    -4.88   0.000    -3.774829   -1.611025
-nodecov_wealth |   .0111924   .0047613     2.35   0.019     .0018604    .0205244
---------------------------------------------------------------------------------
+-------------------------------------------------------
+       flomiss | Coefficient  Std. err.      z    P>|z|
+---------------+---------------------------------------
+         edges |  -2.692927    .552001    -4.88   0.000
+nodecov_wealth |   .0111924   .0047613     2.35   0.019
+-------------------------------------------------------
 
-Maximum pseudolikelihood estimate; this is the maximum likelihood estimate only if the model is dyad-independent.
+Maximum pseudolikelihood estimate; this is the maximum likelihood estimate only
+if the model is dyad-independent.
 
              Null Deviance:     162.2  on 117 degrees of freedom
          Residual Deviance:      98.3  on 115 degrees of freedom

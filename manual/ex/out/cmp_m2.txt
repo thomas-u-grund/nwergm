@@ -1,4 +1,5 @@
-. nwergm lazega_fr, edges mutual nodematch(prac) gwesp(0.5) seed(1) mcmcinterval(1000) mcmcburnin(20000)
+. nwergm lazega_fr, edges mutual nodematch(prac) gwesp(0.5) seed(1) mcmcinterval(1
+> 000) mcmcburnin(20000)
 
 Exponential-family random graph model
 
@@ -9,14 +10,14 @@ Directed:              =  Yes
 Estimation:            =  MCMLE
 MCMC sample size:      =  1085
 
---------------------------------------------------------------------------------
-     lazega_fr | Coefficient  Std. err.      z    P>|z|     [95% conf. interval]
----------------+----------------------------------------------------------------
-         edges |  -3.473913   .1137593   -30.54   0.000    -3.696878   -3.250949
-        mutual |   .8059472   .1588423     5.07   0.000      .494622    1.117272
-nodematch_prac |    .702382   .0806238     8.71   0.000     .5443623    .8604016
-     gwesp_0.5 |   .4927435   .0650009     7.58   0.000      .365344    .6201429
---------------------------------------------------------------------------------
+-------------------------------------------------------
+     lazega_fr | Coefficient  Std. err.      z    P>|z|
+---------------+---------------------------------------
+         edges |  -3.473913   .1137593   -30.54   0.000
+        mutual |   .8059472   .1588423     5.07   0.000
+nodematch_prac |    .702382   .0806238     8.71   0.000
+     gwesp_0.5 |   .4927435   .0650009     7.58   0.000
+-------------------------------------------------------
 
 MCMLE converged after 7 iteration(s).
 Evaluating log-likelihood at the estimate (bridge sampling with 16 bridges) ...

@@ -8,4 +8,4 @@ Akaike's information criterion and Bayesian information criterion
           m1 |      4,970  -3444.941  -1702.312       3   3410.624   3430.157
           m2 |      4,970  -3444.941  -1672.073       4   3352.146    3378.19
 -----------------------------------------------------------------------------
-Note: BIC uses N = number of observations. See [R] IC note.
+Note: BIC uses N = number of observations. See [R] BIC note.

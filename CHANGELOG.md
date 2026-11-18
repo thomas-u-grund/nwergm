@@ -3,6 +3,13 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [1.8.1] - 2026-11-18
+
+### Changed
+- The help file points to the separate package `nwalaam` (autologistic actor attribute models, for a yes/no outcome on the actors of a network). No change to any command, term or result.
+
+Tested on macOS with Stata 17 BE (the quick tests). Windows and Linux: not tested for this version; the package has no native or Mata change since 1.8.0.
+
 ## [1.8.0] - 2026-11-17
 
 ### Changed

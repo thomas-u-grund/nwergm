@@ -1,5 +1,6 @@
 #!/bin/zsh
-# nwergm test runner (macOS). Usage: NWCORE=/path/to/nwcommands cscripts/run_tests.sh [jobs]
+# nwergm test runner (macOS). Usage: NWCORE=/path/to/nwcommands cscripts/run_tests.sh [jobs] [quick|full]
+#   quick: the checks of the ado files, help, libraries, tables and the newest features (a few minutes); full (default): everything
 # NWCORE: directory of the core nwcommands package (unw_core.do and the core .ado files).
 # The tests are independent do-files; each runs in its own Stata process (-e); set LOGDIR to keep the logs run_<test>.log there.
 cd "$(dirname "$0")/.." || exit 1
@@ -7,8 +8,11 @@ python3 tools/check_version.py || exit 1
 if [[ -z $NWCORE || ! -f $NWCORE/unw_core.do ]]; then echo "set NWCORE to the nwcommands (core) directory"; exit 1; fi
 export NWCORE
 jobs=${1:-3}
+mode=${2:-full}
 STATA=${STATA:-/Applications/Stata/StataBE.app/Contents/MacOS/StataBE}
 tests=(test_fixes_unreleased test_nwergm_fixes1 test_nwergm_ordfix test_nwergm_adaptive_interval test_nwergm_adaptive test_nwergm_gofmodelbip test_nwergm_simbip test_nwergm_simnames test_nwergm_simgw0 test_nwergm_bigdyads test_nwergm_slowwarn test_nwergm_libcheck test_nwergm_helptext test_nwergm_ado test_nwergm_balance test_nwergm_bip test_nwergm_bipartite test_nwergm_bipcurved test_nwergm_changestat test_nwergm_constr test_nwergm_constraints test_nwergm_covterms test_nwergm_curved test_nwergm_curveddeg test_nwergm_demoterm test_nwergm_elist test_nwergm_ess test_nwergm_est test_nwergm_estat test_nwergm_exact_enum test_nwergm_gof test_nwergm_gofbip test_nwergm_ll test_nwergm_mcmc test_nwergm_mcmle test_nwergm_missing test_nwergm_maxit test_nwergm_mple test_nwergm_mple_scale test_nwergm_native test_nwergm_observed test_nwergm_obsbdeg test_nwergm_ops test_nwergm_ops_native test_nwergm_seedrepro test_nwergm_simrepro test_nwergm_spdyad test_nwergm_spec0 test_nwergm_emptycache test_nwergm_initconstr test_nwergm_rdefaults test_nwergm_simulate test_nwergm_spcache test_nwergm_speed test_nwergm_sptype test_nwergm_statistics test_nwergm_structural test_nwergm_termnone test_nwergm_termexpansion1 test_nwergm_termexpansion2 test_nwergm_termexpansion3 test_nwergm_termexpansion4 test_nwergm_termexpansion5 test_nwergm_termexpansion6 test_nwergm_termexpansion7 test_nwergm_termexpansion8 test_nwergm_termexpansion9 test_nwergm_variance test_nwergm_msgwrap test_nwergm_offsetcurved test_nwergm_dupopt test_nwergm_structopt test_nwergm_strattr test_nwergm_simkeep test_nwergm_diopts test_nwergm_simobs)
+quick=(test_nwergm_ado test_nwergm_libcheck test_nwergm_helptext test_nwergm_dupopt test_nwergm_diopts test_nwergm_simobs test_nwergm_simkeep test_nwergm_est test_nwergm_estat test_nwergm_native test_nwergm_ops test_nwergm_structopt test_fixes_unreleased test_nwergm_fixes1)
+[[ $mode == quick ]] && tests=($quick)
 tmp=$(mktemp -d)
 mkdir -p $tmp/plus
 run_one() {
