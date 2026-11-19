@@ -1,4 +1,4 @@
-*! version 1.9.0  19nov2026 nwergm_p: predict after nwergm (R: predict.ergm, conditional tie probabilities)
+*! version 1.10.0  20nov2026 nwergm_p: predict after nwergm (R: predict.ergm, conditional tie probabilities)
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -11,6 +11,10 @@ program nwergm_p
 	_nwergm_libcheck
 	syntax [anything] [if] [in] [, PR XB MATrix(name) FRame(name)]
 	capture confirm number 0
+	if "`e(estimate)'" == "Ego" {
+		di as err "{p 0 0 2}predict is not available after {bf:nwergm ego}: there is no observed network to condition on.{p_end}"
+		exit 498
+	}
 	if "`matrix'" == "" & "`frame'" == "" {
 		di as err "{p 0 0 2}predict after nwergm needs matrix(name) or frame(name): the predictions are dyadic (one per dyad){p_end}"
 		exit 198

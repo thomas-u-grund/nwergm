@@ -29,6 +29,23 @@ CASES = {
                    'call bayes.f_iterations.setvalue "200"', 'call bayes.f_priorvar.setvalue "10"', "call bayes.f_nodelayed.seton"],
          "nwergm w1, edges estimate(bayes) chains(4) iterations(200) nodelayed priorvar(10)"),
     ],
+    "nwergm_ego": [
+        ("default", ['call main.vn_egoid.setvalue "id"', 'call main.ed_alters.setvalue "alt"'], "nwergm ego, edges egoid(id) alters(alt)"),
+        ("terms", ['call main.vn_egoid.setvalue "id"', 'call main.ed_alters.setvalue "alt"', 'call terms.ed_degree.setvalue "0/3"',
+                   'call terms.ed_degrange.setvalue "4"', 'call terms.ed_degrangeto.setvalue "8"', "call terms.cx_concurrent.seton",
+                   'call terms.vl_nodefactor.setvalue "sex race"', 'call terms.vl_nodematch.setvalue "sex"', 'call terms.vl_nodematchdiff.setvalue "race"',
+                   'call terms.vl_nodecov.setvalue "age"', 'call terms.vl_absdist.setvalue "grade"'],
+         "nwergm ego, edges degree(0/3) degrange(4) degrangeto(8) concurrent nodefactor(sex race) nodematch(sex) nodematchdiff(race) nodecov(age) absdist(grade) egoid(id) alters(alt)"),
+        ("data", ['call main.vn_egoid.setvalue "id"', 'call main.ed_alters.setvalue "alt"', 'call main.ed_alteregoid.setvalue "eid"',
+                  'call main.vn_weights.setvalue "w"', 'call main.ed_popsize.setvalue "1000"', 'call main.ed_ppopsize.setvalue "samp"',
+                  'call main.ed_ppopmul.setvalue "2"', 'call main.cb_ppopwt.setvalue "sample"'],
+         "nwergm ego, edges egoid(id) alters(alt) alteregoid(eid) weights(w) popsize(1000) ppopsize(samp) ppopmul(2) ppopwt(sample)"),
+        ("mcmc", ['call main.vn_egoid.setvalue "id"', 'call main.ed_alters.setvalue "alt"', 'call mcmc.ed_seed.setvalue "7"',
+                  'call mcmc.ed_interval.setvalue "2048"', 'call mcmc.ed_burnin.setvalue "5000"', 'call mcmc.ed_samplesize.setvalue "3000"',
+                  'call mcmc.ed_iterations.setvalue "30"', 'call mcmc.ed_effsize.setvalue "100"', "call mcmc.cx_nonative.seton", "call mcmc.cx_verbose.seton"],
+         "nwergm ego, edges egoid(id) alters(alt) seed(7) mcmcinterval(2048) mcmcburnin(5000) mcmcsamplesize(3000) mcmleiterations(30) mcmleeffectivesize(100) nonative verbose"),
+        ("egodegree", ['call main.vn_egoid.setvalue "id"', 'call main.vn_egodegree.setvalue "k"', "call terms.cx_edges.setoff"], "nwergm ego, egoid(id) egodegree(k)"),
+    ],
     "nwergm_simulate": [
         ("nodes, theta", ['call simctl.f_sim_nodes.setvalue "20"', 'call simctl.f_theta.setvalue "-2"'],
          "nwergm simulate 20, edges theta(-2)"),
@@ -85,7 +102,8 @@ def main(argv):
     do = ["capture program drop nwinstall", "clear all", "set linesize 250", 'sysdir set PLUS "%s/plus"' % work,
           'adopath ++ "%s"' % nwcore, 'adopath ++ "%s/lib"' % nwcore, 'adopath ++ "%s"' % ROOT, 'adopath ++ "%s"' % pkg_lib,
           'adopath ++ "%s/plugins/macos"' % pkg_lib, 'adopath ++ "%s/stub"' % work, "nwclear",
-          "nwrandom 8, prob(.3) name(w1)", "nwrandom 8, prob(.3) name(w2)", "nwrandom 8, prob(.3) name(w3)"]
+          "nwrandom 8, prob(.3) name(w1)", "nwrandom 8, prob(.3) name(w2)", "nwrandom 8, prob(.3) name(w3)",
+          "set obs 8", "gen id=_n", "gen k=_n", "gen w=1", "gen sex=1", "gen race=1", "gen age=1", "gen grade=1"]
     # a minimal fit is not needed: the stub replaces the command
     ids = []
     for d in todo:

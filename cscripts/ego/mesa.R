@@ -1,0 +1,25 @@
+suppressMessages({library(ergm.ego); library(egor)})
+data(faux.mesa.high)
+e <- as.egor(faux.mesa.high)
+print(e)
+ego <- as.data.frame(e$ego); alt <- as.data.frame(e$alter)
+str(ego); str(alt)
+write.csv(ego, "fix/mesa_ego.csv", row.names=FALSE)
+write.csv(alt, "fix/mesa_alter.csv", row.names=FALSE)
+f <- e ~ edges+degree(1:3)+nodefactor("Race")+nodematch("Race")+nodefactor("Sex")+nodematch("Sex")+absdiff("Grade")
+res <- list()
+for (sd in c(1,2)) {
+  set.seed(sd)
+  fit <- ergm.ego(f, popsize=205, control=control.ergm.ego(ergm=control.ergm(seed=sd, MCMLE.effectiveSize=400, MCMLE.maxit=60)))
+  s <- summary(fit)
+  cat("SEED",sd,"\n"); print(s)
+  res[[sd]] <- fit
+  out <- data.frame(name=names(coef(fit)), b=coef(fit), se=sqrt(diag(fit$covar)))
+  write.csv(out, sprintf("fix/mesa_coef_s%d.csv",sd), row.names=FALSE)
+}
+fit <- res[[1]]
+write.csv(data.frame(name=names(fit$m), m=fit$m), "fix/mesa_m.csv", row.names=FALSE)
+write.csv(fit$v, "fix/mesa_v.csv")
+write.csv(fit$DtDe, "fix/mesa_DtDe.csv")
+write.csv(fit$covar, "fix/mesa_covar.csv")
+cat("ppopsize", fit$ppopsize, "\n")

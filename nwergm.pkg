@@ -4,8 +4,8 @@ d Thomas U. Grund, RWTH Aachen University, www.grund.co.uk
 d email: thomas.u.grund@gmail.com
 d GPL-3. Requires the core package nwcommands 3.24.0 or later.
 d Requires nwcommands (core), version 3.24.0 or later
-d Version: 1.9.0
-d Distribution-Date: 19nov2026
+d Version: 1.10.0
+d Distribution-Date: 20nov2026
 f _nwergm_bip.ado
 f _nwergm_bip_curved.ado
 f _nwergm_bipgof.ado
@@ -17,6 +17,7 @@ f _nwergm_est.ado
 f _nwergm_fitstats.ado
 f _nwergm_getb.ado
 f _nwergm_gof.ado
+f _nwergm_egogof.ado
 f _nwergm_gofplot.ado
 f _nwergm_hints.ado
 f _nwergm_dupopt.ado
@@ -38,6 +39,7 @@ f nwergm_constraints.sthlp
 f nwergm_covterms.sthlp
 f nwergm_estat.sthlp
 f nwergm_bayes.sthlp
+f nwergm_ego.sthlp
 f nwergm_estimation.sthlp
 f nwergm_fit.sthlp
 f nwergm_operators.sthlp
@@ -45,6 +47,7 @@ f nwergm_structural.sthlp
 f nwergm.dlg
 f nwergm_simulate.dlg
 f nwergm_estat.dlg
+f nwergm_ego.dlg
 f lib/lnwergm.mlib
 f lib/plugins/macos/ergm_mcmc_macos.plugin
 f lib/plugins/windows/ergm_mcmc_windows.plugin

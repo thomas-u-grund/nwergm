@@ -1,0 +1,13 @@
+"name","m"
+"edges",203
+"degree1",51
+"degree2",30
+"degree3",28
+"nodefactor.Race.Hisp",178
+"nodefactor.Race.NatAm",156
+"nodefactor.Race.Other",1
+"nodefactor.Race.White",45
+"nodematch.Race",103
+"nodefactor.Sex.M",171
+"nodematch.Sex",132
+"absdiff.Grade",79

@@ -552,6 +552,8 @@ ESTAT = [
 EXCLUDED_OPTIONS = {
     "submodel": "internal option used by the operator machinery to build the model of an operator term; never typed by a user",
 }
+for _o in ("egotarget", "egonames", "egovt", "egoshift"):
+    EXCLUDED_OPTIONS[_o] = "internal option of the fit that nwergm ego calls; never typed by a user (the dialog nwergm_ego.dlg is the dialog of nwergm ego)"
 # inventory terms that cannot be selected, by reason (the inventory status is not IMPLEMENTED/PARTIAL)
 EXCLUDED_TERM_REASON = {
     "NOT PLANNED": "not planned in nwergm (valued/count ERGM, temporal tergm, ergm.count terms)",

@@ -1,4 +1,4 @@
-*! version 1.9.0  19nov2026 nwergm_estat
+*! version 1.10.0  20nov2026 nwergm_estat
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -276,6 +276,11 @@ end
 
 capture program drop nwergm_estat_gof
 program define nwergm_estat_gof, rclass
+	if "`e(estimate)'" == "Ego" {
+		_nwergm_egogof `0'
+		return add
+		exit
+	}
 	_nwergm_gof `0'
 	return add
 end
@@ -421,6 +426,10 @@ capture program drop nwergm_estat_ic
 program define nwergm_estat_ic, rclass
 	if "`e(method)'" == "bayes" {
 		di as err "{p 0 0 2}{bf:estat ic} is not available after {bf:estimate(bayes)}: a Bayesian fit has no maximum-likelihood log-likelihood.{p_end}"
+		exit 498
+	}
+	if "`e(estimate)'" == "Ego" {
+		di as err "{p 0 0 2}{bf:estat ic} is not available after {bf:nwergm ego}: the estimator is moments-based and has no likelihood (R's ergm.ego gives none either).{p_end}"
 		exit 498
 	}
 	if missing(e(ll)) {

@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.9.0  19nov2026 author: Thomas Grund}{...}
+{* *! version 1.10.0  20nov2026 author: Thomas Grund}{...}
 
 {title:Title}
 
@@ -16,6 +16,7 @@ The following postestimation commands are available after {helpb nwergm}:
 {p2colset 9 22 23 2}{...}
 {p2col: {cmd:estat mcmcdiag}}MCMC diagnostics for the final simulation (method(mcmle)) or for the posterior draws (estimate(bayes)); see {help nwergm_estimation} and {help nwergm_bayes}{p_end}
 {p2col: {cmd:estat gof}}Simulation-based goodness of fit as in R's {cmd:gof()}; see {help nwergm_estimation}{p_end}
+{p2col: {cmd:estat gof} after {cmd:nwergm ego}}Statistics of the model and degree distribution against simulated networks, as in R's {cmd:gof.ergm.ego()}; see {help nwergm_ego}{p_end}
 {p2col: {cmd:estat posterior}}Draws, summaries and plots after {cmd:estimate(bayes)}; see {help nwergm_bayes}{p_end}
 {p2col: {cmd:estat ic}}Log-likelihood, AIC and BIC (see {help nwergm_fit}){p_end}
 {p2colreset}{...}
@@ -200,4 +201,4 @@ observed value, minimum, mean, maximum and Monte Carlo p-value{p_end}
 	{help nwergm}
 
 {hline}
-{pstd}{it:nwergm version 1.9.0, 19 November 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.10.0, 20 November 2026}{p_end}{* nwversion}

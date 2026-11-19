@@ -331,3 +331,12 @@ estimate), so R's bridge from the dyad-independent submodel seems to mishandle t
 - The draws do not fit in a Stata BE matrix. They live in the Mata external `__nwergm_bdraws` (chain-major) and in the frame `nwergm_bayes_draws`; `estat gof` and `estat posterior` read them from there. After `clear all` the external is gone and the frame is the only copy.
 - `nodecov(wealth)` on the Florentine data mixes badly in the exchange algorithm (scale of the statistic); Bergm behaves the same. Rescale the covariate.
 - Tests of this feature compare with R's Bergm in constants (two seeds of 20,000 iterations); the Monte Carlo error of ADS chains is larger than the summed ESS suggests, so tolerances are 2 to 4 times the naive Monte Carlo error.
+
+## `nwergm ego`: programs of `nwergm.ado` are private to that file; `weight()` is not an option name
+
+- Every program defined inside `nwergm.ado` (`_nwergm_fit`, `_nwergm_tabopts`, `_nwergm_seed`, ...) is namespaced to that file (`program dir` shows `nwergm._nwergm_tabopts`): a separate `.ado` file cannot call it ("command _nwergm_tabopts is unrecognized"). The ego programs (`_nwergm_ego`, `_nwergm_egodisplay`) therefore live in `nwergm.ado`; `_nwergm_egogof.ado` only uses programs of its own file and the stand-alone helpers.
+- An option called `weight()` in a `syntax` line makes `marksample` fail with "invalid syntax" (it reads the local `weight` as the weight type). The ego option is `weights()`.
+- The target statistics of an ego fit are handed to `ErgmMCMLE()` in the external Mata vector `ergm_target`; `_nwergm_fit` drops it at its start so that a refused ego call cannot leak it into the next ordinary fit. Do not set it elsewhere.
+- Reference values of ergm.ego depend on R's rounding: the pseudopopulation has round(N w_i / sum w) copies of ego i, and R rounds halves to the even number (2.5 -> 2), Mata's `round()` to the larger (3). `ergm_ego_reps()` does it R's way; with 400 equally weighted egos and N = 1000 this gives 800 nodes in R and here.
+- The standard errors of an ego fit have Monte Carlo noise of about 10 percent from the information matrix (the covariance of the sampled statistics), in R as here, so tests compare them within a factor.
+

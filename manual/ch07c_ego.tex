@@ -1,0 +1,21 @@
+\chapter{Egocentrically sampled data}\label{ch:ego}
+
+\begin{lstlisting}
+nwergm ego [if] [in], edges [degree(numlist) degrange(numlist) degrangeto(numlist) concurrent
+    nodefactor(varlist) nodematch(varlist) nodematchdiff(varlist) nodecov(varlist) absdist(varlist)]
+    egoid(varname) {alters(framename) | egodegree(varname)} [alteregoid(varname) weights(varname)
+    popsize(#) ppopsize(auto|samp|pop|#) ppopmul(#) ppopwt(round|sample) seed(#) mcmc options]
+\end{lstlisting}
+\texttt{nwergm ego} fits an ERGM when no network was observed, only a sample of egos with their attributes and the attributes of their alters. It follows R's \texttt{ergm.ego} (version 1.1.4; Krivitsky and Morris~\cite{krivitsky2017}). The data in memory are the egos, one row per ego; the alters are in a second frame (\opt{alters()}) with the identifier of the ego, or only the number of alters is given (\opt{egodegree()}), which excludes the terms that need an attribute of the alters.
+
+\paragraph{Estimator.} Each ego $i$ contributes $h_i$ to the statistics of each term (half of its alters to \texttt{edges}, its same-group alters to \texttt{nodematch}, and so on). With sampling weights $w_i$ the statistics of a network of $N$ nodes are estimated by $t=N\sum_i w_i h_i/\sum_i w_i$. Their covariance is that of a with-replacement design without clusters, $N^2\,\tfrac{n}{n-1}\sum_i (w_i/\sum w)^2(h_i-\bar h)(h_i-\bar h)^\top$. The model is fitted to $t$ on a \emph{pseudopopulation}: $\mathrm{round}(N w_i/\sum w)$ copies of each ego (halves rounded to even, as R does), so a network of \opt{ppopsize()} nodes ($N$; \texttt{auto} is \opt{popsize()} if given, else the sample size; \opt{ppopmul()} multiplies it). The compiled sampler of \texttt{nwergm} draws networks of that size, and the estimating equation is $E_\theta[s(y)]=t$, solved by the same Monte Carlo iteration as for observed networks.
+
+\paragraph{Network size.} \opt{popsize(\#)} is the size of the population the coefficients refer to: the pseudopopulation is sampled with an offset $-\log(\mathrm{ppopsize}/\mathrm{popsize})$ on \texttt{edges}, which is added back to the reported coefficient (R's \texttt{netsize.adj}). The default \texttt{popsize(1)} gives R's default (a network of one node), \texttt{popsize(0)} switches the adjustment off. Coefficients other than \texttt{edges} do not depend on \opt{popsize()}.
+
+\paragraph{Standard errors.} $V=A^{-1}V_tA^{-1}$, where $V_t$ is the covariance of $t$ (\texttt{e(V\_target)}) and $A$ the covariance of the statistics of the networks sampled at the estimate (\texttt{e(info)}). The Monte Carlo error of $A$ makes the standard errors vary by about ten percent between seeds, in R as well. There is no likelihood: \texttt{estat ic} and \texttt{predict} are not available.
+
+\paragraph{Postestimation.} \texttt{estat gof} compares the model statistics (per node) and the degree distribution of the egos with simulated networks (R's \texttt{gof.ergm.ego}); \texttt{nwergm simulate} draws networks of the size of the pseudopopulation.
+
+\paragraph{Agreement with R.} The estimated statistics and their covariance equal \texttt{ergm.ego}'s to the printed precision. Coefficients agree with long runs of R within a fraction of a standard error: on the example \texttt{faux.mesa.high} (205 students) the coefficient of \texttt{edges} is $-1.24$ (R, two seeds: $-1.21$ and $-1.24$), and on a planted model for 1,000 nodes sampled with equal and with unequal weights the coefficients differ from R's by less than $0.01$ in most cases (for example \texttt{edges} $-5.250$ against $-5.251$ with equal weights, $-5.52$ against $-5.52$ with unequal weights).
+
+\paragraph{Not available.} Terms that need the ties among the alters (\texttt{esp}, \texttt{gwesp}, \texttt{triangle}), \texttt{degree1.5}, \texttt{nodemix}, \texttt{mm}, the bootstrap, jackknife and asymptotic covariance estimators, clustered designs, \opt{offset()}, constraints and curved terms.

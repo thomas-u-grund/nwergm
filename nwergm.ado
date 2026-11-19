@@ -1,4 +1,4 @@
-*! version 1.9.0  19nov2026 nwergm
+*! version 1.10.0  20nov2026 nwergm
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -9,6 +9,13 @@
 capture program drop nwergm
 program nwergm
 	version 14
+	* egocentrically sampled data: nwergm ego, ... (the data in memory are the egos; no network is named). A network
+	* called ego still works: the subcommand is taken only when an option of the ego fit is given
+	gettoken __ego_t0 : 0, parse(" ,")
+	if `"`__ego_t0'"' == "ego" & regexm(`"`0'"', "(egoid|alters|egodegree)[ ]*\(") {
+		_nwergm_run `0'
+		exit
+	}
 	* String node attributes (1.5.11). A string variable named, with its full name, in a
 	* categorical term (nodematch(), nodefactor(), nodemix() and their relatives) is
 	* replaced for the duration of the call by a numeric variable of the same name that
@@ -83,6 +90,18 @@ program _nwergm_run, eclass
 			exit
 		}
 	}
+	if `"`__ergm_t1'"' == "ego" & regexm(`"`0'"', "(egoid|alters|egodegree)[ ]*\(") {
+		gettoken __ergm_sub 0 : 0, parse(" ,")
+		_nwergm_hold save
+		capture noisily _nwergm_ego `0'
+		local __ergm_rc = _rc
+		if `__ergm_rc' {
+			_nwergm_hold restore
+			exit `__ergm_rc'
+		}
+		_nwergm_hold drop
+		exit
+	}
 	if `"`__ergm_t1'"' == "simulate" {
 		gettoken __ergm_sub 0 : 0, parse(" ,")
 		gettoken __ergm_first : 0, parse(" ,")
@@ -148,7 +167,12 @@ program _nwergm_fit, eclass
 		INIT(string) MPLETYPE(string) MPLECHECK(string) MPLECOVariance(string) ESTimate(string) MAINMETHOD(string) ///
 		MCMLETERMination(string) MCMLECONFidence(real 0.99) MCMLESTEPLength(real 1) MCMLESTEPMargin(real 0.05) ///
 		MCMLEEFFectivesize(real -1) CDNSteps(integer 8) CDSAMPLEsize(integer 0) SABURNin(integer 16384) SAINTERval(integer 1024) SAPHASE3(integer 1000) SAGAIN(real 0.1) SANSUB(integer 4) ///
-		CONSTRAINTS(string asis) OBSCONSTRAINTS(string asis) MCMCMAXEDGES(integer 0) MCMCPROP(string asis) * ]
+		CONSTRAINTS(string asis) OBSCONSTRAINTS(string asis) MCMCMAXEDGES(integer 0) MCMCPROP(string asis) ///
+		EGOTARGET(string) EGONAMES(string) EGOVT(string) EGOSHIFT(real 0) * ]
+	// the target statistics of an egocentric fit (nwergm ego) must not outlive a refused call
+	capture mata: mata drop ergm_target
+	local __ego = ("`egotarget'" != "")
+	if `__ego' local nologlik "nologlik"
 	// the options of estimate(bayes) (chains(), burnin(), iterations(), thin(), priormean(), ...) are split off here
 	local __bopts
 	if `"`options'"' != "" _nwergm_bayes_split __bopts options `"`options'"'
@@ -2440,7 +2464,7 @@ program _nwergm_fit, eclass
 		ereturn post `__b_mple' `__V_mple', depname(`netname') obs(`__ergm_nrows')
 		ereturn local cmd "nwergm"
 		if !`__sub' _nwergm_tag set
-		ereturn local version "1.9.0"
+		ereturn local version "1.10.0"
 		ereturn local title "Exponential-family random graph model (MPLE)"
 		ereturn local depvar "`netname'"
 		ereturn local method "mple"
@@ -2689,6 +2713,17 @@ program _nwergm_fit, eclass
 			mata: mata drop `__ergm_matatemps'
 			exit
 		}
+		if `__ego' {
+			local __egobad = ("`fixdensity'" != "" | "`method'" == "cd" | "`mainmethod'" == "sa")
+			foreach __x in __ergm_curved __obs_active __con_active __ergm_nmiss {
+				if "``__x''" != "" & "``__x''" != "0" local __egobad 1
+			}
+			if `__egobad' {
+				di as err "{p 0 0 2}nwergm ego cannot be combined with curved terms, constraints, missing dyads or the cd and sa estimators.{p_end}"
+				error 198
+			}
+			mata: ergm_ego_settarget(__nwergm_last_M, tokens("`egonames'"), "`egotarget'")
+		}
 		tempname __fit
 		if `__obs_active' {
 			mata: `__fit' = ErgmMCMLEObs(__nwergm_last_M, __nwergm_last_G, __nwergm_obs_G, __nwergm_obs_par, __nwergm_obs_cols, `__theta0', `mcmleiterations', `mcmcburnin', `mcmcinterval', `mcmcsamplesize', ("`verbose'"!=""))
@@ -2725,6 +2760,11 @@ program _nwergm_fit, eclass
 			}
 		}
 		local __ergm_matatemps "`__ergm_matatemps' `__fit'"
+		if `__ego' {
+			capture mata: mata drop ergm_target
+			mata: `__fit'.vcov = ergm_ego_sandwich(`__fit'.finalsample, __nwergm_last_M, tokens("`egonames'"), "`egovt'", "__ego_A")
+			mata: `__fit'.coef = ergm_ego_unshift(`__fit'.coef, __nwergm_last_M, `egoshift')
+		}
 		local __br_ss "`mcmcsamplesize'"
 		local __br_int "`mcmcinterval'"
 		local __br_burn "`mcmcburnin'"
@@ -2841,11 +2881,16 @@ program _nwergm_fit, eclass
 		ereturn post `__b_mcmle' `__V_mcmle', depname(`netname') obs(`__ergm_nrows')
 		ereturn local cmd "nwergm"
 		if !`__sub' _nwergm_tag set
-		ereturn local version "1.9.0"
+		ereturn local version "1.10.0"
 		ereturn local title "Exponential-family random graph model (MCMLE)"
 		ereturn local depvar "`netname'"
 		ereturn local method "mcmle"
 		ereturn local estimate "`=cond("`method'"=="cd","CD",cond("`mainmethod'"=="sa","SA","MLE"))'"
+		if `__ego' {
+			ereturn local estimate "Ego"
+			ereturn local title "Egocentric exponential-family random graph model"
+			ereturn scalar egoshift = `egoshift'
+		}
 		ereturn local directed "`directed'"
 		ereturn local proposal "`proposal'"
 		if `__spd' ereturn scalar trifocus = `__spdfocus'
@@ -2934,6 +2979,10 @@ program _nwergm_fit, eclass
 			di "{p 0 0 2}{err}Results are reported but should not be treated as a converged fit - consider increasing mcmleiterations()/mcmcsamplesize().{p_end}"
 		}
 
+		if `__ego' {
+			mata: mata drop `__ergm_matatemps'
+			exit
+		}
 		nwergm_display "`netname'" "`nodes'" "`directed'" "`=cond("`method'"=="cd","CD",cond("`mainmethod'"=="sa","SA","MCMLE"))'" "`__ergm_converged'" "`__ergm_niter'" "`mcmcsamplesize'" "`__ergm_tabopts'"
 		local __dcname ""
 		if "`__ergm_dcomp'" == "1" local __dcname "`__nw_Dc'"
@@ -3106,7 +3155,7 @@ program _nwergm_bayes, eclass
 	ereturn post `b' `V', depname(`netname') obs(`nrows')
 	ereturn local cmd "nwergm"
 	if !`sub' _nwergm_tag set
-	ereturn local version "1.9.0"
+	ereturn local version "1.10.0"
 	ereturn local title "Bayesian exponential-family random graph model"
 	ereturn local depvar "`netname'"
 	ereturn local method "bayes"
@@ -4457,6 +4506,10 @@ program _nwergm_replay
 		_nwergm_bayes_display, tabopts(`"`options'"')
 		exit
 	}
+	if "`e(estimate)'" == "Ego" {
+		_nwergm_egodisplay, tabopts(`"`options'"')
+		exit
+	}
 	local m = cond("`e(method)'" == "mple", "MPLE", cond("`e(estimate)'" == "CD", "CD", cond("`e(estimate)'" == "SA", "SA", "MCMLE")))
 	nwergm_display "`e(depvar)'" "`=e(nodes)'" "`e(directed)'" "`m'" "`=e(converged)'" "`=e(mcmle_iterations)'" "`=e(mcmc_samplesize)'" "`options'"
 	if "`e(ll)'" != "" & "`e(ll_method)'" != "" {
@@ -4620,4 +4673,341 @@ program _nwergm_hold_body
 		capture mata: mata drop __nwergm_bak_mm
 		capture mata: mata drop __nwergm_bak_tag
 	}
+end
+
+// The data in memory are the egos (one row per ego, with the attributes of the ego); the alters are in a second frame
+// (one row per alter, with the identifier of the ego and the attributes of the alter). The statistics of the model are
+// estimated from the egos, scaled to the size of a pseudopopulation, and the ERGM is fitted to them with the Monte Carlo
+// sampler of nwergm on a network of that size (R: ergm.ego, target.stats). The covariance is the design-based covariance of
+// the estimated statistics, passed through the information of the model.
+capture program drop _nwergm_ego
+program _nwergm_ego, eclass
+	version 17
+	syntax [if] [in] , [EDGES DEGREE(numlist integer >=0) DEGRANGE(numlist integer >=0) DEGRANGETO(numlist integer >=1) CONCURRENT ///
+		NODEFACTOR(string) NODECOV(string) NODEMATCH(string) NODEMATCHDIFF(string) ABSDIST(string) ///
+		EGOID(varname) ALTERS(string) ALTEREGOID(string) EGODEGREE(varname) WEIGHTS(varname) ///
+		POPSIZE(real 1) PPOPSIZE(string) PPOPMUL(real 1) PPOPWT(string) SEED(string) ///
+		MCMCBURNIN(integer -1) MCMCINTERVAL(integer 1024) MCMCSAMPLESIZE(integer -1) MCMLEITERATIONS(integer 60) ///
+		MCMLEEFFECTIVESIZE(real -1) MCMLETERMINATION(string) PROPOSAL(string) NONATIVE VERBOSE NOPPSAVE * ]
+	set more off
+	if "`edges'" == "" {
+		di as err "option {bf:edges} is required, as in every nwergm model."
+		exit 198
+	}
+	if "`egoid'" == "" & "`alters'" != "" {
+		di as err "option {bf:egoid()} is required with {bf:alters()}: the variable that identifies the egos."
+		exit 198
+	}
+	if "`alters'" == "" & "`egodegree'" == "" {
+		di as err "{p 0 0 2}the ego data need the alters: give {bf:alters(}{it:framename}{bf:)} (a frame with one row per alter), or {bf:egodegree(}{it:varname}{bf:)} with the number of alters of each ego when only the degree was collected.{p_end}"
+		exit 198
+	}
+	if "`alters'" != "" & "`egodegree'" != "" {
+		di as err "options alters() and egodegree() cannot be combined: the degree is the number of alters of the ego."
+		exit 198
+	}
+	if "`alters'" != "" {
+		capture confirm frame `alters'
+		if _rc {
+			di as err "frame {bf:`alters'} not found."
+			exit 111
+		}
+	}
+	local ppopwt = lower("`ppopwt'")
+	if "`ppopwt'" == "" local ppopwt "round"
+	_opts_oneof "round sample" "ppopwt" "`ppopwt'" 198
+	if `popsize' < 0 {
+		di as err "option popsize() must be zero or positive."
+		exit 198
+	}
+	if `ppopmul' <= 0 {
+		di as err "option ppopmul() must be positive."
+		exit 198
+	}
+	_nwergm_tabopts __ergm_chk check, `options'
+	local __tabopts `"`options'"'
+	if `"`seed'"' != "" _nwergm_seed `seed', check
+
+	// ---- terms
+	local spec "edges"
+	local termopts "edges"
+	local catattrs ""
+	local numattrs ""
+	foreach d of local degree {
+		local spec "`spec' degree:`d'"
+	}
+	if "`degree'" != "" local termopts "`termopts' degree(`degree')"
+	if "`degrange'" != "" {
+		local nr : word count `degrange'
+		local nt : word count `degrangeto'
+		if `nt' != 0 & `nt' != `nr' {
+			di as err "degrangeto() needs one value for each value of degrange()."
+			exit 198
+		}
+		forvalues k = 1/`nr' {
+			local f : word `k' of `degrange'
+			local t "."
+			if `nt' > 0 local t : word `k' of `degrangeto'
+			if "`t'" != "." & `t' <= `f' {
+				di as err "degrange(): the upper limit must be larger than the lower."
+				exit 198
+			}
+			local spec "`spec' degrange:`f':`t':`k'"
+		}
+		local termopts "`termopts' degrange(`degrange')"
+		if `nt' > 0 local termopts "`termopts' degrangeto(`degrangeto')"
+	}
+	else if "`degrangeto'" != "" {
+		di as err "degrangeto() needs degrange()."
+		exit 198
+	}
+	if "`concurrent'" != "" {
+		local spec "`spec' concurrent"
+		local termopts "`termopts' concurrent"
+	}
+	foreach v of local nodefactor {
+		local spec "`spec' nodefactor:`v'"
+		local catattrs "`catattrs' `v'"
+	}
+	if "`nodefactor'" != "" local termopts "`termopts' nodefactor(`nodefactor')"
+	foreach v of local nodematch {
+		local spec "`spec' nodematch:`v'"
+		local catattrs "`catattrs' `v'"
+	}
+	if "`nodematch'" != "" local termopts "`termopts' nodematch(`nodematch')"
+	foreach v of local nodematchdiff {
+		local spec "`spec' nodematchdiff:`v'"
+		local catattrs "`catattrs' `v'"
+	}
+	if "`nodematchdiff'" != "" local termopts "`termopts' nodematchdiff(`nodematchdiff')"
+	foreach v of local nodecov {
+		local spec "`spec' nodecov:`v'"
+		local numattrs "`numattrs' `v'"
+	}
+	if "`nodecov'" != "" local termopts "`termopts' nodecov(`nodecov')"
+	foreach v of local absdist {
+		local spec "`spec' absdist:`v'"
+		local numattrs "`numattrs' `v'"
+	}
+	if "`absdist'" != "" local termopts "`termopts' absdist(`absdist')"
+	foreach v in `catattrs' `numattrs' {
+		capture confirm variable `v', exact
+		if _rc {
+			di as err "variable {bf:`v'} not found among the egos."
+			exit 111
+		}
+	}
+	foreach v of local numattrs {
+		capture confirm numeric variable `v', exact
+		if _rc {
+			di as err "variable {bf:`v'} is a string; nodecov() and absdist() need numbers."
+			exit 109
+		}
+	}
+	local attrs : list catattrs | numattrs
+	local attrs : list uniq attrs
+	local catattrs : list uniq catattrs
+	if "`alters'" != "" & "`attrs'" != "" {
+		foreach v of local attrs {
+			// nothing to check here: a term that needs the attribute of the alters says so
+		}
+	}
+
+	// ---- the ego data
+	marksample touse, novarlist
+	tempvar __id
+	if "`egoid'" == "" quietly generate double `__id' = _n
+	else local __id "`egoid'"
+	local nwcheck 0
+	capture mata: mata drop __ego_n __ego_m __ego_key __ego_akey __ego_w __ego_degv __ego_deg __ego_aidx __ego_Ev __ego_Av __ego_lev __ego_attrs __ego_ahas __ego_H
+	mata: ergm_ego_load("`touse'", "`__id'", tokens("`attrs'"), "`weights'", "`egodegree'")
+	capture confirm numeric variable `__id'
+	local numid = (_rc == 0)
+	if "`alters'" != "" {
+		if "`alteregoid'" == "" local alteregoid "`egoid'"
+		capture frame `alters': confirm variable `alteregoid', exact
+		if _rc {
+			di as err "the frame {bf:`alters'} has no variable {bf:`alteregoid'} (the identifier of the ego of each alter); name it in {bf:alteregoid()}."
+			exit 111
+		}
+		frame `alters': mata: ergm_ego_loadalt("`alteregoid'", tokens("`attrs'"), "`numid'")
+		mata: ergm_ego_prep(tokens("`catattrs'"), 1)
+	}
+	else mata: ergm_ego_prep(tokens("`catattrs'"), 0)
+	if scalar(__ego_unmatched) > 0 {
+		di as txt "{p 0 0 2}(note: " as res scalar(__ego_unmatched) as txt " alters belong to egos that are not in the sample and are ignored){p_end}"
+	}
+	mata: st_numscalar("__ego_nn", __ego_n)
+	local nego = scalar(__ego_nn)
+	if `nego' < 3 {
+		di as err "at least 3 egos are needed."
+		exit 2001
+	}
+	mata: st_local("__sumw", strofreal(sum(__ego_w), "%18.0g"))
+	mata: st_local("__wvar", strofreal(variance(__ego_w) > 1e-12 * mean(__ego_w)^2))
+
+	// ---- the sizes of the pseudopopulation and of the population
+	local pp = lower("`ppopsize'")
+	if "`pp'" == "" local pp "auto"
+	if "`pp'" == "auto" {
+		if `popsize' == 0 | `popsize' == 1 local ppreq = `nego' * `ppopmul'
+		else local ppreq = `popsize' * `ppopmul'
+	}
+	else if "`pp'" == "samp" local ppreq = `nego' * `ppopmul'
+	else if "`pp'" == "pop" local ppreq = `popsize' * `ppopmul'
+	else {
+		capture confirm number `pp'
+		if _rc {
+			di as err "option ppopsize() takes auto, samp, pop or a number."
+			exit 198
+		}
+		local ppreq = `pp'
+	}
+	local ppreq = round(`ppreq')
+	if `ppreq' < 10 {
+		di as err "the pseudopopulation would have fewer than 10 nodes; set popsize() or ppopsize()."
+		exit 198
+	}
+	if `ppreq' < `nego' {
+		di as txt "{p 0 0 2}Warning: a pseudopopulation smaller than the sample usually does not make sense.{p_end}"
+	}
+	else if `ppreq' == `nego' & `__wvar' {
+		di as txt "{p 0 0 2}Warning: a pseudopopulation as large as the sample under weighted sampling: the results may be highly biased; increase popsize() or ppopmul().{p_end}"
+	}
+	if `ppreq' > 20000 {
+		di as err "{p 0 0 2}the pseudopopulation would have `ppreq' nodes; the sampler keeps dyad-sized memory only for much smaller networks. Lower ppopsize().{p_end}"
+		exit 198
+	}
+	if `"`seed'"' != "" set seed `seed'
+	mata: __ego_reps = ergm_ego_reps(`ppreq', ("`ppopwt'" == "sample"))
+	mata: st_numscalar("__ego_pp", sum(__ego_reps))
+	local pp = scalar(__ego_pp)
+	if `pp' != `ppreq' {
+		if `popsize' > 0 di as txt "{p 0 0 2}(note: the pseudopopulation has " as res `pp' as txt " nodes, not the requested " as res `ppreq' as txt "; the estimates are not meaningfully affected){p_end}"
+		else di as txt "{p 0 0 2}Warning: the pseudopopulation has `pp' nodes, not the requested `ppreq', with the network size adjustment off (popsize(0)); the estimates may be affected.{p_end}"
+	}
+	// R: the offset coefficient of the network size adjustment (an edges statistic): -log(ppopsize / popsize); none for popsize(0)
+	local shift = 0
+	if `popsize' > 0 local shift = -ln(`pp' / `popsize')
+
+	// ---- the statistics of the egos, scaled to the pseudopopulation
+	mata: __ego_names = ergm_ego_terms(tokens("`spec'"))
+	mata: st_local("egonames", invtokens(__ego_names))
+	tempname T VT
+	mata: ergm_ego_survey(`pp', "`T'", "`VT'")
+	mata: st_numscalar("__ego_edges", st_matrix("`T'")[1])
+	local ptot = `pp' * (`pp' - 1) / 2
+	local dens = scalar(__ego_edges) / `ptot'
+	if `dens' <= 0 | `dens' >= 1 {
+		di as err "the egos report no ties (or every possible tie): the density of the pseudopopulation is `dens'."
+		exit 498
+	}
+
+	// ---- the pseudopopulation: the egos, copied in proportion to their weights, on an empty network of that size; the
+	// chain starts at a random network of the density that the statistics imply
+	preserve
+	quietly keep if `touse'
+	local keepattrs "`attrs'"
+	if "`keepattrs'" == "" {
+		tempvar __dummy
+		quietly generate byte `__dummy' = 1
+		local keepattrs "`__dummy'"
+	}
+	quietly keep `keepattrs'
+	foreach v of local attrs {
+		capture confirm string variable `v', exact
+		if !_rc {
+			tempvar __c
+			quietly generate double `__c' = .
+			mata: st_store(., "`__c'", ergm_ego_attrcol("`v'"))
+			quietly drop `v'
+			rename `__c' `v'
+		}
+	}
+	tempvar __r
+	quietly generate double `__r' = .
+	mata: st_store(., "`__r'", __ego_reps)
+	quietly drop if `__r' == 0
+	quietly expand `__r'
+	quietly drop `__r'
+	if _N != `pp' {
+		di as err "internal error: the pseudopopulation has " _N " rows, not `pp'."
+		exit 498
+	}
+	capture nwdrop _egopp
+	quietly nwrandom `pp', prob(`dens') name(_egopp) undirected
+	if `"`seed'"' != "" set seed `seed'
+	local fitopts "method(mcmle) mcmcburnin(`mcmcburnin') mcmcinterval(`mcmcinterval') mcmcsamplesize(`mcmcsamplesize') mcmleiterations(`mcmleiterations') mcmleeffectivesize(`mcmleeffectivesize')"
+	if "`mcmletermination'" != "" local fitopts "`fitopts' mcmletermination(`mcmletermination')"
+	if "`proposal'" != "" local fitopts "`fitopts' proposal(`proposal')"
+	if "`nonative'" != "" local fitopts "`fitopts' nonative"
+	if "`verbose'" != "" local fitopts "`fitopts' verbose"
+	if `"`seed'"' != "" local fitopts "`fitopts' seed(`seed')"
+	capture noisily _nwergm_fit _egopp, `termopts' `fitopts' egotarget(`T') egonames(`egonames') egovt(`VT') egoshift(`shift') `options'
+	local rc = _rc
+	capture nwdrop _egopp
+	if `rc' {
+		capture mata: mata drop ergm_target
+		exit `rc'
+	}
+	restore
+
+	// ---- results
+	tempname A Tm Vm
+	matrix `A' = __ego_A
+	capture matrix drop __ego_A
+	local cn : colnames e(b)
+	mata: st_matrix("`Tm'", ergm_ego_order(__nwergm_last_M, __ego_names, "`T'"))
+	matrix colnames `Tm' = `cn'
+	matrix rownames `Tm' = target
+	mata: st_matrix("`Vm'", ergm_ego_orderv(__nwergm_last_M, __ego_names, "`VT'"))
+	matrix colnames `Vm' = `cn'
+	matrix rownames `Vm' = `cn'
+	matrix colnames `A' = `cn'
+	matrix rownames `A' = `cn'
+	ereturn local depvar "ego"
+	ereturn local cmdline `"nwergm ego, `0'"'
+	ereturn local egoframe "`c(frame)'"
+	ereturn local alterframe "`alters'"
+	ereturn scalar N = `nego'
+	ereturn scalar nodes = `pp'
+	ereturn scalar egos = `nego'
+	mata: st_numscalar("__ego_t1", st_matrix("`Tm'")[1, selectindex(tokens("`cn'") :== "edges")])
+	ereturn scalar ties = scalar(__ego_t1)
+	ereturn scalar popsize = `popsize'
+	ereturn scalar ppopsize = `pp'
+	ereturn scalar sum_weights = `__sumw'
+	ereturn local ppopwt "`ppopwt'"
+	ereturn matrix target = `Tm'
+	ereturn matrix V_target = `Vm'
+	ereturn matrix info = `A'
+	// the degree distribution of the egos, for estat gof (R: gof.ergm.ego compares degrees 0 to maxdeg - 1 and maxdeg or more)
+	mata: st_numscalar("__ego_md", ergm_ego_maxdeg())
+	local md = min(scalar(__ego_md), `pp' - 1)
+	tempname DD
+	mata: st_matrix("`DD'", ergm_ego_degdist(`md'))
+	ereturn scalar maxdeg = `md'
+	ereturn matrix degdist = `DD'
+	capture mata: mata drop __ego_reps __ego_names
+	capture mata: mata drop __ego_n __ego_m __ego_key __ego_akey __ego_w __ego_degv __ego_deg __ego_aidx __ego_Ev __ego_Av __ego_lev __ego_attrs __ego_ahas __ego_H
+	_nwergm_egodisplay, tabopts(`"`__tabopts'"')
+end
+
+capture program drop _nwergm_egodisplay
+program _nwergm_egodisplay
+	syntax [, TABOPTS(string asis)]
+	di
+	di as txt "Egocentric exponential-family random graph model"
+	di
+	di as txt "Egos in the sample:{col 28}={res}  " e(egos)
+	di as txt "Population size:{col 28}={res}  " cond(e(popsize) == 1, "1 (scaled per person)", cond(e(popsize) == 0, "not adjusted", string(e(popsize))))
+	di as txt "Pseudopopulation size:{col 28}={res}  " e(ppopsize)
+	di as txt "MCMC sample size:{col 28}={res}  " e(mcmc_samplesize)
+	di
+	_nwergm_tabopts __t, `tabopts'
+	ereturn display, `__t'
+	di
+	if e(converged) == 1 di as txt "MCMLE converged after " e(mcmle_iterations) " iteration(s)."
+	else di as err "MCMLE did not converge after " e(mcmle_iterations) " iteration(s)."
+	di as txt "{p 0 0 2}Standard errors: design-based covariance of the statistics estimated from the egos, passed through the information of the model at the size of the pseudopopulation (as in R's ergm.ego).{p_end}"
 end

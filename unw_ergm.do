@@ -12636,7 +12636,7 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 
 	struct ErgmMCMLEFit scalar res
 	struct ErgmMCMCDiag scalar diag
-	real rowvector obs, theta, Dbar, delta, se, theta_c
+	real rowvector obs, netobs, theta, Dbar, delta, se, theta_c
 	real matrix samp, D, V, Vc, Vcinv, coefhist, coefhist_theta, Jac
 	real scalar iter, p, mahal, gamma, gamma_undamped, converged, k, neff, min_neff, interval_cap, growth, interval
 	real rowvector theta_c_prev
@@ -12714,6 +12714,11 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 	samplesize_cap = samplesize0 * 20	// R has no hard cap on this (only an indirect one via MCMLE.MCMC.max.ESS.frac in "precision" mode, which this package does not implement) - added purely so a chain that never escapes the tolerance region cannot grow samplesize (and therefore runtime/memory) unboundedly across maxit iterations
 
 	obs = ergm_full_stat(M, G)
+	// egocentric estimation: the estimating equations are solved for target statistics (the scaled sample statistics of the
+	// ego data) instead of the statistics of the network, which is only the starting network of the chain
+	netobs = obs
+	external real rowvector ergm_target
+	if (cols(ergm_target) == cols(obs)) obs = ergm_target
 	has_obs = M.obs_active
 	samplesize_o = max((round(samplesize0 / 2), min((samplesize0, 500))))
 	theta = theta0
@@ -12822,7 +12827,7 @@ struct ErgmMCMLEFit scalar ErgmMCMLE(class ErgmModel scalar M, class ErgmGraph s
 		final_int = interval
 		ess_ach = .
 		acc_last = .
-		curstat = (has_obs ? J(1, 0, .) : obs)
+		curstat = (has_obs ? J(1, 0, .) : netobs)
 		// native sampling runs hand the network on as a tie list (G is rebuilt once after the last run)
 		lazy = (M.native_enabled_sample & !has_obs)
 		tiesc = (lazy ? G.all_ties() : J(0, 0, .))
@@ -15658,6 +15663,577 @@ real matrix ErgmBayesGeweke(real scalar nch){
 			out[2, j] = out[2, j] + ergm_autocorr(X[., c], 1)[2, 1] / nch
 		}
 	}
+	return(out)
+}
+
+end
+
+/*
+	Egocentrically sampled data (nwergm ego, following R's ergm.ego 1.1.4; Krivitsky and Morris 2017).
+
+	The ego data are read once into Mata (ergm_ego_load, ergm_ego_loadalt, ergm_ego_prep): one row per ego, the
+	alters of each ego in a second data set that carries the ego's identifier.  ergm_ego_terms() computes, for the
+	terms of the model, each ego's contribution h_i to the sufficient statistic (the statistic of the network is
+	the sum of the h_i over all nodes, so that N * weighted mean of the h_i estimates it), and ergm_ego_survey()
+	the estimate and its design-based covariance (R: survey::svymean for a with-replacement design with the sample
+	weights).  ergm_ego_sandwich() combines the covariance of the estimated statistics with the information of the
+	ERGM fitted at the size of the pseudopopulation.
+*/
+mata:
+mata set matastrict off
+
+// reads the egos (current frame): keys, weights, the degree variable and the attributes used by the terms
+void ergm_ego_load(string scalar touse, string scalar idvar, string rowvector attrs, string scalar wvar, string scalar degvar)
+{
+	external real scalar __ego_n
+	external string colvector __ego_key
+	external real colvector __ego_w, __ego_degv
+	external transmorphic __ego_Ev
+	external string rowvector __ego_attrs
+	real scalar j
+	real colvector x
+	string colvector xs
+
+	if (st_isnumvar(idvar)) {
+		x = st_data(., idvar, touse)
+		if (any(x :>= .)) {
+			errprintf("egoid(%s) has missing values among the egos\n", idvar)
+			exit(416)
+		}
+		__ego_key = strofreal(x, "%21.0g")
+	}
+	else {
+		__ego_key = st_sdata(., idvar, touse)
+		if (any(__ego_key :== "")) {
+			errprintf("egoid(%s) has missing values among the egos\n", idvar)
+			exit(416)
+		}
+	}
+	__ego_n = rows(__ego_key)
+	if (rows(uniqrows(__ego_key)) != __ego_n) {
+		errprintf("egoid(%s) does not identify the egos: it has repeated values\n", idvar)
+		exit(459)
+	}
+	if (wvar != "") {
+		__ego_w = st_data(., wvar, touse)
+		if (any(__ego_w :>= .) | any(__ego_w :<= 0)) {
+			errprintf("weights(%s) must be positive and not missing for every ego\n", wvar)
+			exit(402)
+		}
+	}
+	else __ego_w = J(__ego_n, 1, 1)
+	if (degvar != "") {
+		__ego_degv = st_data(., degvar, touse)
+		if (any(__ego_degv :>= .) | any(__ego_degv :< 0) | any(__ego_degv :!= floor(__ego_degv))) {
+			errprintf("egodegree(%s) must be a non-negative integer for every ego\n", degvar)
+			exit(402)
+		}
+	}
+	else __ego_degv = J(0, 1, .)
+	__ego_attrs = attrs
+	__ego_Ev = asarray_create()
+	for (j=1; j<=cols(attrs); j++) {
+		if (st_isnumvar(attrs[j])) {
+			x = st_data(., attrs[j], touse)
+			if (any(x :>= .)) {
+				errprintf("variable %s has missing values among the egos; drop these egos (if/in) first\n", attrs[j])
+				exit(416)
+			}
+			asarray(__ego_Ev, attrs[j], x)
+		}
+		else {
+			xs = st_sdata(., attrs[j], touse)
+			if (any(xs :== "")) {
+				errprintf("variable %s has missing values among the egos; drop these egos (if/in) first\n", attrs[j])
+				exit(416)
+			}
+			asarray(__ego_Ev, attrs[j], xs)
+		}
+	}
+}
+
+// reads the alters (current frame = the frame of the alters): the identifier of the ego and the attributes present
+void ergm_ego_loadalt(string scalar idvar, string rowvector attrs, string scalar numid)
+{
+	external string colvector __ego_akey
+	external transmorphic __ego_Av
+	external real scalar __ego_m
+	external real rowvector __ego_ahas
+	real scalar j
+	real colvector x
+	string colvector xs
+
+	if (st_nobs() == 0) {
+		errprintf("the frame of the alters has no observations: the egos report no ties\n")
+		exit(498)
+	}
+
+	if (numid == "1") {
+		if (!st_isnumvar(idvar)) {
+			errprintf("the identifier %s of the alters is a string, that of the egos is numeric\n", idvar)
+			exit(109)
+		}
+		x = st_data(., idvar)
+		if (any(x :>= .)) {
+			errprintf("the identifier %s of the alters has missing values\n", idvar)
+			exit(416)
+		}
+		__ego_akey = strofreal(x, "%21.0g")
+	}
+	else {
+		if (st_isnumvar(idvar)) {
+			errprintf("the identifier %s of the alters is numeric, that of the egos is a string\n", idvar)
+			exit(109)
+		}
+		__ego_akey = st_sdata(., idvar)
+		if (any(__ego_akey :== "")) {
+			errprintf("the identifier %s of the alters has missing values\n", idvar)
+			exit(416)
+		}
+	}
+	__ego_m = rows(__ego_akey)
+	__ego_Av = asarray_create()
+	__ego_ahas = J(1, cols(attrs), 0)
+	for (j=1; j<=cols(attrs); j++) {
+		if (_st_varindex(attrs[j]) >= .) continue
+		__ego_ahas[j] = 1
+		if (st_isnumvar(attrs[j])) {
+			x = st_data(., attrs[j])
+			if (any(x :>= .)) {
+				errprintf("variable %s has missing values among the alters\n", attrs[j])
+				exit(416)
+			}
+			asarray(__ego_Av, attrs[j], x)
+		}
+		else {
+			xs = st_sdata(., attrs[j])
+			if (any(xs :== "")) {
+				errprintf("variable %s has missing values among the alters\n", attrs[j])
+				exit(416)
+			}
+			asarray(__ego_Av, attrs[j], xs)
+		}
+	}
+}
+
+// the position of the ego of each alter, the degrees, and the codes of the categorical attributes (levels = the sorted
+// values among the egos; strings are coded 1, 2, ... in sorted order, as nwergm does for a string attribute)
+void ergm_ego_prep(string rowvector catattrs, real scalar hasalters)
+{
+	external real scalar __ego_n, __ego_m
+	external string colvector __ego_key, __ego_akey
+	external real colvector __ego_w, __ego_degv, __ego_deg, __ego_aidx
+	external transmorphic __ego_Ev, __ego_Av, __ego_lev
+	external string rowvector __ego_attrs
+	external real rowvector __ego_ahas
+	transmorphic scalar pos
+	real scalar i, j, k, unm, a
+	real colvector ev, av, lev, ecode, acode
+	string colvector es, as, slev
+
+	if (hasalters) {
+		pos = asarray_create()
+		for (i=1; i<=__ego_n; i++) asarray(pos, __ego_key[i], i)
+		__ego_aidx = J(__ego_m, 1, 0)
+		unm = 0
+		__ego_deg = J(__ego_n, 1, 0)
+		for (i=1; i<=__ego_m; i++) {
+			if (asarray_contains(pos, __ego_akey[i])) {
+				__ego_aidx[i] = asarray(pos, __ego_akey[i])
+				__ego_deg[__ego_aidx[i]] = __ego_deg[__ego_aidx[i]] + 1
+			}
+			else unm++
+		}
+		st_numscalar("__ego_unmatched", unm)
+	}
+	else {
+		if (rows(__ego_degv) != __ego_n) {
+			errprintf("the ego data need alters() or egodegree()\n")
+			exit(198)
+		}
+		__ego_deg = __ego_degv
+		__ego_m = 0
+		__ego_aidx = J(0, 1, 0)
+		__ego_ahas = J(1, cols(__ego_attrs), 0)
+		st_numscalar("__ego_unmatched", 0)
+	}
+	__ego_lev = asarray_create()
+	for (k=1; k<=cols(catattrs); k++) {
+		j = selectindex(__ego_attrs :== catattrs[k])
+		a = 0
+		if (hasalters) a = __ego_ahas[j]
+		if (st_isnumvar(catattrs[k])) {
+			ev = asarray(__ego_Ev, catattrs[k])
+			lev = uniqrows(ev)
+			if (a) {
+				av = asarray(__ego_Av, catattrs[k])
+				av = av[selectindex(__ego_aidx :> 0)]
+				if (rows(uniqrows(av \ lev)) != rows(lev)) {
+					errprintf("variable %s: the alters have values that no ego has (or the other way round); egos and alters need the same levels\n", catattrs[k])
+					exit(498)
+				}
+			}
+			asarray(__ego_lev, catattrs[k], lev)
+		}
+		else {
+			es = asarray(__ego_Ev, catattrs[k])
+			slev = uniqrows(es)
+			if (a) {
+				as = asarray(__ego_Av, catattrs[k])
+				as = as[selectindex(__ego_aidx :> 0)]
+				if (rows(uniqrows(as \ slev)) != rows(slev)) {
+					errprintf("variable %s: the alters have values that no ego has (or the other way round); egos and alters need the same levels\n", catattrs[k])
+					exit(498)
+				}
+			}
+			asarray(__ego_lev, catattrs[k], (1::rows(slev)))
+		}
+	}
+}
+
+// ego and alter values of an attribute as numbers (categorical attributes: the level numbers of nwergm; a string
+// attribute: the codes 1, 2, ...); the alter values are returned for all alters (rows of the alter data)
+real colvector ergm_ego_vals(string scalar attr, real scalar alter)
+{
+	external transmorphic __ego_Ev, __ego_Av, __ego_lev
+	transmorphic x
+	real colvector lev
+	string colvector slev
+	real scalar i
+
+	if (alter) x = asarray(__ego_Av, attr)
+	else x = asarray(__ego_Ev, attr)
+	if (eltype(x) == "real") return(x)
+	slev = uniqrows(asarray(__ego_Ev, attr))
+	lev = J(rows(x), 1, .)
+	for (i=1; i<=rows(x); i++) lev[i] = (selectindex(slev :== x[i]))[1]
+	return(lev)
+}
+
+// the contributions of the egos to the statistics of the terms; the names are those of the coefficients of nwergm
+string rowvector ergm_ego_terms(string rowvector spec)
+{
+	external real scalar __ego_n, __ego_m
+	external real colvector __ego_deg, __ego_aidx
+	external real matrix __ego_H
+	external transmorphic __ego_Ev, __ego_Av, __ego_lev
+	external string rowvector __ego_attrs
+	external real rowvector __ego_ahas
+	string rowvector names, parts
+	real matrix H, Hn
+	real scalar t, j, i, l, d, a, from, to, nl
+	real colvector xe, xa, lev, ego_idx, cnt, ind
+	string scalar kind, attr
+
+	names = J(1, 0, "")
+	H = J(__ego_n, 0, .)
+	for (t=1; t<=cols(spec); t++) {
+		parts = tokens(subinstr(spec[t], ":", " "))
+		kind = parts[1]
+		if (kind == "edges") {
+			H = H, __ego_deg / 2
+			names = names, "edges"
+		}
+		else if (kind == "degree") {
+			d = strtoreal(parts[2])
+			H = H, (__ego_deg :== d)
+			names = names, ("degree_" + parts[2])
+		}
+		else if (kind == "degrange") {
+			from = strtoreal(parts[2])
+			to = (parts[3] == "." ? . : strtoreal(parts[3]))
+			if (to >= .) H = H, (__ego_deg :>= from)
+			else H = H, ((__ego_deg :>= from) :& (__ego_deg :< to))
+			names = names, ("degrange_" + parts[4])
+		}
+		else if (kind == "concurrent") {
+			H = H, (__ego_deg :>= 2)
+			names = names, "concurrent"
+		}
+		else if (kind == "degree1p5") {
+			H = H, (__ego_deg :^ 1.5)
+			names = names, "degree1.5"
+		}
+		else {
+			attr = parts[2]
+			j = selectindex(__ego_attrs :== attr)
+			a = __ego_ahas[j]
+			xe = ergm_ego_vals(attr, 0)
+			if (a) xa = ergm_ego_vals(attr, 1)
+			if (kind == "nodefactor" | kind == "nodematchdiff") {
+				lev = asarray(__ego_lev, attr)
+				nl = rows(lev)
+				// the labels of the levels: the values themselves, the codes for a string attribute
+				if (!st_isnumvar(attr)) lev = (1::nl)
+				else lev = asarray(__ego_lev, attr)
+				if (kind == "nodefactor") {
+					Hn = J(__ego_n, nl, 0)
+					for (l=1; l<=nl; l++) Hn[., l] = (xe :== lev[l]) :* __ego_deg
+					if (a) {
+						for (i=1; i<=__ego_m; i++) if (__ego_aidx[i] > 0) {
+							l = selectindex(lev :== xa[i])
+							Hn[__ego_aidx[i], l] = Hn[__ego_aidx[i], l] + 1
+						}
+						Hn = Hn / 2
+					}
+					Hn = Hn[., 2..nl]
+					for (l=2; l<=nl; l++) names = names, ("nodefactor_" + attr + "_" + strofreal(lev[l], "%18.0g"))
+				}
+				else {
+					if (!a) {
+						errprintf("nodematchdiff(%s): the attribute must be observed for the alters\n", attr)
+						exit(498)
+					}
+					cnt = J(__ego_n, 1, 0)
+					for (i=1; i<=__ego_m; i++) if (__ego_aidx[i] > 0) {
+						if (xa[i] == xe[__ego_aidx[i]]) cnt[__ego_aidx[i]] = cnt[__ego_aidx[i]] + 1
+					}
+					Hn = J(__ego_n, nl, 0)
+					for (l=1; l<=nl; l++) Hn[., l] = (xe :== lev[l]) :* cnt / 2
+					for (l=1; l<=nl; l++) names = names, ("nodematch_" + attr + "_" + strofreal(lev[l], "%18.0g"))
+				}
+				H = H, Hn
+			}
+			else if (kind == "nodematch") {
+				if (!a) {
+					errprintf("nodematch(%s): the attribute must be observed for the alters\n", attr)
+					exit(498)
+				}
+				cnt = J(__ego_n, 1, 0)
+				for (i=1; i<=__ego_m; i++) if (__ego_aidx[i] > 0) {
+					if (xa[i] == xe[__ego_aidx[i]]) cnt[__ego_aidx[i]] = cnt[__ego_aidx[i]] + 1
+				}
+				H = H, cnt / 2
+				names = names, ("nodematch_" + attr)
+			}
+			else if (kind == "nodecov") {
+				cnt = xe :* __ego_deg
+				if (a) {
+					for (i=1; i<=__ego_m; i++) if (__ego_aidx[i] > 0) cnt[__ego_aidx[i]] = cnt[__ego_aidx[i]] + xa[i]
+					cnt = cnt / 2
+				}
+				H = H, cnt
+				names = names, ("nodecov_" + attr)
+			}
+			else if (kind == "absdist") {
+				if (!a) {
+					errprintf("absdist(%s): the attribute must be observed for the alters\n", attr)
+					exit(498)
+				}
+				cnt = J(__ego_n, 1, 0)
+				for (i=1; i<=__ego_m; i++) if (__ego_aidx[i] > 0) cnt[__ego_aidx[i]] = cnt[__ego_aidx[i]] + abs(xa[i] - xe[__ego_aidx[i]])
+				H = H, cnt / 2
+				names = names, ("absdist_" + attr)
+			}
+			else {
+				errprintf("ego term %s is not known\n", kind)
+				exit(198)
+			}
+		}
+	}
+	__ego_H = H
+	return(names)
+}
+
+// the estimate of the statistics of a network of size N from the egos and its design-based covariance (survey::svymean,
+// design with weights and no clusters: V = n / (n - 1) sum_i (w_i / sum w)^2 (h_i - mean)(h_i - mean)')
+void ergm_ego_survey(real scalar N, string scalar tname, string scalar vname)
+{
+	external real scalar __ego_n
+	external real colvector __ego_w
+	external real matrix __ego_H
+	real colvector p
+	real rowvector m
+	real matrix D, V
+
+	p = __ego_w / sum(__ego_w)
+	m = p' * __ego_H
+	D = __ego_H :- m
+	V = (__ego_n / (__ego_n - 1)) * cross(D :* p, D :* p)
+	st_matrix(tname, N * m)
+	st_matrix(vname, N^2 * V)
+}
+
+// the sizes of the groups of egos in the pseudopopulation: round(N w_i / sum w) copies of each ego (R: ppop.wt = "round"),
+// or a weighted sample with replacement (ppop.wt = "sample")
+real colvector ergm_ego_reps(real scalar N, real scalar sample)
+{
+	external real scalar __ego_n
+	external real colvector __ego_w
+	real colvector r
+	real scalar i, u, c
+
+	// R's round(): halves go to the even integer (2.5 -> 2)
+	if (!sample) {
+		r = N * __ego_w / sum(__ego_w)
+		for (i=1; i<=rows(r); i++) {
+			u = floor(r[i] + 0.5)
+			if (r[i] + 0.5 == u & mod(u, 2) == 1) u = u - 1
+			r[i] = u
+		}
+		return(r)
+	}
+	r = J(__ego_n, 1, 0)
+	c = runningsum(__ego_w / sum(__ego_w))
+	for (i=1; i<=N; i++) {
+		u = runiform(1, 1)
+		r[min(selectindex(c :>= u)) ] = r[min(selectindex(c :>= u))] + 1
+	}
+	return(r)
+}
+
+// the numeric value of an attribute for the nodes of the pseudopopulation (see ergm_ego_vals)
+real colvector ergm_ego_attrcol(string scalar attr)
+{
+	return(ergm_ego_vals(attr, 0))
+}
+
+// sets the target statistics of the fit, in the order of the coefficients of the model, from the named vector
+void ergm_ego_settarget(class ErgmModel scalar M, string rowvector names, string scalar tname)
+{
+	external real rowvector ergm_target
+	real rowvector tv, out
+	string rowvector cn
+	real scalar j, k
+
+	tv = st_matrix(tname)
+	cn = M.coefnames
+	out = J(1, cols(cn), .)
+	for (j=1; j<=cols(cn); j++) {
+		k = selectindex(names :== cn[j])
+		if (cols(k) == 0) {
+			errprintf("the statistic %s of the model cannot be estimated from the ego data\n", cn[j])
+			exit(498)
+		}
+		out[j] = tv[k[1]]
+	}
+	for (j=1; j<=cols(names); j++) {
+		if (!anyof(cn, names[j])) {
+			errprintf("the statistic %s estimated from the ego data is not a term of the model\n", names[j])
+			exit(498)
+		}
+	}
+	ergm_target = out
+	external real rowvector __ergm_obsstat
+	__ergm_obsstat = out
+}
+
+// the target statistics and their covariance in the order of the coefficients of the model
+real rowvector ergm_ego_order(class ErgmModel scalar M, string rowvector names, string scalar tname)
+{
+	real rowvector tv, perm
+	real scalar j
+
+	tv = st_matrix(tname)
+	perm = J(1, cols(M.coefnames), 0)
+	for (j=1; j<=cols(perm); j++) perm[j] = selectindex(names :== M.coefnames[j])[1]
+	return(tv[perm])
+}
+
+real matrix ergm_ego_orderv(class ErgmModel scalar M, string rowvector names, string scalar vname)
+{
+	real matrix V
+	real rowvector perm
+	real scalar j
+
+	V = st_matrix(vname)
+	perm = J(1, cols(M.coefnames), 0)
+	for (j=1; j<=cols(perm); j++) perm[j] = selectindex(names :== M.coefnames[j])[1]
+	return(V[perm, perm])
+}
+
+// the coefficient of edges at the size of the population: the sampling coefficient less the network size adjustment
+real rowvector ergm_ego_unshift(real rowvector coef, class ErgmModel scalar M, real scalar shift)
+{
+	real rowvector out
+	real scalar k
+
+	out = coef
+	k = selectindex(M.coefnames :== "edges")
+	out[k] = out[k] - shift
+	return(out)
+}
+
+// the covariance of the estimated coefficients: A^-1 V_t A^-1, with A the covariance of the statistics under the fitted
+// model at the size of the pseudopopulation (the information; R: DtDe) and V_t the design-based covariance of the target
+// statistics (R: ergm.ego's covar)
+real matrix ergm_ego_sandwich(real matrix S, class ErgmModel scalar M, string rowvector names, string scalar vname, string scalar aname)
+{
+	real matrix A, Ai, Vt, Vp
+	string rowvector cn
+	real scalar j, k, p
+	real rowvector perm
+
+	cn = M.coefnames
+	p = cols(cn)
+	Vt = st_matrix(vname)
+	perm = J(1, p, 0)
+	for (j=1; j<=p; j++) perm[j] = selectindex(names :== cn[j])[1]
+	Vp = Vt[perm, perm]
+	A = variance(S)
+	Ai = invsym(A)
+	for (j=1; j<=p; j++) if (A[j,j] < 1e-10 | Ai[j,j] == 0) {
+		errprintf("the information of the model is singular at the estimate (statistic %s does not vary): the standard errors cannot be computed; try a longer MCMC sample (mcmcsamplesize(), mcmcinterval())\n", cn[j])
+		exit(430)
+	}
+	st_matrix(aname, A)
+	return(Ai * Vp * Ai)
+}
+
+// the distribution of the degrees of the egos (weighted shares of the egos with degree 0, 1, ..., maxdeg - 1, and maxdeg or more)
+real rowvector ergm_ego_degdist(real scalar maxdeg)
+{
+	external real colvector __ego_deg, __ego_w
+	real rowvector out
+	real scalar d
+
+	out = J(1, maxdeg + 1, 0)
+	for (d=0; d<maxdeg; d++) out[d+1] = sum(__ego_w :* (__ego_deg :== d))
+	out[maxdeg+1] = sum(__ego_w :* (__ego_deg :>= maxdeg))
+	return(out / sum(__ego_w))
+}
+
+real scalar ergm_ego_maxdeg()
+{
+	external real colvector __ego_deg
+
+	return(max((max(__ego_deg), 3)) * 2)
+}
+
+// goodness of fit of an egocentric fit (R: gof.ergm.ego): nsim networks of the size of the pseudopopulation drawn from the
+// fitted model; the statistics of the model and the degree distribution of each draw
+void ergm_ego_gof(class ErgmModel scalar M, class ErgmGraph scalar G, real rowvector theta, real scalar nsim, real scalar burnin,
+	real scalar interval, pointer(real rowvector function) scalar proposalfn, real scalar maxdeg, string scalar prefix)
+{
+	real matrix Smod, Sdeg, A
+	real rowvector d, Smodel
+	real scalar s, n
+
+	n = G.n
+	Smod = J(nsim, M.nparam(), .)
+	Sdeg = J(nsim, maxdeg + 1, 0)
+	for (s=1; s<=nsim; s++) {
+		if (s == 1) Smodel = ErgmMCMCSample(M, G, theta, burnin, interval, 1, proposalfn)
+		else Smodel = ErgmMCMCSample(M, G, theta, 0, interval, 1, proposalfn, Smodel)
+		Smod[s, .] = Smodel
+		A = G.to_dense()
+		d = ergm_gof_deg(A, 0)
+		Sdeg[s, 1..maxdeg] = d[1..maxdeg]
+		Sdeg[s, maxdeg+1] = sum(d[(maxdeg+1)..n])
+	}
+	st_matrix(prefix + "_smodel", Smod / n)
+	st_matrix(prefix + "_sdeg", Sdeg / n)
+}
+
+// one row of the goodness-of-fit table: the estimate from the egos, min, mean and max of the draws, the Monte Carlo p-value
+real matrix ergm_ego_gofrow(real matrix S, real rowvector O, real scalar j, real matrix P)
+{
+	real colvector d
+	real matrix out
+
+	out = P
+	d = S[., j] :- O[j]
+	out[j, .] = (O[j], min(S[., j]), mean(S[., j]), max(S[., j]), min((1, 2 * min((mean(d :>= 0), mean(d :<= 0))))))
 	return(out)
 }
 

@@ -3,6 +3,17 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [1.10.0] - 2026-11-20
+
+### Added
+- **ERGM for egocentrically sampled data: `nwergm ego`**, following R's ergm.ego 1.1.4 (Krivitsky and Morris 2017). The data in memory are the egos (one row per ego); the alters are in a second frame (`alters()`, `egoid()`, `alteregoid()`), or only the number of alters is given (`egodegree()`). Terms: `edges`, `degree()`, `degrange()`/`degrangeto()`, `concurrent`, `nodefactor()`, `nodematch()`, `nodematchdiff()`, `nodecov()`, `absdist()`. The statistics of the network are estimated from the egos (survey weights with `weights()`), the model is fitted to them on a pseudopopulation of `ppopsize()` nodes with the native Monte Carlo sampler (R's target statistics MCMLE), `popsize()` gives the network size adjustment (an offset on the number of ties during the sampling, R's `netsize.adj`), and the standard errors are R's: the design-based covariance of the estimated statistics through the information of the model. No network has to be declared. `ppopsize(auto|samp|pop|#)`, `ppopmul()` and `ppopwt(round|sample)` as in `control.ergm.ego()`.
+- `estat gof` after `nwergm ego` (R's `gof.ergm.ego`: the statistics of the model and the degree distribution against simulated networks, per node); `nwergm simulate` draws networks of the size of the pseudopopulation from the fit; `estat mcmcdiag` works; `estat ic` and `predict` say that they are not available.
+- Dialog `nwergm_ego.dlg`, help file `nwergm_ego`, manual chapter, test `cscripts/test_nwergm_ego.do` with reference values of ergm.ego 1.1.4 (faux.mesa.high, and a planted ERGM on 1,000 nodes sampled with equal and with unequal weights; the data and the R scripts are in `cscripts/ego/`).
+
+### Notes
+- No change to the plugin or to the core; the Mata library has new functions and `ErgmMCMLE()` accepts target statistics (an external vector set only by `nwergm ego`).
+- Not available (R has them): terms that need the ties among the alters (`esp`, `gwesp`, `triangle`, `transitiveties`), `degree1.5`, `nodemix`, `mm`, the bootstrap, jackknife and asymptotic covariance estimators, and the espartners statistic of `estat gof`. See `TODO.md`.
+
 ## [1.9.0] - 2026-11-19
 
 ### Added

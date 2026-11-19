@@ -1,4 +1,4 @@
-Developer note. The dialogs nwergm.dlg, nwergm_simulate.dlg and nwergm_estat.dlg are generated: edit dlg/nwergm_dialog_spec.py (one entry per term or option), run
+Developer note. The dialogs nwergm.dlg, nwergm_simulate.dlg and nwergm_estat.dlg are generated (nwergm_ego.dlg, for nwergm ego, is written by hand: edit it directly and run cmd_assembly_test.py, which has its cases): edit dlg/nwergm_dialog_spec.py (one entry per term or option), run
 python3 dlg/gen_dialogs.py to rewrite the three .dlg files, then python3 dlg/check_dialogs.py (static checks and coverage of the syntax lines and of docs/ERGM_TERMS_INVENTORY.csv).
 dlg/smoke_dialogs.py builds the command of every entry as the dialog would and runs it in Stata (-e); see its docstring. Do not edit the .dlg files by hand.
 check_dialogs.py also runs `db <dialog>` in Stata -e for each dialog (needs --work <scratch dir> and --nwcore <core dir>); rc must be 0. Stata rejects a dialog PROGRAM with too many statements (rc 1001), so long blocks are split into sub-programs; every dialog needs SYNCHRONOUS_ONLY, otherwise `db` waits for the window.
