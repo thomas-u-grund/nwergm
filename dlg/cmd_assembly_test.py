@@ -25,6 +25,9 @@ CASES = {
         ("default", ['call main.cb_net.setvalue "w1"'], "nwergm w1, edges"),
         ("terms", ['call main.cb_net.setvalue "w1"', "call main.cx_mutual.seton", "call tri.cx_gwesp.seton"],
          "nwergm w1, edges mutual gwesp(0.5)"),
+        ("bayes", ['call main.cb_net.setvalue "w1"', 'call est.f_estimate.setvalue "bayes"', 'call bayes.f_chains.setvalue "4"',
+                   'call bayes.f_iterations.setvalue "200"', 'call bayes.f_priorvar.setvalue "10"', "call bayes.f_nodelayed.seton"],
+         "nwergm w1, edges estimate(bayes) chains(4) iterations(200) nodelayed priorvar(10)"),
     ],
     "nwergm_simulate": [
         ("nodes, theta", ['call simctl.f_sim_nodes.setvalue "20"', 'call simctl.f_theta.setvalue "-2"'],
@@ -32,6 +35,8 @@ CASES = {
         ("from last fit", ["call main.cx_fit.seton", 'call simctl.f_nsim.setvalue "3"'], "nwergm simulate, nsim(3)"),
     ],
     "nwergm_estat": [("default", [], "estat gof"),
+                     ("posterior", ['call main.cb_which.setvalue "posterior"', 'call posterior.f_p_saving.setvalue "d"', "call posterior.f_p_replace.seton"],
+                      "estat posterior, saving(d) replace"),
                      ("simulate from fit", ['call main.cb_which.setvalue "simfit"'], "nwergm simulate")],
 }
 

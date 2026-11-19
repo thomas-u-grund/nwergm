@@ -365,7 +365,7 @@ def sim_filter_fields(e, simset):
 TAB_PLAN = {
     # at most 9 tabs, titles of at most 10 characters; a tab made of several pages gets a "Section" selector
     "ergm": [("Basic", ["basic"]), ("Degree", ["deg"]), ("Triads", ["tri"]), ("Covariate", ["cov"]), ("Two-mode", ["two"]),
-             ("Operators", ["oper"]), ("Constraint", ["cons", "space"]), ("Estimate", ["est", "mcmc", "out"])],
+             ("Operators", ["oper"]), ("Constraint", ["cons", "space"]), ("Estimate", ["est", "mcmc", "out"]), ("Bayesian", ["bayes"])],
     "sim": [("Basic", ["basic"]), ("Degree", ["deg"]), ("Triads", ["tri"]), ("Covariate", ["cov"]), ("Two-mode", ["two"]),
             ("Sample", ["space"]), ("MCMC", ["mcmc"]), ("Simulate", ["simctl"])],
 }
@@ -986,8 +986,8 @@ def build_estat():
                  hint=hint, smoke=dict(use=dict(main=smoke)))
         ents.append(e)
     # which-command selector (first tab)
-    which_choices = ["gof", "mcmcdiag", "ic", "simfit"]
-    which_labels = ["estat gof - goodness of fit", "estat mcmcdiag - MCMC diagnostics", "estat ic - information criteria",
+    which_choices = ["gof", "mcmcdiag", "ic", "posterior", "simfit"]
+    which_labels = ["estat gof - goodness of fit", "estat mcmcdiag - MCMC diagnostics", "estat ic - information criteria", "estat posterior - draws and plots of a Bayesian fit",
                     "nwergm simulate - draw networks from the fitted model"]
     b.lists["l_which"] = which_labels
     b.lists["l_which_v"] = which_choices
@@ -998,7 +998,7 @@ def build_estat():
     rows = [("raw", r_which),
             ("note", "These commands work on the last model fitted with nwergm (they need the fitted model in memory)."),
             ("note", "Choose the command above, then set its options on the tab with the same name and press OK."),
-            ("note", "estat gof / mcmcdiag / ic are postestimation commands; the last choice draws networks from the fit."),
+            ("note", "estat gof / mcmcdiag / ic / posterior are postestimation commands; the last choice draws networks from the fit."),
             ]
     tabs = S.ESTAT_TABS
     for i, t in enumerate(tabs):
@@ -1040,7 +1040,7 @@ def estat_command(b, ents):
     PROGS.clear()
     out = Out()
     sel = ref(b, "cb_which")
-    for (val, head, tabk) in (("gof", "estat gof", "gof"), ("mcmcdiag", "estat mcmcdiag", "mcmcdiag"), ("simfit", "nwergm simulate", "simfit")):
+    for (val, head, tabk) in (("gof", "estat gof", "gof"), ("mcmcdiag", "estat mcmcdiag", "mcmcdiag"), ("posterior", "estat posterior", "posterior"), ("simfit", "nwergm simulate", "simfit")):
         out.open('%s.iseq("%s")' % (sel, val))
         put(out, q(head))
         out.w("beginoptions")

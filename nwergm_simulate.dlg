@@ -1542,44 +1542,47 @@ BEGIN
 	space.tx_constraints_extra.enable
 	space.f_constraints_extra.enable
 	space.tx_h114.enable
-	mcmc.tx_proposal.enable
-	mcmc.f_proposal.enable
+	space.tx_mcmcprop.enable
+	space.f_mcmcprop.enable
 END
 
 SCRIPT ty_auto_11
 BEGIN
-	mcmc.tx_h115.enable
+	space.tx_h115.enable
+	mcmc.tx_proposal.enable
+	mcmc.f_proposal.enable
+	mcmc.tx_h116.enable
 	mcmc.tx_mcmcburnin.enable
 	mcmc.f_mcmcburnin.enable
-	mcmc.tx_h116.enable
+	mcmc.tx_h117.enable
 	mcmc.tx_mcmcinterval.enable
 	mcmc.f_mcmcinterval.enable
-	mcmc.tx_h117.enable
+	mcmc.tx_h118.enable
 	mcmc.tx_seed.enable
 	mcmc.f_seed.enable
-	mcmc.tx_h118.enable
-	mcmc.f_spcache.enable
 	mcmc.tx_h119.enable
+	mcmc.f_spcache.enable
+	mcmc.tx_h120.enable
 	simctl.tx_sim_nodes.enable
 	simctl.f_sim_nodes.enable
-	simctl.tx_h120.enable
+	simctl.tx_h121.enable
 	simctl.tx_theta.enable
 	simctl.f_theta.enable
-	simctl.tx_h121.enable
+	simctl.tx_h122.enable
 	simctl.tx_nsim.enable
 	simctl.f_nsim.enable
-	simctl.tx_h122.enable
+	simctl.tx_h123.enable
 	simctl.tx_generate.enable
 	simctl.f_generate.enable
-	simctl.tx_h123.enable
-	simctl.f_sim_directed.enable
 	simctl.tx_h124.enable
+	simctl.f_sim_directed.enable
+	simctl.tx_h125.enable
 	simctl.tx_bipartite.enable
 	simctl.f_bipartite.enable
-	simctl.tx_h125.enable
+	simctl.tx_h126.enable
 	simctl.tx_basis.enable
 	simctl.f_basis.enable
-	simctl.tx_h126.enable
+	simctl.tx_h127.enable
 END
 
 SCRIPT ty_auto
@@ -2078,44 +2081,47 @@ BEGIN
 	space.tx_constraints_extra.enable
 	space.f_constraints_extra.enable
 	space.tx_h114.enable
-	mcmc.tx_proposal.enable
-	mcmc.f_proposal.enable
+	space.tx_mcmcprop.enable
+	space.f_mcmcprop.enable
 END
 
 SCRIPT ty_u_11
 BEGIN
-	mcmc.tx_h115.enable
+	space.tx_h115.enable
+	mcmc.tx_proposal.enable
+	mcmc.f_proposal.enable
+	mcmc.tx_h116.enable
 	mcmc.tx_mcmcburnin.enable
 	mcmc.f_mcmcburnin.enable
-	mcmc.tx_h116.enable
+	mcmc.tx_h117.enable
 	mcmc.tx_mcmcinterval.enable
 	mcmc.f_mcmcinterval.enable
-	mcmc.tx_h117.enable
+	mcmc.tx_h118.enable
 	mcmc.tx_seed.enable
 	mcmc.f_seed.enable
-	mcmc.tx_h118.enable
-	mcmc.f_spcache.enable
 	mcmc.tx_h119.enable
+	mcmc.f_spcache.enable
+	mcmc.tx_h120.enable
 	simctl.tx_sim_nodes.enable
 	simctl.f_sim_nodes.enable
-	simctl.tx_h120.enable
+	simctl.tx_h121.enable
 	simctl.tx_theta.enable
 	simctl.f_theta.enable
-	simctl.tx_h121.enable
+	simctl.tx_h122.enable
 	simctl.tx_nsim.enable
 	simctl.f_nsim.enable
-	simctl.tx_h122.enable
+	simctl.tx_h123.enable
 	simctl.tx_generate.enable
 	simctl.f_generate.enable
-	simctl.tx_h123.enable
-	simctl.f_sim_directed.enable
 	simctl.tx_h124.enable
+	simctl.f_sim_directed.enable
+	simctl.tx_h125.enable
 	simctl.tx_bipartite.enable
 	simctl.f_bipartite.enable
-	simctl.tx_h125.enable
+	simctl.tx_h126.enable
 	simctl.tx_basis.enable
 	simctl.f_basis.enable
-	simctl.tx_h126.enable
+	simctl.tx_h127.enable
 END
 
 SCRIPT ty_u
@@ -2614,44 +2620,47 @@ BEGIN
 	space.tx_constraints_extra.enable
 	space.f_constraints_extra.enable
 	space.tx_h114.enable
-	mcmc.tx_proposal.enable
-	mcmc.f_proposal.enable
+	space.tx_mcmcprop.enable
+	space.f_mcmcprop.enable
 END
 
 SCRIPT ty_d_11
 BEGIN
-	mcmc.tx_h115.enable
+	space.tx_h115.enable
+	mcmc.tx_proposal.enable
+	mcmc.f_proposal.enable
+	mcmc.tx_h116.enable
 	mcmc.tx_mcmcburnin.enable
 	mcmc.f_mcmcburnin.enable
-	mcmc.tx_h116.enable
+	mcmc.tx_h117.enable
 	mcmc.tx_mcmcinterval.enable
 	mcmc.f_mcmcinterval.enable
-	mcmc.tx_h117.enable
+	mcmc.tx_h118.enable
 	mcmc.tx_seed.enable
 	mcmc.f_seed.enable
-	mcmc.tx_h118.enable
-	mcmc.f_spcache.enable
 	mcmc.tx_h119.enable
+	mcmc.f_spcache.enable
+	mcmc.tx_h120.enable
 	simctl.tx_sim_nodes.enable
 	simctl.f_sim_nodes.enable
-	simctl.tx_h120.enable
+	simctl.tx_h121.enable
 	simctl.tx_theta.enable
 	simctl.f_theta.enable
-	simctl.tx_h121.enable
+	simctl.tx_h122.enable
 	simctl.tx_nsim.enable
 	simctl.f_nsim.enable
-	simctl.tx_h122.enable
+	simctl.tx_h123.enable
 	simctl.tx_generate.enable
 	simctl.f_generate.enable
-	simctl.tx_h123.enable
-	simctl.f_sim_directed.enable
 	simctl.tx_h124.enable
+	simctl.f_sim_directed.enable
+	simctl.tx_h125.enable
 	simctl.tx_bipartite.enable
 	simctl.f_bipartite.enable
-	simctl.tx_h125.enable
+	simctl.tx_h126.enable
 	simctl.tx_basis.enable
 	simctl.f_basis.enable
-	simctl.tx_h126.enable
+	simctl.tx_h127.enable
 END
 
 SCRIPT ty_d
@@ -3150,44 +3159,47 @@ BEGIN
 	space.tx_constraints_extra.enable
 	space.f_constraints_extra.enable
 	space.tx_h114.enable
-	mcmc.tx_proposal.enable
-	mcmc.f_proposal.enable
+	space.tx_mcmcprop.enable
+	space.f_mcmcprop.enable
 END
 
 SCRIPT ty_b_11
 BEGIN
-	mcmc.tx_h115.enable
+	space.tx_h115.enable
+	mcmc.tx_proposal.enable
+	mcmc.f_proposal.enable
+	mcmc.tx_h116.enable
 	mcmc.tx_mcmcburnin.enable
 	mcmc.f_mcmcburnin.enable
-	mcmc.tx_h116.enable
+	mcmc.tx_h117.enable
 	mcmc.tx_mcmcinterval.enable
 	mcmc.f_mcmcinterval.enable
-	mcmc.tx_h117.enable
+	mcmc.tx_h118.enable
 	mcmc.tx_seed.enable
 	mcmc.f_seed.enable
-	mcmc.tx_h118.enable
-	mcmc.f_spcache.enable
 	mcmc.tx_h119.enable
+	mcmc.f_spcache.enable
+	mcmc.tx_h120.enable
 	simctl.tx_sim_nodes.enable
 	simctl.f_sim_nodes.enable
-	simctl.tx_h120.enable
+	simctl.tx_h121.enable
 	simctl.tx_theta.enable
 	simctl.f_theta.enable
-	simctl.tx_h121.enable
+	simctl.tx_h122.enable
 	simctl.tx_nsim.enable
 	simctl.f_nsim.enable
-	simctl.tx_h122.enable
+	simctl.tx_h123.enable
 	simctl.tx_generate.enable
 	simctl.f_generate.enable
-	simctl.tx_h123.enable
-	simctl.f_sim_directed.enable
 	simctl.tx_h124.enable
+	simctl.f_sim_directed.enable
+	simctl.tx_h125.enable
 	simctl.tx_bipartite.enable
 	simctl.f_bipartite.enable
-	simctl.tx_h125.enable
+	simctl.tx_h126.enable
 	simctl.tx_basis.enable
 	simctl.f_basis.enable
-	simctl.tx_h126.enable
+	simctl.tx_h127.enable
 END
 
 SCRIPT ty_b
@@ -3710,26 +3722,29 @@ BEGIN
 	space.tx_constraints_extra.disable
 	space.f_constraints_extra.disable
 	space.tx_h114.disable
-	mcmc.tx_proposal.disable
-	mcmc.f_proposal.disable
+	space.tx_mcmcprop.disable
+	space.f_mcmcprop.disable
 END
 
 SCRIPT fit_dis_11
 BEGIN
-	mcmc.tx_h115.disable
+	space.tx_h115.disable
+	mcmc.tx_proposal.disable
+	mcmc.f_proposal.disable
+	mcmc.tx_h116.disable
 	mcmc.f_spcache.disable
-	mcmc.tx_h119.disable
+	mcmc.tx_h120.disable
 	simctl.tx_sim_nodes.disable
 	simctl.f_sim_nodes.disable
-	simctl.tx_h120.disable
+	simctl.tx_h121.disable
 	simctl.tx_theta.disable
 	simctl.f_theta.disable
-	simctl.tx_h121.disable
+	simctl.tx_h122.disable
 	simctl.f_sim_directed.disable
-	simctl.tx_h124.disable
+	simctl.tx_h125.disable
 	simctl.tx_bipartite.disable
 	simctl.f_bipartite.disable
-	simctl.tx_h125.disable
+	simctl.tx_h126.disable
 	main.cb_type.disable
 END
 
@@ -4229,26 +4244,29 @@ BEGIN
 	space.tx_constraints_extra.enable
 	space.f_constraints_extra.enable
 	space.tx_h114.enable
-	mcmc.tx_proposal.enable
-	mcmc.f_proposal.enable
+	space.tx_mcmcprop.enable
+	space.f_mcmcprop.enable
 END
 
 SCRIPT fit_en_11
 BEGIN
-	mcmc.tx_h115.enable
+	space.tx_h115.enable
+	mcmc.tx_proposal.enable
+	mcmc.f_proposal.enable
+	mcmc.tx_h116.enable
 	mcmc.f_spcache.enable
-	mcmc.tx_h119.enable
+	mcmc.tx_h120.enable
 	simctl.tx_sim_nodes.enable
 	simctl.f_sim_nodes.enable
-	simctl.tx_h120.enable
+	simctl.tx_h121.enable
 	simctl.tx_theta.enable
 	simctl.f_theta.enable
-	simctl.tx_h121.enable
+	simctl.tx_h122.enable
 	simctl.f_sim_directed.enable
-	simctl.tx_h124.enable
+	simctl.tx_h125.enable
 	simctl.tx_bipartite.enable
 	simctl.f_bipartite.enable
-	simctl.tx_h125.enable
+	simctl.tx_h126.enable
 	main.cb_type.enable
 END
 
@@ -4757,48 +4775,51 @@ BEGIN
   TEXT      tx_constraints_extra 10 12 200 ., label("constraints()  typed terms")
   EDIT      f_constraints_extra 215 10 330 ., option(constraints) nomem
   TEXT      tx_h114 555 12 430 ., label("e.g. blockdiag(g) + bd(maxout=5)")
+  TEXT      tx_mcmcprop 10 33 200 ., label("mcmcprop()")
+  EDIT      f_mcmcprop 215 31 150 ., option(mcmcprop) nomem
+  TEXT      tx_h115 375 33 610 ., label("MCMC.prop hint formula, e.g. sparse")
 END
 
 DIALOG mcmc, tabtitle("MCMC")
 BEGIN
   TEXT      tx_proposal 10 12 200 ., label("proposal()")
   COMBOBOX  f_proposal 215 10 100 ., dropdownlist contents(l_f_proposal) values(l_f_proposal_v) option(proposal) nomem
-  TEXT      tx_h115 325 12 660 ., label("Metropolis-Hastings proposal (default tnt)")
+  TEXT      tx_h116 325 12 660 ., label("Metropolis-Hastings proposal (default tnt)")
   TEXT      tx_mcmcburnin 10 33 200 ., label("mcmcburnin()")
   EDIT      f_mcmcburnin 215 31 80 ., option(mcmcburnin) nomem
-  TEXT      tx_h116 305 33 680 ., label("default 16 x mcmcinterval (16384)")
+  TEXT      tx_h117 305 33 680 ., label("default 16 x mcmcinterval (16384)")
   TEXT      tx_mcmcinterval 10 54 200 ., label("mcmcinterval()")
   EDIT      f_mcmcinterval 215 52 80 ., option(mcmcinterval) nomem
-  TEXT      tx_h117 305 54 680 ., label("default 1024 (the old default was 50)")
+  TEXT      tx_h118 305 54 680 ., label("default 1024 (the old default was 50)")
   TEXT      tx_seed 10 75 200 ., label("seed()")
   EDIT      f_seed 215 73 80 ., option(seed) nomem
-  TEXT      tx_h118 305 75 680 ., label("random-number seed")
+  TEXT      tx_h119 305 75 680 ., label("random-number seed")
   CHECKBOX  f_spcache 10 94 200 ., label("spcache") default(0) nomem
-  TEXT      tx_h119 220 96 765 ., label("shared-partner cache for dense undirected networks")
+  TEXT      tx_h120 220 96 765 ., label("shared-partner cache for dense undirected networks")
 END
 
 DIALOG simctl, tabtitle("Simulate")
 BEGIN
   TEXT      tx_sim_nodes 10 12 200 ., label("Number of nodes")
   EDIT      f_sim_nodes 215 10 80 ., nomem
-  TEXT      tx_h120 305 12 680 ., label("positional argument")
+  TEXT      tx_h121 305 12 680 ., label("positional argument")
   TEXT      tx_theta 10 33 200 ., label("theta()")
   EDIT      f_theta 215 31 250 ., option(theta) nomem
-  TEXT      tx_h121 475 33 510 ., label("one coefficient per model term, in estimation order")
+  TEXT      tx_h122 475 33 510 ., label("one coefficient per model term, in estimation order")
   TEXT      tx_nsim 10 54 200 ., label("nsim()")
   EDIT      f_nsim 215 52 80 ., option(nsim) nomem
-  TEXT      tx_h122 305 54 680 ., label("number of networks to draw (default 1)")
+  TEXT      tx_h123 305 54 680 ., label("number of networks to draw (default 1)")
   TEXT      tx_generate 10 75 200 ., label("generate()")
   EDIT      f_generate 215 73 120 ., option(generate) nomem
-  TEXT      tx_h123 345 75 640 ., label("stub name of the simulated networks")
+  TEXT      tx_h124 345 75 640 ., label("stub name of the simulated networks")
   CHECKBOX  f_sim_directed 10 94 200 ., label("directed") default(0) nomem
-  TEXT      tx_h124 220 96 765 ., label("simulate a directed network")
+  TEXT      tx_h125 220 96 765 ., label("simulate a directed network")
   TEXT      tx_bipartite 10 117 200 ., label("bipartite()")
   EDIT      f_bipartite 215 115 80 ., option(bipartite) nomem
-  TEXT      tx_h125 305 117 680 ., label("number of mode-1 nodes (two-mode network)")
+  TEXT      tx_h126 305 117 680 ., label("number of mode-1 nodes (two-mode network)")
   TEXT      tx_basis 10 138 200 ., label("basis()")
   COMBOBOX  f_basis 215 136 150 ., dropdown contents(netlist) option(basis) nomem
-  TEXT      tx_h126 375 138 610 ., label("start from (and take constraints from) this network")
+  TEXT      tx_h127 375 138 610 ., label("start from (and take constraints from) this network")
 END
 
 LIST netlist
@@ -5375,6 +5396,7 @@ BEGIN
 		require two.f_coincidence
 		optionarg /asis two.f_coincidence
 	}
+	optionarg /asis space.f_mcmcprop
 	optionarg /asis mcmc.f_proposal
 	optionarg /asis mcmc.f_mcmcburnin
 	optionarg /asis mcmc.f_mcmcinterval

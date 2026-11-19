@@ -21,7 +21,7 @@ BEGIN
   COMBOBOX  cb_which 140 10 380 ., dropdownlist contents(l_which) values(l_which_v) nomem
   TEXT      tx_n31_main 10 33 960 ., label("These commands work on the last model fitted with nwergm (they need the fitted model in memory).")
   TEXT      tx_n52_main 10 54 960 ., label("Choose the command above, then set its options on the tab with the same name and press OK.")
-  TEXT      tx_n73_main 10 75 960 ., label("estat gof / mcmcdiag / ic are postestimation commands; the last choice draws networks from the fit.")
+  TEXT      tx_n73_main 10 75 960 ., label("estat gof / mcmcdiag / ic / posterior are postestimation commands; the last choice draws networks from the fit.")
 END
 
 DIALOG gof, tabtitle("GOF")
@@ -76,6 +76,10 @@ BEGIN
   TEXT      tx_h11 335 54 650 ., label("name of the combined graph")
   CHECKBOX  f_m_plot 10 73 200 ., label("plot") default(0) nomem
   TEXT      tx_h12 220 75 765 ., label("trace and density plots")
+  CHECKBOX  f_m_heidel 10 94 200 ., label("heidel") default(0) nomem
+  TEXT      tx_h13 220 96 765 ., label("Heidelberger-Welch stationarity and half-width tests")
+  CHECKBOX  f_m_report 10 115 200 ., label("report") default(0) nomem
+  TEXT      tx_h14 220 117 765 ., label("print the full diagnostics table")
 END
 
 DIALOG ic, tabtitle("IC")
@@ -83,33 +87,54 @@ BEGIN
   TEXT      tx_n10_ic 10 12 960 ., label("estat ic reports the log-likelihood, AIC and BIC of the last nwergm fit. It has no options.")
 END
 
+DIALOG posterior, tabtitle("Posterior")
+BEGIN
+  TEXT      tx_p_saving 10 12 200 ., label("saving()")
+  EDIT      f_p_saving 215 10 110 ., option(saving) nomem
+  TEXT      tx_h15 335 12 650 ., label("file for the draws (a Stata data file)")
+  CHECKBOX  f_p_replace 10 31 200 ., label("replace") default(0) nomem
+  TEXT      tx_h16 220 33 765 ., label("replace an existing file")
+  TEXT      tx_p_plot 10 54 200 ., label("plot()")
+  COMBOBOX  f_p_plot 215 52 100 ., dropdownlist contents(l_f_p_plot) values(l_f_p_plot_v) option(plot) nomem
+  TEXT      tx_h17 325 54 660 ., label("trace and density plots of the draws")
+  TEXT      tx_p_name 10 75 200 ., label("name()")
+  EDIT      f_p_name 215 73 110 ., option(name) nomem
+  TEXT      tx_h18 335 75 650 ., label("name of the graph")
+  TEXT      tx_p_pars 10 96 200 ., label("pars()")
+  EDIT      f_p_pars 215 94 110 ., option(pars) nomem
+  TEXT      tx_h19 335 96 650 ., label("coefficients to plot; default all")
+  TEXT      tx_p_level 10 117 200 ., label("level()")
+  EDIT      f_p_level 215 115 110 ., option(level) nomem
+  TEXT      tx_h20 335 117 650 ., label("credible level; default the level of the fit")
+END
+
 DIALOG simfit, tabtitle("Simulate")
 BEGIN
   TEXT      tx_s_nsim 10 12 200 ., label("nsim()")
   EDIT      f_s_nsim 215 10 110 ., option(nsim) nomem
-  TEXT      tx_h13 335 12 650 ., label("default 1")
+  TEXT      tx_h21 335 12 650 ., label("default 1")
   TEXT      tx_s_seed 10 33 200 ., label("seed()")
   EDIT      f_s_seed 215 31 110 ., option(seed) nomem
   TEXT      tx_s_output 10 54 200 ., label("output()")
   COMBOBOX  f_s_output 215 52 100 ., dropdownlist contents(l_f_s_output) values(l_f_s_output_v) option(output) nomem
-  TEXT      tx_h14 325 54 660 ., label("what to produce (default network)")
+  TEXT      tx_h22 325 54 660 ., label("what to produce (default network)")
   TEXT      tx_s_basis 10 75 200 ., label("basis()")
   COMBOBOX  f_s_basis 215 73 170 ., dropdown contents(netlist) option(basis) nomem
-  TEXT      tx_h15 395 75 590 ., label("start network (default: last network of the fit)")
+  TEXT      tx_h23 395 75 590 ., label("start network (default: last network of the fit)")
   TEXT      tx_s_coef 10 96 200 ., label("coef()")
   EDIT      f_s_coef 215 94 110 ., option(coef) nomem
-  TEXT      tx_h16 335 96 650 ., label("name of a Stata matrix with the coefficients")
+  TEXT      tx_h24 335 96 650 ., label("name of a Stata matrix with the coefficients")
   CHECKBOX  f_s_nosequential 10 115 200 ., label("nosequential") default(0) nomem
-  TEXT      tx_h17 220 117 765 ., label("restart every draw from the start network")
+  TEXT      tx_h25 220 117 765 ., label("restart every draw from the start network")
   TEXT      tx_s_burnin 10 138 200 ., label("burnin()")
   EDIT      f_s_burnin 215 136 110 ., option(burnin) nomem
   TEXT      tx_s_interval 10 159 200 ., label("interval()")
   EDIT      f_s_interval 215 157 110 ., option(interval) nomem
   TEXT      tx_s_generate 10 180 200 ., label("generate()")
   EDIT      f_s_generate 215 178 110 ., option(generate) nomem
-  TEXT      tx_h18 335 180 650 ., label("stub for the simulated networks")
+  TEXT      tx_h26 335 180 650 ., label("stub for the simulated networks")
   CHECKBOX  f_s_clear 10 199 200 ., label("clear") default(0) nomem
-  TEXT      tx_h19 220 201 765 ., label("needed with output(edgelist)")
+  TEXT      tx_h27 220 201 765 ., label("needed with output(edgelist)")
 END
 
 LIST netlist
@@ -132,6 +157,7 @@ BEGIN
 	estat gof - goodness of fit
 	estat mcmcdiag - MCMC diagnostics
 	estat ic - information criteria
+	estat posterior - draws and plots of a Bayesian fit
 	nwergm simulate - draw networks from the fitted model
 END
 
@@ -140,6 +166,7 @@ BEGIN
 	gof
 	mcmcdiag
 	ic
+	posterior
 	simfit
 END
 
@@ -159,6 +186,22 @@ BEGIN
 	0.05
 	0.025
 	0.01
+END
+
+LIST l_f_p_plot
+BEGIN
+	"(default)"
+	trace
+	density
+	both
+END
+
+LIST l_f_p_plot_v
+BEGIN
+	""
+	trace
+	density
+	both
 END
 
 LIST l_f_s_output
@@ -278,6 +321,25 @@ BEGIN
 			if mcmcdiag.f_m_plot {
 				put " plot"
 			}
+			if mcmcdiag.f_m_heidel {
+				put " heidel"
+			}
+			if mcmcdiag.f_m_report {
+				put " report"
+			}
+		endoptions
+	}
+	if main.cb_which.iseq("posterior") {
+		put "estat posterior"
+		beginoptions
+			optionarg /asis posterior.f_p_saving
+			if posterior.f_p_replace {
+				put " replace"
+			}
+			optionarg /asis posterior.f_p_plot
+			optionarg /asis posterior.f_p_name
+			optionarg /asis posterior.f_p_pars
+			optionarg /asis posterior.f_p_level
 		endoptions
 	}
 	if main.cb_which.iseq("simfit") {

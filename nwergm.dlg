@@ -1695,44 +1695,44 @@ SCRIPT sh_est_1_0
 BEGIN
 	est.tx_proposal.show
 	est.f_proposal.show
-	est.tx_h185.show
+	est.tx_h203.show
 	est.tx_cdnsteps.show
 	est.f_cdnsteps.show
-	est.tx_h186.show
+	est.tx_h204.show
 	est.tx_cdsamplesize.show
 	est.f_cdsamplesize.show
-	est.tx_h187.show
+	est.tx_h205.show
 	est.tx_saburnin.show
 	est.f_saburnin.show
-	est.tx_h188.show
+	est.tx_h206.show
 	est.tx_sainterval.show
 	est.f_sainterval.show
-	est.tx_h189.show
+	est.tx_h207.show
 	est.tx_saphase3.show
 	est.f_saphase3.show
-	est.tx_h190.show
+	est.tx_h208.show
 	est.tx_sagain.show
 	est.f_sagain.show
-	est.tx_h191.show
+	est.tx_h209.show
 	est.tx_sansub.show
 	est.f_sansub.show
-	est.tx_h192.show
+	est.tx_h210.show
 	est.tx_mcmcburnin.show
 	est.f_mcmcburnin.show
-	est.tx_h193.show
+	est.tx_h211.show
 	est.tx_mcmcinterval.show
 	est.f_mcmcinterval.show
-	est.tx_h194.show
+	est.tx_h212.show
 	est.tx_mcmcsamplesize.show
 	est.f_mcmcsamplesize.show
-	est.tx_h195.show
+	est.tx_h213.show
 	est.tx_seed.show
 	est.f_seed.show
-	est.tx_h196.show
+	est.tx_h214.show
 	est.f_spcache.show
-	est.tx_h197.show
+	est.tx_h215.show
 	est.f_nonative.show
-	est.tx_h198.show
+	est.tx_h216.show
 END
 
 SCRIPT sh_est_1
@@ -1744,44 +1744,44 @@ SCRIPT hi_est_1_0
 BEGIN
 	est.tx_proposal.hide
 	est.f_proposal.hide
-	est.tx_h185.hide
+	est.tx_h203.hide
 	est.tx_cdnsteps.hide
 	est.f_cdnsteps.hide
-	est.tx_h186.hide
+	est.tx_h204.hide
 	est.tx_cdsamplesize.hide
 	est.f_cdsamplesize.hide
-	est.tx_h187.hide
+	est.tx_h205.hide
 	est.tx_saburnin.hide
 	est.f_saburnin.hide
-	est.tx_h188.hide
+	est.tx_h206.hide
 	est.tx_sainterval.hide
 	est.f_sainterval.hide
-	est.tx_h189.hide
+	est.tx_h207.hide
 	est.tx_saphase3.hide
 	est.f_saphase3.hide
-	est.tx_h190.hide
+	est.tx_h208.hide
 	est.tx_sagain.hide
 	est.f_sagain.hide
-	est.tx_h191.hide
+	est.tx_h209.hide
 	est.tx_sansub.hide
 	est.f_sansub.hide
-	est.tx_h192.hide
+	est.tx_h210.hide
 	est.tx_mcmcburnin.hide
 	est.f_mcmcburnin.hide
-	est.tx_h193.hide
+	est.tx_h211.hide
 	est.tx_mcmcinterval.hide
 	est.f_mcmcinterval.hide
-	est.tx_h194.hide
+	est.tx_h212.hide
 	est.tx_mcmcsamplesize.hide
 	est.f_mcmcsamplesize.hide
-	est.tx_h195.hide
+	est.tx_h213.hide
 	est.tx_seed.hide
 	est.f_seed.hide
-	est.tx_h196.hide
+	est.tx_h214.hide
 	est.f_spcache.hide
-	est.tx_h197.hide
+	est.tx_h215.hide
 	est.f_nonative.hide
-	est.tx_h198.hide
+	est.tx_h216.hide
 END
 
 SCRIPT hi_est_1
@@ -1793,31 +1793,31 @@ SCRIPT sh_est_2_0
 BEGIN
 	est.tx_bridgesteps.show
 	est.f_bridgesteps.show
-	est.tx_h199.show
+	est.tx_h217.show
 	est.tx_bridgesamplesize.show
 	est.f_bridgesamplesize.show
-	est.tx_h200.show
+	est.tx_h218.show
 	est.tx_bridgeinterval.show
 	est.f_bridgeinterval.show
-	est.tx_h201.show
+	est.tx_h219.show
 	est.f_nologlik.show
-	est.tx_h202.show
+	est.tx_h220.show
 	est.f_nomcmcsample.show
-	est.tx_h203.show
+	est.tx_h221.show
 	est.f_verbose.show
-	est.tx_h204.show
+	est.tx_h222.show
 	est.tx_offset.show
 	est.f_offset.show
-	est.tx_h205.show
+	est.tx_h223.show
 	est.tx_coeflabel.show
 	est.f_coeflabel.show
-	est.tx_h206.show
+	est.tx_h224.show
 	est.tx_logstat.show
 	est.f_logstat.show
-	est.tx_h207.show
+	est.tx_h225.show
 	est.tx_expstat.show
 	est.f_expstat.show
-	est.tx_h208.show
+	est.tx_h226.show
 END
 
 SCRIPT sh_est_2
@@ -1829,31 +1829,31 @@ SCRIPT hi_est_2_0
 BEGIN
 	est.tx_bridgesteps.hide
 	est.f_bridgesteps.hide
-	est.tx_h199.hide
+	est.tx_h217.hide
 	est.tx_bridgesamplesize.hide
 	est.f_bridgesamplesize.hide
-	est.tx_h200.hide
+	est.tx_h218.hide
 	est.tx_bridgeinterval.hide
 	est.f_bridgeinterval.hide
-	est.tx_h201.hide
+	est.tx_h219.hide
 	est.f_nologlik.hide
-	est.tx_h202.hide
+	est.tx_h220.hide
 	est.f_nomcmcsample.hide
-	est.tx_h203.hide
+	est.tx_h221.hide
 	est.f_verbose.hide
-	est.tx_h204.hide
+	est.tx_h222.hide
 	est.tx_offset.hide
 	est.f_offset.hide
-	est.tx_h205.hide
+	est.tx_h223.hide
 	est.tx_coeflabel.hide
 	est.f_coeflabel.hide
-	est.tx_h206.hide
+	est.tx_h224.hide
 	est.tx_logstat.hide
 	est.f_logstat.hide
-	est.tx_h207.hide
+	est.tx_h225.hide
 	est.tx_expstat.hide
 	est.f_expstat.hide
-	est.tx_h208.hide
+	est.tx_h226.hide
 END
 
 SCRIPT hi_est_2
@@ -2693,79 +2693,134 @@ BEGIN
 	est.tx_h184.enable
 	est.tx_proposal.enable
 	est.f_proposal.enable
-	est.tx_h185.enable
+	est.tx_h203.enable
 	est.tx_cdnsteps.enable
 	est.f_cdnsteps.enable
-	est.tx_h186.enable
+	est.tx_h204.enable
 	est.tx_cdsamplesize.enable
 	est.f_cdsamplesize.enable
-	est.tx_h187.enable
+	est.tx_h205.enable
 	est.tx_saburnin.enable
 	est.f_saburnin.enable
-	est.tx_h188.enable
+	est.tx_h206.enable
 	est.tx_sainterval.enable
 	est.f_sainterval.enable
-	est.tx_h189.enable
+	est.tx_h207.enable
 	est.tx_saphase3.enable
 	est.f_saphase3.enable
-	est.tx_h190.enable
+	est.tx_h208.enable
 	est.tx_sagain.enable
 	est.f_sagain.enable
-	est.tx_h191.enable
+	est.tx_h209.enable
 	est.tx_sansub.enable
 	est.f_sansub.enable
-	est.tx_h192.enable
+	est.tx_h210.enable
 	est.tx_mcmcburnin.enable
 END
 
 SCRIPT ty_auto_19
 BEGIN
 	est.f_mcmcburnin.enable
-	est.tx_h193.enable
+	est.tx_h211.enable
 	est.tx_mcmcinterval.enable
 	est.f_mcmcinterval.enable
-	est.tx_h194.enable
+	est.tx_h212.enable
 	est.tx_mcmcsamplesize.enable
 	est.f_mcmcsamplesize.enable
-	est.tx_h195.enable
+	est.tx_h213.enable
 	est.tx_seed.enable
 	est.f_seed.enable
-	est.tx_h196.enable
+	est.tx_h214.enable
 	est.f_spcache.enable
-	est.tx_h197.enable
+	est.tx_h215.enable
 	est.f_nonative.enable
-	est.tx_h198.enable
+	est.tx_h216.enable
 	est.tx_bridgesteps.enable
 	est.f_bridgesteps.enable
-	est.tx_h199.enable
+	est.tx_h217.enable
 	est.tx_bridgesamplesize.enable
 	est.f_bridgesamplesize.enable
-	est.tx_h200.enable
+	est.tx_h218.enable
 	est.tx_bridgeinterval.enable
 	est.f_bridgeinterval.enable
-	est.tx_h201.enable
+	est.tx_h219.enable
 	est.f_nologlik.enable
-	est.tx_h202.enable
+	est.tx_h220.enable
 	est.f_nomcmcsample.enable
-	est.tx_h203.enable
+	est.tx_h221.enable
 	est.f_verbose.enable
-	est.tx_h204.enable
+	est.tx_h222.enable
 	est.tx_offset.enable
 	est.f_offset.enable
-	est.tx_h205.enable
+	est.tx_h223.enable
 	est.tx_coeflabel.enable
 	est.f_coeflabel.enable
-	est.tx_h206.enable
+	est.tx_h224.enable
 	est.tx_logstat.enable
 	est.f_logstat.enable
-	est.tx_h207.enable
+	est.tx_h225.enable
 	est.tx_expstat.enable
 END
 
 SCRIPT ty_auto_20
 BEGIN
 	est.f_expstat.enable
-	est.tx_h208.enable
+	est.tx_h226.enable
+	bayes.tx_chains.enable
+	bayes.f_chains.enable
+	bayes.tx_h185.enable
+	bayes.tx_burnin.enable
+	bayes.f_burnin.enable
+	bayes.tx_h186.enable
+	bayes.tx_iterations.enable
+	bayes.f_iterations.enable
+	bayes.tx_h187.enable
+	bayes.tx_thin.enable
+	bayes.f_thin.enable
+	bayes.tx_h188.enable
+	bayes.tx_auxiterations.enable
+	bayes.f_auxiterations.enable
+	bayes.tx_h189.enable
+	bayes.tx_gamma.enable
+	bayes.f_gamma.enable
+	bayes.tx_h190.enable
+	bayes.tx_proposalvar.enable
+	bayes.f_proposalvar.enable
+	bayes.tx_h191.enable
+	bayes.tx_targetaccept.enable
+	bayes.f_targetaccept.enable
+	bayes.tx_h192.enable
+	bayes.tx_dainflate.enable
+	bayes.f_dainflate.enable
+	bayes.tx_h193.enable
+	bayes.f_noadapt.enable
+	bayes.tx_h194.enable
+	bayes.f_nodelayed.enable
+	bayes.tx_h195.enable
+	bayes.tx_priormean.enable
+	bayes.f_priormean.enable
+	bayes.tx_h196.enable
+	bayes.tx_priorvar.enable
+	bayes.f_priorvar.enable
+	bayes.tx_h197.enable
+	bayes.tx_priorcov.enable
+END
+
+SCRIPT ty_auto_21
+BEGIN
+	bayes.f_priorcov.enable
+	bayes.tx_h198.enable
+	bayes.tx_priordecay.enable
+	bayes.f_priordecay.enable
+	bayes.tx_h199.enable
+	bayes.tx_startvals.enable
+	bayes.f_startvals.enable
+	bayes.tx_h200.enable
+	bayes.tx_bframe.enable
+	bayes.f_bframe.enable
+	bayes.tx_h201.enable
+	bayes.f_nodraws.enable
+	bayes.tx_h202.enable
 END
 
 SCRIPT ty_auto
@@ -2791,6 +2846,7 @@ BEGIN
 	script ty_auto_18
 	script ty_auto_19
 	script ty_auto_20
+	script ty_auto_21
 END
 
 SCRIPT ty_u_0
@@ -3604,79 +3660,134 @@ BEGIN
 	est.tx_h184.enable
 	est.tx_proposal.enable
 	est.f_proposal.enable
-	est.tx_h185.enable
+	est.tx_h203.enable
 	est.tx_cdnsteps.enable
 	est.f_cdnsteps.enable
-	est.tx_h186.enable
+	est.tx_h204.enable
 	est.tx_cdsamplesize.enable
 	est.f_cdsamplesize.enable
-	est.tx_h187.enable
+	est.tx_h205.enable
 	est.tx_saburnin.enable
 	est.f_saburnin.enable
-	est.tx_h188.enable
+	est.tx_h206.enable
 	est.tx_sainterval.enable
 	est.f_sainterval.enable
-	est.tx_h189.enable
+	est.tx_h207.enable
 	est.tx_saphase3.enable
 	est.f_saphase3.enable
-	est.tx_h190.enable
+	est.tx_h208.enable
 	est.tx_sagain.enable
 	est.f_sagain.enable
-	est.tx_h191.enable
+	est.tx_h209.enable
 	est.tx_sansub.enable
 	est.f_sansub.enable
-	est.tx_h192.enable
+	est.tx_h210.enable
 	est.tx_mcmcburnin.enable
 END
 
 SCRIPT ty_u_19
 BEGIN
 	est.f_mcmcburnin.enable
-	est.tx_h193.enable
+	est.tx_h211.enable
 	est.tx_mcmcinterval.enable
 	est.f_mcmcinterval.enable
-	est.tx_h194.enable
+	est.tx_h212.enable
 	est.tx_mcmcsamplesize.enable
 	est.f_mcmcsamplesize.enable
-	est.tx_h195.enable
+	est.tx_h213.enable
 	est.tx_seed.enable
 	est.f_seed.enable
-	est.tx_h196.enable
+	est.tx_h214.enable
 	est.f_spcache.enable
-	est.tx_h197.enable
+	est.tx_h215.enable
 	est.f_nonative.enable
-	est.tx_h198.enable
+	est.tx_h216.enable
 	est.tx_bridgesteps.enable
 	est.f_bridgesteps.enable
-	est.tx_h199.enable
+	est.tx_h217.enable
 	est.tx_bridgesamplesize.enable
 	est.f_bridgesamplesize.enable
-	est.tx_h200.enable
+	est.tx_h218.enable
 	est.tx_bridgeinterval.enable
 	est.f_bridgeinterval.enable
-	est.tx_h201.enable
+	est.tx_h219.enable
 	est.f_nologlik.enable
-	est.tx_h202.enable
+	est.tx_h220.enable
 	est.f_nomcmcsample.enable
-	est.tx_h203.enable
+	est.tx_h221.enable
 	est.f_verbose.enable
-	est.tx_h204.enable
+	est.tx_h222.enable
 	est.tx_offset.enable
 	est.f_offset.enable
-	est.tx_h205.enable
+	est.tx_h223.enable
 	est.tx_coeflabel.enable
 	est.f_coeflabel.enable
-	est.tx_h206.enable
+	est.tx_h224.enable
 	est.tx_logstat.enable
 	est.f_logstat.enable
-	est.tx_h207.enable
+	est.tx_h225.enable
 	est.tx_expstat.enable
 END
 
 SCRIPT ty_u_20
 BEGIN
 	est.f_expstat.enable
-	est.tx_h208.enable
+	est.tx_h226.enable
+	bayes.tx_chains.enable
+	bayes.f_chains.enable
+	bayes.tx_h185.enable
+	bayes.tx_burnin.enable
+	bayes.f_burnin.enable
+	bayes.tx_h186.enable
+	bayes.tx_iterations.enable
+	bayes.f_iterations.enable
+	bayes.tx_h187.enable
+	bayes.tx_thin.enable
+	bayes.f_thin.enable
+	bayes.tx_h188.enable
+	bayes.tx_auxiterations.enable
+	bayes.f_auxiterations.enable
+	bayes.tx_h189.enable
+	bayes.tx_gamma.enable
+	bayes.f_gamma.enable
+	bayes.tx_h190.enable
+	bayes.tx_proposalvar.enable
+	bayes.f_proposalvar.enable
+	bayes.tx_h191.enable
+	bayes.tx_targetaccept.enable
+	bayes.f_targetaccept.enable
+	bayes.tx_h192.enable
+	bayes.tx_dainflate.enable
+	bayes.f_dainflate.enable
+	bayes.tx_h193.enable
+	bayes.f_noadapt.enable
+	bayes.tx_h194.enable
+	bayes.f_nodelayed.enable
+	bayes.tx_h195.enable
+	bayes.tx_priormean.enable
+	bayes.f_priormean.enable
+	bayes.tx_h196.enable
+	bayes.tx_priorvar.enable
+	bayes.f_priorvar.enable
+	bayes.tx_h197.enable
+	bayes.tx_priorcov.enable
+END
+
+SCRIPT ty_u_21
+BEGIN
+	bayes.f_priorcov.enable
+	bayes.tx_h198.enable
+	bayes.tx_priordecay.enable
+	bayes.f_priordecay.enable
+	bayes.tx_h199.enable
+	bayes.tx_startvals.enable
+	bayes.f_startvals.enable
+	bayes.tx_h200.enable
+	bayes.tx_bframe.enable
+	bayes.f_bframe.enable
+	bayes.tx_h201.enable
+	bayes.f_nodraws.enable
+	bayes.tx_h202.enable
 END
 
 SCRIPT ty_u
@@ -3702,6 +3813,7 @@ BEGIN
 	script ty_u_18
 	script ty_u_19
 	script ty_u_20
+	script ty_u_21
 END
 
 SCRIPT ty_d_0
@@ -4515,79 +4627,134 @@ BEGIN
 	est.tx_h184.enable
 	est.tx_proposal.enable
 	est.f_proposal.enable
-	est.tx_h185.enable
+	est.tx_h203.enable
 	est.tx_cdnsteps.enable
 	est.f_cdnsteps.enable
-	est.tx_h186.enable
+	est.tx_h204.enable
 	est.tx_cdsamplesize.enable
 	est.f_cdsamplesize.enable
-	est.tx_h187.enable
+	est.tx_h205.enable
 	est.tx_saburnin.enable
 	est.f_saburnin.enable
-	est.tx_h188.enable
+	est.tx_h206.enable
 	est.tx_sainterval.enable
 	est.f_sainterval.enable
-	est.tx_h189.enable
+	est.tx_h207.enable
 	est.tx_saphase3.enable
 	est.f_saphase3.enable
-	est.tx_h190.enable
+	est.tx_h208.enable
 	est.tx_sagain.enable
 	est.f_sagain.enable
-	est.tx_h191.enable
+	est.tx_h209.enable
 	est.tx_sansub.enable
 	est.f_sansub.enable
-	est.tx_h192.enable
+	est.tx_h210.enable
 	est.tx_mcmcburnin.enable
 END
 
 SCRIPT ty_d_19
 BEGIN
 	est.f_mcmcburnin.enable
-	est.tx_h193.enable
+	est.tx_h211.enable
 	est.tx_mcmcinterval.enable
 	est.f_mcmcinterval.enable
-	est.tx_h194.enable
+	est.tx_h212.enable
 	est.tx_mcmcsamplesize.enable
 	est.f_mcmcsamplesize.enable
-	est.tx_h195.enable
+	est.tx_h213.enable
 	est.tx_seed.enable
 	est.f_seed.enable
-	est.tx_h196.enable
+	est.tx_h214.enable
 	est.f_spcache.enable
-	est.tx_h197.enable
+	est.tx_h215.enable
 	est.f_nonative.enable
-	est.tx_h198.enable
+	est.tx_h216.enable
 	est.tx_bridgesteps.enable
 	est.f_bridgesteps.enable
-	est.tx_h199.enable
+	est.tx_h217.enable
 	est.tx_bridgesamplesize.enable
 	est.f_bridgesamplesize.enable
-	est.tx_h200.enable
+	est.tx_h218.enable
 	est.tx_bridgeinterval.enable
 	est.f_bridgeinterval.enable
-	est.tx_h201.enable
+	est.tx_h219.enable
 	est.f_nologlik.enable
-	est.tx_h202.enable
+	est.tx_h220.enable
 	est.f_nomcmcsample.enable
-	est.tx_h203.enable
+	est.tx_h221.enable
 	est.f_verbose.enable
-	est.tx_h204.enable
+	est.tx_h222.enable
 	est.tx_offset.enable
 	est.f_offset.enable
-	est.tx_h205.enable
+	est.tx_h223.enable
 	est.tx_coeflabel.enable
 	est.f_coeflabel.enable
-	est.tx_h206.enable
+	est.tx_h224.enable
 	est.tx_logstat.enable
 	est.f_logstat.enable
-	est.tx_h207.enable
+	est.tx_h225.enable
 	est.tx_expstat.enable
 END
 
 SCRIPT ty_d_20
 BEGIN
 	est.f_expstat.enable
-	est.tx_h208.enable
+	est.tx_h226.enable
+	bayes.tx_chains.enable
+	bayes.f_chains.enable
+	bayes.tx_h185.enable
+	bayes.tx_burnin.enable
+	bayes.f_burnin.enable
+	bayes.tx_h186.enable
+	bayes.tx_iterations.enable
+	bayes.f_iterations.enable
+	bayes.tx_h187.enable
+	bayes.tx_thin.enable
+	bayes.f_thin.enable
+	bayes.tx_h188.enable
+	bayes.tx_auxiterations.enable
+	bayes.f_auxiterations.enable
+	bayes.tx_h189.enable
+	bayes.tx_gamma.enable
+	bayes.f_gamma.enable
+	bayes.tx_h190.enable
+	bayes.tx_proposalvar.enable
+	bayes.f_proposalvar.enable
+	bayes.tx_h191.enable
+	bayes.tx_targetaccept.enable
+	bayes.f_targetaccept.enable
+	bayes.tx_h192.enable
+	bayes.tx_dainflate.enable
+	bayes.f_dainflate.enable
+	bayes.tx_h193.enable
+	bayes.f_noadapt.enable
+	bayes.tx_h194.enable
+	bayes.f_nodelayed.enable
+	bayes.tx_h195.enable
+	bayes.tx_priormean.enable
+	bayes.f_priormean.enable
+	bayes.tx_h196.enable
+	bayes.tx_priorvar.enable
+	bayes.f_priorvar.enable
+	bayes.tx_h197.enable
+	bayes.tx_priorcov.enable
+END
+
+SCRIPT ty_d_21
+BEGIN
+	bayes.f_priorcov.enable
+	bayes.tx_h198.enable
+	bayes.tx_priordecay.enable
+	bayes.f_priordecay.enable
+	bayes.tx_h199.enable
+	bayes.tx_startvals.enable
+	bayes.f_startvals.enable
+	bayes.tx_h200.enable
+	bayes.tx_bframe.enable
+	bayes.f_bframe.enable
+	bayes.tx_h201.enable
+	bayes.f_nodraws.enable
+	bayes.tx_h202.enable
 END
 
 SCRIPT ty_d
@@ -4613,6 +4780,7 @@ BEGIN
 	script ty_d_18
 	script ty_d_19
 	script ty_d_20
+	script ty_d_21
 END
 
 SCRIPT ty_b_0
@@ -5426,79 +5594,134 @@ BEGIN
 	est.tx_h184.enable
 	est.tx_proposal.enable
 	est.f_proposal.enable
-	est.tx_h185.enable
+	est.tx_h203.enable
 	est.tx_cdnsteps.enable
 	est.f_cdnsteps.enable
-	est.tx_h186.enable
+	est.tx_h204.enable
 	est.tx_cdsamplesize.enable
 	est.f_cdsamplesize.enable
-	est.tx_h187.enable
+	est.tx_h205.enable
 	est.tx_saburnin.enable
 	est.f_saburnin.enable
-	est.tx_h188.enable
+	est.tx_h206.enable
 	est.tx_sainterval.enable
 	est.f_sainterval.enable
-	est.tx_h189.enable
+	est.tx_h207.enable
 	est.tx_saphase3.enable
 	est.f_saphase3.enable
-	est.tx_h190.enable
+	est.tx_h208.enable
 	est.tx_sagain.enable
 	est.f_sagain.enable
-	est.tx_h191.enable
+	est.tx_h209.enable
 	est.tx_sansub.enable
 	est.f_sansub.enable
-	est.tx_h192.enable
+	est.tx_h210.enable
 	est.tx_mcmcburnin.enable
 END
 
 SCRIPT ty_b_19
 BEGIN
 	est.f_mcmcburnin.enable
-	est.tx_h193.enable
+	est.tx_h211.enable
 	est.tx_mcmcinterval.enable
 	est.f_mcmcinterval.enable
-	est.tx_h194.enable
+	est.tx_h212.enable
 	est.tx_mcmcsamplesize.enable
 	est.f_mcmcsamplesize.enable
-	est.tx_h195.enable
+	est.tx_h213.enable
 	est.tx_seed.enable
 	est.f_seed.enable
-	est.tx_h196.enable
+	est.tx_h214.enable
 	est.f_spcache.enable
-	est.tx_h197.enable
+	est.tx_h215.enable
 	est.f_nonative.enable
-	est.tx_h198.enable
+	est.tx_h216.enable
 	est.tx_bridgesteps.enable
 	est.f_bridgesteps.enable
-	est.tx_h199.enable
+	est.tx_h217.enable
 	est.tx_bridgesamplesize.enable
 	est.f_bridgesamplesize.enable
-	est.tx_h200.enable
+	est.tx_h218.enable
 	est.tx_bridgeinterval.enable
 	est.f_bridgeinterval.enable
-	est.tx_h201.enable
+	est.tx_h219.enable
 	est.f_nologlik.enable
-	est.tx_h202.enable
+	est.tx_h220.enable
 	est.f_nomcmcsample.enable
-	est.tx_h203.enable
+	est.tx_h221.enable
 	est.f_verbose.enable
-	est.tx_h204.enable
+	est.tx_h222.enable
 	est.tx_offset.enable
 	est.f_offset.enable
-	est.tx_h205.enable
+	est.tx_h223.enable
 	est.tx_coeflabel.enable
 	est.f_coeflabel.enable
-	est.tx_h206.enable
+	est.tx_h224.enable
 	est.tx_logstat.enable
 	est.f_logstat.enable
-	est.tx_h207.enable
+	est.tx_h225.enable
 	est.tx_expstat.enable
 END
 
 SCRIPT ty_b_20
 BEGIN
 	est.f_expstat.enable
-	est.tx_h208.enable
+	est.tx_h226.enable
+	bayes.tx_chains.enable
+	bayes.f_chains.enable
+	bayes.tx_h185.enable
+	bayes.tx_burnin.enable
+	bayes.f_burnin.enable
+	bayes.tx_h186.enable
+	bayes.tx_iterations.enable
+	bayes.f_iterations.enable
+	bayes.tx_h187.enable
+	bayes.tx_thin.enable
+	bayes.f_thin.enable
+	bayes.tx_h188.enable
+	bayes.tx_auxiterations.enable
+	bayes.f_auxiterations.enable
+	bayes.tx_h189.enable
+	bayes.tx_gamma.enable
+	bayes.f_gamma.enable
+	bayes.tx_h190.enable
+	bayes.tx_proposalvar.enable
+	bayes.f_proposalvar.enable
+	bayes.tx_h191.enable
+	bayes.tx_targetaccept.enable
+	bayes.f_targetaccept.enable
+	bayes.tx_h192.enable
+	bayes.tx_dainflate.enable
+	bayes.f_dainflate.enable
+	bayes.tx_h193.enable
+	bayes.f_noadapt.enable
+	bayes.tx_h194.enable
+	bayes.f_nodelayed.enable
+	bayes.tx_h195.enable
+	bayes.tx_priormean.enable
+	bayes.f_priormean.enable
+	bayes.tx_h196.enable
+	bayes.tx_priorvar.enable
+	bayes.f_priorvar.enable
+	bayes.tx_h197.enable
+	bayes.tx_priorcov.enable
+END
+
+SCRIPT ty_b_21
+BEGIN
+	bayes.f_priorcov.enable
+	bayes.tx_h198.enable
+	bayes.tx_priordecay.enable
+	bayes.f_priordecay.enable
+	bayes.tx_h199.enable
+	bayes.tx_startvals.enable
+	bayes.f_startvals.enable
+	bayes.tx_h200.enable
+	bayes.tx_bframe.enable
+	bayes.f_bframe.enable
+	bayes.tx_h201.enable
+	bayes.f_nodraws.enable
+	bayes.tx_h202.enable
 END
 
 SCRIPT ty_b
@@ -5524,6 +5747,7 @@ BEGIN
 	script ty_b_18
 	script ty_b_19
 	script ty_b_20
+	script ty_b_21
 END
 
 SCRIPT nettype_auto
@@ -6321,7 +6545,7 @@ BEGIN
   TEXT      tx_h172 325 45 660 ., label("older spelling of estimate()")
   TEXT      tx_estimate 10 66 200 ., label("estimate()")
   COMBOBOX  f_estimate 215 64 100 ., dropdownlist contents(l_f_estimate) values(l_f_estimate_v) option(estimate) nomem
-  TEXT      tx_h173 325 66 660 ., label("mle (default), mple, cd")
+  TEXT      tx_h173 325 66 660 ., label("mle (default), mple, cd, bayes (then see the Bayesian tab)")
   TEXT      tx_mainmethod 10 87 200 ., label("mainmethod()")
   COMBOBOX  f_mainmethod 215 85 100 ., dropdownlist contents(l_f_mainmethod) values(l_f_mainmethod_v) option(mainmethod) nomem
   TEXT      tx_h174 325 87 660 ., label("Monte Carlo algorithm")
@@ -6357,71 +6581,126 @@ BEGIN
   TEXT      tx_h184 305 297 680 ., label("MCMLE.effectiveSize")
   TEXT      tx_proposal 10 45 200 ., label("proposal()")
   COMBOBOX  f_proposal 215 43 100 ., dropdownlist contents(l_f_proposal) values(l_f_proposal_v) option(proposal) nomem
-  TEXT      tx_h185 325 45 660 ., label("Metropolis-Hastings proposal (default tnt)")
+  TEXT      tx_h203 325 45 660 ., label("Metropolis-Hastings proposal (default tnt)")
   TEXT      tx_cdnsteps 10 66 200 ., label("cdnsteps()")
   EDIT      f_cdnsteps 215 64 80 ., option(cdnsteps) nomem
-  TEXT      tx_h186 305 66 680 ., label("contrastive divergence; default 8")
+  TEXT      tx_h204 305 66 680 ., label("contrastive divergence; default 8")
   TEXT      tx_cdsamplesize 10 87 200 ., label("cdsamplesize()")
   EDIT      f_cdsamplesize 215 85 80 ., option(cdsamplesize) nomem
-  TEXT      tx_h187 305 87 680 ., label("CD draws; default 128 per coefficient")
+  TEXT      tx_h205 305 87 680 ., label("CD draws; default 128 per coefficient")
   TEXT      tx_saburnin 10 108 200 ., label("saburnin()")
   EDIT      f_saburnin 215 106 80 ., option(saburnin) nomem
-  TEXT      tx_h188 305 108 680 ., label("stochastic approximation; default 16384")
+  TEXT      tx_h206 305 108 680 ., label("stochastic approximation; default 16384")
   TEXT      tx_sainterval 10 129 200 ., label("sainterval()")
   EDIT      f_sainterval 215 127 80 ., option(sainterval) nomem
-  TEXT      tx_h189 305 129 680 ., label("default 1024")
+  TEXT      tx_h207 305 129 680 ., label("default 1024")
   TEXT      tx_saphase3 10 150 200 ., label("saphase3()")
   EDIT      f_saphase3 215 148 80 ., option(saphase3) nomem
-  TEXT      tx_h190 305 150 680 ., label("default 1000")
+  TEXT      tx_h208 305 150 680 ., label("default 1000")
   TEXT      tx_sagain 10 171 200 ., label("sagain()")
   EDIT      f_sagain 215 169 80 ., option(sagain) nomem
-  TEXT      tx_h191 305 171 680 ., label("initial gain; default 0.1")
+  TEXT      tx_h209 305 171 680 ., label("initial gain; default 0.1")
   TEXT      tx_sansub 10 192 200 ., label("sansub()")
   EDIT      f_sansub 215 190 80 ., option(sansub) nomem
-  TEXT      tx_h192 305 192 680 ., label("phase-2 sub-phases; default 4")
+  TEXT      tx_h210 305 192 680 ., label("phase-2 sub-phases; default 4")
   TEXT      tx_mcmcburnin 10 213 200 ., label("mcmcburnin()")
   EDIT      f_mcmcburnin 215 211 80 ., option(mcmcburnin) nomem
-  TEXT      tx_h193 305 213 680 ., label("default 16 x mcmcinterval (16384)")
+  TEXT      tx_h211 305 213 680 ., label("default 16 x mcmcinterval (16384)")
   TEXT      tx_mcmcinterval 10 234 200 ., label("mcmcinterval()")
   EDIT      f_mcmcinterval 215 232 80 ., option(mcmcinterval) nomem
-  TEXT      tx_h194 305 234 680 ., label("default 1024 (the old default was 50)")
+  TEXT      tx_h212 305 234 680 ., label("default 1024 (the old default was 50)")
   TEXT      tx_mcmcsamplesize 10 255 200 ., label("mcmcsamplesize()")
   EDIT      f_mcmcsamplesize 215 253 80 ., option(mcmcsamplesize) nomem
-  TEXT      tx_h195 305 255 680 ., label("default 3000")
+  TEXT      tx_h213 305 255 680 ., label("default 3000")
   TEXT      tx_seed 10 276 200 ., label("seed()")
   EDIT      f_seed 215 274 80 ., option(seed) nomem
-  TEXT      tx_h196 305 276 680 ., label("random-number seed")
+  TEXT      tx_h214 305 276 680 ., label("random-number seed")
   CHECKBOX  f_spcache 10 295 200 ., label("spcache") default(0) nomem
-  TEXT      tx_h197 220 297 765 ., label("shared-partner cache for dense undirected networks")
+  TEXT      tx_h215 220 297 765 ., label("shared-partner cache for dense undirected networks")
   CHECKBOX  f_nonative 10 316 200 ., label("nonative") default(0) nomem
-  TEXT      tx_h198 220 318 765 ., label("force the Mata backend (testing only)")
+  TEXT      tx_h216 220 318 765 ., label("force the Mata backend (testing only)")
   TEXT      tx_bridgesteps 10 45 200 ., label("bridgesteps()")
   EDIT      f_bridgesteps 215 43 80 ., option(bridgesteps) nomem
-  TEXT      tx_h199 305 45 680 ., label("bridges for the log-likelihood; default 16")
+  TEXT      tx_h217 305 45 680 ., label("bridges for the log-likelihood; default 16")
   TEXT      tx_bridgesamplesize 10 66 200 ., label("bridgesamplesize()")
   EDIT      f_bridgesamplesize 215 64 80 ., option(bridgesamplesize) nomem
-  TEXT      tx_h200 305 66 680 ., label("draws per bridge; default mcmcsamplesize()")
+  TEXT      tx_h218 305 66 680 ., label("draws per bridge; default mcmcsamplesize()")
   TEXT      tx_bridgeinterval 10 87 200 ., label("bridgeinterval()")
   EDIT      f_bridgeinterval 215 85 80 ., option(bridgeinterval) nomem
-  TEXT      tx_h201 305 87 680 ., label("thinning within bridges")
+  TEXT      tx_h219 305 87 680 ., label("thinning within bridges")
   CHECKBOX  f_nologlik 10 106 200 ., label("nologlik") default(0) nomem
-  TEXT      tx_h202 220 108 765 ., label("skip the bridge-sampling log-likelihood")
+  TEXT      tx_h220 220 108 765 ., label("skip the bridge-sampling log-likelihood")
   CHECKBOX  f_nomcmcsample 10 127 200 ., label("nomcmcsample") default(0) nomem
-  TEXT      tx_h203 220 129 765 ., label("do not post e(mcmcsample)")
+  TEXT      tx_h221 220 129 765 ., label("do not post e(mcmcsample)")
   CHECKBOX  f_verbose 10 148 200 ., label("verbose") default(0) nomem
-  TEXT      tx_h204 220 150 765 ., label("show iteration detail")
+  TEXT      tx_h222 220 150 765 ., label("show iteration detail")
   TEXT      tx_offset 10 171 200 ., label("offset()")
   EDIT      f_offset 215 169 250 ., option(offset) nomem
-  TEXT      tx_h205 475 171 510 ., label("coefname # [coefname # ...]: hold coefficients fixed")
+  TEXT      tx_h223 475 171 510 ., label("coefname # [coefname # ...]: hold coefficients fixed")
   TEXT      tx_coeflabel 10 192 200 ., label("coeflabel()")
   EDIT      f_coeflabel 215 190 250 ., option(coeflabel) nomem
-  TEXT      tx_h206 475 192 510 ., label("old new [old new ...]: rename coefficients")
+  TEXT      tx_h224 475 192 510 ., label("old new [old new ...]: rename coefficients")
   TEXT      tx_logstat 10 213 200 ., label("logstat()")
   EDIT      f_logstat 215 211 250 ., option(logstat) nomem
-  TEXT      tx_h207 475 213 510 ., label("coefficient names whose statistic is logged [, log0(#)]")
+  TEXT      tx_h225 475 213 510 ., label("coefficient names whose statistic is logged [, log0(#)]")
   TEXT      tx_expstat 10 234 200 ., label("expstat()")
   EDIT      f_expstat 215 232 250 ., option(expstat) nomem
-  TEXT      tx_h208 475 234 510 ., label("coefficient names whose statistic is exponentiated")
+  TEXT      tx_h226 475 234 510 ., label("coefficient names whose statistic is exponentiated")
+END
+
+DIALOG bayes, tabtitle("Bayesian")
+BEGIN
+  TEXT      tx_chains 10 12 200 ., label("chains()")
+  EDIT      f_chains 215 10 80 ., option(chains) nomem
+  TEXT      tx_h185 305 12 680 ., label("population of chains; default max(2 x coefficients, 4)")
+  TEXT      tx_burnin 10 33 200 ., label("burnin()")
+  EDIT      f_burnin 215 31 80 ., option(burnin) nomem
+  TEXT      tx_h186 305 33 680 ., label("adaptation iterations per chain; default 100")
+  TEXT      tx_iterations 10 54 200 ., label("iterations()")
+  EDIT      f_iterations 215 52 80 ., option(iterations) nomem
+  TEXT      tx_h187 305 54 680 ., label("saved iterations per chain; default 1000")
+  TEXT      tx_thin 10 75 200 ., label("thin()")
+  EDIT      f_thin 215 73 80 ., option(thin) nomem
+  TEXT      tx_h188 305 75 680 ., label("keep every k-th iteration; default 1")
+  TEXT      tx_auxiterations 10 96 200 ., label("auxiterations()")
+  EDIT      f_auxiterations 215 94 80 ., option(auxiterations) nomem
+  TEXT      tx_h189 305 96 680 ., label("auxiliary network iterations per proposal; default 1000")
+  TEXT      tx_gamma 10 117 200 ., label("gamma()")
+  EDIT      f_gamma 215 115 80 ., option(gamma) nomem
+  TEXT      tx_h190 305 117 680 ., label("start of the move scale; default 0.5")
+  TEXT      tx_proposalvar 10 138 200 ., label("proposalvar()")
+  EDIT      f_proposalvar 215 136 80 ., option(proposalvar) nomem
+  TEXT      tx_h191 305 138 680 ., label("variance of the random noise; default 0.0025")
+  TEXT      tx_targetaccept 10 159 200 ., label("targetaccept()")
+  EDIT      f_targetaccept 215 157 80 ., option(targetaccept) nomem
+  TEXT      tx_h192 305 159 680 ., label("acceptance rate to adapt towards; default 0.25")
+  TEXT      tx_dainflate 10 180 200 ., label("dainflate()")
+  EDIT      f_dainflate 215 178 80 ., option(dainflate) nomem
+  TEXT      tx_h193 305 180 680 ., label("delayed-acceptance surrogate inflation; default 1.5")
+  CHECKBOX  f_noadapt 10 199 200 ., label("noadapt") default(0) nomem
+  TEXT      tx_h194 220 201 765 ., label("keep the move scale fixed")
+  CHECKBOX  f_nodelayed 10 220 200 ., label("nodelayed") default(0) nomem
+  TEXT      tx_h195 220 222 765 ., label("no delayed acceptance")
+  TEXT      tx_priormean 10 243 200 ., label("priormean()")
+  EDIT      f_priormean 215 241 200 ., option(priormean) nomem
+  TEXT      tx_h196 425 243 560 ., label("prior means, one per coefficient; default 0")
+  TEXT      tx_priorvar 10 264 200 ., label("priorvar()")
+  EDIT      f_priorvar 215 262 200 ., option(priorvar) nomem
+  TEXT      tx_h197 425 264 560 ., label("prior variances (one value or one per coefficient); default 100")
+  TEXT      tx_priorcov 10 285 200 ., label("priorcov()")
+  EDIT      f_priorcov 215 283 150 ., option(priorcov) nomem
+  TEXT      tx_h198 375 285 610 ., label("name of a covariance matrix (instead of priorvar())")
+  TEXT      tx_priordecay 10 306 200 ., label("priordecay()")
+  EDIT      f_priordecay 215 304 150 ., option(priordecay) nomem
+  TEXT      tx_h199 375 306 610 ., label("mean and sd of log(decay) for a free decay; default -0.693 0.75")
+  TEXT      tx_startvals 10 327 200 ., label("startvals()")
+  EDIT      f_startvals 215 325 200 ., option(startvals) nomem
+  TEXT      tx_h200 425 327 560 ., label("starting values, one per coefficient")
+  TEXT      tx_bframe 10 348 200 ., label("frame()")
+  EDIT      f_bframe 215 346 150 ., option(frame) nomem
+  TEXT      tx_h201 375 348 610 ., label("frame for the draws; default nwergm_bayes_draws")
+  CHECKBOX  f_nodraws 10 367 200 ., label("nodraws") default(0) nomem
+  TEXT      tx_h202 220 369 765 ., label("do not keep the draws in a frame")
 END
 
 LIST netlist
@@ -6533,6 +6812,7 @@ BEGIN
 	mple
 	mcmle
 	cd
+	bayes
 END
 
 LIST l_f_method_v
@@ -6541,6 +6821,7 @@ BEGIN
 	mple
 	mcmle
 	cd
+	bayes
 END
 
 LIST l_f_estimate
@@ -6549,6 +6830,7 @@ BEGIN
 	mle
 	mple
 	cd
+	bayes
 END
 
 LIST l_f_estimate_v
@@ -6557,6 +6839,7 @@ BEGIN
 	mle
 	mple
 	cd
+	bayes
 END
 
 LIST l_f_mainmethod
@@ -7358,6 +7641,34 @@ BEGIN
 	optionarg /asis est.f_saphase3
 	optionarg /asis est.f_sagain
 	optionarg /asis est.f_sansub
+	optionarg /asis bayes.f_chains
+	optionarg /asis bayes.f_burnin
+	optionarg /asis bayes.f_iterations
+	optionarg /asis bayes.f_thin
+	optionarg /asis bayes.f_auxiterations
+	optionarg /asis bayes.f_gamma
+	optionarg /asis bayes.f_proposalvar
+	optionarg /asis bayes.f_targetaccept
+	optionarg /asis bayes.f_dainflate
+	if bayes.f_noadapt {
+		put " noadapt"
+	}
+	if bayes.f_nodelayed {
+		put " nodelayed"
+	}
+	optionarg /asis bayes.f_priormean
+	optionarg /asis bayes.f_priorvar
+	optionarg /asis bayes.f_priorcov
+	optionarg /asis bayes.f_priordecay
+	optionarg /asis bayes.f_startvals
+	optionarg /asis bayes.f_bframe
+	if bayes.f_nodraws {
+		put " nodraws"
+	}
+END
+
+PROGRAM o_plain7
+BEGIN
 	optionarg /asis est.f_mcmcburnin
 	optionarg /asis est.f_mcmcinterval
 	optionarg /asis est.f_mcmcsamplesize
@@ -7380,10 +7691,6 @@ BEGIN
 	if est.f_verbose {
 		put " verbose"
 	}
-END
-
-PROGRAM o_plain7
-BEGIN
 	optionarg /asis est.f_offset
 	optionarg /asis est.f_coeflabel
 	optionarg /asis est.f_logstat

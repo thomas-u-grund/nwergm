@@ -125,6 +125,7 @@ tab("oper", "Operators")
 tab("cons", "Constraints", ("ergm",))
 tab("space", "Missing data and sample space", ("ergm", "sim"))
 tab("est", "Estimation", ("ergm",))
+tab("bayes", "Bayesian estimation", ("ergm",))
 tab("mcmc", "MCMC settings", ("ergm", "sim"))
 tab("out", "Output and bridge sampling", ("ergm",))
 tab("simctl", "Simulation settings", ("sim",))
@@ -419,8 +420,8 @@ ctl("proposal", "mcmc", "proposal", "combo", "proposal()", choices=["", "uniform
 # --------------------------------------------------------------------------------------
 # ESTIMATION
 # --------------------------------------------------------------------------------------
-ctl("method", "est", "method", "combo", "method()", choices=["", "mple", "mcmle", "cd"], hint="older spelling of estimate()", smoke=dict(net="und", use=dict(main="mple")))
-ctl("estimate", "est", "estimate", "combo", "estimate()", choices=["", "mle", "mple", "cd"], hint="mle (default), mple, cd", smoke=dict(net="und", use=dict(main="mple")))
+ctl("method", "est", "method", "combo", "method()", choices=["", "mple", "mcmle", "cd", "bayes"], hint="older spelling of estimate()", smoke=dict(net="und", use=dict(main="mple")))
+ctl("estimate", "est", "estimate", "combo", "estimate()", choices=["", "mle", "mple", "cd", "bayes"], hint="mle (default), mple, cd, bayes (then see the Bayesian tab)", smoke=dict(net="und", use=dict(main="mple")))
 ctl("mainmethod", "est", "mainmethod", "combo", "mainmethod()", choices=["", "mcmle", "sa"], hint="Monte Carlo algorithm", smoke=dict(net="und", use=dict(main="mcmle"), also={"mcmc_small": True, "triangle": True}))
 ctl("mpletype", "est", "mpletype", "combo", "mpletype()", choices=["", "glm", "penalized"], hint="penalized = Firth", smoke=dict(net="und", use=dict(main="penalized"), also={"method": "mple"}))
 ctl("mplecheck", "est", "mplecheck", "combo", "mplecheck()", choices=["", "on", "off"], hint="test whether the MPLE exists", smoke=dict(net="und", use=dict(main="off"), also={"method": "mple"}))
@@ -439,6 +440,29 @@ ctl("sainterval", "mcmc", "sainterval", "edit", "sainterval()", width=80, hint="
 ctl("saphase3", "mcmc", "saphase3", "edit", "saphase3()", width=80, hint="default 1000", smoke=dict(net="und", use=dict(main="200"), also={"mainmethod": "sa", "triangle": True}))
 ctl("sagain", "mcmc", "sagain", "edit", "sagain()", width=80, hint="initial gain; default 0.1", smoke=dict(net="und", use=dict(main="0.1"), also={"mainmethod": "sa", "triangle": True}))
 ctl("sansub", "mcmc", "sansub", "edit", "sansub()", width=80, hint="phase-2 sub-phases; default 4", smoke=dict(net="und", use=dict(main="2"), also={"mainmethod": "sa", "triangle": True}))
+
+# --------------------------------------------------------------------------------------
+# BAYESIAN ESTIMATION: estimate(bayes) (exchange algorithm, adaptive direction sampling; R: Bergm)
+# --------------------------------------------------------------------------------------
+_by = {"estimate": "bayes", "triangle": True}
+ctl("chains", "bayes", "chains", "edit", "chains()", width=80, hint="population of chains; default max(2 x coefficients, 4)", smoke=dict(net="und", use=dict(main="4"), also=_by))
+ctl("burnin", "bayes", "burnin", "edit", "burnin()", width=80, hint="adaptation iterations per chain; default 100", smoke=dict(net="und", use=dict(main="20"), also=_by))
+ctl("iterations", "bayes", "iterations", "edit", "iterations()", width=80, hint="saved iterations per chain; default 1000", smoke=dict(net="und", use=dict(main="50"), also=_by))
+ctl("thin", "bayes", "thin", "edit", "thin()", width=80, hint="keep every k-th iteration; default 1", smoke=dict(net="und", use=dict(main="2"), also=_by))
+ctl("auxiterations", "bayes", "auxiterations", "edit", "auxiterations()", width=80, hint="auxiliary network iterations per proposal; default 1000", smoke=dict(net="und", use=dict(main="200"), also=_by))
+ctl("gamma", "bayes", "gamma", "edit", "gamma()", width=80, hint="start of the move scale; default 0.5", smoke=dict(net="und", use=dict(main="0.4"), also=_by))
+ctl("proposalvar", "bayes", "proposalvar", "edit", "proposalvar()", width=80, hint="variance of the random noise; default 0.0025", smoke=dict(net="und", use=dict(main="0.01"), also=_by))
+ctl("targetaccept", "bayes", "targetaccept", "edit", "targetaccept()", width=80, hint="acceptance rate to adapt towards; default 0.25", smoke=dict(net="und", use=dict(main="0.3"), also=_by))
+ctl("dainflate", "bayes", "dainflate", "edit", "dainflate()", width=80, hint="delayed-acceptance surrogate inflation; default 1.5", smoke=dict(net="und", use=dict(main="2"), also=_by))
+ctl("noadapt", "bayes", "noadapt", "check", "noadapt", hint="keep the move scale fixed", smoke=dict(net="und", also=_by))
+ctl("nodelayed", "bayes", "nodelayed", "check", "nodelayed", hint="no delayed acceptance", smoke=dict(net="und", also=_by))
+ctl("priormean", "bayes", "priormean", "edit", "priormean()", width=200, hint="prior means, one per coefficient; default 0", smoke=dict(net="und", use=dict(main="0 0"), also=_by))
+ctl("priorvar", "bayes", "priorvar", "edit", "priorvar()", width=200, hint="prior variances (one value or one per coefficient); default 100", smoke=dict(net="und", use=dict(main="10"), also=_by))
+ctl("priorcov", "bayes", "priorcov", "edit", "priorcov()", width=150, hint="name of a covariance matrix (instead of priorvar())", smoke=dict(net="und", use=dict(main="PCOV"), also=_by))
+ctl("priordecay", "bayes", "priordecay", "edit", "priordecay()", width=150, hint="mean and sd of log(decay) for a free decay; default -0.693 0.75", smoke=dict(net="und", use=dict(main="-0.7 0.8"), also=_by))
+ctl("startvals", "bayes", "startvals", "edit", "startvals()", width=200, hint="starting values, one per coefficient", smoke=dict(net="und", use=dict(main="-2 0"), also=_by))
+ctl("bframe", "bayes", "frame", "edit", "frame()", width=150, hint="frame for the draws; default nwergm_bayes_draws", smoke=dict(net="und", use=dict(main="myfr"), also=_by))
+ctl("nodraws", "bayes", "nodraws", "check", "nodraws", hint="do not keep the draws in a frame", smoke=dict(net="und", also=_by))
 
 # --------------------------------------------------------------------------------------
 # MCMC and bridge sampling (also used by nwergm simulate where accepted)
@@ -483,6 +507,7 @@ ESTAT_TABS = [
     dict(key="gof", title="GOF"),
     dict(key="mcmcdiag", title="MCMC"),
     dict(key="ic", title="IC"),
+    dict(key="posterior", title="Posterior"),
     dict(key="simfit", title="Simulate"),
 ]
 GOF_STATS = ["degree", "idegree", "odegree", "b1degree", "b2degree", "espartners", "dspartners", "distance", "triadcensus", "model"]
@@ -500,6 +525,14 @@ ESTAT = [
     ("m_eps", "mcmcdiag", "eps", "edit", "eps()", None, "half-width tolerance; default 0.1", "0.1"),
     ("m_name", "mcmcdiag", "name", "edit", "name()", None, "name of the combined graph", "mcgr"),
     ("m_plot", "mcmcdiag", "plot", "check", "plot", None, "trace and density plots", True),
+    ("m_heidel", "mcmcdiag", "heidel", "check", "heidel", None, "Heidelberger-Welch stationarity and half-width tests", True),
+    ("m_report", "mcmcdiag", "report", "check", "report", None, "print the full diagnostics table", True),
+    ("p_saving", "posterior", "saving", "edit", "saving()", None, "file for the draws (a Stata data file)", "pdraws"),
+    ("p_replace", "posterior", "replace", "check", "replace", None, "replace an existing file", True),
+    ("p_plot", "posterior", "plot", "combo", "plot()", ["", "trace", "density", "both"], "trace and density plots of the draws", "both"),
+    ("p_name", "posterior", "name", "edit", "name()", None, "name of the graph", "pgr"),
+    ("p_pars", "posterior", "pars", "edit", "pars()", None, "coefficients to plot; default all", "edges"),
+    ("p_level", "posterior", "level", "edit", "level()", None, "credible level; default the level of the fit", "90"),
     ("s_nsim", "simfit", "nsim", "edit", "nsim()", None, "default 1", "2"),
     ("s_seed", "simfit", "seed", "edit", "seed()", None, "", "3"),
     ("s_output", "simfit", "output", "combo", "output()", ["", "network", "stats", "edgelist"], "what to produce (default network)", "stats"),

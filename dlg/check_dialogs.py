@@ -436,7 +436,7 @@ def check_options(fname, which, words):
 
 def check_estat(fname):
     d, words = check_file(fname, "estat")
-    exp = {"estat", "gof", "mcmcdiag", "ic", "nwergm", "simulate", "-model"}
+    exp = {"estat", "gof", "mcmcdiag", "ic", "posterior", "nwergm", "simulate", "-model"}
     for (cid, tabk, opt_, w, lab, ch, hint, sm) in S.ESTAT:
         exp.add(opt_)
     exp |= set(S.GOF_STATS)
