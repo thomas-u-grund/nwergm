@@ -784,6 +784,33 @@ real scalar ergm_graph_max_sp_dir_all(class ErgmGraph scalar G, string scalar sp
 }
 
 /*
+	The largest count that R's cutoff (gwcutoff()) is compared with, on the observed network: "esp" the shared partners of a tied
+	dyad, "dsp" and "nsp" those of any dyad (sptype as above; "" on an undirected network), "deg"/"odeg"/"ideg" the degree
+	of a node. R stops a curved fit (fixed = FALSE) when such a count of the observed or of a simulated network exceeds the cutoff.
+*/
+real scalar ergm_gwcut_obsmax(class ErgmGraph scalar G, string scalar kind, string scalar sptype){
+	real matrix ties
+	real scalar k, best, p
+	if (kind == "deg") return(ergm_graph_maxdegree(G, "total"))
+	if (kind == "odeg") return(ergm_graph_maxdegree(G, "out"))
+	if (kind == "ideg") return(ergm_graph_maxdegree(G, "in"))
+	if (sptype != "") {
+		if (kind == "esp") return(ergm_graph_max_sp_dir(G, sptype))
+		return(ergm_graph_max_sp_dir_all(G, sptype))
+	}
+	if (kind == "esp") {
+		ties = G.all_ties()
+		best = 0
+		for (k=1; k<=rows(ties); k++) {
+			p = G.shared_partners(ties[k,1], ties[k,2])
+			if (p > best) best = p
+		}
+		return(best)
+	}
+	return(ergm_graph_max_shared_partners(G))
+}
+
+/*
 	Number of nodes k that are neighbors of BOTH i and j (undirected
 	sense: k s.t. has_edge(i,k) and has_edge(j,k)) - the "shared
 	partner" count GWESP needs. Iterates whichever of i/j has the
@@ -1143,6 +1170,7 @@ class ErgmTermData {
 	real colvector levels		// nodematch(diff=TRUE)/nodefactor: distinct attribute levels present, one per output statistic (index k <-> levels[k])
 	real matrix levelpairs		// nodemix: distinct UNORDERED level-pairs present, one row (a,b), a<=b, per output statistic
 	string scalar sptype		// gwesp/gwdsp/gwnsp/esp/dsp: shared-partner definition on a DIRECTED network - "" (default) means the undirected/UTP definition (used as-is for undirected networks); one of "OTP"/"ITP"/"OSP"/"ISP"/"RTP" selects the corresponding directed definition (harmonisation unit 91 wave 5 added OTP; a later wave added ITP/OSP/ISP; RTP (reciprocated two-path) added last - all five of R ergm's own directed shared-partner types are now implemented).
+	real scalar cutoff		// curved terms with an estimated decay in sampling fits (R: the term argument cutoff, gw.cutoff): the number of count statistics of the block; 0 or missing: no cutoff (maximum likelihood by pseudolikelihood). The native sampler stops with an error when a simulated network has a count above it.
 	real scalar center		// nwsaom behsim (unw_saom.do): the behavior variable's similarity mean, subtracted from every tie's similarity (RSiena's simX centering). Unused by every other term.
 	string scalar opkind		// operator terms (name "op:<kind>"): sum, prod, filter, sym, sub, proj - see ergm_op_derive()
 	pointer rowvector opsub	// operator terms: the sub-models (pointers to class ErgmModel scalar)
@@ -9111,6 +9139,7 @@ real scalar ErgmNativeSetup(class ErgmModel scalar M, real scalar proposal_code,
 				pos++
 				termcodes[pos] = 17
 				p1v[pos] = tdt.levels[k]
+				if (tdt.cutoff < . & tdt.cutoff > 0) p2v[pos] = tdt.cutoff
 			}
 		}
 		else if (nm == "odegree") {
@@ -9118,6 +9147,7 @@ real scalar ErgmNativeSetup(class ErgmModel scalar M, real scalar proposal_code,
 				pos++
 				termcodes[pos] = 18
 				p1v[pos] = tdt.levels[k]
+				if (tdt.cutoff < . & tdt.cutoff > 0) p2v[pos] = tdt.cutoff
 			}
 		}
 		else if (nm == "idegree") {
@@ -9125,6 +9155,7 @@ real scalar ErgmNativeSetup(class ErgmModel scalar M, real scalar proposal_code,
 				pos++
 				termcodes[pos] = 19
 				p1v[pos] = tdt.levels[k]
+				if (tdt.cutoff < . & tdt.cutoff > 0) p2v[pos] = tdt.cutoff
 			}
 		}
 		else if (nm == "concurrent") {
@@ -9195,6 +9226,7 @@ real scalar ErgmNativeSetup(class ErgmModel scalar M, real scalar proposal_code,
 				pos++
 				termcodes[pos] = ErgmNativeSPCode(tdt.sptype, 29, 35, 43, 48, 53, 58)
 				p1v[pos] = tdt.levels[k]
+				if (tdt.cutoff < . & tdt.cutoff > 0) p2v[pos] = tdt.cutoff
 			}
 		}
 		else if (nm == "dsp") {
@@ -9202,6 +9234,7 @@ real scalar ErgmNativeSetup(class ErgmModel scalar M, real scalar proposal_code,
 				pos++
 				termcodes[pos] = ErgmNativeSPCode(tdt.sptype, 30, 36, 44, 49, 54, 59)
 				p1v[pos] = tdt.levels[k]
+				if (tdt.cutoff < . & tdt.cutoff > 0) p2v[pos] = tdt.cutoff
 			}
 		}
 		else if (nm == "triangle") {
@@ -9274,6 +9307,7 @@ real scalar ErgmNativeSetup(class ErgmModel scalar M, real scalar proposal_code,
 				pos++
 				termcodes[pos] = 64
 				p1v[pos] = tdt.levels[k]
+				if (tdt.cutoff < . & tdt.cutoff > 0) p2v[pos] = tdt.cutoff
 			}
 		}
 		else if (nm == "b2degree") {
@@ -9281,6 +9315,7 @@ real scalar ErgmNativeSetup(class ErgmModel scalar M, real scalar proposal_code,
 				pos++
 				termcodes[pos] = 65
 				p1v[pos] = tdt.levels[k]
+				if (tdt.cutoff < . & tdt.cutoff > 0) p2v[pos] = tdt.cutoff
 			}
 		}
 		else if (nm == "b1star") {
@@ -9340,6 +9375,7 @@ real scalar ErgmNativeSetup(class ErgmModel scalar M, real scalar proposal_code,
 				pos++
 				termcodes[pos] = ErgmNativeSPCode(tdt.sptype, 70, 71, 72, 73, 74, 75)
 				p1v[pos] = tdt.levels[k]
+				if (tdt.cutoff < . & tdt.cutoff > 0) p2v[pos] = tdt.cutoff
 			}
 		}
 		// bipartite Stage 4 (harmonisation unit 162's own two term
@@ -9446,6 +9482,8 @@ real scalar ErgmNativeSetup(class ErgmModel scalar M, real scalar proposal_code,
 				attridxs[pos] = aidx
 				p1v[pos] = tdt.levelpairs[k,2]
 				p2v[pos] = tdt.levelpairs[k,3]
+				// curved bgwdspfree: the mode and the cutoff (mode + 4 * cutoff) share the second parameter of the slot
+				if (tdt.cutoff < . & tdt.cutoff > 0 & tdt.levelpairs[k,1] == 10) p2v[pos] = p2v[pos] + 4 * tdt.cutoff
 			}
 		}
 		else if (substr(nm, 1, 3) == "ns:") {

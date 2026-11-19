@@ -221,6 +221,8 @@ opt("dsp", "tri", "dsp", main="edit", nets="UD", hint="numlist of d; see type() 
 
 ctl("type", "tri", "type", "combo", "type()  - directed shared partners", choices=["", "OTP", "ITP", "OSP", "ISP", "RTP"],
     hint="applies to gwesp gwdsp gwnsp esp dsp (directed networks)", nets="D", smoke=dict(net="dir", use=dict(main="ITP"), also={"gwesp": "0.5"}))
+ctl("gwcutoff", "tri", "gwcutoff", "edit", "gwcutoff()  - curved cutoff", width=80,
+    hint="default 30; the fit stops when a count exceeds it", nets="UD", smoke=dict(net="und", use=dict(main="12"), also={"gwespfree": "0.5"}))
 
 SC = "Shared partners, geometrically weighted: fixed decay"
 for (nm, nets, h) in [("gwesp", "UD", "edgewise shared partners"), ("gwdsp", "UD", "dyadwise shared partners"),

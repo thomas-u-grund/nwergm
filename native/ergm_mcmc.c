@@ -177,7 +177,7 @@
    network only if it fits the frame the caller supplied (otherwise it reports the number of ties it needs in
    __ergm_native_nties_out and writes nothing), so that the caller need not allocate one row per dyad. A plugin of generation 1
    (no such scalar) is always given the frame of one row per dyad by the Mata caller. */
-#define ERGM_NATIVE_GEN 6  /* 6: mode 7, the exchange algorithm of the Bayesian ERGM (ergm_bayes.h); 5: the SPDyad proposal (proposal code 3); 3: wide models (more than 256 slots, term table in frame variables, long output); 4: sparse dyadic covariates */
+#define ERGM_NATIVE_GEN 7  /* 7: cutoff of the curved terms with an estimated decay (slot parameter p2 = cutoff; the call stops with an error when a count exceeds it); 6: mode 7, the exchange algorithm of the Bayesian ERGM (ergm_bayes.h); 5: the SPDyad proposal (proposal code 3); 3: wide models (more than 256 slots, term table in frame variables, long output); 4: sparse dyadic covariates */
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
@@ -814,6 +814,36 @@ static int invert_matrix(double *A, long p) {
 	free(is_singular);
 	return 0;
 }
+
+/* Cutoff of the curved terms with an estimated decay (R: the term argument cutoff, gw.cutoff). The last count statistic of such a
+   block (p1 == p2 == the number of counts) is "armed" by change_term(): while its change statistic is evaluated, a count above
+   the cutoff (a dyad with more shared partners, a node with a higher degree than the block has columns for) is recorded in
+   g_cut_viol and the sampler stops with an error, as R does. Terms of the model without a cutoff leave g_cut_cur at 0. */
+static long g_cut_cur = 0, g_cut_viol = 0, g_cut_w = 0, g_cut_tc = 0;
+static void cut_note(double x) {
+	if (g_cut_cur > 0 && x > (double)g_cut_cur && (long)x > g_cut_viol) g_cut_viol = (long)x;
+}
+
+/* the error of a curved fit whose sampler met a count above the cutoff: the wording follows R's ("Term 'dgwesp' has encountered a
+   network for which number of undirected two-paths on some edge exceeded the cut-off setting of 3. This can usually be remedied
+   by increasing the value of the term argument 'cutoff' ...") */
+static void cut_report(void) {
+	char msg[640];
+	const char *nm, *what;
+	int tc = (int)g_cut_tc;
+	if (tc == 17) { nm = "gwdegreefree"; what = "the degree of some node"; }
+	else if (tc == 18) { nm = "gwodegreefree"; what = "the out-degree of some node"; }
+	else if (tc == 19) { nm = "gwidegreefree"; what = "the in-degree of some node"; }
+	else if (tc == 64) { nm = "bgwdegreefree1"; what = "the degree of some node of the first mode"; }
+	else if (tc == 65) { nm = "bgwdegreefree2"; what = "the degree of some node of the second mode"; }
+	else if (tc == 3010) { nm = "bgwdspfree"; what = "the number of shared partners of some dyad"; }
+	else if (tc == 29 || tc == 35 || tc == 43 || tc == 48 || tc == 53 || tc == 58) { nm = "gwespfree"; what = "the number of shared partners on some edge"; }
+	else if (tc >= 70 && tc <= 75) { nm = "gwnspfree"; what = "the number of shared partners of some dyad"; }
+	else { nm = "gwdspfree"; what = "the number of shared partners of some dyad"; }
+	snprintf(msg, sizeof(msg), "Term %s has encountered a network for which %s (%ld) exceeded the cutoff of %ld. This can usually be remedied by increasing option gwcutoff().\n", nm, what, g_cut_viol, g_cut_w);
+	SF_error(msg);
+}
+#define CUT_CHECK() do { if (g_cut_viol) { cut_report(); return(498); } } while (0)
 
 /* SP_OTP(i,j) = #{k : i->k and k->j} - the directed "outgoing two-path"
    shared-partner count (harmonisation unit 92 wave 4), a direct port of
@@ -1584,6 +1614,7 @@ static double change_cyclicalties(graph_t *g, long i, long j) {
    for a single target d (one native "slot" per requested d, exactly
    like TERMCODE_NODEFACTOR/TERMCODE_DEGREE above) */
 static double ind_kernel(double x, double d) {
+	if (g_cut_cur > 0) cut_note(x);
 	return (x == d) ? 1.0 : 0.0;
 }
 
@@ -1692,6 +1723,7 @@ static int in_range(double d, double from, double to) {
    _ergm_degree_change() in unw_ergm.do */
 static double degree_change_at(double olddeg, double delta, double target) {
 	double c = 0.0;
+	if (g_cut_cur > 0) cut_note(olddeg + delta);
 	if (olddeg == target) c -= 1.0;
 	if (olddeg + delta == target) c += 1.0;
 	return c;
@@ -2013,6 +2045,16 @@ static double change_term_cov(graph_t *g, int termcode, double p1, double p2, do
 */
 #include "ergm_struct.h"
 static double change_term(graph_t *g, int termcode, double p1, double p2, double *attr, double *cm, long n, double delta, long i, long j) {
+	g_cut_cur = 0;
+	if (p2 >= 1.0) {
+		/* curved block with a cutoff: p2 = the cutoff (bipartite dsp: mode + 4 * cutoff), armed on the last count statistic only */
+		long w = (long)p2;
+		if (termcode == 3010) { w = (long)((p2 - 1.0) / 4.0); p2 -= 4.0 * (double)w; if (w < 1) w = 0; }
+		else if (!((termcode >= 17 && termcode <= 19) || termcode == 29 || termcode == 30 || (termcode >= 35 && termcode <= 36) || (termcode >= 43 && termcode <= 44) ||
+		           (termcode >= 48 && termcode <= 49) || (termcode >= 53 && termcode <= 54) || (termcode >= 58 && termcode <= 59) || (termcode >= 64 && termcode <= 65) ||
+		           (termcode >= 70 && termcode <= 75))) w = 0;
+		if (w >= 1 && p1 == (double)w) { g_cut_cur = w; g_cut_w = w; g_cut_tc = termcode; }
+	}
 	if (termcode >= 1000 && termcode < 2000) return change_struct(g, termcode, p1, p2, attr, cm, n, delta, i, j);
 	if (termcode >= 3000 && termcode < 4000) return change_bipx(g, termcode - 3000, p1, p2, attr, delta, i, j);
 	switch (termcode) {
@@ -3445,6 +3487,7 @@ STDLL stata_call(int argc, char *argv[]) {
 	   rather than requiring a second, divergent argstr format. */
 	mode          = (long)atof(strtok(argbuf, " \t"));
 	SF_scal_save("__ergm_native_gen", (ST_double)ERGM_NATIVE_GEN);
+	g_cut_cur = 0; g_cut_viol = 0; g_cut_w = 0; g_cut_tc = 0;
 	n             = next_long();
 	gwk_reset(n + 2);
 	directed      = next_long();
@@ -4173,6 +4216,7 @@ STDLL stata_call(int argc, char *argv[]) {
 		bayes_graph_reset(&g, by_obsmap, by_oi, by_oj, by_no, &by_ti, &by_tj, &by_tcap);
 	}
 	for (step = 0; step < burnin; step++) {
+		CUT_CHECK();
 		long pi, pj;
 		double logratio, cutoff = 0.0, delta;
 		double *chg = g_chg;
@@ -4259,6 +4303,7 @@ STDLL stata_call(int argc, char *argv[]) {
 			comp_accept();
 		}
 	}
+	CUT_CHECK();
 
 	if (mode == 7) { bayes_done(&BY, &rng, cur); continue; }
 	break;
@@ -4288,6 +4333,7 @@ STDLL stata_call(int argc, char *argv[]) {
 
 	for (draw = 0; draw < (mode == 7 ? 0 : samplesize); draw++) {
 		for (step = 0; step < interval; step++) {
+			CUT_CHECK();
 			long pi, pj;
 			double logratio, cutoff = 0.0, delta;
 			double *chg = g_chg;
@@ -4384,6 +4430,7 @@ STDLL stata_call(int argc, char *argv[]) {
 				naccept++;
 			}
 		}
+		CUT_CHECK();
 		if (e6maxedges > 0 && g.nties > e6maxedges) { SF_error("ergm_mcmc: the number of ties exceeded mcmcmaxedges()\n"); return(198); }
 		if (wide) { for (k = 0; k < nterms; k++) SF_vstore((int)outcol_base, (int)(draw * nterms + k + 1), cur[k]); }
 		else for (k = 0; k < nterms; k++) SF_vstore((int)(outcol_base + k), draw + 1, cur[k]);

@@ -10,7 +10,7 @@ program _nwergm_bip_curved
 	// curved (estimated-decay) bipartite terms: gwb1degree, gwb2degree, gwb1dsp, gwb2dsp with R's fixed=FALSE.
 	// The raw count statistics 1..max are registered and the term is marked curved (as gwdegreefree()/gwdspfree()).
 	version 14
-	syntax , [BGWDEGREEFREE1(string) BGWDEGREEFREE2(string) BGWDSPFREE1(string) BGWDSPFREE2(string) FULL(integer 0)]
+	syntax , [BGWDEGREEFREE1(string) BGWDEGREEFREE2(string) BGWDSPFREE1(string) BGWDSPFREE2(string) FULL(integer 0) CUToff(integer 30)]
 	local temps ""
 	foreach o in bgwdegreefree bgwdspfree {
 		forvalues m = 1/2 {
@@ -28,11 +28,26 @@ program _nwergm_bip_curved
 			// shared partners, than in the observed one: every possible value is a count (the
 			// pseudolikelihood needs only the values up to the observed maximum + 1, the further columns are zero there)
 			local maxd = max(1, min(`__other', `__maxd' + 1))
-			if `full' local maxd = max(1, `__other')
+			local cut 0
+			if `full' {
+				local maxd = max(1, min(`cutoff', `__other'))
+				// R (gwb1degree/gwb2degree/gwb1dsp/gwb2dsp with fixed = FALSE) stops when a count exceeds the cutoff
+				if `cutoff' < max(1, `__other') {
+					local cut `maxd'
+					c_local __ergm_cutact 1
+					if `__maxd' > `cutoff' {
+						if "`o'" == "bgwdegreefree" local what "the degree of some node of mode `m'"
+						else local what "the number of shared partners of some dyad"
+						di as err "{p 0 0 2}Term {bf:`o'`m'} has encountered a network for which `what' (`__maxd') exceeded the cutoff of `cutoff'. This can usually be remedied by increasing option {bf:gwcutoff()}.{p_end}"
+						exit 498
+					}
+				}
+			}
 			capture mata: __nwbx_cnt = __nwbx_cnt + 1
 			if _rc mata: __nwbx_cnt = 1
 			mata: st_local("td", "__nwbx" + strofreal(__nwbx_cnt))
 			mata: `td' = ErgmTermData()
+			mata: `td'.cutoff = `cut'
 			local names ""
 			forvalues k = 1/`maxd' {
 				local names "`names' `o'`m'_`k'"

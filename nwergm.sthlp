@@ -178,6 +178,7 @@ directed (see {opt type()}). An EXHAUSTIVE d-range (covering every shared-partne
 value{p_end}
 {synopt:{opt type(OTP|ITP|OSP|ISP|RTP)}}Shared-partner definition used by every {opt gwesp()}/{opt gwdsp()}/{opt gwnsp()}/{opt esp()}/{opt dsp()}/{opt gwespfree()}/{opt gwdspfree()}/{opt gwnspfree()}
 term in the model, on a DIRECTED network only (default {bf:OTP}; ignored with a note when {bf:netname} is undirected - see the {bf:Remarks} section below for the five definitions){p_end}
+{synopt:{opt gwcutoff(#)}}Cutoff of the curved terms with an estimated decay ({opt gwespfree()}, {opt gwdspfree()}, {opt gwnspfree()}, {opt gwdegreefree()}, {opt gwodegreefree()}, {opt gwidegreefree()}, {opt bgwdegreefree1()}, {opt bgwdegreefree2()}, {opt bgwdspfree1()}, {opt bgwdspfree2()}); an integer of 1 or more, default 30 (R: the term argument {cmd:cutoff}). In a fit that simulates networks the curved block has min(#, nodes - 2) counts (nodes - 1 for a degree term): the numbers of dyads with 1, 2, ... shared partners (nodes of degree 1, 2, ...). As in R, the fit stops with return code 498 when the observed or a simulated network has a count above the cutoff (a dyad with more shared partners, a node of higher degree); raise {opt gwcutoff()} then. A value of the number of nodes or more uses every count that can occur. The pseudolikelihood ignores it{p_end}
 
 {marker triad_effects_directed}{...}
 {syntab:Triad-closure effects (directed)}

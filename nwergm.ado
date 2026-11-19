@@ -159,7 +159,7 @@ program _nwergm_fit, eclass
 		BSTARMIX1(string) BSTARMIX2(string) BTWOSTAR1(string) BTWOSTAR2(string) COINCIDENCE(string) ///
 		BDSP1(string) BDSP2(string) BGWDSP1(string) BGWDSP2(string) ///
 		BGWDEGREEFREE1(string) BGWDEGREEFREE2(string) BGWDSPFREE1(string) BGWDSPFREE2(string) ///
-		TYPE(string) FREEDYADS(string) BLOCKDIAG(string) FIXDENSITY ///
+		TYPE(string) GWCUToff(integer 30) FREEDYADS(string) BLOCKDIAG(string) FIXDENSITY ///
 		METHOD(string) MCMCBURNIN(integer -1) MCMCINTERVAL(integer 1024) ///
 		MCMCSAMPLESIZE(integer -1) MCMLEITERATIONS(integer 60) ///
 		PROPOSAL(string) SEED(string) VERBOSE SPCACHE NOMCMCSAMPLE NONATIVE ///
@@ -214,6 +214,11 @@ program _nwergm_fit, eclass
 		bgwdegreefree1(`bgwdegreefree1') bgwdegreefree2(`bgwdegreefree2') bgwdspfree1(`bgwdspfree1') bgwdspfree2(`bgwdspfree2')
 	// R: MCMLE.burnin = MCMLE.interval * 16 - an unset burn-in follows the interval
 	if `mcmcburnin' < 0 local mcmcburnin = 16 * `mcmcinterval'
+	local __ergm_cutact 0
+	if `gwcutoff' < 1 {
+		di as err "{p 0 0 2}option {bf:gwcutoff()} takes an integer of at least 1.{p_end}"
+		exit 198
+	}
 	_nwergm_est opts, estimate(`estimate') method(`method') mainmethod(`mainmethod') mpletype(`mpletype') ///
 		mplecovariance(`mplecovariance') mcmletermination(`mcmletermination') mplecheck(`mplecheck')
 	local method "`s(method)'"
@@ -1773,9 +1778,12 @@ program _nwergm_fit, eclass
 		// partners than in the observed one, up to nodes-2, and a count above the last column of the curved block would be
 		// dropped silently (the model would not be the model): these methods use all nodes-2 counts. The same holds for the
 		// other curved terms below (nodes-1 for the degree terms).
-		if "`method'" != "mple" local __ergm_curved_maxd = max(1, `nodes' - 2)
+		local __ergm_cut 0
+		if "`method'" != "mple" _nwergm_gwcut esp, name(gwespfree) cutoff(`gwcutoff') full(`=max(1, `nodes' - 2)') sptype(`=cond("`directed'" == "true", "`type'", "")')
+		if "`method'" != "mple" local __ergm_curved_maxd = max(1, min(`gwcutoff', `nodes' - 2))
 		local __td_gwespfree "__netd_`++__ne_n'"
 		mata: `__td_gwespfree' = ErgmTermData()
+		mata: `__td_gwespfree'.cutoff = `__ergm_cut'
 		mata: `__td_gwespfree'.levels = (1..`__ergm_curved_maxd')'
 		// Sets the same td.sptype fixed-decay gwesp() itself sets for a
 		// directed network (nwergm.ado:1355 above) - stat_esp()/
@@ -1824,9 +1832,12 @@ program _nwergm_fit, eclass
 		// network that is not itself nearly complete.
 		mata: st_local("__ergm_maxdeg", strofreal(ergm_graph_maxdegree(__nwergm_last_G, "total")))
 		local __ergm_curved_maxd = max(1, min(`nodes' - 1, `__ergm_maxdeg' + 1))
-		if "`method'" != "mple" local __ergm_curved_maxd = max(1, `nodes' - 1)
+		local __ergm_cut 0
+		if "`method'" != "mple" _nwergm_gwcut deg, name(gwdegreefree) cutoff(`gwcutoff') full(`=max(1, `nodes' - 1)') sptype()
+		if "`method'" != "mple" local __ergm_curved_maxd = max(1, min(`gwcutoff', `nodes' - 1))
 		local __td_gwdegreefree "__netd_`++__ne_n'"
 		mata: `__td_gwdegreefree' = ErgmTermData()
+		mata: `__td_gwdegreefree'.cutoff = `__ergm_cut'
 		mata: `__td_gwdegreefree'.levels = (1..`__ergm_curved_maxd')'
 		local __ergm_curved_cnames ""
 		forvalues __k = 1/`__ergm_curved_maxd' {
@@ -1842,7 +1853,7 @@ program _nwergm_fit, eclass
 			di "{p 0 0 2}{err}In term {bf:bgwdegreefree/bgwdspfree}: Term may not be used with networks with bipartite==FALSE.{p_end}"
 			error 198
 		}
-		_nwergm_bip_curved, bgwdegreefree1(`"`bgwdegreefree1'"') bgwdegreefree2(`"`bgwdegreefree2'"') bgwdspfree1(`"`bgwdspfree1'"') bgwdspfree2(`"`bgwdspfree2'"') full(`=("`method'" != "mple")')
+		_nwergm_bip_curved, bgwdegreefree1(`"`bgwdegreefree1'"') bgwdegreefree2(`"`bgwdegreefree2'"') bgwdspfree1(`"`bgwdspfree1'"') bgwdspfree2(`"`bgwdspfree2'"') full(`=("`method'" != "mple")') cutoff(`gwcutoff')
 		local __ergm_matatemps "`__ergm_matatemps' `__ergm_bipnewtemps'"
 	}
 	// gwdspfree() (harmonisation unit 140): mirrors the other two
@@ -1866,9 +1877,12 @@ program _nwergm_fit, eclass
 			mata: st_local("__ergm_maxdeg", strofreal(ergm_graph_max_shared_partners(__nwergm_last_G) + 1))
 		}
 		local __ergm_curved_maxd = max(1, min(`nodes' - 2, `__ergm_maxdeg'))
-		if "`method'" != "mple" local __ergm_curved_maxd = max(1, `nodes' - 2)
+		local __ergm_cut 0
+		if "`method'" != "mple" _nwergm_gwcut dsp, name(gwdspfree) cutoff(`gwcutoff') full(`=max(1, `nodes' - 2)') sptype(`=cond("`directed'" == "true", "`type'", "")')
+		if "`method'" != "mple" local __ergm_curved_maxd = max(1, min(`gwcutoff', `nodes' - 2))
 		local __td_gwdspfree "__netd_`++__ne_n'"
 		mata: `__td_gwdspfree' = ErgmTermData()
+		mata: `__td_gwdspfree'.cutoff = `__ergm_cut'
 		mata: `__td_gwdspfree'.levels = (1..`__ergm_curved_maxd')'
 		// Sets td.sptype exactly as gwespfree()'s own registration site
 		// does - stat_dsp()/change_dsp() already dispatch on it (unit 91).
@@ -1899,9 +1913,12 @@ program _nwergm_fit, eclass
 			mata: st_local("__ergm_maxdeg", strofreal(ergm_graph_max_shared_partners(__nwergm_last_G) + 1))
 		}
 		local __ergm_curved_maxd = max(1, min(`nodes' - 2, `__ergm_maxdeg'))
-		if "`method'" != "mple" local __ergm_curved_maxd = max(1, `nodes' - 2)
+		local __ergm_cut 0
+		if "`method'" != "mple" _nwergm_gwcut nsp, name(gwnspfree) cutoff(`gwcutoff') full(`=max(1, `nodes' - 2)') sptype(`=cond("`directed'" == "true", "`type'", "")')
+		if "`method'" != "mple" local __ergm_curved_maxd = max(1, min(`gwcutoff', `nodes' - 2))
 		local __td_gwnspfree "__netd_`++__ne_n'"
 		mata: `__td_gwnspfree' = ErgmTermData()
+		mata: `__td_gwnspfree'.cutoff = `__ergm_cut'
 		mata: `__td_gwnspfree'.levels = (1..`__ergm_curved_maxd')'
 		// nsp inherits td.sptype dispatch for free via stat_dsp()/
 		// stat_esp() (stat_nsp() = stat_dsp() - stat_esp()), same as
@@ -1929,9 +1946,12 @@ program _nwergm_fit, eclass
 		// rather than total degree.
 		mata: st_local("__ergm_maxdeg", strofreal(ergm_graph_maxdegree(__nwergm_last_G, "out")))
 		local __ergm_curved_maxd = max(1, min(`nodes' - 1, `__ergm_maxdeg' + 1))
-		if "`method'" != "mple" local __ergm_curved_maxd = max(1, `nodes' - 1)
+		local __ergm_cut 0
+		if "`method'" != "mple" _nwergm_gwcut odeg, name(gwodegreefree) cutoff(`gwcutoff') full(`=max(1, `nodes' - 1)') sptype()
+		if "`method'" != "mple" local __ergm_curved_maxd = max(1, min(`gwcutoff', `nodes' - 1))
 		local __td_gwodegreefree "__netd_`++__ne_n'"
 		mata: `__td_gwodegreefree' = ErgmTermData()
+		mata: `__td_gwodegreefree'.cutoff = `__ergm_cut'
 		mata: `__td_gwodegreefree'.levels = (1..`__ergm_curved_maxd')'
 		local __ergm_curved_cnames ""
 		forvalues __k = 1/`__ergm_curved_maxd' {
@@ -1946,9 +1966,12 @@ program _nwergm_fit, eclass
 		// Harmonisation unit 145: same rationale, bounded by in-degree.
 		mata: st_local("__ergm_maxdeg", strofreal(ergm_graph_maxdegree(__nwergm_last_G, "in")))
 		local __ergm_curved_maxd = max(1, min(`nodes' - 1, `__ergm_maxdeg' + 1))
-		if "`method'" != "mple" local __ergm_curved_maxd = max(1, `nodes' - 1)
+		local __ergm_cut 0
+		if "`method'" != "mple" _nwergm_gwcut ideg, name(gwidegreefree) cutoff(`gwcutoff') full(`=max(1, `nodes' - 1)') sptype()
+		if "`method'" != "mple" local __ergm_curved_maxd = max(1, min(`gwcutoff', `nodes' - 1))
 		local __td_gwidegreefree "__netd_`++__ne_n'"
 		mata: `__td_gwidegreefree' = ErgmTermData()
+		mata: `__td_gwidegreefree'.cutoff = `__ergm_cut'
 		mata: `__td_gwidegreefree'.levels = (1..`__ergm_curved_maxd')'
 		local __ergm_curved_cnames ""
 		forvalues __k = 1/`__ergm_curved_maxd' {
@@ -2679,6 +2702,16 @@ program _nwergm_fit, eclass
 		// whole time. For an unmasked model the two fields are always
 		// equal, so this is a no-op change there.
 		mata: st_local("__ergm_native_used", strofreal(__nwergm_last_M.native_enabled_sample))
+		// a cutoff below the largest possible count is enforced by the native sampler only: without it (the nonative
+		// option, a model or platform without the plugin, a plugin of an older version) a count above the cutoff would be
+		// dropped silently
+		if `__ergm_cutact' {
+			mata: st_local("__ergm_gen", strofreal(ergm_native_gen()))
+			if !`__ergm_native_used' | `__ergm_gen' < 7 {
+				di "{p 0 0 2}{err}a curved term with an estimated decay and {bf:gwcutoff(`gwcutoff')} below the number of nodes needs the native plugin of this version of nwergm, which is not available for this model, platform, the {bf:nonative} option or an installed older plugin; reinstall nwergm (or run {bf:nwinstall, models}) or raise {bf:gwcutoff()} to the number of nodes.{p_end}"
+				exit 498
+			}
+		}
 		if !`__ergm_native_used' _nwergm_slowwarn "this fit" "`nonative'"
 		if `__ergm_nmiss' > 0 {
 			// missing dyads: second, constrained chain (only the missing dyads free), as R ergm
@@ -3018,6 +3051,32 @@ program _nwergm_fit, eclass
 end
 
 // splits the options of the Bayesian fit off the option string of nwergm: returns them in c_local names given as arguments
+// curved terms with an estimated decay in a sampling fit (R: gwesp(fixed = FALSE, cutoff = 30) etc.): the block has
+// min(gwcutoff(), full) count statistics, `full' being the largest count that can occur (nodes - 2 shared partners,
+// nodes - 1 for a degree). R stops when a network has a count above the cutoff; the observed network is checked here, the
+// simulated ones by the native sampler. Returns the cutoff to arm in c_local __ergm_cut (0: it cannot bind).
+capture program drop _nwergm_gwcut
+program _nwergm_gwcut
+	version 14
+	syntax anything(name=kind), NAME(string) CUToff(integer) FULL(integer) [SPtype(string)]
+	if `cutoff' >= `full' {
+		c_local __ergm_cut 0
+		exit
+	}
+	mata: st_local("__mx", strofreal(ergm_gwcut_obsmax(__nwergm_last_G, "`kind'", "`sptype'")))
+	if `__mx' > `cutoff' {
+		if "`kind'" == "esp" local what "the number of shared partners on some edge"
+		else if inlist("`kind'", "dsp", "nsp") local what "the number of shared partners of some dyad"
+		else if "`kind'" == "odeg" local what "the out-degree of some node"
+		else if "`kind'" == "ideg" local what "the in-degree of some node"
+		else local what "the degree of some node"
+		di as err "{p 0 0 2}Term {bf:`name'} has encountered a network for which `what' (`__mx') exceeded the cutoff of `cutoff'. This can usually be remedied by increasing option {bf:gwcutoff()}.{p_end}"
+		exit 498
+	}
+	c_local __ergm_cut `cutoff'
+	c_local __ergm_cutact 1
+end
+
 capture program drop _nwergm_bayes_split
 program _nwergm_bayes_split
 	version 14

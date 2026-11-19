@@ -402,54 +402,52 @@ BEGIN
 	tri.tx_type.show
 	tri.f_type.show
 	tri.tx_h49.show
-	tri.tx_s94_tri.show
+	tri.tx_gwcutoff.show
+	tri.f_gwcutoff.show
+	tri.tx_h50.show
+	tri.tx_s115_tri.show
 	tri.cx_gwesp.show
 	tri.f_gwesp.show
-	tri.tx_h50.show
+	tri.tx_h51.show
 	tri.cx_gwdsp.show
 	tri.f_gwdsp.show
-	tri.tx_h51.show
+	tri.tx_h52.show
 	tri.cx_gwnsp.show
 	tri.f_gwnsp.show
-	tri.tx_h52.show
-	tri.tx_s178_tri.show
+	tri.tx_h53.show
+	tri.tx_s199_tri.show
 	tri.cx_gwespfree.show
 	tri.f_gwespfree.show
-	tri.tx_h53.show
+	tri.tx_h54.show
 	tri.cx_gwdspfree.show
 	tri.f_gwdspfree.show
-	tri.tx_h54.show
+	tri.tx_h55.show
 	tri.cx_gwnspfree.show
 	tri.f_gwnspfree.show
-	tri.tx_h55.show
-	tri.tx_s262_tri.show
+	tri.tx_h56.show
+	tri.tx_s283_tri.show
 	tri.cx_s_triangle.show
 	tri.tx_s_triangle_attr.show
 	tri.f_s_triangle_attr.show
 	tri.f_s_triangle_diff.show
-	tri.tx_h56.show
-	tri.cx_transitive.show
 	tri.tx_h57.show
-	tri.cx_intransitive.show
-	tri.tx_h58.show
+	tri.cx_transitive.show
 END
 
 SCRIPT sh_tri_0_1
 BEGIN
+	tri.tx_h58.show
+	tri.cx_intransitive.show
+	tri.tx_h59.show
 	tri.cx_ttriple.show
 	tri.tx_ttriple_attr.show
 	tri.f_ttriple_attr.show
 	tri.f_ttriple_diff.show
-	tri.tx_h59.show
+	tri.tx_h60.show
 	tri.cx_s_ctriple.show
 	tri.tx_s_ctriple_attr.show
 	tri.f_s_ctriple_attr.show
 	tri.f_s_ctriple_diff.show
-	tri.tx_h60.show
-	tri.cx_cycle.show
-	tri.tx_cycle_k.show
-	tri.f_cycle_k.show
-	tri.f_cycle_semi.show
 	tri.tx_h61.show
 END
 
@@ -471,54 +469,52 @@ BEGIN
 	tri.tx_type.hide
 	tri.f_type.hide
 	tri.tx_h49.hide
-	tri.tx_s94_tri.hide
+	tri.tx_gwcutoff.hide
+	tri.f_gwcutoff.hide
+	tri.tx_h50.hide
+	tri.tx_s115_tri.hide
 	tri.cx_gwesp.hide
 	tri.f_gwesp.hide
-	tri.tx_h50.hide
+	tri.tx_h51.hide
 	tri.cx_gwdsp.hide
 	tri.f_gwdsp.hide
-	tri.tx_h51.hide
+	tri.tx_h52.hide
 	tri.cx_gwnsp.hide
 	tri.f_gwnsp.hide
-	tri.tx_h52.hide
-	tri.tx_s178_tri.hide
+	tri.tx_h53.hide
+	tri.tx_s199_tri.hide
 	tri.cx_gwespfree.hide
 	tri.f_gwespfree.hide
-	tri.tx_h53.hide
+	tri.tx_h54.hide
 	tri.cx_gwdspfree.hide
 	tri.f_gwdspfree.hide
-	tri.tx_h54.hide
+	tri.tx_h55.hide
 	tri.cx_gwnspfree.hide
 	tri.f_gwnspfree.hide
-	tri.tx_h55.hide
-	tri.tx_s262_tri.hide
+	tri.tx_h56.hide
+	tri.tx_s283_tri.hide
 	tri.cx_s_triangle.hide
 	tri.tx_s_triangle_attr.hide
 	tri.f_s_triangle_attr.hide
 	tri.f_s_triangle_diff.hide
-	tri.tx_h56.hide
-	tri.cx_transitive.hide
 	tri.tx_h57.hide
-	tri.cx_intransitive.hide
-	tri.tx_h58.hide
+	tri.cx_transitive.hide
 END
 
 SCRIPT hi_tri_0_1
 BEGIN
+	tri.tx_h58.hide
+	tri.cx_intransitive.hide
+	tri.tx_h59.hide
 	tri.cx_ttriple.hide
 	tri.tx_ttriple_attr.hide
 	tri.f_ttriple_attr.hide
 	tri.f_ttriple_diff.hide
-	tri.tx_h59.hide
+	tri.tx_h60.hide
 	tri.cx_s_ctriple.hide
 	tri.tx_s_ctriple_attr.hide
 	tri.f_s_ctriple_attr.hide
 	tri.f_s_ctriple_diff.hide
-	tri.tx_h60.hide
-	tri.cx_cycle.hide
-	tri.tx_cycle_k.hide
-	tri.f_cycle_k.hide
-	tri.f_cycle_semi.hide
 	tri.tx_h61.hide
 END
 
@@ -530,60 +526,65 @@ END
 
 SCRIPT sh_tri_1_0
 BEGIN
+	tri.cx_cycle.show
+	tri.tx_cycle_k.show
+	tri.f_cycle_k.show
+	tri.f_cycle_semi.show
+	tri.tx_h62.show
 	tri.cx_threetrail.show
 	tri.tx_threetrail_keep.show
 	tri.f_threetrail_keep.show
-	tri.tx_h62.show
-	tri.cx_balance.show
 	tri.tx_h63.show
+	tri.cx_balance.show
+	tri.tx_h64.show
 	tri.cx_triadcensus.show
 	tri.tx_triadcensus_levels.show
 	tri.f_triadcensus_levels.show
-	tri.tx_h64.show
+	tri.tx_h65.show
 	tri.cx_tripercent.show
 	tri.tx_tripercent_attr.show
 	tri.f_tripercent_attr.show
 	tri.f_tripercent_diff.show
-	tri.tx_h65.show
-	tri.cx_nearsimmelian.show
 	tri.tx_h66.show
-	tri.cx_simmelian.show
+	tri.cx_nearsimmelian.show
 	tri.tx_h67.show
-	tri.cx_simmelianties.show
+	tri.cx_simmelian.show
 	tri.tx_h68.show
+	tri.cx_simmelianties.show
+	tri.tx_h69.show
 	tri.cx_asymmetric.show
 	tri.tx_asymmetric_attr.show
 	tri.f_asymmetric_attr.show
 	tri.f_asymmetric_diff.show
-	tri.tx_h69.show
+	tri.tx_h70.show
 	tri.cx_s_mutual.show
 	tri.tx_s_mutual_same.show
 	tri.f_s_mutual_same.show
 	tri.f_s_mutual_diff.show
 	tri.tx_s_mutual_by.show
 	tri.f_s_mutual_by.show
-	tri.tx_h70.show
+	tri.tx_h71.show
 	tri.cx_localtriangle.show
 	tri.tx_localtriangle_x.show
-	tri.f_localtriangle_x.show
-	tri.tx_h71.show
-	tri.cx_opentriad.show
-	tri.tx_h72.show
-	tri.cx_nsp.show
 END
 
 SCRIPT sh_tri_1_1
 BEGIN
+	tri.f_localtriangle_x.show
+	tri.tx_h72.show
+	tri.cx_opentriad.show
+	tri.tx_h73.show
+	tri.cx_nsp.show
 	tri.tx_nsp_d.show
 	tri.f_nsp_d.show
 	tri.tx_nsp_type.show
 	tri.f_nsp_type.show
-	tri.tx_h73.show
+	tri.tx_h74.show
 	tri.cx_s_altkstar.show
 	tri.tx_s_altkstar_lambda.show
 	tri.f_s_altkstar_lambda.show
 	tri.f_s_altkstar_fixed.show
-	tri.tx_h74.show
+	tri.tx_h75.show
 END
 
 SCRIPT sh_tri_1
@@ -594,60 +595,65 @@ END
 
 SCRIPT hi_tri_1_0
 BEGIN
+	tri.cx_cycle.hide
+	tri.tx_cycle_k.hide
+	tri.f_cycle_k.hide
+	tri.f_cycle_semi.hide
+	tri.tx_h62.hide
 	tri.cx_threetrail.hide
 	tri.tx_threetrail_keep.hide
 	tri.f_threetrail_keep.hide
-	tri.tx_h62.hide
-	tri.cx_balance.hide
 	tri.tx_h63.hide
+	tri.cx_balance.hide
+	tri.tx_h64.hide
 	tri.cx_triadcensus.hide
 	tri.tx_triadcensus_levels.hide
 	tri.f_triadcensus_levels.hide
-	tri.tx_h64.hide
+	tri.tx_h65.hide
 	tri.cx_tripercent.hide
 	tri.tx_tripercent_attr.hide
 	tri.f_tripercent_attr.hide
 	tri.f_tripercent_diff.hide
-	tri.tx_h65.hide
-	tri.cx_nearsimmelian.hide
 	tri.tx_h66.hide
-	tri.cx_simmelian.hide
+	tri.cx_nearsimmelian.hide
 	tri.tx_h67.hide
-	tri.cx_simmelianties.hide
+	tri.cx_simmelian.hide
 	tri.tx_h68.hide
+	tri.cx_simmelianties.hide
+	tri.tx_h69.hide
 	tri.cx_asymmetric.hide
 	tri.tx_asymmetric_attr.hide
 	tri.f_asymmetric_attr.hide
 	tri.f_asymmetric_diff.hide
-	tri.tx_h69.hide
+	tri.tx_h70.hide
 	tri.cx_s_mutual.hide
 	tri.tx_s_mutual_same.hide
 	tri.f_s_mutual_same.hide
 	tri.f_s_mutual_diff.hide
 	tri.tx_s_mutual_by.hide
 	tri.f_s_mutual_by.hide
-	tri.tx_h70.hide
+	tri.tx_h71.hide
 	tri.cx_localtriangle.hide
 	tri.tx_localtriangle_x.hide
-	tri.f_localtriangle_x.hide
-	tri.tx_h71.hide
-	tri.cx_opentriad.hide
-	tri.tx_h72.hide
-	tri.cx_nsp.hide
 END
 
 SCRIPT hi_tri_1_1
 BEGIN
+	tri.f_localtriangle_x.hide
+	tri.tx_h72.hide
+	tri.cx_opentriad.hide
+	tri.tx_h73.hide
+	tri.cx_nsp.hide
 	tri.tx_nsp_d.hide
 	tri.f_nsp_d.hide
 	tri.tx_nsp_type.hide
 	tri.f_nsp_type.hide
-	tri.tx_h73.hide
+	tri.tx_h74.hide
 	tri.cx_s_altkstar.hide
 	tri.tx_s_altkstar_lambda.hide
 	tri.f_s_altkstar_lambda.hide
 	tri.f_s_altkstar_fixed.hide
-	tri.tx_h74.hide
+	tri.tx_h75.hide
 END
 
 SCRIPT hi_tri_1
@@ -675,37 +681,37 @@ BEGIN
 	cov.f_nodecov.show
 	cov.tx_nodecov_c.show
 	cov.f_nodecov_sub.show
-	cov.tx_h75.show
+	cov.tx_h76.show
 	cov.cx_nodeicov.show
 	cov.f_nodeicov.show
 	cov.tx_nodeicov_c.show
 	cov.f_nodeicov_sub.show
-	cov.tx_h76.show
+	cov.tx_h77.show
 	cov.cx_nodeocov.show
 	cov.f_nodeocov.show
 	cov.tx_nodeocov_c.show
 	cov.f_nodeocov_sub.show
-	cov.tx_h77.show
+	cov.tx_h78.show
 	cov.cx_nodefactor.show
 	cov.f_nodefactor.show
 	cov.tx_nodefactor_c.show
 	cov.f_nodefactor_sub.show
-	cov.tx_h78.show
+	cov.tx_h79.show
 	cov.cx_nodeofactor.show
 	cov.f_nodeofactor.show
 	cov.tx_nodeofactor_c.show
 	cov.f_nodeofactor_sub.show
-	cov.tx_h79.show
+	cov.tx_h80.show
 	cov.cx_nodeifactor.show
 	cov.f_nodeifactor.show
 	cov.tx_nodeifactor_c.show
 	cov.f_nodeifactor_sub.show
-	cov.tx_h80.show
+	cov.tx_h81.show
 	cov.cx_nodematch.show
 	cov.f_nodematch.show
 	cov.tx_nodematch_c.show
 	cov.f_nodematch_sub.show
-	cov.tx_h81.show
+	cov.tx_h82.show
 	cov.cx_nodematchdiff.show
 	cov.f_nodematchdiff.show
 	cov.tx_nodematchdiff_c.show
@@ -714,42 +720,42 @@ END
 
 SCRIPT sh_cov_0_1
 BEGIN
-	cov.tx_h82.show
+	cov.tx_h83.show
 	cov.cx_nodemix.show
 	cov.f_nodemix.show
 	cov.tx_nodemix_c.show
 	cov.f_nodemix_sub.show
-	cov.tx_h83.show
+	cov.tx_h84.show
 	cov.cx_mm.show
 	cov.f_mm.show
 	cov.tx_mm_c.show
 	cov.f_mm_sub.show
-	cov.tx_h84.show
+	cov.tx_h85.show
 	cov.cx_absdist.show
 	cov.f_absdist.show
 	cov.tx_absdist_c.show
 	cov.f_absdist_sub.show
-	cov.tx_h85.show
+	cov.tx_h86.show
 	cov.cx_absdiffcat.show
 	cov.f_absdiffcat.show
 	cov.tx_absdiffcat_c.show
 	cov.f_absdiffcat_sub.show
-	cov.tx_h86.show
+	cov.tx_h87.show
 	cov.cx_diff.show
 	cov.f_diff.show
 	cov.tx_diff_c.show
 	cov.f_diff_sub.show
-	cov.tx_h87.show
+	cov.tx_h88.show
 	cov.cx_smalldiff.show
 	cov.f_smalldiff.show
 	cov.tx_smalldiff_c.show
 	cov.f_smalldiff_sub.show
-	cov.tx_h88.show
+	cov.tx_h89.show
 	cov.cx_sociality.show
 	cov.f_sociality.show
 	cov.tx_sociality_c.show
 	cov.f_sociality_sub.show
-	cov.tx_h89.show
+	cov.tx_h90.show
 	cov.cx_nodecovrange.show
 	cov.f_nodecovrange.show
 	cov.tx_nodecovrange_c.show
@@ -758,17 +764,17 @@ END
 
 SCRIPT sh_cov_0_2
 BEGIN
-	cov.tx_h90.show
+	cov.tx_h91.show
 	cov.cx_nodeocovrange.show
 	cov.f_nodeocovrange.show
 	cov.tx_nodeocovrange_c.show
 	cov.f_nodeocovrange_sub.show
-	cov.tx_h91.show
+	cov.tx_h92.show
 	cov.cx_nodeicovrange.show
 	cov.f_nodeicovrange.show
 	cov.tx_nodeicovrange_c.show
 	cov.f_nodeicovrange_sub.show
-	cov.tx_h92.show
+	cov.tx_h93.show
 END
 
 SCRIPT sh_cov_0
@@ -785,37 +791,37 @@ BEGIN
 	cov.f_nodecov.hide
 	cov.tx_nodecov_c.hide
 	cov.f_nodecov_sub.hide
-	cov.tx_h75.hide
+	cov.tx_h76.hide
 	cov.cx_nodeicov.hide
 	cov.f_nodeicov.hide
 	cov.tx_nodeicov_c.hide
 	cov.f_nodeicov_sub.hide
-	cov.tx_h76.hide
+	cov.tx_h77.hide
 	cov.cx_nodeocov.hide
 	cov.f_nodeocov.hide
 	cov.tx_nodeocov_c.hide
 	cov.f_nodeocov_sub.hide
-	cov.tx_h77.hide
+	cov.tx_h78.hide
 	cov.cx_nodefactor.hide
 	cov.f_nodefactor.hide
 	cov.tx_nodefactor_c.hide
 	cov.f_nodefactor_sub.hide
-	cov.tx_h78.hide
+	cov.tx_h79.hide
 	cov.cx_nodeofactor.hide
 	cov.f_nodeofactor.hide
 	cov.tx_nodeofactor_c.hide
 	cov.f_nodeofactor_sub.hide
-	cov.tx_h79.hide
+	cov.tx_h80.hide
 	cov.cx_nodeifactor.hide
 	cov.f_nodeifactor.hide
 	cov.tx_nodeifactor_c.hide
 	cov.f_nodeifactor_sub.hide
-	cov.tx_h80.hide
+	cov.tx_h81.hide
 	cov.cx_nodematch.hide
 	cov.f_nodematch.hide
 	cov.tx_nodematch_c.hide
 	cov.f_nodematch_sub.hide
-	cov.tx_h81.hide
+	cov.tx_h82.hide
 	cov.cx_nodematchdiff.hide
 	cov.f_nodematchdiff.hide
 	cov.tx_nodematchdiff_c.hide
@@ -824,42 +830,42 @@ END
 
 SCRIPT hi_cov_0_1
 BEGIN
-	cov.tx_h82.hide
+	cov.tx_h83.hide
 	cov.cx_nodemix.hide
 	cov.f_nodemix.hide
 	cov.tx_nodemix_c.hide
 	cov.f_nodemix_sub.hide
-	cov.tx_h83.hide
+	cov.tx_h84.hide
 	cov.cx_mm.hide
 	cov.f_mm.hide
 	cov.tx_mm_c.hide
 	cov.f_mm_sub.hide
-	cov.tx_h84.hide
+	cov.tx_h85.hide
 	cov.cx_absdist.hide
 	cov.f_absdist.hide
 	cov.tx_absdist_c.hide
 	cov.f_absdist_sub.hide
-	cov.tx_h85.hide
+	cov.tx_h86.hide
 	cov.cx_absdiffcat.hide
 	cov.f_absdiffcat.hide
 	cov.tx_absdiffcat_c.hide
 	cov.f_absdiffcat_sub.hide
-	cov.tx_h86.hide
+	cov.tx_h87.hide
 	cov.cx_diff.hide
 	cov.f_diff.hide
 	cov.tx_diff_c.hide
 	cov.f_diff_sub.hide
-	cov.tx_h87.hide
+	cov.tx_h88.hide
 	cov.cx_smalldiff.hide
 	cov.f_smalldiff.hide
 	cov.tx_smalldiff_c.hide
 	cov.f_smalldiff_sub.hide
-	cov.tx_h88.hide
+	cov.tx_h89.hide
 	cov.cx_sociality.hide
 	cov.f_sociality.hide
 	cov.tx_sociality_c.hide
 	cov.f_sociality_sub.hide
-	cov.tx_h89.hide
+	cov.tx_h90.hide
 	cov.cx_nodecovrange.hide
 	cov.f_nodecovrange.hide
 	cov.tx_nodecovrange_c.hide
@@ -868,17 +874,17 @@ END
 
 SCRIPT hi_cov_0_2
 BEGIN
-	cov.tx_h90.hide
+	cov.tx_h91.hide
 	cov.cx_nodeocovrange.hide
 	cov.f_nodeocovrange.hide
 	cov.tx_nodeocovrange_c.hide
 	cov.f_nodeocovrange_sub.hide
-	cov.tx_h91.hide
+	cov.tx_h92.hide
 	cov.cx_nodeicovrange.hide
 	cov.f_nodeicovrange.hide
 	cov.tx_nodeicovrange_c.hide
 	cov.f_nodeicovrange_sub.hide
-	cov.tx_h92.hide
+	cov.tx_h93.hide
 END
 
 SCRIPT hi_cov_0
@@ -894,32 +900,32 @@ BEGIN
 	cov.f_nodefactordistinct.show
 	cov.tx_nodefactordistinct_c.show
 	cov.f_nodefactordistinct_sub.show
-	cov.tx_h93.show
+	cov.tx_h94.show
 	cov.cx_nodeofactordistinct.show
 	cov.f_nodeofactordistinct.show
 	cov.tx_nodeofactordistinct_c.show
 	cov.f_nodeofactordistinct_sub.show
-	cov.tx_h94.show
+	cov.tx_h95.show
 	cov.cx_nodeifactordistinct.show
 	cov.f_nodeifactordistinct.show
 	cov.tx_nodeifactordistinct_c.show
 	cov.f_nodeifactordistinct_sub.show
-	cov.tx_h95.show
+	cov.tx_h96.show
 	cov.tx_s73_cov2.show
 	cov.cx_edgecov.show
 	cov.f_edgecov.show
-	cov.tx_h96.show
+	cov.tx_h97.show
 	cov.cx_dyadcov.show
 	cov.f_dyadcov.show
-	cov.tx_h97.show
+	cov.tx_h98.show
 	cov.cx_hamming.show
 	cov.f_hamming.show
-	cov.tx_h98.show
+	cov.tx_h99.show
 	cov.cx_attrcov.show
 	cov.f_attrcov.show
 	cov.tx_attrcov_c.show
 	cov.f_attrcov_sub.show
-	cov.tx_h99.show
+	cov.tx_h100.show
 END
 
 SCRIPT sh_cov_1
@@ -933,32 +939,32 @@ BEGIN
 	cov.f_nodefactordistinct.hide
 	cov.tx_nodefactordistinct_c.hide
 	cov.f_nodefactordistinct_sub.hide
-	cov.tx_h93.hide
+	cov.tx_h94.hide
 	cov.cx_nodeofactordistinct.hide
 	cov.f_nodeofactordistinct.hide
 	cov.tx_nodeofactordistinct_c.hide
 	cov.f_nodeofactordistinct_sub.hide
-	cov.tx_h94.hide
+	cov.tx_h95.hide
 	cov.cx_nodeifactordistinct.hide
 	cov.f_nodeifactordistinct.hide
 	cov.tx_nodeifactordistinct_c.hide
 	cov.f_nodeifactordistinct_sub.hide
-	cov.tx_h95.hide
+	cov.tx_h96.hide
 	cov.tx_s73_cov2.hide
 	cov.cx_edgecov.hide
 	cov.f_edgecov.hide
-	cov.tx_h96.hide
+	cov.tx_h97.hide
 	cov.cx_dyadcov.hide
 	cov.f_dyadcov.hide
-	cov.tx_h97.hide
+	cov.tx_h98.hide
 	cov.cx_hamming.hide
 	cov.f_hamming.hide
-	cov.tx_h98.hide
+	cov.tx_h99.hide
 	cov.cx_attrcov.hide
 	cov.f_attrcov.hide
 	cov.tx_attrcov_c.hide
 	cov.f_attrcov_sub.hide
-	cov.tx_h99.hide
+	cov.tx_h100.hide
 END
 
 SCRIPT hi_cov_1
@@ -983,78 +989,78 @@ BEGIN
 	two.tx_s10_two.show
 	two.cx_bcov1.show
 	two.f_bcov1.show
-	two.tx_h100.show
+	two.tx_h101.show
 	two.cx_bfactor1.show
 	two.f_bfactor1.show
-	two.tx_h101.show
+	two.tx_h102.show
 	two.cx_bdegree1.show
 	two.f_bdegree1.show
 	two.tx_bdegree1_c.show
 	two.f_bdegree1_sub.show
-	two.tx_h102.show
+	two.tx_h103.show
 	two.cx_bstar1.show
 	two.f_bstar1.show
 	two.tx_bstar1_c.show
 	two.f_bstar1_sub.show
-	two.tx_h103.show
+	two.tx_h104.show
 	two.cx_bnodematch1.show
 	two.f_bnodematch1.show
 	two.tx_bnodematch1_c.show
 	two.f_bnodematch1_sub.show
-	two.tx_h104.show
+	two.tx_h105.show
 	two.cx_bgwdegree1.show
 	two.f_bgwdegree1.show
 	two.tx_bgwdegree1_c.show
 	two.f_bgwdegree1_sub.show
-	two.tx_h105.show
+	two.tx_h106.show
 	two.cx_bconcurrent1.show
 	two.f_bconcurrent1.show
-	two.tx_h106.show
+	two.tx_h107.show
 	two.cx_bmindegree1.show
 	two.f_bmindegree1.show
-	two.tx_h107.show
+	two.tx_h108.show
 	two.cx_bdegrange1.show
 	two.f_bdegrange1.show
 	two.tx_bdegrange1_c.show
 	two.f_bdegrange1_sub.show
-	two.tx_h108.show
+	two.tx_h109.show
 	two.cx_bcovrange1.show
 	two.f_bcovrange1.show
 END
 
 SCRIPT sh_two_0_1
 BEGIN
-	two.tx_h109.show
+	two.tx_h110.show
 	two.cx_bfactordistinct1.show
 	two.f_bfactordistinct1.show
 	two.tx_bfactordistinct1_c.show
 	two.f_bfactordistinct1_sub.show
-	two.tx_h110.show
+	two.tx_h111.show
 	two.cx_bsociality1.show
 	two.f_bsociality1.show
-	two.tx_h111.show
+	two.tx_h112.show
 	two.cx_bstarmix1.show
 	two.f_bstarmix1.show
 	two.tx_bstarmix1_c.show
 	two.f_bstarmix1_sub.show
-	two.tx_h112.show
+	two.tx_h113.show
 	two.cx_btwostar1.show
 	two.f_btwostar1.show
 	two.tx_btwostar1_c.show
 	two.f_btwostar1_sub.show
-	two.tx_h113.show
+	two.tx_h114.show
 	two.cx_bdsp1.show
 	two.f_bdsp1.show
-	two.tx_h114.show
+	two.tx_h115.show
 	two.cx_bgwdsp1.show
 	two.f_bgwdsp1.show
-	two.tx_h115.show
+	two.tx_h116.show
 	two.cx_bcov2.show
 	two.f_bcov2.show
-	two.tx_h116.show
+	two.tx_h117.show
 	two.cx_bfactor2.show
 	two.f_bfactor2.show
-	two.tx_h117.show
+	two.tx_h118.show
 END
 
 SCRIPT sh_two_0
@@ -1068,78 +1074,78 @@ BEGIN
 	two.tx_s10_two.hide
 	two.cx_bcov1.hide
 	two.f_bcov1.hide
-	two.tx_h100.hide
+	two.tx_h101.hide
 	two.cx_bfactor1.hide
 	two.f_bfactor1.hide
-	two.tx_h101.hide
+	two.tx_h102.hide
 	two.cx_bdegree1.hide
 	two.f_bdegree1.hide
 	two.tx_bdegree1_c.hide
 	two.f_bdegree1_sub.hide
-	two.tx_h102.hide
+	two.tx_h103.hide
 	two.cx_bstar1.hide
 	two.f_bstar1.hide
 	two.tx_bstar1_c.hide
 	two.f_bstar1_sub.hide
-	two.tx_h103.hide
+	two.tx_h104.hide
 	two.cx_bnodematch1.hide
 	two.f_bnodematch1.hide
 	two.tx_bnodematch1_c.hide
 	two.f_bnodematch1_sub.hide
-	two.tx_h104.hide
+	two.tx_h105.hide
 	two.cx_bgwdegree1.hide
 	two.f_bgwdegree1.hide
 	two.tx_bgwdegree1_c.hide
 	two.f_bgwdegree1_sub.hide
-	two.tx_h105.hide
+	two.tx_h106.hide
 	two.cx_bconcurrent1.hide
 	two.f_bconcurrent1.hide
-	two.tx_h106.hide
+	two.tx_h107.hide
 	two.cx_bmindegree1.hide
 	two.f_bmindegree1.hide
-	two.tx_h107.hide
+	two.tx_h108.hide
 	two.cx_bdegrange1.hide
 	two.f_bdegrange1.hide
 	two.tx_bdegrange1_c.hide
 	two.f_bdegrange1_sub.hide
-	two.tx_h108.hide
+	two.tx_h109.hide
 	two.cx_bcovrange1.hide
 	two.f_bcovrange1.hide
 END
 
 SCRIPT hi_two_0_1
 BEGIN
-	two.tx_h109.hide
+	two.tx_h110.hide
 	two.cx_bfactordistinct1.hide
 	two.f_bfactordistinct1.hide
 	two.tx_bfactordistinct1_c.hide
 	two.f_bfactordistinct1_sub.hide
-	two.tx_h110.hide
+	two.tx_h111.hide
 	two.cx_bsociality1.hide
 	two.f_bsociality1.hide
-	two.tx_h111.hide
+	two.tx_h112.hide
 	two.cx_bstarmix1.hide
 	two.f_bstarmix1.hide
 	two.tx_bstarmix1_c.hide
 	two.f_bstarmix1_sub.hide
-	two.tx_h112.hide
+	two.tx_h113.hide
 	two.cx_btwostar1.hide
 	two.f_btwostar1.hide
 	two.tx_btwostar1_c.hide
 	two.f_btwostar1_sub.hide
-	two.tx_h113.hide
+	two.tx_h114.hide
 	two.cx_bdsp1.hide
 	two.f_bdsp1.hide
-	two.tx_h114.hide
+	two.tx_h115.hide
 	two.cx_bgwdsp1.hide
 	two.f_bgwdsp1.hide
-	two.tx_h115.hide
+	two.tx_h116.hide
 	two.cx_bcov2.hide
 	two.f_bcov2.hide
-	two.tx_h116.hide
+	two.tx_h117.hide
 	two.cx_bfactor2.hide
 	two.f_bfactor2.hide
-	two.tx_h117.hide
+	two.tx_h118.hide
 END
 
 SCRIPT hi_two_0
@@ -1154,77 +1160,77 @@ BEGIN
 	two.f_bdegree2.show
 	two.tx_bdegree2_c.show
 	two.f_bdegree2_sub.show
-	two.tx_h118.show
+	two.tx_h119.show
 	two.cx_bstar2.show
 	two.f_bstar2.show
 	two.tx_bstar2_c.show
 	two.f_bstar2_sub.show
-	two.tx_h119.show
+	two.tx_h120.show
 	two.cx_bnodematch2.show
 	two.f_bnodematch2.show
 	two.tx_bnodematch2_c.show
 	two.f_bnodematch2_sub.show
-	two.tx_h120.show
+	two.tx_h121.show
 	two.cx_bgwdegree2.show
 	two.f_bgwdegree2.show
 	two.tx_bgwdegree2_c.show
 	two.f_bgwdegree2_sub.show
-	two.tx_h121.show
+	two.tx_h122.show
 	two.cx_bconcurrent2.show
 	two.f_bconcurrent2.show
-	two.tx_h122.show
+	two.tx_h123.show
 	two.cx_bmindegree2.show
 	two.f_bmindegree2.show
-	two.tx_h123.show
+	two.tx_h124.show
 	two.cx_bdegrange2.show
 	two.f_bdegrange2.show
 	two.tx_bdegrange2_c.show
 	two.f_bdegrange2_sub.show
-	two.tx_h124.show
+	two.tx_h125.show
 	two.cx_bcovrange2.show
 	two.f_bcovrange2.show
-	two.tx_h125.show
+	two.tx_h126.show
 	two.cx_bfactordistinct2.show
 	two.f_bfactordistinct2.show
 	two.tx_bfactordistinct2_c.show
 	two.f_bfactordistinct2_sub.show
-	two.tx_h126.show
+	two.tx_h127.show
 	two.cx_bsociality2.show
 END
 
 SCRIPT sh_two_1_1
 BEGIN
 	two.f_bsociality2.show
-	two.tx_h127.show
+	two.tx_h128.show
 	two.cx_bstarmix2.show
 	two.f_bstarmix2.show
 	two.tx_bstarmix2_c.show
 	two.f_bstarmix2_sub.show
-	two.tx_h128.show
+	two.tx_h129.show
 	two.cx_btwostar2.show
 	two.f_btwostar2.show
 	two.tx_btwostar2_c.show
 	two.f_btwostar2_sub.show
-	two.tx_h129.show
+	two.tx_h130.show
 	two.cx_bdsp2.show
 	two.f_bdsp2.show
-	two.tx_h130.show
+	two.tx_h131.show
 	two.cx_bgwdsp2.show
 	two.f_bgwdsp2.show
-	two.tx_h131.show
+	two.tx_h132.show
 	two.cx_coincidence.show
 	two.f_coincidence.show
-	two.tx_h132.show
+	two.tx_h133.show
 	two.tx_s325_two2.show
 	two.cx_bgwdegreefree1.show
 	two.f_bgwdegreefree1.show
-	two.tx_h133.show
+	two.tx_h134.show
 	two.cx_bgwdspfree1.show
 	two.f_bgwdspfree1.show
-	two.tx_h134.show
+	two.tx_h135.show
 	two.cx_bgwdegreefree2.show
 	two.f_bgwdegreefree2.show
-	two.tx_h135.show
+	two.tx_h136.show
 END
 
 SCRIPT sh_two_1
@@ -1239,77 +1245,77 @@ BEGIN
 	two.f_bdegree2.hide
 	two.tx_bdegree2_c.hide
 	two.f_bdegree2_sub.hide
-	two.tx_h118.hide
+	two.tx_h119.hide
 	two.cx_bstar2.hide
 	two.f_bstar2.hide
 	two.tx_bstar2_c.hide
 	two.f_bstar2_sub.hide
-	two.tx_h119.hide
+	two.tx_h120.hide
 	two.cx_bnodematch2.hide
 	two.f_bnodematch2.hide
 	two.tx_bnodematch2_c.hide
 	two.f_bnodematch2_sub.hide
-	two.tx_h120.hide
+	two.tx_h121.hide
 	two.cx_bgwdegree2.hide
 	two.f_bgwdegree2.hide
 	two.tx_bgwdegree2_c.hide
 	two.f_bgwdegree2_sub.hide
-	two.tx_h121.hide
+	two.tx_h122.hide
 	two.cx_bconcurrent2.hide
 	two.f_bconcurrent2.hide
-	two.tx_h122.hide
+	two.tx_h123.hide
 	two.cx_bmindegree2.hide
 	two.f_bmindegree2.hide
-	two.tx_h123.hide
+	two.tx_h124.hide
 	two.cx_bdegrange2.hide
 	two.f_bdegrange2.hide
 	two.tx_bdegrange2_c.hide
 	two.f_bdegrange2_sub.hide
-	two.tx_h124.hide
+	two.tx_h125.hide
 	two.cx_bcovrange2.hide
 	two.f_bcovrange2.hide
-	two.tx_h125.hide
+	two.tx_h126.hide
 	two.cx_bfactordistinct2.hide
 	two.f_bfactordistinct2.hide
 	two.tx_bfactordistinct2_c.hide
 	two.f_bfactordistinct2_sub.hide
-	two.tx_h126.hide
+	two.tx_h127.hide
 	two.cx_bsociality2.hide
 END
 
 SCRIPT hi_two_1_1
 BEGIN
 	two.f_bsociality2.hide
-	two.tx_h127.hide
+	two.tx_h128.hide
 	two.cx_bstarmix2.hide
 	two.f_bstarmix2.hide
 	two.tx_bstarmix2_c.hide
 	two.f_bstarmix2_sub.hide
-	two.tx_h128.hide
+	two.tx_h129.hide
 	two.cx_btwostar2.hide
 	two.f_btwostar2.hide
 	two.tx_btwostar2_c.hide
 	two.f_btwostar2_sub.hide
-	two.tx_h129.hide
+	two.tx_h130.hide
 	two.cx_bdsp2.hide
 	two.f_bdsp2.hide
-	two.tx_h130.hide
+	two.tx_h131.hide
 	two.cx_bgwdsp2.hide
 	two.f_bgwdsp2.hide
-	two.tx_h131.hide
+	two.tx_h132.hide
 	two.cx_coincidence.hide
 	two.f_coincidence.hide
-	two.tx_h132.hide
+	two.tx_h133.hide
 	two.tx_s325_two2.hide
 	two.cx_bgwdegreefree1.hide
 	two.f_bgwdegreefree1.hide
-	two.tx_h133.hide
+	two.tx_h134.hide
 	two.cx_bgwdspfree1.hide
 	two.f_bgwdspfree1.hide
-	two.tx_h134.hide
+	two.tx_h135.hide
 	two.cx_bgwdegreefree2.hide
 	two.f_bgwdegreefree2.hide
-	two.tx_h135.hide
+	two.tx_h136.hide
 END
 
 SCRIPT hi_two_1
@@ -1322,7 +1328,7 @@ SCRIPT sh_two_2_0
 BEGIN
 	two.cx_bgwdspfree2.show
 	two.f_bgwdspfree2.show
-	two.tx_h136.show
+	two.tx_h137.show
 END
 
 SCRIPT sh_two_2
@@ -1334,7 +1340,7 @@ SCRIPT hi_two_2_0
 BEGIN
 	two.cx_bgwdspfree2.hide
 	two.f_bgwdspfree2.hide
-	two.tx_h136.hide
+	two.tx_h137.hide
 END
 
 SCRIPT hi_two_2
@@ -1369,38 +1375,38 @@ BEGIN
 	cons.tx_ch2_cons.show
 	cons.cx_c_edges.show
 	cons.o_cx_c_edges.show
-	cons.tx_h149.show
+	cons.tx_h150.show
 	cons.cx_c_degrees.show
 	cons.o_cx_c_degrees.show
-	cons.tx_h150.show
+	cons.tx_h151.show
 	cons.cx_c_odegrees.show
 	cons.o_cx_c_odegrees.show
-	cons.tx_h151.show
+	cons.tx_h152.show
 	cons.cx_c_idegrees.show
 	cons.o_cx_c_idegrees.show
-	cons.tx_h152.show
+	cons.tx_h153.show
 	cons.cx_c_b1degrees.show
 	cons.o_cx_c_b1degrees.show
-	cons.tx_h153.show
+	cons.tx_h154.show
 	cons.cx_c_b2degrees.show
 	cons.o_cx_c_b2degrees.show
-	cons.tx_h154.show
+	cons.tx_h155.show
 	cons.cx_c_degreedist.show
 	cons.o_cx_c_degreedist.show
-	cons.tx_h155.show
+	cons.tx_h156.show
 	cons.cx_c_idegreedist.show
 	cons.o_cx_c_idegreedist.show
-	cons.tx_h156.show
+	cons.tx_h157.show
 	cons.cx_c_bd.show
 	cons.f_c_bd.show
 	cons.o_cx_c_bd.show
 	cons.o_f_c_bd.show
-	cons.tx_h157.show
+	cons.tx_h158.show
 	cons.cx_c_blocks.show
 	cons.f_c_blocks.show
 	cons.o_cx_c_blocks.show
 	cons.o_f_c_blocks.show
-	cons.tx_h158.show
+	cons.tx_h159.show
 	cons.cx_c_blockdiag.show
 	cons.f_c_blockdiag.show
 	cons.o_cx_c_blockdiag.show
@@ -1409,30 +1415,30 @@ END
 
 SCRIPT sh_cons_0_1
 BEGIN
-	cons.tx_h159.show
+	cons.tx_h160.show
 	cons.cx_c_fixedas.show
 	cons.f_c_fixedas.show
 	cons.o_cx_c_fixedas.show
 	cons.o_f_c_fixedas.show
-	cons.tx_h160.show
+	cons.tx_h161.show
 	cons.cx_c_fixallbut.show
 	cons.f_c_fixallbut.show
 	cons.o_cx_c_fixallbut.show
 	cons.o_f_c_fixallbut.show
-	cons.tx_h161.show
+	cons.tx_h162.show
 	cons.cx_c_observed.show
 	cons.o_cx_c_observed.show
-	cons.tx_h162.show
+	cons.tx_h163.show
 	cons.cx_c_egocentric.show
 	cons.f_c_egocentric.show
 	cons.o_cx_c_egocentric.show
 	cons.o_f_c_egocentric.show
-	cons.tx_h163.show
+	cons.tx_h164.show
 	cons.cx_c_dyadnoise.show
 	cons.f_c_dyadnoise.show
 	cons.o_cx_c_dyadnoise.show
 	cons.o_f_c_dyadnoise.show
-	cons.tx_h164.show
+	cons.tx_h165.show
 END
 
 SCRIPT sh_cons_0
@@ -1447,38 +1453,38 @@ BEGIN
 	cons.tx_ch2_cons.hide
 	cons.cx_c_edges.hide
 	cons.o_cx_c_edges.hide
-	cons.tx_h149.hide
+	cons.tx_h150.hide
 	cons.cx_c_degrees.hide
 	cons.o_cx_c_degrees.hide
-	cons.tx_h150.hide
+	cons.tx_h151.hide
 	cons.cx_c_odegrees.hide
 	cons.o_cx_c_odegrees.hide
-	cons.tx_h151.hide
+	cons.tx_h152.hide
 	cons.cx_c_idegrees.hide
 	cons.o_cx_c_idegrees.hide
-	cons.tx_h152.hide
+	cons.tx_h153.hide
 	cons.cx_c_b1degrees.hide
 	cons.o_cx_c_b1degrees.hide
-	cons.tx_h153.hide
+	cons.tx_h154.hide
 	cons.cx_c_b2degrees.hide
 	cons.o_cx_c_b2degrees.hide
-	cons.tx_h154.hide
+	cons.tx_h155.hide
 	cons.cx_c_degreedist.hide
 	cons.o_cx_c_degreedist.hide
-	cons.tx_h155.hide
+	cons.tx_h156.hide
 	cons.cx_c_idegreedist.hide
 	cons.o_cx_c_idegreedist.hide
-	cons.tx_h156.hide
+	cons.tx_h157.hide
 	cons.cx_c_bd.hide
 	cons.f_c_bd.hide
 	cons.o_cx_c_bd.hide
 	cons.o_f_c_bd.hide
-	cons.tx_h157.hide
+	cons.tx_h158.hide
 	cons.cx_c_blocks.hide
 	cons.f_c_blocks.hide
 	cons.o_cx_c_blocks.hide
 	cons.o_f_c_blocks.hide
-	cons.tx_h158.hide
+	cons.tx_h159.hide
 	cons.cx_c_blockdiag.hide
 	cons.f_c_blockdiag.hide
 	cons.o_cx_c_blockdiag.hide
@@ -1487,30 +1493,30 @@ END
 
 SCRIPT hi_cons_0_1
 BEGIN
-	cons.tx_h159.hide
+	cons.tx_h160.hide
 	cons.cx_c_fixedas.hide
 	cons.f_c_fixedas.hide
 	cons.o_cx_c_fixedas.hide
 	cons.o_f_c_fixedas.hide
-	cons.tx_h160.hide
+	cons.tx_h161.hide
 	cons.cx_c_fixallbut.hide
 	cons.f_c_fixallbut.hide
 	cons.o_cx_c_fixallbut.hide
 	cons.o_f_c_fixallbut.hide
-	cons.tx_h161.hide
+	cons.tx_h162.hide
 	cons.cx_c_observed.hide
 	cons.o_cx_c_observed.hide
-	cons.tx_h162.hide
+	cons.tx_h163.hide
 	cons.cx_c_egocentric.hide
 	cons.f_c_egocentric.hide
 	cons.o_cx_c_egocentric.hide
 	cons.o_f_c_egocentric.hide
-	cons.tx_h163.hide
+	cons.tx_h164.hide
 	cons.cx_c_dyadnoise.hide
 	cons.f_c_dyadnoise.hide
 	cons.o_cx_c_dyadnoise.hide
 	cons.o_f_c_dyadnoise.hide
-	cons.tx_h164.hide
+	cons.tx_h165.hide
 END
 
 SCRIPT hi_cons_0
@@ -1526,24 +1532,24 @@ BEGIN
 	cons.tx_n52_space.show
 	cons.tx_constraints_extra.show
 	cons.f_constraints_extra.show
-	cons.tx_h165.show
+	cons.tx_h166.show
 	cons.tx_obsconstraints_extra.show
 	cons.f_obsconstraints_extra.show
-	cons.tx_h166.show
+	cons.tx_h167.show
 	cons.tx_freedyads.show
 	cons.f_freedyads.show
-	cons.tx_h167.show
+	cons.tx_h168.show
 	cons.tx_blockdiag.show
 	cons.f_blockdiag.show
-	cons.tx_h168.show
-	cons.f_fixdensity.show
 	cons.tx_h169.show
+	cons.f_fixdensity.show
+	cons.tx_h170.show
 	cons.tx_mcmcprop.show
 	cons.f_mcmcprop.show
-	cons.tx_h170.show
+	cons.tx_h171.show
 	cons.tx_mcmcmaxedges.show
 	cons.f_mcmcmaxedges.show
-	cons.tx_h171.show
+	cons.tx_h172.show
 END
 
 SCRIPT sh_cons_1
@@ -1558,24 +1564,24 @@ BEGIN
 	cons.tx_n52_space.hide
 	cons.tx_constraints_extra.hide
 	cons.f_constraints_extra.hide
-	cons.tx_h165.hide
+	cons.tx_h166.hide
 	cons.tx_obsconstraints_extra.hide
 	cons.f_obsconstraints_extra.hide
-	cons.tx_h166.hide
+	cons.tx_h167.hide
 	cons.tx_freedyads.hide
 	cons.f_freedyads.hide
-	cons.tx_h167.hide
+	cons.tx_h168.hide
 	cons.tx_blockdiag.hide
 	cons.f_blockdiag.hide
-	cons.tx_h168.hide
-	cons.f_fixdensity.hide
 	cons.tx_h169.hide
+	cons.f_fixdensity.hide
+	cons.tx_h170.hide
 	cons.tx_mcmcprop.hide
 	cons.f_mcmcprop.hide
-	cons.tx_h170.hide
+	cons.tx_h171.hide
 	cons.tx_mcmcmaxedges.hide
 	cons.f_mcmcmaxedges.hide
-	cons.tx_h171.hide
+	cons.tx_h172.hide
 END
 
 SCRIPT hi_cons_1
@@ -1599,43 +1605,43 @@ SCRIPT sh_est_0_0
 BEGIN
 	est.tx_method.show
 	est.f_method.show
-	est.tx_h172.show
+	est.tx_h173.show
 	est.tx_estimate.show
 	est.f_estimate.show
-	est.tx_h173.show
+	est.tx_h174.show
 	est.tx_mainmethod.show
 	est.f_mainmethod.show
-	est.tx_h174.show
+	est.tx_h175.show
 	est.tx_mpletype.show
 	est.f_mpletype.show
-	est.tx_h175.show
+	est.tx_h176.show
 	est.tx_mplecheck.show
 	est.f_mplecheck.show
-	est.tx_h176.show
+	est.tx_h177.show
 	est.tx_mplecovariance.show
 	est.f_mplecovariance.show
-	est.tx_h177.show
+	est.tx_h178.show
 	est.tx_init.show
 	est.f_init.show
-	est.tx_h178.show
+	est.tx_h179.show
 	est.tx_mcmleiterations.show
 	est.f_mcmleiterations.show
-	est.tx_h179.show
+	est.tx_h180.show
 	est.tx_mcmleconfidence.show
 	est.f_mcmleconfidence.show
-	est.tx_h180.show
+	est.tx_h181.show
 	est.tx_mcmletermination.show
 	est.f_mcmletermination.show
-	est.tx_h181.show
+	est.tx_h182.show
 	est.tx_mcmlesteplength.show
 	est.f_mcmlesteplength.show
-	est.tx_h182.show
+	est.tx_h183.show
 	est.tx_mcmlestepmargin.show
 	est.f_mcmlestepmargin.show
-	est.tx_h183.show
+	est.tx_h184.show
 	est.tx_mcmleeffectivesize.show
 	est.f_mcmleeffectivesize.show
-	est.tx_h184.show
+	est.tx_h185.show
 END
 
 SCRIPT sh_est_0
@@ -1647,43 +1653,43 @@ SCRIPT hi_est_0_0
 BEGIN
 	est.tx_method.hide
 	est.f_method.hide
-	est.tx_h172.hide
+	est.tx_h173.hide
 	est.tx_estimate.hide
 	est.f_estimate.hide
-	est.tx_h173.hide
+	est.tx_h174.hide
 	est.tx_mainmethod.hide
 	est.f_mainmethod.hide
-	est.tx_h174.hide
+	est.tx_h175.hide
 	est.tx_mpletype.hide
 	est.f_mpletype.hide
-	est.tx_h175.hide
+	est.tx_h176.hide
 	est.tx_mplecheck.hide
 	est.f_mplecheck.hide
-	est.tx_h176.hide
+	est.tx_h177.hide
 	est.tx_mplecovariance.hide
 	est.f_mplecovariance.hide
-	est.tx_h177.hide
+	est.tx_h178.hide
 	est.tx_init.hide
 	est.f_init.hide
-	est.tx_h178.hide
+	est.tx_h179.hide
 	est.tx_mcmleiterations.hide
 	est.f_mcmleiterations.hide
-	est.tx_h179.hide
+	est.tx_h180.hide
 	est.tx_mcmleconfidence.hide
 	est.f_mcmleconfidence.hide
-	est.tx_h180.hide
+	est.tx_h181.hide
 	est.tx_mcmletermination.hide
 	est.f_mcmletermination.hide
-	est.tx_h181.hide
+	est.tx_h182.hide
 	est.tx_mcmlesteplength.hide
 	est.f_mcmlesteplength.hide
-	est.tx_h182.hide
+	est.tx_h183.hide
 	est.tx_mcmlestepmargin.hide
 	est.f_mcmlestepmargin.hide
-	est.tx_h183.hide
+	est.tx_h184.hide
 	est.tx_mcmleeffectivesize.hide
 	est.f_mcmleeffectivesize.hide
-	est.tx_h184.hide
+	est.tx_h185.hide
 END
 
 SCRIPT hi_est_0
@@ -1695,44 +1701,44 @@ SCRIPT sh_est_1_0
 BEGIN
 	est.tx_proposal.show
 	est.f_proposal.show
-	est.tx_h203.show
+	est.tx_h204.show
 	est.tx_cdnsteps.show
 	est.f_cdnsteps.show
-	est.tx_h204.show
+	est.tx_h205.show
 	est.tx_cdsamplesize.show
 	est.f_cdsamplesize.show
-	est.tx_h205.show
+	est.tx_h206.show
 	est.tx_saburnin.show
 	est.f_saburnin.show
-	est.tx_h206.show
+	est.tx_h207.show
 	est.tx_sainterval.show
 	est.f_sainterval.show
-	est.tx_h207.show
+	est.tx_h208.show
 	est.tx_saphase3.show
 	est.f_saphase3.show
-	est.tx_h208.show
+	est.tx_h209.show
 	est.tx_sagain.show
 	est.f_sagain.show
-	est.tx_h209.show
+	est.tx_h210.show
 	est.tx_sansub.show
 	est.f_sansub.show
-	est.tx_h210.show
+	est.tx_h211.show
 	est.tx_mcmcburnin.show
 	est.f_mcmcburnin.show
-	est.tx_h211.show
+	est.tx_h212.show
 	est.tx_mcmcinterval.show
 	est.f_mcmcinterval.show
-	est.tx_h212.show
+	est.tx_h213.show
 	est.tx_mcmcsamplesize.show
 	est.f_mcmcsamplesize.show
-	est.tx_h213.show
+	est.tx_h214.show
 	est.tx_seed.show
 	est.f_seed.show
-	est.tx_h214.show
-	est.f_spcache.show
 	est.tx_h215.show
-	est.f_nonative.show
+	est.f_spcache.show
 	est.tx_h216.show
+	est.f_nonative.show
+	est.tx_h217.show
 END
 
 SCRIPT sh_est_1
@@ -1744,44 +1750,44 @@ SCRIPT hi_est_1_0
 BEGIN
 	est.tx_proposal.hide
 	est.f_proposal.hide
-	est.tx_h203.hide
+	est.tx_h204.hide
 	est.tx_cdnsteps.hide
 	est.f_cdnsteps.hide
-	est.tx_h204.hide
+	est.tx_h205.hide
 	est.tx_cdsamplesize.hide
 	est.f_cdsamplesize.hide
-	est.tx_h205.hide
+	est.tx_h206.hide
 	est.tx_saburnin.hide
 	est.f_saburnin.hide
-	est.tx_h206.hide
+	est.tx_h207.hide
 	est.tx_sainterval.hide
 	est.f_sainterval.hide
-	est.tx_h207.hide
+	est.tx_h208.hide
 	est.tx_saphase3.hide
 	est.f_saphase3.hide
-	est.tx_h208.hide
+	est.tx_h209.hide
 	est.tx_sagain.hide
 	est.f_sagain.hide
-	est.tx_h209.hide
+	est.tx_h210.hide
 	est.tx_sansub.hide
 	est.f_sansub.hide
-	est.tx_h210.hide
+	est.tx_h211.hide
 	est.tx_mcmcburnin.hide
 	est.f_mcmcburnin.hide
-	est.tx_h211.hide
+	est.tx_h212.hide
 	est.tx_mcmcinterval.hide
 	est.f_mcmcinterval.hide
-	est.tx_h212.hide
+	est.tx_h213.hide
 	est.tx_mcmcsamplesize.hide
 	est.f_mcmcsamplesize.hide
-	est.tx_h213.hide
+	est.tx_h214.hide
 	est.tx_seed.hide
 	est.f_seed.hide
-	est.tx_h214.hide
-	est.f_spcache.hide
 	est.tx_h215.hide
-	est.f_nonative.hide
+	est.f_spcache.hide
 	est.tx_h216.hide
+	est.f_nonative.hide
+	est.tx_h217.hide
 END
 
 SCRIPT hi_est_1
@@ -1793,31 +1799,31 @@ SCRIPT sh_est_2_0
 BEGIN
 	est.tx_bridgesteps.show
 	est.f_bridgesteps.show
-	est.tx_h217.show
+	est.tx_h218.show
 	est.tx_bridgesamplesize.show
 	est.f_bridgesamplesize.show
-	est.tx_h218.show
+	est.tx_h219.show
 	est.tx_bridgeinterval.show
 	est.f_bridgeinterval.show
-	est.tx_h219.show
-	est.f_nologlik.show
 	est.tx_h220.show
-	est.f_nomcmcsample.show
+	est.f_nologlik.show
 	est.tx_h221.show
-	est.f_verbose.show
+	est.f_nomcmcsample.show
 	est.tx_h222.show
+	est.f_verbose.show
+	est.tx_h223.show
 	est.tx_offset.show
 	est.f_offset.show
-	est.tx_h223.show
+	est.tx_h224.show
 	est.tx_coeflabel.show
 	est.f_coeflabel.show
-	est.tx_h224.show
+	est.tx_h225.show
 	est.tx_logstat.show
 	est.f_logstat.show
-	est.tx_h225.show
+	est.tx_h226.show
 	est.tx_expstat.show
 	est.f_expstat.show
-	est.tx_h226.show
+	est.tx_h227.show
 END
 
 SCRIPT sh_est_2
@@ -1829,31 +1835,31 @@ SCRIPT hi_est_2_0
 BEGIN
 	est.tx_bridgesteps.hide
 	est.f_bridgesteps.hide
-	est.tx_h217.hide
+	est.tx_h218.hide
 	est.tx_bridgesamplesize.hide
 	est.f_bridgesamplesize.hide
-	est.tx_h218.hide
+	est.tx_h219.hide
 	est.tx_bridgeinterval.hide
 	est.f_bridgeinterval.hide
-	est.tx_h219.hide
-	est.f_nologlik.hide
 	est.tx_h220.hide
-	est.f_nomcmcsample.hide
+	est.f_nologlik.hide
 	est.tx_h221.hide
-	est.f_verbose.hide
+	est.f_nomcmcsample.hide
 	est.tx_h222.hide
+	est.f_verbose.hide
+	est.tx_h223.hide
 	est.tx_offset.hide
 	est.f_offset.hide
-	est.tx_h223.hide
+	est.tx_h224.hide
 	est.tx_coeflabel.hide
 	est.f_coeflabel.hide
-	est.tx_h224.hide
+	est.tx_h225.hide
 	est.tx_logstat.hide
 	est.f_logstat.hide
-	est.tx_h225.hide
+	est.tx_h226.hide
 	est.tx_expstat.hide
 	est.f_expstat.hide
-	est.tx_h226.hide
+	est.tx_h227.hide
 END
 
 SCRIPT hi_est_2
@@ -2074,452 +2080,455 @@ BEGIN
 	tri.tx_type.enable
 	tri.f_type.enable
 	tri.tx_h49.enable
+	tri.tx_gwcutoff.enable
+	tri.f_gwcutoff.enable
+	tri.tx_h50.enable
 	tri.cx_gwesp.enable
 	tri.f_gwesp.enable
-	tri.tx_h50.enable
+	tri.tx_h51.enable
 	tri.cx_gwdsp.enable
 	tri.f_gwdsp.enable
-	tri.tx_h51.enable
+	tri.tx_h52.enable
 	tri.cx_gwnsp.enable
 	tri.f_gwnsp.enable
-	tri.tx_h52.enable
+	tri.tx_h53.enable
 	tri.cx_gwespfree.enable
 	tri.f_gwespfree.enable
-	tri.tx_h53.enable
+	tri.tx_h54.enable
 	tri.cx_gwdspfree.enable
 	tri.f_gwdspfree.enable
-	tri.tx_h54.enable
+	tri.tx_h55.enable
 	tri.cx_gwnspfree.enable
 	tri.f_gwnspfree.enable
-	tri.tx_h55.enable
+	tri.tx_h56.enable
 	tri.cx_s_triangle.enable
 	tri.tx_s_triangle_attr.enable
 	tri.f_s_triangle_attr.enable
 	tri.f_s_triangle_diff.enable
-	tri.tx_h56.enable
-	tri.cx_transitive.enable
 	tri.tx_h57.enable
-	tri.cx_intransitive.enable
 END
 
 SCRIPT ty_auto_5
 BEGIN
+	tri.cx_transitive.enable
 	tri.tx_h58.enable
+	tri.cx_intransitive.enable
+	tri.tx_h59.enable
 	tri.cx_ttriple.enable
 	tri.tx_ttriple_attr.enable
 	tri.f_ttriple_attr.enable
 	tri.f_ttriple_diff.enable
-	tri.tx_h59.enable
+	tri.tx_h60.enable
 	tri.cx_s_ctriple.enable
 	tri.tx_s_ctriple_attr.enable
 	tri.f_s_ctriple_attr.enable
 	tri.f_s_ctriple_diff.enable
-	tri.tx_h60.enable
+	tri.tx_h61.enable
 	tri.cx_cycle.enable
 	tri.tx_cycle_k.enable
 	tri.f_cycle_k.enable
 	tri.f_cycle_semi.enable
-	tri.tx_h61.enable
+	tri.tx_h62.enable
 	tri.cx_threetrail.enable
 	tri.tx_threetrail_keep.enable
 	tri.f_threetrail_keep.enable
-	tri.tx_h62.enable
-	tri.cx_balance.enable
 	tri.tx_h63.enable
+	tri.cx_balance.enable
+	tri.tx_h64.enable
 	tri.cx_triadcensus.enable
 	tri.tx_triadcensus_levels.enable
 	tri.f_triadcensus_levels.enable
-	tri.tx_h64.enable
+	tri.tx_h65.enable
 	tri.cx_tripercent.enable
 	tri.tx_tripercent_attr.enable
 	tri.f_tripercent_attr.enable
 	tri.f_tripercent_diff.enable
-	tri.tx_h65.enable
-	tri.cx_nearsimmelian.enable
 	tri.tx_h66.enable
-	tri.cx_simmelian.enable
+	tri.cx_nearsimmelian.enable
 	tri.tx_h67.enable
-	tri.cx_simmelianties.enable
+	tri.cx_simmelian.enable
 	tri.tx_h68.enable
-	tri.cx_asymmetric.enable
-	tri.tx_asymmetric_attr.enable
-	tri.f_asymmetric_attr.enable
+	tri.cx_simmelianties.enable
+	tri.tx_h69.enable
 END
 
 SCRIPT ty_auto_6
 BEGIN
+	tri.cx_asymmetric.enable
+	tri.tx_asymmetric_attr.enable
+	tri.f_asymmetric_attr.enable
 	tri.f_asymmetric_diff.enable
-	tri.tx_h69.enable
+	tri.tx_h70.enable
 	tri.cx_s_mutual.enable
 	tri.tx_s_mutual_same.enable
 	tri.f_s_mutual_same.enable
 	tri.f_s_mutual_diff.enable
 	tri.tx_s_mutual_by.enable
 	tri.f_s_mutual_by.enable
-	tri.tx_h70.enable
+	tri.tx_h71.enable
 	tri.cx_localtriangle.enable
 	tri.tx_localtriangle_x.enable
 	tri.f_localtriangle_x.enable
-	tri.tx_h71.enable
-	tri.cx_opentriad.enable
 	tri.tx_h72.enable
+	tri.cx_opentriad.enable
+	tri.tx_h73.enable
 	tri.cx_nsp.enable
 	tri.tx_nsp_d.enable
 	tri.f_nsp_d.enable
 	tri.tx_nsp_type.enable
 	tri.f_nsp_type.enable
-	tri.tx_h73.enable
+	tri.tx_h74.enable
 	tri.cx_s_altkstar.enable
 	tri.tx_s_altkstar_lambda.enable
 	tri.f_s_altkstar_lambda.enable
 	tri.f_s_altkstar_fixed.enable
-	tri.tx_h74.enable
+	tri.tx_h75.enable
 	cov.cx_nodecov.enable
 	cov.f_nodecov.enable
 	cov.tx_nodecov_c.enable
 	cov.f_nodecov_sub.enable
-	cov.tx_h75.enable
+	cov.tx_h76.enable
 	cov.cx_nodeicov.enable
 	cov.f_nodeicov.enable
 	cov.tx_nodeicov_c.enable
 	cov.f_nodeicov_sub.enable
-	cov.tx_h76.enable
+	cov.tx_h77.enable
 	cov.cx_nodeocov.enable
-	cov.f_nodeocov.enable
-	cov.tx_nodeocov_c.enable
-	cov.f_nodeocov_sub.enable
 END
 
 SCRIPT ty_auto_7
 BEGIN
-	cov.tx_h77.enable
+	cov.f_nodeocov.enable
+	cov.tx_nodeocov_c.enable
+	cov.f_nodeocov_sub.enable
+	cov.tx_h78.enable
 	cov.cx_nodefactor.enable
 	cov.f_nodefactor.enable
 	cov.tx_nodefactor_c.enable
 	cov.f_nodefactor_sub.enable
-	cov.tx_h78.enable
+	cov.tx_h79.enable
 	cov.cx_nodeofactor.enable
 	cov.f_nodeofactor.enable
 	cov.tx_nodeofactor_c.enable
 	cov.f_nodeofactor_sub.enable
-	cov.tx_h79.enable
+	cov.tx_h80.enable
 	cov.cx_nodeifactor.enable
 	cov.f_nodeifactor.enable
 	cov.tx_nodeifactor_c.enable
 	cov.f_nodeifactor_sub.enable
-	cov.tx_h80.enable
+	cov.tx_h81.enable
 	cov.cx_nodematch.enable
 	cov.f_nodematch.enable
 	cov.tx_nodematch_c.enable
 	cov.f_nodematch_sub.enable
-	cov.tx_h81.enable
+	cov.tx_h82.enable
 	cov.cx_nodematchdiff.enable
 	cov.f_nodematchdiff.enable
 	cov.tx_nodematchdiff_c.enable
 	cov.f_nodematchdiff_sub.enable
-	cov.tx_h82.enable
+	cov.tx_h83.enable
 	cov.cx_nodemix.enable
 	cov.f_nodemix.enable
 	cov.tx_nodemix_c.enable
 	cov.f_nodemix_sub.enable
-	cov.tx_h83.enable
+	cov.tx_h84.enable
 	cov.cx_mm.enable
 	cov.f_mm.enable
 	cov.tx_mm_c.enable
 	cov.f_mm_sub.enable
-	cov.tx_h84.enable
+	cov.tx_h85.enable
 	cov.cx_absdist.enable
-	cov.f_absdist.enable
-	cov.tx_absdist_c.enable
-	cov.f_absdist_sub.enable
 END
 
 SCRIPT ty_auto_8
 BEGIN
-	cov.tx_h85.enable
+	cov.f_absdist.enable
+	cov.tx_absdist_c.enable
+	cov.f_absdist_sub.enable
+	cov.tx_h86.enable
 	cov.cx_absdiffcat.enable
 	cov.f_absdiffcat.enable
 	cov.tx_absdiffcat_c.enable
 	cov.f_absdiffcat_sub.enable
-	cov.tx_h86.enable
+	cov.tx_h87.enable
 	cov.cx_diff.enable
 	cov.f_diff.enable
 	cov.tx_diff_c.enable
 	cov.f_diff_sub.enable
-	cov.tx_h87.enable
+	cov.tx_h88.enable
 	cov.cx_smalldiff.enable
 	cov.f_smalldiff.enable
 	cov.tx_smalldiff_c.enable
 	cov.f_smalldiff_sub.enable
-	cov.tx_h88.enable
+	cov.tx_h89.enable
 	cov.cx_sociality.enable
 	cov.f_sociality.enable
 	cov.tx_sociality_c.enable
 	cov.f_sociality_sub.enable
-	cov.tx_h89.enable
+	cov.tx_h90.enable
 	cov.cx_nodecovrange.enable
 	cov.f_nodecovrange.enable
 	cov.tx_nodecovrange_c.enable
 	cov.f_nodecovrange_sub.enable
-	cov.tx_h90.enable
+	cov.tx_h91.enable
 	cov.cx_nodeocovrange.enable
 	cov.f_nodeocovrange.enable
 	cov.tx_nodeocovrange_c.enable
 	cov.f_nodeocovrange_sub.enable
-	cov.tx_h91.enable
+	cov.tx_h92.enable
 	cov.cx_nodeicovrange.enable
 	cov.f_nodeicovrange.enable
 	cov.tx_nodeicovrange_c.enable
 	cov.f_nodeicovrange_sub.enable
-	cov.tx_h92.enable
+	cov.tx_h93.enable
 	cov.cx_nodefactordistinct.enable
-	cov.f_nodefactordistinct.enable
-	cov.tx_nodefactordistinct_c.enable
-	cov.f_nodefactordistinct_sub.enable
 END
 
 SCRIPT ty_auto_9
 BEGIN
-	cov.tx_h93.enable
+	cov.f_nodefactordistinct.enable
+	cov.tx_nodefactordistinct_c.enable
+	cov.f_nodefactordistinct_sub.enable
+	cov.tx_h94.enable
 	cov.cx_nodeofactordistinct.enable
 	cov.f_nodeofactordistinct.enable
 	cov.tx_nodeofactordistinct_c.enable
 	cov.f_nodeofactordistinct_sub.enable
-	cov.tx_h94.enable
+	cov.tx_h95.enable
 	cov.cx_nodeifactordistinct.enable
 	cov.f_nodeifactordistinct.enable
 	cov.tx_nodeifactordistinct_c.enable
 	cov.f_nodeifactordistinct_sub.enable
-	cov.tx_h95.enable
+	cov.tx_h96.enable
 	cov.cx_edgecov.enable
 	cov.f_edgecov.enable
-	cov.tx_h96.enable
+	cov.tx_h97.enable
 	cov.cx_dyadcov.enable
 	cov.f_dyadcov.enable
-	cov.tx_h97.enable
+	cov.tx_h98.enable
 	cov.cx_hamming.enable
 	cov.f_hamming.enable
-	cov.tx_h98.enable
+	cov.tx_h99.enable
 	cov.cx_attrcov.enable
 	cov.f_attrcov.enable
 	cov.tx_attrcov_c.enable
 	cov.f_attrcov_sub.enable
-	cov.tx_h99.enable
+	cov.tx_h100.enable
 	two.cx_bcov1.enable
 	two.f_bcov1.enable
-	two.tx_h100.enable
+	two.tx_h101.enable
 	two.cx_bfactor1.enable
 	two.f_bfactor1.enable
-	two.tx_h101.enable
+	two.tx_h102.enable
 	two.cx_bdegree1.enable
 	two.f_bdegree1.enable
 	two.tx_bdegree1_c.enable
 	two.f_bdegree1_sub.enable
-	two.tx_h102.enable
+	two.tx_h103.enable
 	two.cx_bstar1.enable
-	two.f_bstar1.enable
-	two.tx_bstar1_c.enable
-	two.f_bstar1_sub.enable
 END
 
 SCRIPT ty_auto_10
 BEGIN
-	two.tx_h103.enable
+	two.f_bstar1.enable
+	two.tx_bstar1_c.enable
+	two.f_bstar1_sub.enable
+	two.tx_h104.enable
 	two.cx_bnodematch1.enable
 	two.f_bnodematch1.enable
 	two.tx_bnodematch1_c.enable
 	two.f_bnodematch1_sub.enable
-	two.tx_h104.enable
+	two.tx_h105.enable
 	two.cx_bgwdegree1.enable
 	two.f_bgwdegree1.enable
 	two.tx_bgwdegree1_c.enable
 	two.f_bgwdegree1_sub.enable
-	two.tx_h105.enable
+	two.tx_h106.enable
 	two.cx_bconcurrent1.enable
 	two.f_bconcurrent1.enable
-	two.tx_h106.enable
+	two.tx_h107.enable
 	two.cx_bmindegree1.enable
 	two.f_bmindegree1.enable
-	two.tx_h107.enable
+	two.tx_h108.enable
 	two.cx_bdegrange1.enable
 	two.f_bdegrange1.enable
 	two.tx_bdegrange1_c.enable
 	two.f_bdegrange1_sub.enable
-	two.tx_h108.enable
+	two.tx_h109.enable
 	two.cx_bcovrange1.enable
 	two.f_bcovrange1.enable
-	two.tx_h109.enable
+	two.tx_h110.enable
 	two.cx_bfactordistinct1.enable
 	two.f_bfactordistinct1.enable
 	two.tx_bfactordistinct1_c.enable
 	two.f_bfactordistinct1_sub.enable
-	two.tx_h110.enable
+	two.tx_h111.enable
 	two.cx_bsociality1.enable
 	two.f_bsociality1.enable
-	two.tx_h111.enable
+	two.tx_h112.enable
 	two.cx_bstarmix1.enable
 	two.f_bstarmix1.enable
 	two.tx_bstarmix1_c.enable
 	two.f_bstarmix1_sub.enable
-	two.tx_h112.enable
-	two.cx_btwostar1.enable
-	two.f_btwostar1.enable
 END
 
 SCRIPT ty_auto_11
 BEGIN
+	two.tx_h113.enable
+	two.cx_btwostar1.enable
+	two.f_btwostar1.enable
 	two.tx_btwostar1_c.enable
 	two.f_btwostar1_sub.enable
-	two.tx_h113.enable
+	two.tx_h114.enable
 	two.cx_bdsp1.enable
 	two.f_bdsp1.enable
-	two.tx_h114.enable
+	two.tx_h115.enable
 	two.cx_bgwdsp1.enable
 	two.f_bgwdsp1.enable
-	two.tx_h115.enable
+	two.tx_h116.enable
 	two.cx_bcov2.enable
 	two.f_bcov2.enable
-	two.tx_h116.enable
+	two.tx_h117.enable
 	two.cx_bfactor2.enable
 	two.f_bfactor2.enable
-	two.tx_h117.enable
+	two.tx_h118.enable
 	two.cx_bdegree2.enable
 	two.f_bdegree2.enable
 	two.tx_bdegree2_c.enable
 	two.f_bdegree2_sub.enable
-	two.tx_h118.enable
+	two.tx_h119.enable
 	two.cx_bstar2.enable
 	two.f_bstar2.enable
 	two.tx_bstar2_c.enable
 	two.f_bstar2_sub.enable
-	two.tx_h119.enable
+	two.tx_h120.enable
 	two.cx_bnodematch2.enable
 	two.f_bnodematch2.enable
 	two.tx_bnodematch2_c.enable
 	two.f_bnodematch2_sub.enable
-	two.tx_h120.enable
+	two.tx_h121.enable
 	two.cx_bgwdegree2.enable
 	two.f_bgwdegree2.enable
 	two.tx_bgwdegree2_c.enable
 	two.f_bgwdegree2_sub.enable
-	two.tx_h121.enable
+	two.tx_h122.enable
 	two.cx_bconcurrent2.enable
 	two.f_bconcurrent2.enable
-	two.tx_h122.enable
-	two.cx_bmindegree2.enable
-	two.f_bmindegree2.enable
 END
 
 SCRIPT ty_auto_12
 BEGIN
 	two.tx_h123.enable
+	two.cx_bmindegree2.enable
+	two.f_bmindegree2.enable
+	two.tx_h124.enable
 	two.cx_bdegrange2.enable
 	two.f_bdegrange2.enable
 	two.tx_bdegrange2_c.enable
 	two.f_bdegrange2_sub.enable
-	two.tx_h124.enable
+	two.tx_h125.enable
 	two.cx_bcovrange2.enable
 	two.f_bcovrange2.enable
-	two.tx_h125.enable
+	two.tx_h126.enable
 	two.cx_bfactordistinct2.enable
 	two.f_bfactordistinct2.enable
 	two.tx_bfactordistinct2_c.enable
 	two.f_bfactordistinct2_sub.enable
-	two.tx_h126.enable
+	two.tx_h127.enable
 	two.cx_bsociality2.enable
 	two.f_bsociality2.enable
-	two.tx_h127.enable
+	two.tx_h128.enable
 	two.cx_bstarmix2.enable
 	two.f_bstarmix2.enable
 	two.tx_bstarmix2_c.enable
 	two.f_bstarmix2_sub.enable
-	two.tx_h128.enable
+	two.tx_h129.enable
 	two.cx_btwostar2.enable
 	two.f_btwostar2.enable
 	two.tx_btwostar2_c.enable
 	two.f_btwostar2_sub.enable
-	two.tx_h129.enable
+	two.tx_h130.enable
 	two.cx_bdsp2.enable
 	two.f_bdsp2.enable
-	two.tx_h130.enable
+	two.tx_h131.enable
 	two.cx_bgwdsp2.enable
 	two.f_bgwdsp2.enable
-	two.tx_h131.enable
+	two.tx_h132.enable
 	two.cx_coincidence.enable
 	two.f_coincidence.enable
-	two.tx_h132.enable
-	two.cx_bgwdegreefree1.enable
-	two.f_bgwdegreefree1.enable
 	two.tx_h133.enable
-	two.cx_bgwdspfree1.enable
+	two.cx_bgwdegreefree1.enable
 END
 
 SCRIPT ty_auto_13
 BEGIN
-	two.f_bgwdspfree1.enable
+	two.f_bgwdegreefree1.enable
 	two.tx_h134.enable
+	two.cx_bgwdspfree1.enable
+	two.f_bgwdspfree1.enable
+	two.tx_h135.enable
 	two.cx_bgwdegreefree2.enable
 	two.f_bgwdegreefree2.enable
-	two.tx_h135.enable
+	two.tx_h136.enable
 	two.cx_bgwdspfree2.enable
 	two.f_bgwdspfree2.enable
-	two.tx_h136.enable
+	two.tx_h137.enable
 	oper.cx_op_sum.enable
 	oper.tx_op_sum_terms.enable
 	oper.f_op_sum_terms.enable
 	oper.tx_op_sum_label.enable
 	oper.f_op_sum_label.enable
-	oper.tx_h137.enable
+	oper.tx_h138.enable
 	oper.cx_op_prod.enable
 	oper.tx_op_prod_terms.enable
 	oper.f_op_prod_terms.enable
 	oper.tx_op_prod_label.enable
 	oper.f_op_prod_label.enable
-	oper.tx_h138.enable
+	oper.tx_h139.enable
 	oper.cx_op_s.enable
 	oper.tx_op_s_terms.enable
 	oper.f_op_s_terms.enable
 	oper.tx_op_s_attrs.enable
 	oper.f_op_s_attrs.enable
-	oper.tx_h139.enable
+	oper.tx_h140.enable
 	oper.cx_op_f.enable
 	oper.tx_op_f_terms.enable
 	oper.f_op_f_terms.enable
 	oper.tx_op_f_filter.enable
 	oper.f_op_f_filter.enable
-	oper.tx_h140.enable
+	oper.tx_h141.enable
 	oper.cx_op_nmf.enable
 	oper.tx_op_nmf_terms.enable
 	oper.f_op_nmf_terms.enable
 	oper.tx_op_nmf_attrname.enable
 	oper.f_op_nmf_attrname.enable
-	oper.tx_h141.enable
-	oper.cx_op_sym.enable
-	oper.tx_op_sym_terms.enable
 END
 
 SCRIPT ty_auto_14
 BEGIN
+	oper.tx_h142.enable
+	oper.cx_op_sym.enable
+	oper.tx_op_sym_terms.enable
 	oper.f_op_sym_terms.enable
 	oper.tx_op_sym_rule.enable
 	oper.f_op_sym_rule.enable
-	oper.tx_h142.enable
+	oper.tx_h143.enable
 	oper.cx_op_proj.enable
 	oper.tx_op_proj_terms.enable
 	oper.f_op_proj_terms.enable
 	oper.tx_op_proj_mode.enable
 	oper.f_op_proj_mode.enable
-	oper.tx_h143.enable
+	oper.tx_h144.enable
 	oper.cx_op_i.enable
 	oper.tx_op_i_terms.enable
 	oper.f_op_i_terms.enable
-	oper.tx_h144.enable
+	oper.tx_h145.enable
 	oper.cx_op_for.enable
 	oper.tx_op_for_loops.enable
 	oper.f_op_for_loops.enable
 	oper.tx_op_for_terms.enable
 	oper.f_op_for_terms.enable
-	oper.tx_h145.enable
+	oper.tx_h146.enable
 	oper.cx_op_label.enable
 	oper.tx_op_label_terms.enable
 	oper.f_op_label_terms.enable
@@ -2537,16 +2546,16 @@ BEGIN
 	oper.f_op_exp_terms.enable
 	oper.cx_op_curve.enable
 	oper.tx_op_curve_terms.enable
-	oper.f_op_curve_terms.enable
-	oper.tx_op_curve_params.enable
-	oper.f_op_curve_params.enable
 END
 
 SCRIPT ty_auto_15
 BEGIN
+	oper.f_op_curve_terms.enable
+	oper.tx_op_curve_params.enable
+	oper.f_op_curve_params.enable
 	oper.tx_op_curve_map.enable
 	oper.f_op_curve_map.enable
-	oper.tx_h146.enable
+	oper.tx_h147.enable
 	oper.cx_op_offset.enable
 	oper.tx_op_offset_terms.enable
 	oper.f_op_offset_terms.enable
@@ -2554,273 +2563,273 @@ BEGIN
 	oper.f_op_offset_coef.enable
 	oper.tx_op_offset_which.enable
 	oper.f_op_offset_which.enable
-	oper.tx_h147.enable
+	oper.tx_h148.enable
 	oper.tx_operators_extra.enable
 	oper.f_operators_extra.enable
-	oper.tx_h148.enable
+	oper.tx_h149.enable
 	cons.cx_c_edges.enable
 	cons.o_cx_c_edges.enable
-	cons.tx_h149.enable
+	cons.tx_h150.enable
 	cons.cx_c_degrees.enable
 	cons.o_cx_c_degrees.enable
-	cons.tx_h150.enable
+	cons.tx_h151.enable
 	cons.cx_c_odegrees.enable
 	cons.o_cx_c_odegrees.enable
-	cons.tx_h151.enable
+	cons.tx_h152.enable
 	cons.cx_c_idegrees.enable
 	cons.o_cx_c_idegrees.enable
-	cons.tx_h152.enable
+	cons.tx_h153.enable
 	cons.cx_c_b1degrees.enable
 	cons.o_cx_c_b1degrees.enable
-	cons.tx_h153.enable
+	cons.tx_h154.enable
 	cons.cx_c_b2degrees.enable
 	cons.o_cx_c_b2degrees.enable
-	cons.tx_h154.enable
+	cons.tx_h155.enable
 	cons.cx_c_degreedist.enable
 	cons.o_cx_c_degreedist.enable
-	cons.tx_h155.enable
+	cons.tx_h156.enable
 	cons.cx_c_idegreedist.enable
 	cons.o_cx_c_idegreedist.enable
-	cons.tx_h156.enable
-	cons.cx_c_bd.enable
-	cons.f_c_bd.enable
 END
 
 SCRIPT ty_auto_16
 BEGIN
+	cons.tx_h157.enable
+	cons.cx_c_bd.enable
+	cons.f_c_bd.enable
 	cons.o_cx_c_bd.enable
 	cons.o_f_c_bd.enable
-	cons.tx_h157.enable
+	cons.tx_h158.enable
 	cons.cx_c_blocks.enable
 	cons.f_c_blocks.enable
 	cons.o_cx_c_blocks.enable
 	cons.o_f_c_blocks.enable
-	cons.tx_h158.enable
+	cons.tx_h159.enable
 	cons.cx_c_blockdiag.enable
 	cons.f_c_blockdiag.enable
 	cons.o_cx_c_blockdiag.enable
 	cons.o_f_c_blockdiag.enable
-	cons.tx_h159.enable
+	cons.tx_h160.enable
 	cons.cx_c_fixedas.enable
 	cons.f_c_fixedas.enable
 	cons.o_cx_c_fixedas.enable
 	cons.o_f_c_fixedas.enable
-	cons.tx_h160.enable
+	cons.tx_h161.enable
 	cons.cx_c_fixallbut.enable
 	cons.f_c_fixallbut.enable
 	cons.o_cx_c_fixallbut.enable
 	cons.o_f_c_fixallbut.enable
-	cons.tx_h161.enable
+	cons.tx_h162.enable
 	cons.cx_c_observed.enable
 	cons.o_cx_c_observed.enable
-	cons.tx_h162.enable
+	cons.tx_h163.enable
 	cons.cx_c_egocentric.enable
 	cons.f_c_egocentric.enable
 	cons.o_cx_c_egocentric.enable
 	cons.o_f_c_egocentric.enable
-	cons.tx_h163.enable
+	cons.tx_h164.enable
 	cons.cx_c_dyadnoise.enable
 	cons.f_c_dyadnoise.enable
 	cons.o_cx_c_dyadnoise.enable
 	cons.o_f_c_dyadnoise.enable
-	cons.tx_h164.enable
-	cons.tx_constraints_extra.enable
-	cons.f_constraints_extra.enable
 	cons.tx_h165.enable
-	cons.tx_obsconstraints_extra.enable
+	cons.tx_constraints_extra.enable
 END
 
 SCRIPT ty_auto_17
 BEGIN
-	cons.f_obsconstraints_extra.enable
+	cons.f_constraints_extra.enable
 	cons.tx_h166.enable
+	cons.tx_obsconstraints_extra.enable
+	cons.f_obsconstraints_extra.enable
+	cons.tx_h167.enable
 	cons.tx_freedyads.enable
 	cons.f_freedyads.enable
-	cons.tx_h167.enable
+	cons.tx_h168.enable
 	cons.tx_blockdiag.enable
 	cons.f_blockdiag.enable
-	cons.tx_h168.enable
-	cons.f_fixdensity.enable
 	cons.tx_h169.enable
+	cons.f_fixdensity.enable
+	cons.tx_h170.enable
 	cons.tx_mcmcprop.enable
 	cons.f_mcmcprop.enable
-	cons.tx_h170.enable
+	cons.tx_h171.enable
 	cons.tx_mcmcmaxedges.enable
 	cons.f_mcmcmaxedges.enable
-	cons.tx_h171.enable
+	cons.tx_h172.enable
 	est.tx_method.enable
 	est.f_method.enable
-	est.tx_h172.enable
+	est.tx_h173.enable
 	est.tx_estimate.enable
 	est.f_estimate.enable
-	est.tx_h173.enable
+	est.tx_h174.enable
 	est.tx_mainmethod.enable
 	est.f_mainmethod.enable
-	est.tx_h174.enable
+	est.tx_h175.enable
 	est.tx_mpletype.enable
 	est.f_mpletype.enable
-	est.tx_h175.enable
+	est.tx_h176.enable
 	est.tx_mplecheck.enable
 	est.f_mplecheck.enable
-	est.tx_h176.enable
+	est.tx_h177.enable
 	est.tx_mplecovariance.enable
 	est.f_mplecovariance.enable
-	est.tx_h177.enable
+	est.tx_h178.enable
 	est.tx_init.enable
 	est.f_init.enable
-	est.tx_h178.enable
-	est.tx_mcmleiterations.enable
-	est.f_mcmleiterations.enable
 	est.tx_h179.enable
 END
 
 SCRIPT ty_auto_18
 BEGIN
+	est.tx_mcmleiterations.enable
+	est.f_mcmleiterations.enable
+	est.tx_h180.enable
 	est.tx_mcmleconfidence.enable
 	est.f_mcmleconfidence.enable
-	est.tx_h180.enable
+	est.tx_h181.enable
 	est.tx_mcmletermination.enable
 	est.f_mcmletermination.enable
-	est.tx_h181.enable
+	est.tx_h182.enable
 	est.tx_mcmlesteplength.enable
 	est.f_mcmlesteplength.enable
-	est.tx_h182.enable
+	est.tx_h183.enable
 	est.tx_mcmlestepmargin.enable
 	est.f_mcmlestepmargin.enable
-	est.tx_h183.enable
+	est.tx_h184.enable
 	est.tx_mcmleeffectivesize.enable
 	est.f_mcmleeffectivesize.enable
-	est.tx_h184.enable
+	est.tx_h185.enable
 	est.tx_proposal.enable
 	est.f_proposal.enable
-	est.tx_h203.enable
+	est.tx_h204.enable
 	est.tx_cdnsteps.enable
 	est.f_cdnsteps.enable
-	est.tx_h204.enable
+	est.tx_h205.enable
 	est.tx_cdsamplesize.enable
 	est.f_cdsamplesize.enable
-	est.tx_h205.enable
+	est.tx_h206.enable
 	est.tx_saburnin.enable
 	est.f_saburnin.enable
-	est.tx_h206.enable
+	est.tx_h207.enable
 	est.tx_sainterval.enable
 	est.f_sainterval.enable
-	est.tx_h207.enable
+	est.tx_h208.enable
 	est.tx_saphase3.enable
 	est.f_saphase3.enable
-	est.tx_h208.enable
+	est.tx_h209.enable
 	est.tx_sagain.enable
 	est.f_sagain.enable
-	est.tx_h209.enable
-	est.tx_sansub.enable
-	est.f_sansub.enable
 	est.tx_h210.enable
-	est.tx_mcmcburnin.enable
+	est.tx_sansub.enable
 END
 
 SCRIPT ty_auto_19
 BEGIN
-	est.f_mcmcburnin.enable
+	est.f_sansub.enable
 	est.tx_h211.enable
+	est.tx_mcmcburnin.enable
+	est.f_mcmcburnin.enable
+	est.tx_h212.enable
 	est.tx_mcmcinterval.enable
 	est.f_mcmcinterval.enable
-	est.tx_h212.enable
+	est.tx_h213.enable
 	est.tx_mcmcsamplesize.enable
 	est.f_mcmcsamplesize.enable
-	est.tx_h213.enable
+	est.tx_h214.enable
 	est.tx_seed.enable
 	est.f_seed.enable
-	est.tx_h214.enable
-	est.f_spcache.enable
 	est.tx_h215.enable
-	est.f_nonative.enable
+	est.f_spcache.enable
 	est.tx_h216.enable
+	est.f_nonative.enable
+	est.tx_h217.enable
 	est.tx_bridgesteps.enable
 	est.f_bridgesteps.enable
-	est.tx_h217.enable
+	est.tx_h218.enable
 	est.tx_bridgesamplesize.enable
 	est.f_bridgesamplesize.enable
-	est.tx_h218.enable
+	est.tx_h219.enable
 	est.tx_bridgeinterval.enable
 	est.f_bridgeinterval.enable
-	est.tx_h219.enable
-	est.f_nologlik.enable
 	est.tx_h220.enable
-	est.f_nomcmcsample.enable
+	est.f_nologlik.enable
 	est.tx_h221.enable
-	est.f_verbose.enable
+	est.f_nomcmcsample.enable
 	est.tx_h222.enable
+	est.f_verbose.enable
+	est.tx_h223.enable
 	est.tx_offset.enable
 	est.f_offset.enable
-	est.tx_h223.enable
+	est.tx_h224.enable
 	est.tx_coeflabel.enable
 	est.f_coeflabel.enable
-	est.tx_h224.enable
-	est.tx_logstat.enable
-	est.f_logstat.enable
 	est.tx_h225.enable
-	est.tx_expstat.enable
+	est.tx_logstat.enable
 END
 
 SCRIPT ty_auto_20
 BEGIN
-	est.f_expstat.enable
+	est.f_logstat.enable
 	est.tx_h226.enable
+	est.tx_expstat.enable
+	est.f_expstat.enable
+	est.tx_h227.enable
 	bayes.tx_chains.enable
 	bayes.f_chains.enable
-	bayes.tx_h185.enable
+	bayes.tx_h186.enable
 	bayes.tx_burnin.enable
 	bayes.f_burnin.enable
-	bayes.tx_h186.enable
+	bayes.tx_h187.enable
 	bayes.tx_iterations.enable
 	bayes.f_iterations.enable
-	bayes.tx_h187.enable
+	bayes.tx_h188.enable
 	bayes.tx_thin.enable
 	bayes.f_thin.enable
-	bayes.tx_h188.enable
+	bayes.tx_h189.enable
 	bayes.tx_auxiterations.enable
 	bayes.f_auxiterations.enable
-	bayes.tx_h189.enable
+	bayes.tx_h190.enable
 	bayes.tx_gamma.enable
 	bayes.f_gamma.enable
-	bayes.tx_h190.enable
+	bayes.tx_h191.enable
 	bayes.tx_proposalvar.enable
 	bayes.f_proposalvar.enable
-	bayes.tx_h191.enable
+	bayes.tx_h192.enable
 	bayes.tx_targetaccept.enable
 	bayes.f_targetaccept.enable
-	bayes.tx_h192.enable
+	bayes.tx_h193.enable
 	bayes.tx_dainflate.enable
 	bayes.f_dainflate.enable
-	bayes.tx_h193.enable
-	bayes.f_noadapt.enable
 	bayes.tx_h194.enable
-	bayes.f_nodelayed.enable
+	bayes.f_noadapt.enable
 	bayes.tx_h195.enable
+	bayes.f_nodelayed.enable
+	bayes.tx_h196.enable
 	bayes.tx_priormean.enable
 	bayes.f_priormean.enable
-	bayes.tx_h196.enable
-	bayes.tx_priorvar.enable
-	bayes.f_priorvar.enable
 	bayes.tx_h197.enable
-	bayes.tx_priorcov.enable
+	bayes.tx_priorvar.enable
 END
 
 SCRIPT ty_auto_21
 BEGIN
-	bayes.f_priorcov.enable
+	bayes.f_priorvar.enable
 	bayes.tx_h198.enable
+	bayes.tx_priorcov.enable
+	bayes.f_priorcov.enable
+	bayes.tx_h199.enable
 	bayes.tx_priordecay.enable
 	bayes.f_priordecay.enable
-	bayes.tx_h199.enable
+	bayes.tx_h200.enable
 	bayes.tx_startvals.enable
 	bayes.f_startvals.enable
-	bayes.tx_h200.enable
+	bayes.tx_h201.enable
 	bayes.tx_bframe.enable
 	bayes.f_bframe.enable
-	bayes.tx_h201.enable
-	bayes.f_nodraws.enable
 	bayes.tx_h202.enable
+	bayes.f_nodraws.enable
+	bayes.tx_h203.enable
 END
 
 SCRIPT ty_auto
@@ -3041,452 +3050,455 @@ BEGIN
 	tri.tx_type.disable
 	tri.f_type.disable
 	tri.tx_h49.disable
+	tri.tx_gwcutoff.enable
+	tri.f_gwcutoff.enable
+	tri.tx_h50.enable
 	tri.cx_gwesp.enable
 	tri.f_gwesp.enable
-	tri.tx_h50.enable
+	tri.tx_h51.enable
 	tri.cx_gwdsp.enable
 	tri.f_gwdsp.enable
-	tri.tx_h51.enable
+	tri.tx_h52.enable
 	tri.cx_gwnsp.enable
 	tri.f_gwnsp.enable
-	tri.tx_h52.enable
+	tri.tx_h53.enable
 	tri.cx_gwespfree.enable
 	tri.f_gwespfree.enable
-	tri.tx_h53.enable
+	tri.tx_h54.enable
 	tri.cx_gwdspfree.enable
 	tri.f_gwdspfree.enable
-	tri.tx_h54.enable
+	tri.tx_h55.enable
 	tri.cx_gwnspfree.enable
 	tri.f_gwnspfree.enable
-	tri.tx_h55.enable
+	tri.tx_h56.enable
 	tri.cx_s_triangle.enable
 	tri.tx_s_triangle_attr.enable
 	tri.f_s_triangle_attr.enable
 	tri.f_s_triangle_diff.enable
-	tri.tx_h56.enable
-	tri.cx_transitive.disable
-	tri.tx_h57.disable
-	tri.cx_intransitive.disable
+	tri.tx_h57.enable
 END
 
 SCRIPT ty_u_5
 BEGIN
+	tri.cx_transitive.disable
 	tri.tx_h58.disable
+	tri.cx_intransitive.disable
+	tri.tx_h59.disable
 	tri.cx_ttriple.disable
 	tri.tx_ttriple_attr.disable
 	tri.f_ttriple_attr.disable
 	tri.f_ttriple_diff.disable
-	tri.tx_h59.disable
+	tri.tx_h60.disable
 	tri.cx_s_ctriple.disable
 	tri.tx_s_ctriple_attr.disable
 	tri.f_s_ctriple_attr.disable
 	tri.f_s_ctriple_diff.disable
-	tri.tx_h60.disable
+	tri.tx_h61.disable
 	tri.cx_cycle.enable
 	tri.tx_cycle_k.enable
 	tri.f_cycle_k.enable
 	tri.f_cycle_semi.enable
-	tri.tx_h61.enable
+	tri.tx_h62.enable
 	tri.cx_threetrail.enable
 	tri.tx_threetrail_keep.enable
 	tri.f_threetrail_keep.enable
-	tri.tx_h62.enable
-	tri.cx_balance.enable
 	tri.tx_h63.enable
+	tri.cx_balance.enable
+	tri.tx_h64.enable
 	tri.cx_triadcensus.enable
 	tri.tx_triadcensus_levels.enable
 	tri.f_triadcensus_levels.enable
-	tri.tx_h64.enable
+	tri.tx_h65.enable
 	tri.cx_tripercent.enable
 	tri.tx_tripercent_attr.enable
 	tri.f_tripercent_attr.enable
 	tri.f_tripercent_diff.enable
-	tri.tx_h65.enable
+	tri.tx_h66.enable
 	tri.cx_nearsimmelian.disable
-	tri.tx_h66.disable
-	tri.cx_simmelian.disable
 	tri.tx_h67.disable
-	tri.cx_simmelianties.disable
+	tri.cx_simmelian.disable
 	tri.tx_h68.disable
-	tri.cx_asymmetric.disable
-	tri.tx_asymmetric_attr.disable
-	tri.f_asymmetric_attr.disable
+	tri.cx_simmelianties.disable
+	tri.tx_h69.disable
 END
 
 SCRIPT ty_u_6
 BEGIN
+	tri.cx_asymmetric.disable
+	tri.tx_asymmetric_attr.disable
+	tri.f_asymmetric_attr.disable
 	tri.f_asymmetric_diff.disable
-	tri.tx_h69.disable
+	tri.tx_h70.disable
 	tri.cx_s_mutual.disable
 	tri.tx_s_mutual_same.disable
 	tri.f_s_mutual_same.disable
 	tri.f_s_mutual_diff.disable
 	tri.tx_s_mutual_by.disable
 	tri.f_s_mutual_by.disable
-	tri.tx_h70.disable
+	tri.tx_h71.disable
 	tri.cx_localtriangle.enable
 	tri.tx_localtriangle_x.enable
 	tri.f_localtriangle_x.enable
-	tri.tx_h71.enable
-	tri.cx_opentriad.enable
 	tri.tx_h72.enable
+	tri.cx_opentriad.enable
+	tri.tx_h73.enable
 	tri.cx_nsp.enable
 	tri.tx_nsp_d.enable
 	tri.f_nsp_d.enable
 	tri.tx_nsp_type.enable
 	tri.f_nsp_type.enable
-	tri.tx_h73.enable
+	tri.tx_h74.enable
 	tri.cx_s_altkstar.enable
 	tri.tx_s_altkstar_lambda.enable
 	tri.f_s_altkstar_lambda.enable
 	tri.f_s_altkstar_fixed.enable
-	tri.tx_h74.enable
+	tri.tx_h75.enable
 	cov.cx_nodecov.enable
 	cov.f_nodecov.enable
 	cov.tx_nodecov_c.enable
 	cov.f_nodecov_sub.enable
-	cov.tx_h75.enable
+	cov.tx_h76.enable
 	cov.cx_nodeicov.disable
 	cov.f_nodeicov.disable
 	cov.tx_nodeicov_c.disable
 	cov.f_nodeicov_sub.disable
-	cov.tx_h76.disable
+	cov.tx_h77.disable
 	cov.cx_nodeocov.disable
-	cov.f_nodeocov.disable
-	cov.tx_nodeocov_c.disable
-	cov.f_nodeocov_sub.disable
 END
 
 SCRIPT ty_u_7
 BEGIN
-	cov.tx_h77.disable
+	cov.f_nodeocov.disable
+	cov.tx_nodeocov_c.disable
+	cov.f_nodeocov_sub.disable
+	cov.tx_h78.disable
 	cov.cx_nodefactor.enable
 	cov.f_nodefactor.enable
 	cov.tx_nodefactor_c.enable
 	cov.f_nodefactor_sub.enable
-	cov.tx_h78.enable
+	cov.tx_h79.enable
 	cov.cx_nodeofactor.disable
 	cov.f_nodeofactor.disable
 	cov.tx_nodeofactor_c.disable
 	cov.f_nodeofactor_sub.disable
-	cov.tx_h79.disable
+	cov.tx_h80.disable
 	cov.cx_nodeifactor.disable
 	cov.f_nodeifactor.disable
 	cov.tx_nodeifactor_c.disable
 	cov.f_nodeifactor_sub.disable
-	cov.tx_h80.disable
+	cov.tx_h81.disable
 	cov.cx_nodematch.enable
 	cov.f_nodematch.enable
 	cov.tx_nodematch_c.enable
 	cov.f_nodematch_sub.enable
-	cov.tx_h81.enable
+	cov.tx_h82.enable
 	cov.cx_nodematchdiff.enable
 	cov.f_nodematchdiff.enable
 	cov.tx_nodematchdiff_c.enable
 	cov.f_nodematchdiff_sub.enable
-	cov.tx_h82.enable
+	cov.tx_h83.enable
 	cov.cx_nodemix.enable
 	cov.f_nodemix.enable
 	cov.tx_nodemix_c.enable
 	cov.f_nodemix_sub.enable
-	cov.tx_h83.enable
+	cov.tx_h84.enable
 	cov.cx_mm.enable
 	cov.f_mm.enable
 	cov.tx_mm_c.enable
 	cov.f_mm_sub.enable
-	cov.tx_h84.enable
+	cov.tx_h85.enable
 	cov.cx_absdist.enable
-	cov.f_absdist.enable
-	cov.tx_absdist_c.enable
-	cov.f_absdist_sub.enable
 END
 
 SCRIPT ty_u_8
 BEGIN
-	cov.tx_h85.enable
+	cov.f_absdist.enable
+	cov.tx_absdist_c.enable
+	cov.f_absdist_sub.enable
+	cov.tx_h86.enable
 	cov.cx_absdiffcat.enable
 	cov.f_absdiffcat.enable
 	cov.tx_absdiffcat_c.enable
 	cov.f_absdiffcat_sub.enable
-	cov.tx_h86.enable
+	cov.tx_h87.enable
 	cov.cx_diff.enable
 	cov.f_diff.enable
 	cov.tx_diff_c.enable
 	cov.f_diff_sub.enable
-	cov.tx_h87.enable
+	cov.tx_h88.enable
 	cov.cx_smalldiff.enable
 	cov.f_smalldiff.enable
 	cov.tx_smalldiff_c.enable
 	cov.f_smalldiff_sub.enable
-	cov.tx_h88.enable
+	cov.tx_h89.enable
 	cov.cx_sociality.enable
 	cov.f_sociality.enable
 	cov.tx_sociality_c.enable
 	cov.f_sociality_sub.enable
-	cov.tx_h89.enable
+	cov.tx_h90.enable
 	cov.cx_nodecovrange.enable
 	cov.f_nodecovrange.enable
 	cov.tx_nodecovrange_c.enable
 	cov.f_nodecovrange_sub.enable
-	cov.tx_h90.enable
+	cov.tx_h91.enable
 	cov.cx_nodeocovrange.disable
 	cov.f_nodeocovrange.disable
 	cov.tx_nodeocovrange_c.disable
 	cov.f_nodeocovrange_sub.disable
-	cov.tx_h91.disable
+	cov.tx_h92.disable
 	cov.cx_nodeicovrange.disable
 	cov.f_nodeicovrange.disable
 	cov.tx_nodeicovrange_c.disable
 	cov.f_nodeicovrange_sub.disable
-	cov.tx_h92.disable
+	cov.tx_h93.disable
 	cov.cx_nodefactordistinct.enable
-	cov.f_nodefactordistinct.enable
-	cov.tx_nodefactordistinct_c.enable
-	cov.f_nodefactordistinct_sub.enable
 END
 
 SCRIPT ty_u_9
 BEGIN
-	cov.tx_h93.enable
+	cov.f_nodefactordistinct.enable
+	cov.tx_nodefactordistinct_c.enable
+	cov.f_nodefactordistinct_sub.enable
+	cov.tx_h94.enable
 	cov.cx_nodeofactordistinct.disable
 	cov.f_nodeofactordistinct.disable
 	cov.tx_nodeofactordistinct_c.disable
 	cov.f_nodeofactordistinct_sub.disable
-	cov.tx_h94.disable
+	cov.tx_h95.disable
 	cov.cx_nodeifactordistinct.disable
 	cov.f_nodeifactordistinct.disable
 	cov.tx_nodeifactordistinct_c.disable
 	cov.f_nodeifactordistinct_sub.disable
-	cov.tx_h95.disable
+	cov.tx_h96.disable
 	cov.cx_edgecov.enable
 	cov.f_edgecov.enable
-	cov.tx_h96.enable
+	cov.tx_h97.enable
 	cov.cx_dyadcov.enable
 	cov.f_dyadcov.enable
-	cov.tx_h97.enable
+	cov.tx_h98.enable
 	cov.cx_hamming.enable
 	cov.f_hamming.enable
-	cov.tx_h98.enable
+	cov.tx_h99.enable
 	cov.cx_attrcov.enable
 	cov.f_attrcov.enable
 	cov.tx_attrcov_c.enable
 	cov.f_attrcov_sub.enable
-	cov.tx_h99.enable
+	cov.tx_h100.enable
 	two.cx_bcov1.disable
 	two.f_bcov1.disable
-	two.tx_h100.disable
+	two.tx_h101.disable
 	two.cx_bfactor1.disable
 	two.f_bfactor1.disable
-	two.tx_h101.disable
+	two.tx_h102.disable
 	two.cx_bdegree1.disable
 	two.f_bdegree1.disable
 	two.tx_bdegree1_c.disable
 	two.f_bdegree1_sub.disable
-	two.tx_h102.disable
+	two.tx_h103.disable
 	two.cx_bstar1.disable
-	two.f_bstar1.disable
-	two.tx_bstar1_c.disable
-	two.f_bstar1_sub.disable
 END
 
 SCRIPT ty_u_10
 BEGIN
-	two.tx_h103.disable
+	two.f_bstar1.disable
+	two.tx_bstar1_c.disable
+	two.f_bstar1_sub.disable
+	two.tx_h104.disable
 	two.cx_bnodematch1.disable
 	two.f_bnodematch1.disable
 	two.tx_bnodematch1_c.disable
 	two.f_bnodematch1_sub.disable
-	two.tx_h104.disable
+	two.tx_h105.disable
 	two.cx_bgwdegree1.disable
 	two.f_bgwdegree1.disable
 	two.tx_bgwdegree1_c.disable
 	two.f_bgwdegree1_sub.disable
-	two.tx_h105.disable
+	two.tx_h106.disable
 	two.cx_bconcurrent1.disable
 	two.f_bconcurrent1.disable
-	two.tx_h106.disable
+	two.tx_h107.disable
 	two.cx_bmindegree1.disable
 	two.f_bmindegree1.disable
-	two.tx_h107.disable
+	two.tx_h108.disable
 	two.cx_bdegrange1.disable
 	two.f_bdegrange1.disable
 	two.tx_bdegrange1_c.disable
 	two.f_bdegrange1_sub.disable
-	two.tx_h108.disable
+	two.tx_h109.disable
 	two.cx_bcovrange1.disable
 	two.f_bcovrange1.disable
-	two.tx_h109.disable
+	two.tx_h110.disable
 	two.cx_bfactordistinct1.disable
 	two.f_bfactordistinct1.disable
 	two.tx_bfactordistinct1_c.disable
 	two.f_bfactordistinct1_sub.disable
-	two.tx_h110.disable
+	two.tx_h111.disable
 	two.cx_bsociality1.disable
 	two.f_bsociality1.disable
-	two.tx_h111.disable
+	two.tx_h112.disable
 	two.cx_bstarmix1.disable
 	two.f_bstarmix1.disable
 	two.tx_bstarmix1_c.disable
 	two.f_bstarmix1_sub.disable
-	two.tx_h112.disable
-	two.cx_btwostar1.disable
-	two.f_btwostar1.disable
 END
 
 SCRIPT ty_u_11
 BEGIN
+	two.tx_h113.disable
+	two.cx_btwostar1.disable
+	two.f_btwostar1.disable
 	two.tx_btwostar1_c.disable
 	two.f_btwostar1_sub.disable
-	two.tx_h113.disable
+	two.tx_h114.disable
 	two.cx_bdsp1.disable
 	two.f_bdsp1.disable
-	two.tx_h114.disable
+	two.tx_h115.disable
 	two.cx_bgwdsp1.disable
 	two.f_bgwdsp1.disable
-	two.tx_h115.disable
+	two.tx_h116.disable
 	two.cx_bcov2.disable
 	two.f_bcov2.disable
-	two.tx_h116.disable
+	two.tx_h117.disable
 	two.cx_bfactor2.disable
 	two.f_bfactor2.disable
-	two.tx_h117.disable
+	two.tx_h118.disable
 	two.cx_bdegree2.disable
 	two.f_bdegree2.disable
 	two.tx_bdegree2_c.disable
 	two.f_bdegree2_sub.disable
-	two.tx_h118.disable
+	two.tx_h119.disable
 	two.cx_bstar2.disable
 	two.f_bstar2.disable
 	two.tx_bstar2_c.disable
 	two.f_bstar2_sub.disable
-	two.tx_h119.disable
+	two.tx_h120.disable
 	two.cx_bnodematch2.disable
 	two.f_bnodematch2.disable
 	two.tx_bnodematch2_c.disable
 	two.f_bnodematch2_sub.disable
-	two.tx_h120.disable
+	two.tx_h121.disable
 	two.cx_bgwdegree2.disable
 	two.f_bgwdegree2.disable
 	two.tx_bgwdegree2_c.disable
 	two.f_bgwdegree2_sub.disable
-	two.tx_h121.disable
+	two.tx_h122.disable
 	two.cx_bconcurrent2.disable
 	two.f_bconcurrent2.disable
-	two.tx_h122.disable
-	two.cx_bmindegree2.disable
-	two.f_bmindegree2.disable
 END
 
 SCRIPT ty_u_12
 BEGIN
 	two.tx_h123.disable
+	two.cx_bmindegree2.disable
+	two.f_bmindegree2.disable
+	two.tx_h124.disable
 	two.cx_bdegrange2.disable
 	two.f_bdegrange2.disable
 	two.tx_bdegrange2_c.disable
 	two.f_bdegrange2_sub.disable
-	two.tx_h124.disable
+	two.tx_h125.disable
 	two.cx_bcovrange2.disable
 	two.f_bcovrange2.disable
-	two.tx_h125.disable
+	two.tx_h126.disable
 	two.cx_bfactordistinct2.disable
 	two.f_bfactordistinct2.disable
 	two.tx_bfactordistinct2_c.disable
 	two.f_bfactordistinct2_sub.disable
-	two.tx_h126.disable
+	two.tx_h127.disable
 	two.cx_bsociality2.disable
 	two.f_bsociality2.disable
-	two.tx_h127.disable
+	two.tx_h128.disable
 	two.cx_bstarmix2.disable
 	two.f_bstarmix2.disable
 	two.tx_bstarmix2_c.disable
 	two.f_bstarmix2_sub.disable
-	two.tx_h128.disable
+	two.tx_h129.disable
 	two.cx_btwostar2.disable
 	two.f_btwostar2.disable
 	two.tx_btwostar2_c.disable
 	two.f_btwostar2_sub.disable
-	two.tx_h129.disable
+	two.tx_h130.disable
 	two.cx_bdsp2.disable
 	two.f_bdsp2.disable
-	two.tx_h130.disable
+	two.tx_h131.disable
 	two.cx_bgwdsp2.disable
 	two.f_bgwdsp2.disable
-	two.tx_h131.disable
+	two.tx_h132.disable
 	two.cx_coincidence.disable
 	two.f_coincidence.disable
-	two.tx_h132.disable
-	two.cx_bgwdegreefree1.disable
-	two.f_bgwdegreefree1.disable
 	two.tx_h133.disable
-	two.cx_bgwdspfree1.disable
+	two.cx_bgwdegreefree1.disable
 END
 
 SCRIPT ty_u_13
 BEGIN
-	two.f_bgwdspfree1.disable
+	two.f_bgwdegreefree1.disable
 	two.tx_h134.disable
+	two.cx_bgwdspfree1.disable
+	two.f_bgwdspfree1.disable
+	two.tx_h135.disable
 	two.cx_bgwdegreefree2.disable
 	two.f_bgwdegreefree2.disable
-	two.tx_h135.disable
+	two.tx_h136.disable
 	two.cx_bgwdspfree2.disable
 	two.f_bgwdspfree2.disable
-	two.tx_h136.disable
+	two.tx_h137.disable
 	oper.cx_op_sum.enable
 	oper.tx_op_sum_terms.enable
 	oper.f_op_sum_terms.enable
 	oper.tx_op_sum_label.enable
 	oper.f_op_sum_label.enable
-	oper.tx_h137.enable
+	oper.tx_h138.enable
 	oper.cx_op_prod.enable
 	oper.tx_op_prod_terms.enable
 	oper.f_op_prod_terms.enable
 	oper.tx_op_prod_label.enable
 	oper.f_op_prod_label.enable
-	oper.tx_h138.enable
+	oper.tx_h139.enable
 	oper.cx_op_s.enable
 	oper.tx_op_s_terms.enable
 	oper.f_op_s_terms.enable
 	oper.tx_op_s_attrs.enable
 	oper.f_op_s_attrs.enable
-	oper.tx_h139.enable
+	oper.tx_h140.enable
 	oper.cx_op_f.enable
 	oper.tx_op_f_terms.enable
 	oper.f_op_f_terms.enable
 	oper.tx_op_f_filter.enable
 	oper.f_op_f_filter.enable
-	oper.tx_h140.enable
+	oper.tx_h141.enable
 	oper.cx_op_nmf.enable
 	oper.tx_op_nmf_terms.enable
 	oper.f_op_nmf_terms.enable
 	oper.tx_op_nmf_attrname.enable
 	oper.f_op_nmf_attrname.enable
-	oper.tx_h141.enable
-	oper.cx_op_sym.disable
-	oper.tx_op_sym_terms.disable
 END
 
 SCRIPT ty_u_14
 BEGIN
+	oper.tx_h142.enable
+	oper.cx_op_sym.disable
+	oper.tx_op_sym_terms.disable
 	oper.f_op_sym_terms.disable
 	oper.tx_op_sym_rule.disable
 	oper.f_op_sym_rule.disable
-	oper.tx_h142.disable
+	oper.tx_h143.disable
 	oper.cx_op_proj.disable
 	oper.tx_op_proj_terms.disable
 	oper.f_op_proj_terms.disable
 	oper.tx_op_proj_mode.disable
 	oper.f_op_proj_mode.disable
-	oper.tx_h143.disable
+	oper.tx_h144.disable
 	oper.cx_op_i.enable
 	oper.tx_op_i_terms.enable
 	oper.f_op_i_terms.enable
-	oper.tx_h144.enable
+	oper.tx_h145.enable
 	oper.cx_op_for.enable
 	oper.tx_op_for_loops.enable
 	oper.f_op_for_loops.enable
 	oper.tx_op_for_terms.enable
 	oper.f_op_for_terms.enable
-	oper.tx_h145.enable
+	oper.tx_h146.enable
 	oper.cx_op_label.enable
 	oper.tx_op_label_terms.enable
 	oper.f_op_label_terms.enable
@@ -3504,16 +3516,16 @@ BEGIN
 	oper.f_op_exp_terms.enable
 	oper.cx_op_curve.enable
 	oper.tx_op_curve_terms.enable
-	oper.f_op_curve_terms.enable
-	oper.tx_op_curve_params.enable
-	oper.f_op_curve_params.enable
 END
 
 SCRIPT ty_u_15
 BEGIN
+	oper.f_op_curve_terms.enable
+	oper.tx_op_curve_params.enable
+	oper.f_op_curve_params.enable
 	oper.tx_op_curve_map.enable
 	oper.f_op_curve_map.enable
-	oper.tx_h146.enable
+	oper.tx_h147.enable
 	oper.cx_op_offset.enable
 	oper.tx_op_offset_terms.enable
 	oper.f_op_offset_terms.enable
@@ -3521,273 +3533,273 @@ BEGIN
 	oper.f_op_offset_coef.enable
 	oper.tx_op_offset_which.enable
 	oper.f_op_offset_which.enable
-	oper.tx_h147.enable
+	oper.tx_h148.enable
 	oper.tx_operators_extra.enable
 	oper.f_operators_extra.enable
-	oper.tx_h148.enable
+	oper.tx_h149.enable
 	cons.cx_c_edges.enable
 	cons.o_cx_c_edges.enable
-	cons.tx_h149.enable
+	cons.tx_h150.enable
 	cons.cx_c_degrees.enable
 	cons.o_cx_c_degrees.enable
-	cons.tx_h150.enable
+	cons.tx_h151.enable
 	cons.cx_c_odegrees.disable
 	cons.o_cx_c_odegrees.disable
-	cons.tx_h151.disable
+	cons.tx_h152.disable
 	cons.cx_c_idegrees.disable
 	cons.o_cx_c_idegrees.disable
-	cons.tx_h152.disable
+	cons.tx_h153.disable
 	cons.cx_c_b1degrees.disable
 	cons.o_cx_c_b1degrees.disable
-	cons.tx_h153.disable
+	cons.tx_h154.disable
 	cons.cx_c_b2degrees.disable
 	cons.o_cx_c_b2degrees.disable
-	cons.tx_h154.disable
+	cons.tx_h155.disable
 	cons.cx_c_degreedist.enable
 	cons.o_cx_c_degreedist.enable
-	cons.tx_h155.enable
+	cons.tx_h156.enable
 	cons.cx_c_idegreedist.disable
 	cons.o_cx_c_idegreedist.disable
-	cons.tx_h156.disable
-	cons.cx_c_bd.enable
-	cons.f_c_bd.enable
 END
 
 SCRIPT ty_u_16
 BEGIN
+	cons.tx_h157.disable
+	cons.cx_c_bd.enable
+	cons.f_c_bd.enable
 	cons.o_cx_c_bd.enable
 	cons.o_f_c_bd.enable
-	cons.tx_h157.enable
+	cons.tx_h158.enable
 	cons.cx_c_blocks.enable
 	cons.f_c_blocks.enable
 	cons.o_cx_c_blocks.enable
 	cons.o_f_c_blocks.enable
-	cons.tx_h158.enable
+	cons.tx_h159.enable
 	cons.cx_c_blockdiag.enable
 	cons.f_c_blockdiag.enable
 	cons.o_cx_c_blockdiag.enable
 	cons.o_f_c_blockdiag.enable
-	cons.tx_h159.enable
+	cons.tx_h160.enable
 	cons.cx_c_fixedas.enable
 	cons.f_c_fixedas.enable
 	cons.o_cx_c_fixedas.enable
 	cons.o_f_c_fixedas.enable
-	cons.tx_h160.enable
+	cons.tx_h161.enable
 	cons.cx_c_fixallbut.enable
 	cons.f_c_fixallbut.enable
 	cons.o_cx_c_fixallbut.enable
 	cons.o_f_c_fixallbut.enable
-	cons.tx_h161.enable
+	cons.tx_h162.enable
 	cons.cx_c_observed.enable
 	cons.o_cx_c_observed.enable
-	cons.tx_h162.enable
+	cons.tx_h163.enable
 	cons.cx_c_egocentric.enable
 	cons.f_c_egocentric.enable
 	cons.o_cx_c_egocentric.enable
 	cons.o_f_c_egocentric.enable
-	cons.tx_h163.enable
+	cons.tx_h164.enable
 	cons.cx_c_dyadnoise.enable
 	cons.f_c_dyadnoise.enable
 	cons.o_cx_c_dyadnoise.enable
 	cons.o_f_c_dyadnoise.enable
-	cons.tx_h164.enable
-	cons.tx_constraints_extra.enable
-	cons.f_constraints_extra.enable
 	cons.tx_h165.enable
-	cons.tx_obsconstraints_extra.enable
+	cons.tx_constraints_extra.enable
 END
 
 SCRIPT ty_u_17
 BEGIN
-	cons.f_obsconstraints_extra.enable
+	cons.f_constraints_extra.enable
 	cons.tx_h166.enable
+	cons.tx_obsconstraints_extra.enable
+	cons.f_obsconstraints_extra.enable
+	cons.tx_h167.enable
 	cons.tx_freedyads.enable
 	cons.f_freedyads.enable
-	cons.tx_h167.enable
+	cons.tx_h168.enable
 	cons.tx_blockdiag.enable
 	cons.f_blockdiag.enable
-	cons.tx_h168.enable
-	cons.f_fixdensity.enable
 	cons.tx_h169.enable
+	cons.f_fixdensity.enable
+	cons.tx_h170.enable
 	cons.tx_mcmcprop.enable
 	cons.f_mcmcprop.enable
-	cons.tx_h170.enable
+	cons.tx_h171.enable
 	cons.tx_mcmcmaxedges.enable
 	cons.f_mcmcmaxedges.enable
-	cons.tx_h171.enable
+	cons.tx_h172.enable
 	est.tx_method.enable
 	est.f_method.enable
-	est.tx_h172.enable
+	est.tx_h173.enable
 	est.tx_estimate.enable
 	est.f_estimate.enable
-	est.tx_h173.enable
+	est.tx_h174.enable
 	est.tx_mainmethod.enable
 	est.f_mainmethod.enable
-	est.tx_h174.enable
+	est.tx_h175.enable
 	est.tx_mpletype.enable
 	est.f_mpletype.enable
-	est.tx_h175.enable
+	est.tx_h176.enable
 	est.tx_mplecheck.enable
 	est.f_mplecheck.enable
-	est.tx_h176.enable
+	est.tx_h177.enable
 	est.tx_mplecovariance.enable
 	est.f_mplecovariance.enable
-	est.tx_h177.enable
+	est.tx_h178.enable
 	est.tx_init.enable
 	est.f_init.enable
-	est.tx_h178.enable
-	est.tx_mcmleiterations.enable
-	est.f_mcmleiterations.enable
 	est.tx_h179.enable
 END
 
 SCRIPT ty_u_18
 BEGIN
+	est.tx_mcmleiterations.enable
+	est.f_mcmleiterations.enable
+	est.tx_h180.enable
 	est.tx_mcmleconfidence.enable
 	est.f_mcmleconfidence.enable
-	est.tx_h180.enable
+	est.tx_h181.enable
 	est.tx_mcmletermination.enable
 	est.f_mcmletermination.enable
-	est.tx_h181.enable
+	est.tx_h182.enable
 	est.tx_mcmlesteplength.enable
 	est.f_mcmlesteplength.enable
-	est.tx_h182.enable
+	est.tx_h183.enable
 	est.tx_mcmlestepmargin.enable
 	est.f_mcmlestepmargin.enable
-	est.tx_h183.enable
+	est.tx_h184.enable
 	est.tx_mcmleeffectivesize.enable
 	est.f_mcmleeffectivesize.enable
-	est.tx_h184.enable
+	est.tx_h185.enable
 	est.tx_proposal.enable
 	est.f_proposal.enable
-	est.tx_h203.enable
+	est.tx_h204.enable
 	est.tx_cdnsteps.enable
 	est.f_cdnsteps.enable
-	est.tx_h204.enable
+	est.tx_h205.enable
 	est.tx_cdsamplesize.enable
 	est.f_cdsamplesize.enable
-	est.tx_h205.enable
+	est.tx_h206.enable
 	est.tx_saburnin.enable
 	est.f_saburnin.enable
-	est.tx_h206.enable
+	est.tx_h207.enable
 	est.tx_sainterval.enable
 	est.f_sainterval.enable
-	est.tx_h207.enable
+	est.tx_h208.enable
 	est.tx_saphase3.enable
 	est.f_saphase3.enable
-	est.tx_h208.enable
+	est.tx_h209.enable
 	est.tx_sagain.enable
 	est.f_sagain.enable
-	est.tx_h209.enable
-	est.tx_sansub.enable
-	est.f_sansub.enable
 	est.tx_h210.enable
-	est.tx_mcmcburnin.enable
+	est.tx_sansub.enable
 END
 
 SCRIPT ty_u_19
 BEGIN
-	est.f_mcmcburnin.enable
+	est.f_sansub.enable
 	est.tx_h211.enable
+	est.tx_mcmcburnin.enable
+	est.f_mcmcburnin.enable
+	est.tx_h212.enable
 	est.tx_mcmcinterval.enable
 	est.f_mcmcinterval.enable
-	est.tx_h212.enable
+	est.tx_h213.enable
 	est.tx_mcmcsamplesize.enable
 	est.f_mcmcsamplesize.enable
-	est.tx_h213.enable
+	est.tx_h214.enable
 	est.tx_seed.enable
 	est.f_seed.enable
-	est.tx_h214.enable
-	est.f_spcache.enable
 	est.tx_h215.enable
-	est.f_nonative.enable
+	est.f_spcache.enable
 	est.tx_h216.enable
+	est.f_nonative.enable
+	est.tx_h217.enable
 	est.tx_bridgesteps.enable
 	est.f_bridgesteps.enable
-	est.tx_h217.enable
+	est.tx_h218.enable
 	est.tx_bridgesamplesize.enable
 	est.f_bridgesamplesize.enable
-	est.tx_h218.enable
+	est.tx_h219.enable
 	est.tx_bridgeinterval.enable
 	est.f_bridgeinterval.enable
-	est.tx_h219.enable
-	est.f_nologlik.enable
 	est.tx_h220.enable
-	est.f_nomcmcsample.enable
+	est.f_nologlik.enable
 	est.tx_h221.enable
-	est.f_verbose.enable
+	est.f_nomcmcsample.enable
 	est.tx_h222.enable
+	est.f_verbose.enable
+	est.tx_h223.enable
 	est.tx_offset.enable
 	est.f_offset.enable
-	est.tx_h223.enable
+	est.tx_h224.enable
 	est.tx_coeflabel.enable
 	est.f_coeflabel.enable
-	est.tx_h224.enable
-	est.tx_logstat.enable
-	est.f_logstat.enable
 	est.tx_h225.enable
-	est.tx_expstat.enable
+	est.tx_logstat.enable
 END
 
 SCRIPT ty_u_20
 BEGIN
-	est.f_expstat.enable
+	est.f_logstat.enable
 	est.tx_h226.enable
+	est.tx_expstat.enable
+	est.f_expstat.enable
+	est.tx_h227.enable
 	bayes.tx_chains.enable
 	bayes.f_chains.enable
-	bayes.tx_h185.enable
+	bayes.tx_h186.enable
 	bayes.tx_burnin.enable
 	bayes.f_burnin.enable
-	bayes.tx_h186.enable
+	bayes.tx_h187.enable
 	bayes.tx_iterations.enable
 	bayes.f_iterations.enable
-	bayes.tx_h187.enable
+	bayes.tx_h188.enable
 	bayes.tx_thin.enable
 	bayes.f_thin.enable
-	bayes.tx_h188.enable
+	bayes.tx_h189.enable
 	bayes.tx_auxiterations.enable
 	bayes.f_auxiterations.enable
-	bayes.tx_h189.enable
+	bayes.tx_h190.enable
 	bayes.tx_gamma.enable
 	bayes.f_gamma.enable
-	bayes.tx_h190.enable
+	bayes.tx_h191.enable
 	bayes.tx_proposalvar.enable
 	bayes.f_proposalvar.enable
-	bayes.tx_h191.enable
+	bayes.tx_h192.enable
 	bayes.tx_targetaccept.enable
 	bayes.f_targetaccept.enable
-	bayes.tx_h192.enable
+	bayes.tx_h193.enable
 	bayes.tx_dainflate.enable
 	bayes.f_dainflate.enable
-	bayes.tx_h193.enable
-	bayes.f_noadapt.enable
 	bayes.tx_h194.enable
-	bayes.f_nodelayed.enable
+	bayes.f_noadapt.enable
 	bayes.tx_h195.enable
+	bayes.f_nodelayed.enable
+	bayes.tx_h196.enable
 	bayes.tx_priormean.enable
 	bayes.f_priormean.enable
-	bayes.tx_h196.enable
-	bayes.tx_priorvar.enable
-	bayes.f_priorvar.enable
 	bayes.tx_h197.enable
-	bayes.tx_priorcov.enable
+	bayes.tx_priorvar.enable
 END
 
 SCRIPT ty_u_21
 BEGIN
-	bayes.f_priorcov.enable
+	bayes.f_priorvar.enable
 	bayes.tx_h198.enable
+	bayes.tx_priorcov.enable
+	bayes.f_priorcov.enable
+	bayes.tx_h199.enable
 	bayes.tx_priordecay.enable
 	bayes.f_priordecay.enable
-	bayes.tx_h199.enable
+	bayes.tx_h200.enable
 	bayes.tx_startvals.enable
 	bayes.f_startvals.enable
-	bayes.tx_h200.enable
+	bayes.tx_h201.enable
 	bayes.tx_bframe.enable
 	bayes.f_bframe.enable
-	bayes.tx_h201.enable
-	bayes.f_nodraws.enable
 	bayes.tx_h202.enable
+	bayes.f_nodraws.enable
+	bayes.tx_h203.enable
 END
 
 SCRIPT ty_u
@@ -4008,452 +4020,455 @@ BEGIN
 	tri.tx_type.enable
 	tri.f_type.enable
 	tri.tx_h49.enable
+	tri.tx_gwcutoff.enable
+	tri.f_gwcutoff.enable
+	tri.tx_h50.enable
 	tri.cx_gwesp.enable
 	tri.f_gwesp.enable
-	tri.tx_h50.enable
+	tri.tx_h51.enable
 	tri.cx_gwdsp.enable
 	tri.f_gwdsp.enable
-	tri.tx_h51.enable
+	tri.tx_h52.enable
 	tri.cx_gwnsp.enable
 	tri.f_gwnsp.enable
-	tri.tx_h52.enable
+	tri.tx_h53.enable
 	tri.cx_gwespfree.enable
 	tri.f_gwespfree.enable
-	tri.tx_h53.enable
+	tri.tx_h54.enable
 	tri.cx_gwdspfree.disable
 	tri.f_gwdspfree.disable
-	tri.tx_h54.disable
+	tri.tx_h55.disable
 	tri.cx_gwnspfree.disable
 	tri.f_gwnspfree.disable
-	tri.tx_h55.disable
+	tri.tx_h56.disable
 	tri.cx_s_triangle.enable
 	tri.tx_s_triangle_attr.enable
 	tri.f_s_triangle_attr.enable
 	tri.f_s_triangle_diff.enable
-	tri.tx_h56.enable
-	tri.cx_transitive.enable
 	tri.tx_h57.enable
-	tri.cx_intransitive.enable
 END
 
 SCRIPT ty_d_5
 BEGIN
+	tri.cx_transitive.enable
 	tri.tx_h58.enable
+	tri.cx_intransitive.enable
+	tri.tx_h59.enable
 	tri.cx_ttriple.enable
 	tri.tx_ttriple_attr.enable
 	tri.f_ttriple_attr.enable
 	tri.f_ttriple_diff.enable
-	tri.tx_h59.enable
+	tri.tx_h60.enable
 	tri.cx_s_ctriple.enable
 	tri.tx_s_ctriple_attr.enable
 	tri.f_s_ctriple_attr.enable
 	tri.f_s_ctriple_diff.enable
-	tri.tx_h60.enable
+	tri.tx_h61.enable
 	tri.cx_cycle.enable
 	tri.tx_cycle_k.enable
 	tri.f_cycle_k.enable
 	tri.f_cycle_semi.enable
-	tri.tx_h61.enable
+	tri.tx_h62.enable
 	tri.cx_threetrail.enable
 	tri.tx_threetrail_keep.enable
 	tri.f_threetrail_keep.enable
-	tri.tx_h62.enable
-	tri.cx_balance.enable
 	tri.tx_h63.enable
+	tri.cx_balance.enable
+	tri.tx_h64.enable
 	tri.cx_triadcensus.enable
 	tri.tx_triadcensus_levels.enable
 	tri.f_triadcensus_levels.enable
-	tri.tx_h64.enable
+	tri.tx_h65.enable
 	tri.cx_tripercent.disable
 	tri.tx_tripercent_attr.disable
 	tri.f_tripercent_attr.disable
 	tri.f_tripercent_diff.disable
-	tri.tx_h65.disable
+	tri.tx_h66.disable
 	tri.cx_nearsimmelian.enable
-	tri.tx_h66.enable
-	tri.cx_simmelian.enable
 	tri.tx_h67.enable
-	tri.cx_simmelianties.enable
+	tri.cx_simmelian.enable
 	tri.tx_h68.enable
-	tri.cx_asymmetric.enable
-	tri.tx_asymmetric_attr.enable
-	tri.f_asymmetric_attr.enable
+	tri.cx_simmelianties.enable
+	tri.tx_h69.enable
 END
 
 SCRIPT ty_d_6
 BEGIN
+	tri.cx_asymmetric.enable
+	tri.tx_asymmetric_attr.enable
+	tri.f_asymmetric_attr.enable
 	tri.f_asymmetric_diff.enable
-	tri.tx_h69.enable
+	tri.tx_h70.enable
 	tri.cx_s_mutual.enable
 	tri.tx_s_mutual_same.enable
 	tri.f_s_mutual_same.enable
 	tri.f_s_mutual_diff.enable
 	tri.tx_s_mutual_by.enable
 	tri.f_s_mutual_by.enable
-	tri.tx_h70.enable
+	tri.tx_h71.enable
 	tri.cx_localtriangle.enable
 	tri.tx_localtriangle_x.enable
 	tri.f_localtriangle_x.enable
-	tri.tx_h71.enable
-	tri.cx_opentriad.enable
 	tri.tx_h72.enable
+	tri.cx_opentriad.enable
+	tri.tx_h73.enable
 	tri.cx_nsp.enable
 	tri.tx_nsp_d.enable
 	tri.f_nsp_d.enable
 	tri.tx_nsp_type.enable
 	tri.f_nsp_type.enable
-	tri.tx_h73.enable
+	tri.tx_h74.enable
 	tri.cx_s_altkstar.disable
 	tri.tx_s_altkstar_lambda.disable
 	tri.f_s_altkstar_lambda.disable
 	tri.f_s_altkstar_fixed.disable
-	tri.tx_h74.disable
+	tri.tx_h75.disable
 	cov.cx_nodecov.enable
 	cov.f_nodecov.enable
 	cov.tx_nodecov_c.enable
 	cov.f_nodecov_sub.enable
-	cov.tx_h75.enable
+	cov.tx_h76.enable
 	cov.cx_nodeicov.enable
 	cov.f_nodeicov.enable
 	cov.tx_nodeicov_c.enable
 	cov.f_nodeicov_sub.enable
-	cov.tx_h76.enable
+	cov.tx_h77.enable
 	cov.cx_nodeocov.enable
-	cov.f_nodeocov.enable
-	cov.tx_nodeocov_c.enable
-	cov.f_nodeocov_sub.enable
 END
 
 SCRIPT ty_d_7
 BEGIN
-	cov.tx_h77.enable
+	cov.f_nodeocov.enable
+	cov.tx_nodeocov_c.enable
+	cov.f_nodeocov_sub.enable
+	cov.tx_h78.enable
 	cov.cx_nodefactor.enable
 	cov.f_nodefactor.enable
 	cov.tx_nodefactor_c.enable
 	cov.f_nodefactor_sub.enable
-	cov.tx_h78.enable
+	cov.tx_h79.enable
 	cov.cx_nodeofactor.enable
 	cov.f_nodeofactor.enable
 	cov.tx_nodeofactor_c.enable
 	cov.f_nodeofactor_sub.enable
-	cov.tx_h79.enable
+	cov.tx_h80.enable
 	cov.cx_nodeifactor.enable
 	cov.f_nodeifactor.enable
 	cov.tx_nodeifactor_c.enable
 	cov.f_nodeifactor_sub.enable
-	cov.tx_h80.enable
+	cov.tx_h81.enable
 	cov.cx_nodematch.enable
 	cov.f_nodematch.enable
 	cov.tx_nodematch_c.enable
 	cov.f_nodematch_sub.enable
-	cov.tx_h81.enable
+	cov.tx_h82.enable
 	cov.cx_nodematchdiff.enable
 	cov.f_nodematchdiff.enable
 	cov.tx_nodematchdiff_c.enable
 	cov.f_nodematchdiff_sub.enable
-	cov.tx_h82.enable
+	cov.tx_h83.enable
 	cov.cx_nodemix.enable
 	cov.f_nodemix.enable
 	cov.tx_nodemix_c.enable
 	cov.f_nodemix_sub.enable
-	cov.tx_h83.enable
+	cov.tx_h84.enable
 	cov.cx_mm.enable
 	cov.f_mm.enable
 	cov.tx_mm_c.enable
 	cov.f_mm_sub.enable
-	cov.tx_h84.enable
+	cov.tx_h85.enable
 	cov.cx_absdist.enable
-	cov.f_absdist.enable
-	cov.tx_absdist_c.enable
-	cov.f_absdist_sub.enable
 END
 
 SCRIPT ty_d_8
 BEGIN
-	cov.tx_h85.enable
+	cov.f_absdist.enable
+	cov.tx_absdist_c.enable
+	cov.f_absdist_sub.enable
+	cov.tx_h86.enable
 	cov.cx_absdiffcat.enable
 	cov.f_absdiffcat.enable
 	cov.tx_absdiffcat_c.enable
 	cov.f_absdiffcat_sub.enable
-	cov.tx_h86.enable
+	cov.tx_h87.enable
 	cov.cx_diff.enable
 	cov.f_diff.enable
 	cov.tx_diff_c.enable
 	cov.f_diff_sub.enable
-	cov.tx_h87.enable
+	cov.tx_h88.enable
 	cov.cx_smalldiff.enable
 	cov.f_smalldiff.enable
 	cov.tx_smalldiff_c.enable
 	cov.f_smalldiff_sub.enable
-	cov.tx_h88.enable
+	cov.tx_h89.enable
 	cov.cx_sociality.disable
 	cov.f_sociality.disable
 	cov.tx_sociality_c.disable
 	cov.f_sociality_sub.disable
-	cov.tx_h89.disable
+	cov.tx_h90.disable
 	cov.cx_nodecovrange.enable
 	cov.f_nodecovrange.enable
 	cov.tx_nodecovrange_c.enable
 	cov.f_nodecovrange_sub.enable
-	cov.tx_h90.enable
+	cov.tx_h91.enable
 	cov.cx_nodeocovrange.enable
 	cov.f_nodeocovrange.enable
 	cov.tx_nodeocovrange_c.enable
 	cov.f_nodeocovrange_sub.enable
-	cov.tx_h91.enable
+	cov.tx_h92.enable
 	cov.cx_nodeicovrange.enable
 	cov.f_nodeicovrange.enable
 	cov.tx_nodeicovrange_c.enable
 	cov.f_nodeicovrange_sub.enable
-	cov.tx_h92.enable
+	cov.tx_h93.enable
 	cov.cx_nodefactordistinct.enable
-	cov.f_nodefactordistinct.enable
-	cov.tx_nodefactordistinct_c.enable
-	cov.f_nodefactordistinct_sub.enable
 END
 
 SCRIPT ty_d_9
 BEGIN
-	cov.tx_h93.enable
+	cov.f_nodefactordistinct.enable
+	cov.tx_nodefactordistinct_c.enable
+	cov.f_nodefactordistinct_sub.enable
+	cov.tx_h94.enable
 	cov.cx_nodeofactordistinct.enable
 	cov.f_nodeofactordistinct.enable
 	cov.tx_nodeofactordistinct_c.enable
 	cov.f_nodeofactordistinct_sub.enable
-	cov.tx_h94.enable
+	cov.tx_h95.enable
 	cov.cx_nodeifactordistinct.enable
 	cov.f_nodeifactordistinct.enable
 	cov.tx_nodeifactordistinct_c.enable
 	cov.f_nodeifactordistinct_sub.enable
-	cov.tx_h95.enable
+	cov.tx_h96.enable
 	cov.cx_edgecov.enable
 	cov.f_edgecov.enable
-	cov.tx_h96.enable
+	cov.tx_h97.enable
 	cov.cx_dyadcov.enable
 	cov.f_dyadcov.enable
-	cov.tx_h97.enable
+	cov.tx_h98.enable
 	cov.cx_hamming.enable
 	cov.f_hamming.enable
-	cov.tx_h98.enable
+	cov.tx_h99.enable
 	cov.cx_attrcov.enable
 	cov.f_attrcov.enable
 	cov.tx_attrcov_c.enable
 	cov.f_attrcov_sub.enable
-	cov.tx_h99.enable
+	cov.tx_h100.enable
 	two.cx_bcov1.disable
 	two.f_bcov1.disable
-	two.tx_h100.disable
+	two.tx_h101.disable
 	two.cx_bfactor1.disable
 	two.f_bfactor1.disable
-	two.tx_h101.disable
+	two.tx_h102.disable
 	two.cx_bdegree1.disable
 	two.f_bdegree1.disable
 	two.tx_bdegree1_c.disable
 	two.f_bdegree1_sub.disable
-	two.tx_h102.disable
+	two.tx_h103.disable
 	two.cx_bstar1.disable
-	two.f_bstar1.disable
-	two.tx_bstar1_c.disable
-	two.f_bstar1_sub.disable
 END
 
 SCRIPT ty_d_10
 BEGIN
-	two.tx_h103.disable
+	two.f_bstar1.disable
+	two.tx_bstar1_c.disable
+	two.f_bstar1_sub.disable
+	two.tx_h104.disable
 	two.cx_bnodematch1.disable
 	two.f_bnodematch1.disable
 	two.tx_bnodematch1_c.disable
 	two.f_bnodematch1_sub.disable
-	two.tx_h104.disable
+	two.tx_h105.disable
 	two.cx_bgwdegree1.disable
 	two.f_bgwdegree1.disable
 	two.tx_bgwdegree1_c.disable
 	two.f_bgwdegree1_sub.disable
-	two.tx_h105.disable
+	two.tx_h106.disable
 	two.cx_bconcurrent1.disable
 	two.f_bconcurrent1.disable
-	two.tx_h106.disable
+	two.tx_h107.disable
 	two.cx_bmindegree1.disable
 	two.f_bmindegree1.disable
-	two.tx_h107.disable
+	two.tx_h108.disable
 	two.cx_bdegrange1.disable
 	two.f_bdegrange1.disable
 	two.tx_bdegrange1_c.disable
 	two.f_bdegrange1_sub.disable
-	two.tx_h108.disable
+	two.tx_h109.disable
 	two.cx_bcovrange1.disable
 	two.f_bcovrange1.disable
-	two.tx_h109.disable
+	two.tx_h110.disable
 	two.cx_bfactordistinct1.disable
 	two.f_bfactordistinct1.disable
 	two.tx_bfactordistinct1_c.disable
 	two.f_bfactordistinct1_sub.disable
-	two.tx_h110.disable
+	two.tx_h111.disable
 	two.cx_bsociality1.disable
 	two.f_bsociality1.disable
-	two.tx_h111.disable
+	two.tx_h112.disable
 	two.cx_bstarmix1.disable
 	two.f_bstarmix1.disable
 	two.tx_bstarmix1_c.disable
 	two.f_bstarmix1_sub.disable
-	two.tx_h112.disable
-	two.cx_btwostar1.disable
-	two.f_btwostar1.disable
 END
 
 SCRIPT ty_d_11
 BEGIN
+	two.tx_h113.disable
+	two.cx_btwostar1.disable
+	two.f_btwostar1.disable
 	two.tx_btwostar1_c.disable
 	two.f_btwostar1_sub.disable
-	two.tx_h113.disable
+	two.tx_h114.disable
 	two.cx_bdsp1.disable
 	two.f_bdsp1.disable
-	two.tx_h114.disable
+	two.tx_h115.disable
 	two.cx_bgwdsp1.disable
 	two.f_bgwdsp1.disable
-	two.tx_h115.disable
+	two.tx_h116.disable
 	two.cx_bcov2.disable
 	two.f_bcov2.disable
-	two.tx_h116.disable
+	two.tx_h117.disable
 	two.cx_bfactor2.disable
 	two.f_bfactor2.disable
-	two.tx_h117.disable
+	two.tx_h118.disable
 	two.cx_bdegree2.disable
 	two.f_bdegree2.disable
 	two.tx_bdegree2_c.disable
 	two.f_bdegree2_sub.disable
-	two.tx_h118.disable
+	two.tx_h119.disable
 	two.cx_bstar2.disable
 	two.f_bstar2.disable
 	two.tx_bstar2_c.disable
 	two.f_bstar2_sub.disable
-	two.tx_h119.disable
+	two.tx_h120.disable
 	two.cx_bnodematch2.disable
 	two.f_bnodematch2.disable
 	two.tx_bnodematch2_c.disable
 	two.f_bnodematch2_sub.disable
-	two.tx_h120.disable
+	two.tx_h121.disable
 	two.cx_bgwdegree2.disable
 	two.f_bgwdegree2.disable
 	two.tx_bgwdegree2_c.disable
 	two.f_bgwdegree2_sub.disable
-	two.tx_h121.disable
+	two.tx_h122.disable
 	two.cx_bconcurrent2.disable
 	two.f_bconcurrent2.disable
-	two.tx_h122.disable
-	two.cx_bmindegree2.disable
-	two.f_bmindegree2.disable
 END
 
 SCRIPT ty_d_12
 BEGIN
 	two.tx_h123.disable
+	two.cx_bmindegree2.disable
+	two.f_bmindegree2.disable
+	two.tx_h124.disable
 	two.cx_bdegrange2.disable
 	two.f_bdegrange2.disable
 	two.tx_bdegrange2_c.disable
 	two.f_bdegrange2_sub.disable
-	two.tx_h124.disable
+	two.tx_h125.disable
 	two.cx_bcovrange2.disable
 	two.f_bcovrange2.disable
-	two.tx_h125.disable
+	two.tx_h126.disable
 	two.cx_bfactordistinct2.disable
 	two.f_bfactordistinct2.disable
 	two.tx_bfactordistinct2_c.disable
 	two.f_bfactordistinct2_sub.disable
-	two.tx_h126.disable
+	two.tx_h127.disable
 	two.cx_bsociality2.disable
 	two.f_bsociality2.disable
-	two.tx_h127.disable
+	two.tx_h128.disable
 	two.cx_bstarmix2.disable
 	two.f_bstarmix2.disable
 	two.tx_bstarmix2_c.disable
 	two.f_bstarmix2_sub.disable
-	two.tx_h128.disable
+	two.tx_h129.disable
 	two.cx_btwostar2.disable
 	two.f_btwostar2.disable
 	two.tx_btwostar2_c.disable
 	two.f_btwostar2_sub.disable
-	two.tx_h129.disable
+	two.tx_h130.disable
 	two.cx_bdsp2.disable
 	two.f_bdsp2.disable
-	two.tx_h130.disable
+	two.tx_h131.disable
 	two.cx_bgwdsp2.disable
 	two.f_bgwdsp2.disable
-	two.tx_h131.disable
+	two.tx_h132.disable
 	two.cx_coincidence.disable
 	two.f_coincidence.disable
-	two.tx_h132.disable
-	two.cx_bgwdegreefree1.disable
-	two.f_bgwdegreefree1.disable
 	two.tx_h133.disable
-	two.cx_bgwdspfree1.disable
+	two.cx_bgwdegreefree1.disable
 END
 
 SCRIPT ty_d_13
 BEGIN
-	two.f_bgwdspfree1.disable
+	two.f_bgwdegreefree1.disable
 	two.tx_h134.disable
+	two.cx_bgwdspfree1.disable
+	two.f_bgwdspfree1.disable
+	two.tx_h135.disable
 	two.cx_bgwdegreefree2.disable
 	two.f_bgwdegreefree2.disable
-	two.tx_h135.disable
+	two.tx_h136.disable
 	two.cx_bgwdspfree2.disable
 	two.f_bgwdspfree2.disable
-	two.tx_h136.disable
+	two.tx_h137.disable
 	oper.cx_op_sum.enable
 	oper.tx_op_sum_terms.enable
 	oper.f_op_sum_terms.enable
 	oper.tx_op_sum_label.enable
 	oper.f_op_sum_label.enable
-	oper.tx_h137.enable
+	oper.tx_h138.enable
 	oper.cx_op_prod.enable
 	oper.tx_op_prod_terms.enable
 	oper.f_op_prod_terms.enable
 	oper.tx_op_prod_label.enable
 	oper.f_op_prod_label.enable
-	oper.tx_h138.enable
+	oper.tx_h139.enable
 	oper.cx_op_s.enable
 	oper.tx_op_s_terms.enable
 	oper.f_op_s_terms.enable
 	oper.tx_op_s_attrs.enable
 	oper.f_op_s_attrs.enable
-	oper.tx_h139.enable
+	oper.tx_h140.enable
 	oper.cx_op_f.enable
 	oper.tx_op_f_terms.enable
 	oper.f_op_f_terms.enable
 	oper.tx_op_f_filter.enable
 	oper.f_op_f_filter.enable
-	oper.tx_h140.enable
+	oper.tx_h141.enable
 	oper.cx_op_nmf.enable
 	oper.tx_op_nmf_terms.enable
 	oper.f_op_nmf_terms.enable
 	oper.tx_op_nmf_attrname.enable
 	oper.f_op_nmf_attrname.enable
-	oper.tx_h141.enable
-	oper.cx_op_sym.enable
-	oper.tx_op_sym_terms.enable
 END
 
 SCRIPT ty_d_14
 BEGIN
+	oper.tx_h142.enable
+	oper.cx_op_sym.enable
+	oper.tx_op_sym_terms.enable
 	oper.f_op_sym_terms.enable
 	oper.tx_op_sym_rule.enable
 	oper.f_op_sym_rule.enable
-	oper.tx_h142.enable
+	oper.tx_h143.enable
 	oper.cx_op_proj.disable
 	oper.tx_op_proj_terms.disable
 	oper.f_op_proj_terms.disable
 	oper.tx_op_proj_mode.disable
 	oper.f_op_proj_mode.disable
-	oper.tx_h143.disable
+	oper.tx_h144.disable
 	oper.cx_op_i.enable
 	oper.tx_op_i_terms.enable
 	oper.f_op_i_terms.enable
-	oper.tx_h144.enable
+	oper.tx_h145.enable
 	oper.cx_op_for.enable
 	oper.tx_op_for_loops.enable
 	oper.f_op_for_loops.enable
 	oper.tx_op_for_terms.enable
 	oper.f_op_for_terms.enable
-	oper.tx_h145.enable
+	oper.tx_h146.enable
 	oper.cx_op_label.enable
 	oper.tx_op_label_terms.enable
 	oper.f_op_label_terms.enable
@@ -4471,16 +4486,16 @@ BEGIN
 	oper.f_op_exp_terms.enable
 	oper.cx_op_curve.enable
 	oper.tx_op_curve_terms.enable
-	oper.f_op_curve_terms.enable
-	oper.tx_op_curve_params.enable
-	oper.f_op_curve_params.enable
 END
 
 SCRIPT ty_d_15
 BEGIN
+	oper.f_op_curve_terms.enable
+	oper.tx_op_curve_params.enable
+	oper.f_op_curve_params.enable
 	oper.tx_op_curve_map.enable
 	oper.f_op_curve_map.enable
-	oper.tx_h146.enable
+	oper.tx_h147.enable
 	oper.cx_op_offset.enable
 	oper.tx_op_offset_terms.enable
 	oper.f_op_offset_terms.enable
@@ -4488,273 +4503,273 @@ BEGIN
 	oper.f_op_offset_coef.enable
 	oper.tx_op_offset_which.enable
 	oper.f_op_offset_which.enable
-	oper.tx_h147.enable
+	oper.tx_h148.enable
 	oper.tx_operators_extra.enable
 	oper.f_operators_extra.enable
-	oper.tx_h148.enable
+	oper.tx_h149.enable
 	cons.cx_c_edges.enable
 	cons.o_cx_c_edges.enable
-	cons.tx_h149.enable
+	cons.tx_h150.enable
 	cons.cx_c_degrees.enable
 	cons.o_cx_c_degrees.enable
-	cons.tx_h150.enable
+	cons.tx_h151.enable
 	cons.cx_c_odegrees.enable
 	cons.o_cx_c_odegrees.enable
-	cons.tx_h151.enable
+	cons.tx_h152.enable
 	cons.cx_c_idegrees.enable
 	cons.o_cx_c_idegrees.enable
-	cons.tx_h152.enable
+	cons.tx_h153.enable
 	cons.cx_c_b1degrees.disable
 	cons.o_cx_c_b1degrees.disable
-	cons.tx_h153.disable
+	cons.tx_h154.disable
 	cons.cx_c_b2degrees.disable
 	cons.o_cx_c_b2degrees.disable
-	cons.tx_h154.disable
+	cons.tx_h155.disable
 	cons.cx_c_degreedist.enable
 	cons.o_cx_c_degreedist.enable
-	cons.tx_h155.enable
+	cons.tx_h156.enable
 	cons.cx_c_idegreedist.enable
 	cons.o_cx_c_idegreedist.enable
-	cons.tx_h156.enable
-	cons.cx_c_bd.enable
-	cons.f_c_bd.enable
 END
 
 SCRIPT ty_d_16
 BEGIN
+	cons.tx_h157.enable
+	cons.cx_c_bd.enable
+	cons.f_c_bd.enable
 	cons.o_cx_c_bd.enable
 	cons.o_f_c_bd.enable
-	cons.tx_h157.enable
+	cons.tx_h158.enable
 	cons.cx_c_blocks.enable
 	cons.f_c_blocks.enable
 	cons.o_cx_c_blocks.enable
 	cons.o_f_c_blocks.enable
-	cons.tx_h158.enable
+	cons.tx_h159.enable
 	cons.cx_c_blockdiag.enable
 	cons.f_c_blockdiag.enable
 	cons.o_cx_c_blockdiag.enable
 	cons.o_f_c_blockdiag.enable
-	cons.tx_h159.enable
+	cons.tx_h160.enable
 	cons.cx_c_fixedas.enable
 	cons.f_c_fixedas.enable
 	cons.o_cx_c_fixedas.enable
 	cons.o_f_c_fixedas.enable
-	cons.tx_h160.enable
+	cons.tx_h161.enable
 	cons.cx_c_fixallbut.enable
 	cons.f_c_fixallbut.enable
 	cons.o_cx_c_fixallbut.enable
 	cons.o_f_c_fixallbut.enable
-	cons.tx_h161.enable
+	cons.tx_h162.enable
 	cons.cx_c_observed.enable
 	cons.o_cx_c_observed.enable
-	cons.tx_h162.enable
+	cons.tx_h163.enable
 	cons.cx_c_egocentric.enable
 	cons.f_c_egocentric.enable
 	cons.o_cx_c_egocentric.enable
 	cons.o_f_c_egocentric.enable
-	cons.tx_h163.enable
+	cons.tx_h164.enable
 	cons.cx_c_dyadnoise.enable
 	cons.f_c_dyadnoise.enable
 	cons.o_cx_c_dyadnoise.enable
 	cons.o_f_c_dyadnoise.enable
-	cons.tx_h164.enable
-	cons.tx_constraints_extra.enable
-	cons.f_constraints_extra.enable
 	cons.tx_h165.enable
-	cons.tx_obsconstraints_extra.enable
+	cons.tx_constraints_extra.enable
 END
 
 SCRIPT ty_d_17
 BEGIN
-	cons.f_obsconstraints_extra.enable
+	cons.f_constraints_extra.enable
 	cons.tx_h166.enable
+	cons.tx_obsconstraints_extra.enable
+	cons.f_obsconstraints_extra.enable
+	cons.tx_h167.enable
 	cons.tx_freedyads.enable
 	cons.f_freedyads.enable
-	cons.tx_h167.enable
+	cons.tx_h168.enable
 	cons.tx_blockdiag.enable
 	cons.f_blockdiag.enable
-	cons.tx_h168.enable
-	cons.f_fixdensity.enable
 	cons.tx_h169.enable
+	cons.f_fixdensity.enable
+	cons.tx_h170.enable
 	cons.tx_mcmcprop.enable
 	cons.f_mcmcprop.enable
-	cons.tx_h170.enable
+	cons.tx_h171.enable
 	cons.tx_mcmcmaxedges.enable
 	cons.f_mcmcmaxedges.enable
-	cons.tx_h171.enable
+	cons.tx_h172.enable
 	est.tx_method.enable
 	est.f_method.enable
-	est.tx_h172.enable
+	est.tx_h173.enable
 	est.tx_estimate.enable
 	est.f_estimate.enable
-	est.tx_h173.enable
+	est.tx_h174.enable
 	est.tx_mainmethod.enable
 	est.f_mainmethod.enable
-	est.tx_h174.enable
+	est.tx_h175.enable
 	est.tx_mpletype.enable
 	est.f_mpletype.enable
-	est.tx_h175.enable
+	est.tx_h176.enable
 	est.tx_mplecheck.enable
 	est.f_mplecheck.enable
-	est.tx_h176.enable
+	est.tx_h177.enable
 	est.tx_mplecovariance.enable
 	est.f_mplecovariance.enable
-	est.tx_h177.enable
+	est.tx_h178.enable
 	est.tx_init.enable
 	est.f_init.enable
-	est.tx_h178.enable
-	est.tx_mcmleiterations.enable
-	est.f_mcmleiterations.enable
 	est.tx_h179.enable
 END
 
 SCRIPT ty_d_18
 BEGIN
+	est.tx_mcmleiterations.enable
+	est.f_mcmleiterations.enable
+	est.tx_h180.enable
 	est.tx_mcmleconfidence.enable
 	est.f_mcmleconfidence.enable
-	est.tx_h180.enable
+	est.tx_h181.enable
 	est.tx_mcmletermination.enable
 	est.f_mcmletermination.enable
-	est.tx_h181.enable
+	est.tx_h182.enable
 	est.tx_mcmlesteplength.enable
 	est.f_mcmlesteplength.enable
-	est.tx_h182.enable
+	est.tx_h183.enable
 	est.tx_mcmlestepmargin.enable
 	est.f_mcmlestepmargin.enable
-	est.tx_h183.enable
+	est.tx_h184.enable
 	est.tx_mcmleeffectivesize.enable
 	est.f_mcmleeffectivesize.enable
-	est.tx_h184.enable
+	est.tx_h185.enable
 	est.tx_proposal.enable
 	est.f_proposal.enable
-	est.tx_h203.enable
+	est.tx_h204.enable
 	est.tx_cdnsteps.enable
 	est.f_cdnsteps.enable
-	est.tx_h204.enable
+	est.tx_h205.enable
 	est.tx_cdsamplesize.enable
 	est.f_cdsamplesize.enable
-	est.tx_h205.enable
+	est.tx_h206.enable
 	est.tx_saburnin.enable
 	est.f_saburnin.enable
-	est.tx_h206.enable
+	est.tx_h207.enable
 	est.tx_sainterval.enable
 	est.f_sainterval.enable
-	est.tx_h207.enable
+	est.tx_h208.enable
 	est.tx_saphase3.enable
 	est.f_saphase3.enable
-	est.tx_h208.enable
+	est.tx_h209.enable
 	est.tx_sagain.enable
 	est.f_sagain.enable
-	est.tx_h209.enable
-	est.tx_sansub.enable
-	est.f_sansub.enable
 	est.tx_h210.enable
-	est.tx_mcmcburnin.enable
+	est.tx_sansub.enable
 END
 
 SCRIPT ty_d_19
 BEGIN
-	est.f_mcmcburnin.enable
+	est.f_sansub.enable
 	est.tx_h211.enable
+	est.tx_mcmcburnin.enable
+	est.f_mcmcburnin.enable
+	est.tx_h212.enable
 	est.tx_mcmcinterval.enable
 	est.f_mcmcinterval.enable
-	est.tx_h212.enable
+	est.tx_h213.enable
 	est.tx_mcmcsamplesize.enable
 	est.f_mcmcsamplesize.enable
-	est.tx_h213.enable
+	est.tx_h214.enable
 	est.tx_seed.enable
 	est.f_seed.enable
-	est.tx_h214.enable
-	est.f_spcache.enable
 	est.tx_h215.enable
-	est.f_nonative.enable
+	est.f_spcache.enable
 	est.tx_h216.enable
+	est.f_nonative.enable
+	est.tx_h217.enable
 	est.tx_bridgesteps.enable
 	est.f_bridgesteps.enable
-	est.tx_h217.enable
+	est.tx_h218.enable
 	est.tx_bridgesamplesize.enable
 	est.f_bridgesamplesize.enable
-	est.tx_h218.enable
+	est.tx_h219.enable
 	est.tx_bridgeinterval.enable
 	est.f_bridgeinterval.enable
-	est.tx_h219.enable
-	est.f_nologlik.enable
 	est.tx_h220.enable
-	est.f_nomcmcsample.enable
+	est.f_nologlik.enable
 	est.tx_h221.enable
-	est.f_verbose.enable
+	est.f_nomcmcsample.enable
 	est.tx_h222.enable
+	est.f_verbose.enable
+	est.tx_h223.enable
 	est.tx_offset.enable
 	est.f_offset.enable
-	est.tx_h223.enable
+	est.tx_h224.enable
 	est.tx_coeflabel.enable
 	est.f_coeflabel.enable
-	est.tx_h224.enable
-	est.tx_logstat.enable
-	est.f_logstat.enable
 	est.tx_h225.enable
-	est.tx_expstat.enable
+	est.tx_logstat.enable
 END
 
 SCRIPT ty_d_20
 BEGIN
-	est.f_expstat.enable
+	est.f_logstat.enable
 	est.tx_h226.enable
+	est.tx_expstat.enable
+	est.f_expstat.enable
+	est.tx_h227.enable
 	bayes.tx_chains.enable
 	bayes.f_chains.enable
-	bayes.tx_h185.enable
+	bayes.tx_h186.enable
 	bayes.tx_burnin.enable
 	bayes.f_burnin.enable
-	bayes.tx_h186.enable
+	bayes.tx_h187.enable
 	bayes.tx_iterations.enable
 	bayes.f_iterations.enable
-	bayes.tx_h187.enable
+	bayes.tx_h188.enable
 	bayes.tx_thin.enable
 	bayes.f_thin.enable
-	bayes.tx_h188.enable
+	bayes.tx_h189.enable
 	bayes.tx_auxiterations.enable
 	bayes.f_auxiterations.enable
-	bayes.tx_h189.enable
+	bayes.tx_h190.enable
 	bayes.tx_gamma.enable
 	bayes.f_gamma.enable
-	bayes.tx_h190.enable
+	bayes.tx_h191.enable
 	bayes.tx_proposalvar.enable
 	bayes.f_proposalvar.enable
-	bayes.tx_h191.enable
+	bayes.tx_h192.enable
 	bayes.tx_targetaccept.enable
 	bayes.f_targetaccept.enable
-	bayes.tx_h192.enable
+	bayes.tx_h193.enable
 	bayes.tx_dainflate.enable
 	bayes.f_dainflate.enable
-	bayes.tx_h193.enable
-	bayes.f_noadapt.enable
 	bayes.tx_h194.enable
-	bayes.f_nodelayed.enable
+	bayes.f_noadapt.enable
 	bayes.tx_h195.enable
+	bayes.f_nodelayed.enable
+	bayes.tx_h196.enable
 	bayes.tx_priormean.enable
 	bayes.f_priormean.enable
-	bayes.tx_h196.enable
-	bayes.tx_priorvar.enable
-	bayes.f_priorvar.enable
 	bayes.tx_h197.enable
-	bayes.tx_priorcov.enable
+	bayes.tx_priorvar.enable
 END
 
 SCRIPT ty_d_21
 BEGIN
-	bayes.f_priorcov.enable
+	bayes.f_priorvar.enable
 	bayes.tx_h198.enable
+	bayes.tx_priorcov.enable
+	bayes.f_priorcov.enable
+	bayes.tx_h199.enable
 	bayes.tx_priordecay.enable
 	bayes.f_priordecay.enable
-	bayes.tx_h199.enable
+	bayes.tx_h200.enable
 	bayes.tx_startvals.enable
 	bayes.f_startvals.enable
-	bayes.tx_h200.enable
+	bayes.tx_h201.enable
 	bayes.tx_bframe.enable
 	bayes.f_bframe.enable
-	bayes.tx_h201.enable
-	bayes.f_nodraws.enable
 	bayes.tx_h202.enable
+	bayes.f_nodraws.enable
+	bayes.tx_h203.enable
 END
 
 SCRIPT ty_d
@@ -4975,452 +4990,455 @@ BEGIN
 	tri.tx_type.disable
 	tri.f_type.disable
 	tri.tx_h49.disable
+	tri.tx_gwcutoff.disable
+	tri.f_gwcutoff.disable
+	tri.tx_h50.disable
 	tri.cx_gwesp.disable
 	tri.f_gwesp.disable
-	tri.tx_h50.disable
+	tri.tx_h51.disable
 	tri.cx_gwdsp.disable
 	tri.f_gwdsp.disable
-	tri.tx_h51.disable
+	tri.tx_h52.disable
 	tri.cx_gwnsp.disable
 	tri.f_gwnsp.disable
-	tri.tx_h52.disable
+	tri.tx_h53.disable
 	tri.cx_gwespfree.disable
 	tri.f_gwespfree.disable
-	tri.tx_h53.disable
+	tri.tx_h54.disable
 	tri.cx_gwdspfree.disable
 	tri.f_gwdspfree.disable
-	tri.tx_h54.disable
+	tri.tx_h55.disable
 	tri.cx_gwnspfree.disable
 	tri.f_gwnspfree.disable
-	tri.tx_h55.disable
+	tri.tx_h56.disable
 	tri.cx_s_triangle.disable
 	tri.tx_s_triangle_attr.disable
 	tri.f_s_triangle_attr.disable
 	tri.f_s_triangle_diff.disable
-	tri.tx_h56.disable
-	tri.cx_transitive.disable
 	tri.tx_h57.disable
-	tri.cx_intransitive.disable
 END
 
 SCRIPT ty_b_5
 BEGIN
+	tri.cx_transitive.disable
 	tri.tx_h58.disable
+	tri.cx_intransitive.disable
+	tri.tx_h59.disable
 	tri.cx_ttriple.disable
 	tri.tx_ttriple_attr.disable
 	tri.f_ttriple_attr.disable
 	tri.f_ttriple_diff.disable
-	tri.tx_h59.disable
+	tri.tx_h60.disable
 	tri.cx_s_ctriple.disable
 	tri.tx_s_ctriple_attr.disable
 	tri.f_s_ctriple_attr.disable
 	tri.f_s_ctriple_diff.disable
-	tri.tx_h60.disable
+	tri.tx_h61.disable
 	tri.cx_cycle.disable
 	tri.tx_cycle_k.disable
 	tri.f_cycle_k.disable
 	tri.f_cycle_semi.disable
-	tri.tx_h61.disable
+	tri.tx_h62.disable
 	tri.cx_threetrail.disable
 	tri.tx_threetrail_keep.disable
 	tri.f_threetrail_keep.disable
-	tri.tx_h62.disable
-	tri.cx_balance.disable
 	tri.tx_h63.disable
+	tri.cx_balance.disable
+	tri.tx_h64.disable
 	tri.cx_triadcensus.disable
 	tri.tx_triadcensus_levels.disable
 	tri.f_triadcensus_levels.disable
-	tri.tx_h64.disable
+	tri.tx_h65.disable
 	tri.cx_tripercent.disable
 	tri.tx_tripercent_attr.disable
 	tri.f_tripercent_attr.disable
 	tri.f_tripercent_diff.disable
-	tri.tx_h65.disable
-	tri.cx_nearsimmelian.disable
 	tri.tx_h66.disable
-	tri.cx_simmelian.disable
+	tri.cx_nearsimmelian.disable
 	tri.tx_h67.disable
-	tri.cx_simmelianties.disable
+	tri.cx_simmelian.disable
 	tri.tx_h68.disable
-	tri.cx_asymmetric.disable
-	tri.tx_asymmetric_attr.disable
-	tri.f_asymmetric_attr.disable
+	tri.cx_simmelianties.disable
+	tri.tx_h69.disable
 END
 
 SCRIPT ty_b_6
 BEGIN
+	tri.cx_asymmetric.disable
+	tri.tx_asymmetric_attr.disable
+	tri.f_asymmetric_attr.disable
 	tri.f_asymmetric_diff.disable
-	tri.tx_h69.disable
+	tri.tx_h70.disable
 	tri.cx_s_mutual.disable
 	tri.tx_s_mutual_same.disable
 	tri.f_s_mutual_same.disable
 	tri.f_s_mutual_diff.disable
 	tri.tx_s_mutual_by.disable
 	tri.f_s_mutual_by.disable
-	tri.tx_h70.disable
+	tri.tx_h71.disable
 	tri.cx_localtriangle.disable
 	tri.tx_localtriangle_x.disable
 	tri.f_localtriangle_x.disable
-	tri.tx_h71.disable
-	tri.cx_opentriad.disable
 	tri.tx_h72.disable
+	tri.cx_opentriad.disable
+	tri.tx_h73.disable
 	tri.cx_nsp.disable
 	tri.tx_nsp_d.disable
 	tri.f_nsp_d.disable
 	tri.tx_nsp_type.disable
 	tri.f_nsp_type.disable
-	tri.tx_h73.disable
+	tri.tx_h74.disable
 	tri.cx_s_altkstar.disable
 	tri.tx_s_altkstar_lambda.disable
 	tri.f_s_altkstar_lambda.disable
 	tri.f_s_altkstar_fixed.disable
-	tri.tx_h74.disable
+	tri.tx_h75.disable
 	cov.cx_nodecov.disable
 	cov.f_nodecov.disable
 	cov.tx_nodecov_c.disable
 	cov.f_nodecov_sub.disable
-	cov.tx_h75.disable
+	cov.tx_h76.disable
 	cov.cx_nodeicov.disable
 	cov.f_nodeicov.disable
 	cov.tx_nodeicov_c.disable
 	cov.f_nodeicov_sub.disable
-	cov.tx_h76.disable
+	cov.tx_h77.disable
 	cov.cx_nodeocov.disable
-	cov.f_nodeocov.disable
-	cov.tx_nodeocov_c.disable
-	cov.f_nodeocov_sub.disable
 END
 
 SCRIPT ty_b_7
 BEGIN
-	cov.tx_h77.disable
+	cov.f_nodeocov.disable
+	cov.tx_nodeocov_c.disable
+	cov.f_nodeocov_sub.disable
+	cov.tx_h78.disable
 	cov.cx_nodefactor.disable
 	cov.f_nodefactor.disable
 	cov.tx_nodefactor_c.disable
 	cov.f_nodefactor_sub.disable
-	cov.tx_h78.disable
+	cov.tx_h79.disable
 	cov.cx_nodeofactor.disable
 	cov.f_nodeofactor.disable
 	cov.tx_nodeofactor_c.disable
 	cov.f_nodeofactor_sub.disable
-	cov.tx_h79.disable
+	cov.tx_h80.disable
 	cov.cx_nodeifactor.disable
 	cov.f_nodeifactor.disable
 	cov.tx_nodeifactor_c.disable
 	cov.f_nodeifactor_sub.disable
-	cov.tx_h80.disable
+	cov.tx_h81.disable
 	cov.cx_nodematch.disable
 	cov.f_nodematch.disable
 	cov.tx_nodematch_c.disable
 	cov.f_nodematch_sub.disable
-	cov.tx_h81.disable
+	cov.tx_h82.disable
 	cov.cx_nodematchdiff.disable
 	cov.f_nodematchdiff.disable
 	cov.tx_nodematchdiff_c.disable
 	cov.f_nodematchdiff_sub.disable
-	cov.tx_h82.disable
+	cov.tx_h83.disable
 	cov.cx_nodemix.enable
 	cov.f_nodemix.enable
 	cov.tx_nodemix_c.enable
 	cov.f_nodemix_sub.enable
-	cov.tx_h83.enable
+	cov.tx_h84.enable
 	cov.cx_mm.disable
 	cov.f_mm.disable
 	cov.tx_mm_c.disable
 	cov.f_mm_sub.disable
-	cov.tx_h84.disable
+	cov.tx_h85.disable
 	cov.cx_absdist.disable
-	cov.f_absdist.disable
-	cov.tx_absdist_c.disable
-	cov.f_absdist_sub.disable
 END
 
 SCRIPT ty_b_8
 BEGIN
-	cov.tx_h85.disable
+	cov.f_absdist.disable
+	cov.tx_absdist_c.disable
+	cov.f_absdist_sub.disable
+	cov.tx_h86.disable
 	cov.cx_absdiffcat.disable
 	cov.f_absdiffcat.disable
 	cov.tx_absdiffcat_c.disable
 	cov.f_absdiffcat_sub.disable
-	cov.tx_h86.disable
+	cov.tx_h87.disable
 	cov.cx_diff.disable
 	cov.f_diff.disable
 	cov.tx_diff_c.disable
 	cov.f_diff_sub.disable
-	cov.tx_h87.disable
+	cov.tx_h88.disable
 	cov.cx_smalldiff.disable
 	cov.f_smalldiff.disable
 	cov.tx_smalldiff_c.disable
 	cov.f_smalldiff_sub.disable
-	cov.tx_h88.disable
+	cov.tx_h89.disable
 	cov.cx_sociality.disable
 	cov.f_sociality.disable
 	cov.tx_sociality_c.disable
 	cov.f_sociality_sub.disable
-	cov.tx_h89.disable
+	cov.tx_h90.disable
 	cov.cx_nodecovrange.disable
 	cov.f_nodecovrange.disable
 	cov.tx_nodecovrange_c.disable
 	cov.f_nodecovrange_sub.disable
-	cov.tx_h90.disable
+	cov.tx_h91.disable
 	cov.cx_nodeocovrange.disable
 	cov.f_nodeocovrange.disable
 	cov.tx_nodeocovrange_c.disable
 	cov.f_nodeocovrange_sub.disable
-	cov.tx_h91.disable
+	cov.tx_h92.disable
 	cov.cx_nodeicovrange.disable
 	cov.f_nodeicovrange.disable
 	cov.tx_nodeicovrange_c.disable
 	cov.f_nodeicovrange_sub.disable
-	cov.tx_h92.disable
+	cov.tx_h93.disable
 	cov.cx_nodefactordistinct.disable
-	cov.f_nodefactordistinct.disable
-	cov.tx_nodefactordistinct_c.disable
-	cov.f_nodefactordistinct_sub.disable
 END
 
 SCRIPT ty_b_9
 BEGIN
-	cov.tx_h93.disable
+	cov.f_nodefactordistinct.disable
+	cov.tx_nodefactordistinct_c.disable
+	cov.f_nodefactordistinct_sub.disable
+	cov.tx_h94.disable
 	cov.cx_nodeofactordistinct.disable
 	cov.f_nodeofactordistinct.disable
 	cov.tx_nodeofactordistinct_c.disable
 	cov.f_nodeofactordistinct_sub.disable
-	cov.tx_h94.disable
+	cov.tx_h95.disable
 	cov.cx_nodeifactordistinct.disable
 	cov.f_nodeifactordistinct.disable
 	cov.tx_nodeifactordistinct_c.disable
 	cov.f_nodeifactordistinct_sub.disable
-	cov.tx_h95.disable
+	cov.tx_h96.disable
 	cov.cx_edgecov.enable
 	cov.f_edgecov.enable
-	cov.tx_h96.enable
+	cov.tx_h97.enable
 	cov.cx_dyadcov.disable
 	cov.f_dyadcov.disable
-	cov.tx_h97.disable
+	cov.tx_h98.disable
 	cov.cx_hamming.disable
 	cov.f_hamming.disable
-	cov.tx_h98.disable
+	cov.tx_h99.disable
 	cov.cx_attrcov.disable
 	cov.f_attrcov.disable
 	cov.tx_attrcov_c.disable
 	cov.f_attrcov_sub.disable
-	cov.tx_h99.disable
+	cov.tx_h100.disable
 	two.cx_bcov1.enable
 	two.f_bcov1.enable
-	two.tx_h100.enable
+	two.tx_h101.enable
 	two.cx_bfactor1.enable
 	two.f_bfactor1.enable
-	two.tx_h101.enable
+	two.tx_h102.enable
 	two.cx_bdegree1.enable
 	two.f_bdegree1.enable
 	two.tx_bdegree1_c.enable
 	two.f_bdegree1_sub.enable
-	two.tx_h102.enable
+	two.tx_h103.enable
 	two.cx_bstar1.enable
-	two.f_bstar1.enable
-	two.tx_bstar1_c.enable
-	two.f_bstar1_sub.enable
 END
 
 SCRIPT ty_b_10
 BEGIN
-	two.tx_h103.enable
+	two.f_bstar1.enable
+	two.tx_bstar1_c.enable
+	two.f_bstar1_sub.enable
+	two.tx_h104.enable
 	two.cx_bnodematch1.enable
 	two.f_bnodematch1.enable
 	two.tx_bnodematch1_c.enable
 	two.f_bnodematch1_sub.enable
-	two.tx_h104.enable
+	two.tx_h105.enable
 	two.cx_bgwdegree1.enable
 	two.f_bgwdegree1.enable
 	two.tx_bgwdegree1_c.enable
 	two.f_bgwdegree1_sub.enable
-	two.tx_h105.enable
+	two.tx_h106.enable
 	two.cx_bconcurrent1.enable
 	two.f_bconcurrent1.enable
-	two.tx_h106.enable
+	two.tx_h107.enable
 	two.cx_bmindegree1.enable
 	two.f_bmindegree1.enable
-	two.tx_h107.enable
+	two.tx_h108.enable
 	two.cx_bdegrange1.enable
 	two.f_bdegrange1.enable
 	two.tx_bdegrange1_c.enable
 	two.f_bdegrange1_sub.enable
-	two.tx_h108.enable
+	two.tx_h109.enable
 	two.cx_bcovrange1.enable
 	two.f_bcovrange1.enable
-	two.tx_h109.enable
+	two.tx_h110.enable
 	two.cx_bfactordistinct1.enable
 	two.f_bfactordistinct1.enable
 	two.tx_bfactordistinct1_c.enable
 	two.f_bfactordistinct1_sub.enable
-	two.tx_h110.enable
+	two.tx_h111.enable
 	two.cx_bsociality1.enable
 	two.f_bsociality1.enable
-	two.tx_h111.enable
+	two.tx_h112.enable
 	two.cx_bstarmix1.enable
 	two.f_bstarmix1.enable
 	two.tx_bstarmix1_c.enable
 	two.f_bstarmix1_sub.enable
-	two.tx_h112.enable
-	two.cx_btwostar1.enable
-	two.f_btwostar1.enable
 END
 
 SCRIPT ty_b_11
 BEGIN
+	two.tx_h113.enable
+	two.cx_btwostar1.enable
+	two.f_btwostar1.enable
 	two.tx_btwostar1_c.enable
 	two.f_btwostar1_sub.enable
-	two.tx_h113.enable
+	two.tx_h114.enable
 	two.cx_bdsp1.enable
 	two.f_bdsp1.enable
-	two.tx_h114.enable
+	two.tx_h115.enable
 	two.cx_bgwdsp1.enable
 	two.f_bgwdsp1.enable
-	two.tx_h115.enable
+	two.tx_h116.enable
 	two.cx_bcov2.enable
 	two.f_bcov2.enable
-	two.tx_h116.enable
+	two.tx_h117.enable
 	two.cx_bfactor2.enable
 	two.f_bfactor2.enable
-	two.tx_h117.enable
+	two.tx_h118.enable
 	two.cx_bdegree2.enable
 	two.f_bdegree2.enable
 	two.tx_bdegree2_c.enable
 	two.f_bdegree2_sub.enable
-	two.tx_h118.enable
+	two.tx_h119.enable
 	two.cx_bstar2.enable
 	two.f_bstar2.enable
 	two.tx_bstar2_c.enable
 	two.f_bstar2_sub.enable
-	two.tx_h119.enable
+	two.tx_h120.enable
 	two.cx_bnodematch2.enable
 	two.f_bnodematch2.enable
 	two.tx_bnodematch2_c.enable
 	two.f_bnodematch2_sub.enable
-	two.tx_h120.enable
+	two.tx_h121.enable
 	two.cx_bgwdegree2.enable
 	two.f_bgwdegree2.enable
 	two.tx_bgwdegree2_c.enable
 	two.f_bgwdegree2_sub.enable
-	two.tx_h121.enable
+	two.tx_h122.enable
 	two.cx_bconcurrent2.enable
 	two.f_bconcurrent2.enable
-	two.tx_h122.enable
-	two.cx_bmindegree2.enable
-	two.f_bmindegree2.enable
 END
 
 SCRIPT ty_b_12
 BEGIN
 	two.tx_h123.enable
+	two.cx_bmindegree2.enable
+	two.f_bmindegree2.enable
+	two.tx_h124.enable
 	two.cx_bdegrange2.enable
 	two.f_bdegrange2.enable
 	two.tx_bdegrange2_c.enable
 	two.f_bdegrange2_sub.enable
-	two.tx_h124.enable
+	two.tx_h125.enable
 	two.cx_bcovrange2.enable
 	two.f_bcovrange2.enable
-	two.tx_h125.enable
+	two.tx_h126.enable
 	two.cx_bfactordistinct2.enable
 	two.f_bfactordistinct2.enable
 	two.tx_bfactordistinct2_c.enable
 	two.f_bfactordistinct2_sub.enable
-	two.tx_h126.enable
+	two.tx_h127.enable
 	two.cx_bsociality2.enable
 	two.f_bsociality2.enable
-	two.tx_h127.enable
+	two.tx_h128.enable
 	two.cx_bstarmix2.enable
 	two.f_bstarmix2.enable
 	two.tx_bstarmix2_c.enable
 	two.f_bstarmix2_sub.enable
-	two.tx_h128.enable
+	two.tx_h129.enable
 	two.cx_btwostar2.enable
 	two.f_btwostar2.enable
 	two.tx_btwostar2_c.enable
 	two.f_btwostar2_sub.enable
-	two.tx_h129.enable
+	two.tx_h130.enable
 	two.cx_bdsp2.enable
 	two.f_bdsp2.enable
-	two.tx_h130.enable
+	two.tx_h131.enable
 	two.cx_bgwdsp2.enable
 	two.f_bgwdsp2.enable
-	two.tx_h131.enable
+	two.tx_h132.enable
 	two.cx_coincidence.enable
 	two.f_coincidence.enable
-	two.tx_h132.enable
-	two.cx_bgwdegreefree1.enable
-	two.f_bgwdegreefree1.enable
 	two.tx_h133.enable
-	two.cx_bgwdspfree1.enable
+	two.cx_bgwdegreefree1.enable
 END
 
 SCRIPT ty_b_13
 BEGIN
-	two.f_bgwdspfree1.enable
+	two.f_bgwdegreefree1.enable
 	two.tx_h134.enable
+	two.cx_bgwdspfree1.enable
+	two.f_bgwdspfree1.enable
+	two.tx_h135.enable
 	two.cx_bgwdegreefree2.enable
 	two.f_bgwdegreefree2.enable
-	two.tx_h135.enable
+	two.tx_h136.enable
 	two.cx_bgwdspfree2.enable
 	two.f_bgwdspfree2.enable
-	two.tx_h136.enable
+	two.tx_h137.enable
 	oper.cx_op_sum.enable
 	oper.tx_op_sum_terms.enable
 	oper.f_op_sum_terms.enable
 	oper.tx_op_sum_label.enable
 	oper.f_op_sum_label.enable
-	oper.tx_h137.enable
+	oper.tx_h138.enable
 	oper.cx_op_prod.enable
 	oper.tx_op_prod_terms.enable
 	oper.f_op_prod_terms.enable
 	oper.tx_op_prod_label.enable
 	oper.f_op_prod_label.enable
-	oper.tx_h138.enable
+	oper.tx_h139.enable
 	oper.cx_op_s.disable
 	oper.tx_op_s_terms.disable
 	oper.f_op_s_terms.disable
 	oper.tx_op_s_attrs.disable
 	oper.f_op_s_attrs.disable
-	oper.tx_h139.disable
+	oper.tx_h140.disable
 	oper.cx_op_f.enable
 	oper.tx_op_f_terms.enable
 	oper.f_op_f_terms.enable
 	oper.tx_op_f_filter.enable
 	oper.f_op_f_filter.enable
-	oper.tx_h140.enable
+	oper.tx_h141.enable
 	oper.cx_op_nmf.enable
 	oper.tx_op_nmf_terms.enable
 	oper.f_op_nmf_terms.enable
 	oper.tx_op_nmf_attrname.enable
 	oper.f_op_nmf_attrname.enable
-	oper.tx_h141.enable
-	oper.cx_op_sym.disable
-	oper.tx_op_sym_terms.disable
 END
 
 SCRIPT ty_b_14
 BEGIN
+	oper.tx_h142.enable
+	oper.cx_op_sym.disable
+	oper.tx_op_sym_terms.disable
 	oper.f_op_sym_terms.disable
 	oper.tx_op_sym_rule.disable
 	oper.f_op_sym_rule.disable
-	oper.tx_h142.disable
+	oper.tx_h143.disable
 	oper.cx_op_proj.enable
 	oper.tx_op_proj_terms.enable
 	oper.f_op_proj_terms.enable
 	oper.tx_op_proj_mode.enable
 	oper.f_op_proj_mode.enable
-	oper.tx_h143.enable
+	oper.tx_h144.enable
 	oper.cx_op_i.enable
 	oper.tx_op_i_terms.enable
 	oper.f_op_i_terms.enable
-	oper.tx_h144.enable
+	oper.tx_h145.enable
 	oper.cx_op_for.enable
 	oper.tx_op_for_loops.enable
 	oper.f_op_for_loops.enable
 	oper.tx_op_for_terms.enable
 	oper.f_op_for_terms.enable
-	oper.tx_h145.enable
+	oper.tx_h146.enable
 	oper.cx_op_label.enable
 	oper.tx_op_label_terms.enable
 	oper.f_op_label_terms.enable
@@ -5438,16 +5456,16 @@ BEGIN
 	oper.f_op_exp_terms.enable
 	oper.cx_op_curve.enable
 	oper.tx_op_curve_terms.enable
-	oper.f_op_curve_terms.enable
-	oper.tx_op_curve_params.enable
-	oper.f_op_curve_params.enable
 END
 
 SCRIPT ty_b_15
 BEGIN
+	oper.f_op_curve_terms.enable
+	oper.tx_op_curve_params.enable
+	oper.f_op_curve_params.enable
 	oper.tx_op_curve_map.enable
 	oper.f_op_curve_map.enable
-	oper.tx_h146.enable
+	oper.tx_h147.enable
 	oper.cx_op_offset.enable
 	oper.tx_op_offset_terms.enable
 	oper.f_op_offset_terms.enable
@@ -5455,273 +5473,273 @@ BEGIN
 	oper.f_op_offset_coef.enable
 	oper.tx_op_offset_which.enable
 	oper.f_op_offset_which.enable
-	oper.tx_h147.enable
+	oper.tx_h148.enable
 	oper.tx_operators_extra.enable
 	oper.f_operators_extra.enable
-	oper.tx_h148.enable
+	oper.tx_h149.enable
 	cons.cx_c_edges.enable
 	cons.o_cx_c_edges.enable
-	cons.tx_h149.enable
+	cons.tx_h150.enable
 	cons.cx_c_degrees.enable
 	cons.o_cx_c_degrees.enable
-	cons.tx_h150.enable
+	cons.tx_h151.enable
 	cons.cx_c_odegrees.disable
 	cons.o_cx_c_odegrees.disable
-	cons.tx_h151.disable
+	cons.tx_h152.disable
 	cons.cx_c_idegrees.disable
 	cons.o_cx_c_idegrees.disable
-	cons.tx_h152.disable
+	cons.tx_h153.disable
 	cons.cx_c_b1degrees.enable
 	cons.o_cx_c_b1degrees.enable
-	cons.tx_h153.enable
+	cons.tx_h154.enable
 	cons.cx_c_b2degrees.enable
 	cons.o_cx_c_b2degrees.enable
-	cons.tx_h154.enable
+	cons.tx_h155.enable
 	cons.cx_c_degreedist.enable
 	cons.o_cx_c_degreedist.enable
-	cons.tx_h155.enable
+	cons.tx_h156.enable
 	cons.cx_c_idegreedist.disable
 	cons.o_cx_c_idegreedist.disable
-	cons.tx_h156.disable
-	cons.cx_c_bd.enable
-	cons.f_c_bd.enable
 END
 
 SCRIPT ty_b_16
 BEGIN
+	cons.tx_h157.disable
+	cons.cx_c_bd.enable
+	cons.f_c_bd.enable
 	cons.o_cx_c_bd.enable
 	cons.o_f_c_bd.enable
-	cons.tx_h157.enable
+	cons.tx_h158.enable
 	cons.cx_c_blocks.enable
 	cons.f_c_blocks.enable
 	cons.o_cx_c_blocks.enable
 	cons.o_f_c_blocks.enable
-	cons.tx_h158.enable
+	cons.tx_h159.enable
 	cons.cx_c_blockdiag.enable
 	cons.f_c_blockdiag.enable
 	cons.o_cx_c_blockdiag.enable
 	cons.o_f_c_blockdiag.enable
-	cons.tx_h159.enable
+	cons.tx_h160.enable
 	cons.cx_c_fixedas.enable
 	cons.f_c_fixedas.enable
 	cons.o_cx_c_fixedas.enable
 	cons.o_f_c_fixedas.enable
-	cons.tx_h160.enable
+	cons.tx_h161.enable
 	cons.cx_c_fixallbut.enable
 	cons.f_c_fixallbut.enable
 	cons.o_cx_c_fixallbut.enable
 	cons.o_f_c_fixallbut.enable
-	cons.tx_h161.enable
+	cons.tx_h162.enable
 	cons.cx_c_observed.enable
 	cons.o_cx_c_observed.enable
-	cons.tx_h162.enable
+	cons.tx_h163.enable
 	cons.cx_c_egocentric.enable
 	cons.f_c_egocentric.enable
 	cons.o_cx_c_egocentric.enable
 	cons.o_f_c_egocentric.enable
-	cons.tx_h163.enable
+	cons.tx_h164.enable
 	cons.cx_c_dyadnoise.enable
 	cons.f_c_dyadnoise.enable
 	cons.o_cx_c_dyadnoise.enable
 	cons.o_f_c_dyadnoise.enable
-	cons.tx_h164.enable
-	cons.tx_constraints_extra.enable
-	cons.f_constraints_extra.enable
 	cons.tx_h165.enable
-	cons.tx_obsconstraints_extra.enable
+	cons.tx_constraints_extra.enable
 END
 
 SCRIPT ty_b_17
 BEGIN
-	cons.f_obsconstraints_extra.enable
+	cons.f_constraints_extra.enable
 	cons.tx_h166.enable
+	cons.tx_obsconstraints_extra.enable
+	cons.f_obsconstraints_extra.enable
+	cons.tx_h167.enable
 	cons.tx_freedyads.enable
 	cons.f_freedyads.enable
-	cons.tx_h167.enable
+	cons.tx_h168.enable
 	cons.tx_blockdiag.enable
 	cons.f_blockdiag.enable
-	cons.tx_h168.enable
-	cons.f_fixdensity.enable
 	cons.tx_h169.enable
+	cons.f_fixdensity.enable
+	cons.tx_h170.enable
 	cons.tx_mcmcprop.enable
 	cons.f_mcmcprop.enable
-	cons.tx_h170.enable
+	cons.tx_h171.enable
 	cons.tx_mcmcmaxedges.enable
 	cons.f_mcmcmaxedges.enable
-	cons.tx_h171.enable
+	cons.tx_h172.enable
 	est.tx_method.enable
 	est.f_method.enable
-	est.tx_h172.enable
+	est.tx_h173.enable
 	est.tx_estimate.enable
 	est.f_estimate.enable
-	est.tx_h173.enable
+	est.tx_h174.enable
 	est.tx_mainmethod.enable
 	est.f_mainmethod.enable
-	est.tx_h174.enable
+	est.tx_h175.enable
 	est.tx_mpletype.enable
 	est.f_mpletype.enable
-	est.tx_h175.enable
+	est.tx_h176.enable
 	est.tx_mplecheck.enable
 	est.f_mplecheck.enable
-	est.tx_h176.enable
+	est.tx_h177.enable
 	est.tx_mplecovariance.enable
 	est.f_mplecovariance.enable
-	est.tx_h177.enable
+	est.tx_h178.enable
 	est.tx_init.enable
 	est.f_init.enable
-	est.tx_h178.enable
-	est.tx_mcmleiterations.enable
-	est.f_mcmleiterations.enable
 	est.tx_h179.enable
 END
 
 SCRIPT ty_b_18
 BEGIN
+	est.tx_mcmleiterations.enable
+	est.f_mcmleiterations.enable
+	est.tx_h180.enable
 	est.tx_mcmleconfidence.enable
 	est.f_mcmleconfidence.enable
-	est.tx_h180.enable
+	est.tx_h181.enable
 	est.tx_mcmletermination.enable
 	est.f_mcmletermination.enable
-	est.tx_h181.enable
+	est.tx_h182.enable
 	est.tx_mcmlesteplength.enable
 	est.f_mcmlesteplength.enable
-	est.tx_h182.enable
+	est.tx_h183.enable
 	est.tx_mcmlestepmargin.enable
 	est.f_mcmlestepmargin.enable
-	est.tx_h183.enable
+	est.tx_h184.enable
 	est.tx_mcmleeffectivesize.enable
 	est.f_mcmleeffectivesize.enable
-	est.tx_h184.enable
+	est.tx_h185.enable
 	est.tx_proposal.enable
 	est.f_proposal.enable
-	est.tx_h203.enable
+	est.tx_h204.enable
 	est.tx_cdnsteps.enable
 	est.f_cdnsteps.enable
-	est.tx_h204.enable
+	est.tx_h205.enable
 	est.tx_cdsamplesize.enable
 	est.f_cdsamplesize.enable
-	est.tx_h205.enable
+	est.tx_h206.enable
 	est.tx_saburnin.enable
 	est.f_saburnin.enable
-	est.tx_h206.enable
+	est.tx_h207.enable
 	est.tx_sainterval.enable
 	est.f_sainterval.enable
-	est.tx_h207.enable
+	est.tx_h208.enable
 	est.tx_saphase3.enable
 	est.f_saphase3.enable
-	est.tx_h208.enable
+	est.tx_h209.enable
 	est.tx_sagain.enable
 	est.f_sagain.enable
-	est.tx_h209.enable
-	est.tx_sansub.enable
-	est.f_sansub.enable
 	est.tx_h210.enable
-	est.tx_mcmcburnin.enable
+	est.tx_sansub.enable
 END
 
 SCRIPT ty_b_19
 BEGIN
-	est.f_mcmcburnin.enable
+	est.f_sansub.enable
 	est.tx_h211.enable
+	est.tx_mcmcburnin.enable
+	est.f_mcmcburnin.enable
+	est.tx_h212.enable
 	est.tx_mcmcinterval.enable
 	est.f_mcmcinterval.enable
-	est.tx_h212.enable
+	est.tx_h213.enable
 	est.tx_mcmcsamplesize.enable
 	est.f_mcmcsamplesize.enable
-	est.tx_h213.enable
+	est.tx_h214.enable
 	est.tx_seed.enable
 	est.f_seed.enable
-	est.tx_h214.enable
-	est.f_spcache.enable
 	est.tx_h215.enable
-	est.f_nonative.enable
+	est.f_spcache.enable
 	est.tx_h216.enable
+	est.f_nonative.enable
+	est.tx_h217.enable
 	est.tx_bridgesteps.enable
 	est.f_bridgesteps.enable
-	est.tx_h217.enable
+	est.tx_h218.enable
 	est.tx_bridgesamplesize.enable
 	est.f_bridgesamplesize.enable
-	est.tx_h218.enable
+	est.tx_h219.enable
 	est.tx_bridgeinterval.enable
 	est.f_bridgeinterval.enable
-	est.tx_h219.enable
-	est.f_nologlik.enable
 	est.tx_h220.enable
-	est.f_nomcmcsample.enable
+	est.f_nologlik.enable
 	est.tx_h221.enable
-	est.f_verbose.enable
+	est.f_nomcmcsample.enable
 	est.tx_h222.enable
+	est.f_verbose.enable
+	est.tx_h223.enable
 	est.tx_offset.enable
 	est.f_offset.enable
-	est.tx_h223.enable
+	est.tx_h224.enable
 	est.tx_coeflabel.enable
 	est.f_coeflabel.enable
-	est.tx_h224.enable
-	est.tx_logstat.enable
-	est.f_logstat.enable
 	est.tx_h225.enable
-	est.tx_expstat.enable
+	est.tx_logstat.enable
 END
 
 SCRIPT ty_b_20
 BEGIN
-	est.f_expstat.enable
+	est.f_logstat.enable
 	est.tx_h226.enable
+	est.tx_expstat.enable
+	est.f_expstat.enable
+	est.tx_h227.enable
 	bayes.tx_chains.enable
 	bayes.f_chains.enable
-	bayes.tx_h185.enable
+	bayes.tx_h186.enable
 	bayes.tx_burnin.enable
 	bayes.f_burnin.enable
-	bayes.tx_h186.enable
+	bayes.tx_h187.enable
 	bayes.tx_iterations.enable
 	bayes.f_iterations.enable
-	bayes.tx_h187.enable
+	bayes.tx_h188.enable
 	bayes.tx_thin.enable
 	bayes.f_thin.enable
-	bayes.tx_h188.enable
+	bayes.tx_h189.enable
 	bayes.tx_auxiterations.enable
 	bayes.f_auxiterations.enable
-	bayes.tx_h189.enable
+	bayes.tx_h190.enable
 	bayes.tx_gamma.enable
 	bayes.f_gamma.enable
-	bayes.tx_h190.enable
+	bayes.tx_h191.enable
 	bayes.tx_proposalvar.enable
 	bayes.f_proposalvar.enable
-	bayes.tx_h191.enable
+	bayes.tx_h192.enable
 	bayes.tx_targetaccept.enable
 	bayes.f_targetaccept.enable
-	bayes.tx_h192.enable
+	bayes.tx_h193.enable
 	bayes.tx_dainflate.enable
 	bayes.f_dainflate.enable
-	bayes.tx_h193.enable
-	bayes.f_noadapt.enable
 	bayes.tx_h194.enable
-	bayes.f_nodelayed.enable
+	bayes.f_noadapt.enable
 	bayes.tx_h195.enable
+	bayes.f_nodelayed.enable
+	bayes.tx_h196.enable
 	bayes.tx_priormean.enable
 	bayes.f_priormean.enable
-	bayes.tx_h196.enable
-	bayes.tx_priorvar.enable
-	bayes.f_priorvar.enable
 	bayes.tx_h197.enable
-	bayes.tx_priorcov.enable
+	bayes.tx_priorvar.enable
 END
 
 SCRIPT ty_b_21
 BEGIN
-	bayes.f_priorcov.enable
+	bayes.f_priorvar.enable
 	bayes.tx_h198.enable
+	bayes.tx_priorcov.enable
+	bayes.f_priorcov.enable
+	bayes.tx_h199.enable
 	bayes.tx_priordecay.enable
 	bayes.f_priordecay.enable
-	bayes.tx_h199.enable
+	bayes.tx_h200.enable
 	bayes.tx_startvals.enable
 	bayes.f_startvals.enable
-	bayes.tx_h200.enable
+	bayes.tx_h201.enable
 	bayes.tx_bframe.enable
 	bayes.f_bframe.enable
-	bayes.tx_h201.enable
-	bayes.f_nodraws.enable
 	bayes.tx_h202.enable
+	bayes.f_nodraws.enable
+	bayes.tx_h203.enable
 END
 
 SCRIPT ty_b
@@ -5978,101 +5996,104 @@ BEGIN
   TEXT      tx_type 10 108 200 ., label("type()  - directed shared partners")
   COMBOBOX  f_type 215 106 100 ., dropdownlist contents(l_f_type) values(l_f_type_v) option(type) nomem
   TEXT      tx_h49 325 108 660 ., label("applies to gwesp gwdsp gwnsp esp dsp (directed networks)")
-  TEXT      tx_s94_tri 10 129 960 ., label("== Shared partners, geometrically weighted: fixed decay ==")
-  CHECKBOX  cx_gwesp 10 148 204 ., label("gwesp()") default(0) nomem
-  EDIT      f_gwesp 222 148 170 ., default("0.5") option(gwesp) nomem
-  TEXT      tx_h50 400 150 585 ., label("decay; edgewise shared partners")
-  CHECKBOX  cx_gwdsp 10 169 204 ., label("gwdsp()") default(0) nomem
-  EDIT      f_gwdsp 222 169 170 ., default("0.5") option(gwdsp) nomem
-  TEXT      tx_h51 400 171 585 ., label("decay; dyadwise shared partners")
-  CHECKBOX  cx_gwnsp 10 190 204 ., label("gwnsp()") default(0) nomem
-  EDIT      f_gwnsp 222 190 170 ., default("0.5") option(gwnsp) nomem
-  TEXT      tx_h52 400 192 585 ., label("decay; non-edgewise shared partners")
-  TEXT      tx_s178_tri 10 213 960 ., label("== Shared partners, geometrically weighted: decay estimated (the value is the starting value) ==")
-  CHECKBOX  cx_gwespfree 10 232 204 ., label("gwespfree()  [gwesp, curved]") default(0) nomem
-  EDIT      f_gwespfree 222 232 170 ., default("0.5") option(gwespfree) nomem
-  TEXT      tx_h53 400 234 585 ., label("start value; method(mple) or mcmle")
-  CHECKBOX  cx_gwdspfree 10 253 204 ., label("gwdspfree()  [gwdsp, curved]") default(0) nomem
-  EDIT      f_gwdspfree 222 253 170 ., default("0.5") option(gwdspfree) nomem
+  TEXT      tx_gwcutoff 10 129 200 ., label("gwcutoff()  - curved cutoff")
+  EDIT      f_gwcutoff 215 127 80 ., option(gwcutoff) nomem
+  TEXT      tx_h50 305 129 680 ., label("default 30; the fit stops when a count exceeds it")
+  TEXT      tx_s115_tri 10 150 960 ., label("== Shared partners, geometrically weighted: fixed decay ==")
+  CHECKBOX  cx_gwesp 10 169 204 ., label("gwesp()") default(0) nomem
+  EDIT      f_gwesp 222 169 170 ., default("0.5") option(gwesp) nomem
+  TEXT      tx_h51 400 171 585 ., label("decay; edgewise shared partners")
+  CHECKBOX  cx_gwdsp 10 190 204 ., label("gwdsp()") default(0) nomem
+  EDIT      f_gwdsp 222 190 170 ., default("0.5") option(gwdsp) nomem
+  TEXT      tx_h52 400 192 585 ., label("decay; dyadwise shared partners")
+  CHECKBOX  cx_gwnsp 10 211 204 ., label("gwnsp()") default(0) nomem
+  EDIT      f_gwnsp 222 211 170 ., default("0.5") option(gwnsp) nomem
+  TEXT      tx_h53 400 213 585 ., label("decay; non-edgewise shared partners")
+  TEXT      tx_s199_tri 10 234 960 ., label("== Shared partners, geometrically weighted: decay estimated (the value is the starting value) ==")
+  CHECKBOX  cx_gwespfree 10 253 204 ., label("gwespfree()  [gwesp, curved]") default(0) nomem
+  EDIT      f_gwespfree 222 253 170 ., default("0.5") option(gwespfree) nomem
   TEXT      tx_h54 400 255 585 ., label("start value; method(mple) or mcmle")
-  CHECKBOX  cx_gwnspfree 10 274 204 ., label("gwnspfree()  [gwnsp, curved]") default(0) nomem
-  EDIT      f_gwnspfree 222 274 170 ., default("0.5") option(gwnspfree) nomem
+  CHECKBOX  cx_gwdspfree 10 274 204 ., label("gwdspfree()  [gwdsp, curved]") default(0) nomem
+  EDIT      f_gwdspfree 222 274 170 ., default("0.5") option(gwdspfree) nomem
   TEXT      tx_h55 400 276 585 ., label("start value; method(mple) or mcmle")
-  TEXT      tx_s262_tri 10 297 960 ., label("== Triad terms (structural()) ==")
-  CHECKBOX  cx_s_triangle 10 316 204 ., label("triangle(attr= diff)") default(0) nomem
-  TEXT      tx_s_triangle_attr 222 318 37 ., label("attr=")
-  EDIT      f_s_triangle_attr 259 316 70 ., nomem
-  CHECKBOX  f_s_triangle_diff 337 316 49 ., label("diff") default(0) nomem
-  TEXT      tx_h56 390 318 595 ., label("triangle by attribute")
-  CHECKBOX  cx_transitive 10 337 204 ., label("transitive") default(0) nomem
-  TEXT      tx_h57 222 339 763 ., label("directed")
-  CHECKBOX  cx_intransitive 10 358 204 ., label("intransitive") default(0) nomem
+  CHECKBOX  cx_gwnspfree 10 295 204 ., label("gwnspfree()  [gwnsp, curved]") default(0) nomem
+  EDIT      f_gwnspfree 222 295 170 ., default("0.5") option(gwnspfree) nomem
+  TEXT      tx_h56 400 297 585 ., label("start value; method(mple) or mcmle")
+  TEXT      tx_s283_tri 10 318 960 ., label("== Triad terms (structural()) ==")
+  CHECKBOX  cx_s_triangle 10 337 204 ., label("triangle(attr= diff)") default(0) nomem
+  TEXT      tx_s_triangle_attr 222 339 37 ., label("attr=")
+  EDIT      f_s_triangle_attr 259 337 70 ., nomem
+  CHECKBOX  f_s_triangle_diff 337 337 49 ., label("diff") default(0) nomem
+  TEXT      tx_h57 390 339 595 ., label("triangle by attribute")
+  CHECKBOX  cx_transitive 10 358 204 ., label("transitive") default(0) nomem
   TEXT      tx_h58 222 360 763 ., label("directed")
-  CHECKBOX  cx_ttriple 10 379 204 ., label("ttriple(attr= diff)") default(0) nomem
-  TEXT      tx_ttriple_attr 222 381 37 ., label("attr=")
-  EDIT      f_ttriple_attr 259 379 70 ., nomem
-  CHECKBOX  f_ttriple_diff 337 379 49 ., label("diff") default(0) nomem
-  TEXT      tx_h59 390 381 595 ., label("directed")
-  CHECKBOX  cx_s_ctriple 10 400 204 ., label("ctriple(attr= diff)") default(0) nomem
-  TEXT      tx_s_ctriple_attr 222 402 37 ., label("attr=")
-  EDIT      f_s_ctriple_attr 259 400 70 ., nomem
-  CHECKBOX  f_s_ctriple_diff 337 400 49 ., label("diff") default(0) nomem
-  TEXT      tx_h60 390 402 595 ., label("directed; plain form is on the first tab")
-  CHECKBOX  cx_cycle 10 421 204 ., label("cycle(k= semi)") default(0) nomem
-  TEXT      tx_cycle_k 222 423 18 ., label("k=")
-  EDIT      f_cycle_k 240 421 60 ., nomem
-  CHECKBOX  f_cycle_semi 308 421 49 ., label("semi") default(0) nomem
-  TEXT      tx_h61 361 423 624 ., label("k = cycle lengths, e.g. 3 4")
-  CHECKBOX  cx_threetrail 10 43 204 ., label("threetrail(keep=)") default(0) nomem
-  TEXT      tx_threetrail_keep 222 45 37 ., label("keep=")
-  EDIT      f_threetrail_keep 259 43 70 ., nomem
-  TEXT      tx_h62 337 45 648 ., label("four types RRR RRL LRR LRL if directed")
-  CHECKBOX  cx_balance 10 64 204 ., label("balance") default(0) nomem
-  TEXT      tx_h63 222 66 763 ., label("balanced triads")
-  CHECKBOX  cx_triadcensus 10 85 204 ., label("triadcensus(levels=)") default(0) nomem
-  TEXT      tx_triadcensus_levels 222 87 50 ., label("levels=")
-  EDIT      f_triadcensus_levels 272 85 70 ., nomem
-  TEXT      tx_h64 350 87 635 ., label("triad census")
-  CHECKBOX  cx_tripercent 10 106 204 ., label("tripercent(attr= diff)") default(0) nomem
-  TEXT      tx_tripercent_attr 222 108 37 ., label("attr=")
-  EDIT      f_tripercent_attr 259 106 70 ., nomem
-  CHECKBOX  f_tripercent_diff 337 106 49 ., label("diff") default(0) nomem
-  TEXT      tx_h65 390 108 595 ., label("undirected")
-  CHECKBOX  cx_nearsimmelian 10 127 204 ., label("nearsimmelian") default(0) nomem
-  TEXT      tx_h66 222 129 763 ., label("directed")
-  CHECKBOX  cx_simmelian 10 148 204 ., label("simmelian") default(0) nomem
+  CHECKBOX  cx_intransitive 10 379 204 ., label("intransitive") default(0) nomem
+  TEXT      tx_h59 222 381 763 ., label("directed")
+  CHECKBOX  cx_ttriple 10 400 204 ., label("ttriple(attr= diff)") default(0) nomem
+  TEXT      tx_ttriple_attr 222 402 37 ., label("attr=")
+  EDIT      f_ttriple_attr 259 400 70 ., nomem
+  CHECKBOX  f_ttriple_diff 337 400 49 ., label("diff") default(0) nomem
+  TEXT      tx_h60 390 402 595 ., label("directed")
+  CHECKBOX  cx_s_ctriple 10 421 204 ., label("ctriple(attr= diff)") default(0) nomem
+  TEXT      tx_s_ctriple_attr 222 423 37 ., label("attr=")
+  EDIT      f_s_ctriple_attr 259 421 70 ., nomem
+  CHECKBOX  f_s_ctriple_diff 337 421 49 ., label("diff") default(0) nomem
+  TEXT      tx_h61 390 423 595 ., label("directed; plain form is on the first tab")
+  CHECKBOX  cx_cycle 10 43 204 ., label("cycle(k= semi)") default(0) nomem
+  TEXT      tx_cycle_k 222 45 18 ., label("k=")
+  EDIT      f_cycle_k 240 43 60 ., nomem
+  CHECKBOX  f_cycle_semi 308 43 49 ., label("semi") default(0) nomem
+  TEXT      tx_h62 361 45 624 ., label("k = cycle lengths, e.g. 3 4")
+  CHECKBOX  cx_threetrail 10 64 204 ., label("threetrail(keep=)") default(0) nomem
+  TEXT      tx_threetrail_keep 222 66 37 ., label("keep=")
+  EDIT      f_threetrail_keep 259 64 70 ., nomem
+  TEXT      tx_h63 337 66 648 ., label("four types RRR RRL LRR LRL if directed")
+  CHECKBOX  cx_balance 10 85 204 ., label("balance") default(0) nomem
+  TEXT      tx_h64 222 87 763 ., label("balanced triads")
+  CHECKBOX  cx_triadcensus 10 106 204 ., label("triadcensus(levels=)") default(0) nomem
+  TEXT      tx_triadcensus_levels 222 108 50 ., label("levels=")
+  EDIT      f_triadcensus_levels 272 106 70 ., nomem
+  TEXT      tx_h65 350 108 635 ., label("triad census")
+  CHECKBOX  cx_tripercent 10 127 204 ., label("tripercent(attr= diff)") default(0) nomem
+  TEXT      tx_tripercent_attr 222 129 37 ., label("attr=")
+  EDIT      f_tripercent_attr 259 127 70 ., nomem
+  CHECKBOX  f_tripercent_diff 337 127 49 ., label("diff") default(0) nomem
+  TEXT      tx_h66 390 129 595 ., label("undirected")
+  CHECKBOX  cx_nearsimmelian 10 148 204 ., label("nearsimmelian") default(0) nomem
   TEXT      tx_h67 222 150 763 ., label("directed")
-  CHECKBOX  cx_simmelianties 10 169 204 ., label("simmelianties") default(0) nomem
+  CHECKBOX  cx_simmelian 10 169 204 ., label("simmelian") default(0) nomem
   TEXT      tx_h68 222 171 763 ., label("directed")
-  CHECKBOX  cx_asymmetric 10 190 204 ., label("asymmetric(attr= diff)") default(0) nomem
-  TEXT      tx_asymmetric_attr 222 192 37 ., label("attr=")
-  EDIT      f_asymmetric_attr 259 190 70 ., nomem
-  CHECKBOX  f_asymmetric_diff 337 190 49 ., label("diff") default(0) nomem
-  TEXT      tx_h69 390 192 595 ., label("directed")
-  CHECKBOX  cx_s_mutual 10 211 204 ., label("mutual(same= diff by=)") default(0) nomem
-  TEXT      tx_s_mutual_same 222 213 37 ., label("same=")
-  EDIT      f_s_mutual_same 259 211 60 ., nomem
-  CHECKBOX  f_s_mutual_diff 327 211 49 ., label("diff") default(0) nomem
-  TEXT      tx_s_mutual_by 380 213 24 ., label("by=")
-  EDIT      f_s_mutual_by 404 211 60 ., nomem
-  TEXT      tx_h70 472 213 513 ., label("directed; use instead of plain mutual")
-  CHECKBOX  cx_localtriangle 10 232 204 ., label("localtriangle(x=)") default(0) nomem
-  TEXT      tx_localtriangle_x 222 234 18 ., label("x=")
-  COMBOBOX  f_localtriangle_x 240 232 90 ., dropdown contents(netlist) nomem
-  TEXT      tx_h71 338 234 647 ., label("x = network with the same nodes")
-  CHECKBOX  cx_opentriad 10 253 204 ., label("opentriad") default(0) nomem
-  TEXT      tx_h72 222 255 763 ., label("structural()")
-  CHECKBOX  cx_nsp 10 274 204 ., label("nsp(d= type=)") default(0) nomem
-  TEXT      tx_nsp_d 222 276 18 ., label("d=")
-  EDIT      f_nsp_d 240 274 60 ., nomem
-  TEXT      tx_nsp_type 308 276 37 ., label("type=")
-  COMBOBOX  f_nsp_type 345 274 70 ., dropdownlist contents(l_f_nsp_type) values(l_f_nsp_type_v) nomem
-  TEXT      tx_h73 423 276 562 ., label("non-shared partner counts")
-  CHECKBOX  cx_s_altkstar 10 295 204 ., label("altkstar(lambda= fixed)") default(0) nomem
-  TEXT      tx_s_altkstar_lambda 222 297 50 ., label("lambda=")
-  EDIT      f_s_altkstar_lambda 272 295 60 ., default("0.8") nomem
-  CHECKBOX  f_s_altkstar_fixed 340 295 55 ., label("fixed") default(0) nomem
-  TEXT      tx_h74 399 297 586 ., label("fixed: lambda held; else curved, needs init(), method(mple)")
+  CHECKBOX  cx_simmelianties 10 190 204 ., label("simmelianties") default(0) nomem
+  TEXT      tx_h69 222 192 763 ., label("directed")
+  CHECKBOX  cx_asymmetric 10 211 204 ., label("asymmetric(attr= diff)") default(0) nomem
+  TEXT      tx_asymmetric_attr 222 213 37 ., label("attr=")
+  EDIT      f_asymmetric_attr 259 211 70 ., nomem
+  CHECKBOX  f_asymmetric_diff 337 211 49 ., label("diff") default(0) nomem
+  TEXT      tx_h70 390 213 595 ., label("directed")
+  CHECKBOX  cx_s_mutual 10 232 204 ., label("mutual(same= diff by=)") default(0) nomem
+  TEXT      tx_s_mutual_same 222 234 37 ., label("same=")
+  EDIT      f_s_mutual_same 259 232 60 ., nomem
+  CHECKBOX  f_s_mutual_diff 327 232 49 ., label("diff") default(0) nomem
+  TEXT      tx_s_mutual_by 380 234 24 ., label("by=")
+  EDIT      f_s_mutual_by 404 232 60 ., nomem
+  TEXT      tx_h71 472 234 513 ., label("directed; use instead of plain mutual")
+  CHECKBOX  cx_localtriangle 10 253 204 ., label("localtriangle(x=)") default(0) nomem
+  TEXT      tx_localtriangle_x 222 255 18 ., label("x=")
+  COMBOBOX  f_localtriangle_x 240 253 90 ., dropdown contents(netlist) nomem
+  TEXT      tx_h72 338 255 647 ., label("x = network with the same nodes")
+  CHECKBOX  cx_opentriad 10 274 204 ., label("opentriad") default(0) nomem
+  TEXT      tx_h73 222 276 763 ., label("structural()")
+  CHECKBOX  cx_nsp 10 295 204 ., label("nsp(d= type=)") default(0) nomem
+  TEXT      tx_nsp_d 222 297 18 ., label("d=")
+  EDIT      f_nsp_d 240 295 60 ., nomem
+  TEXT      tx_nsp_type 308 297 37 ., label("type=")
+  COMBOBOX  f_nsp_type 345 295 70 ., dropdownlist contents(l_f_nsp_type) values(l_f_nsp_type_v) nomem
+  TEXT      tx_h74 423 297 562 ., label("non-shared partner counts")
+  CHECKBOX  cx_s_altkstar 10 316 204 ., label("altkstar(lambda= fixed)") default(0) nomem
+  TEXT      tx_s_altkstar_lambda 222 318 50 ., label("lambda=")
+  EDIT      f_s_altkstar_lambda 272 316 60 ., default("0.8") nomem
+  CHECKBOX  f_s_altkstar_fixed 340 316 55 ., label("fixed") default(0) nomem
+  TEXT      tx_h75 399 318 586 ., label("fixed: lambda held; else curved, needs init(), method(mple)")
 END
 
 DIALOG cov, tabtitle("Covariate")
@@ -6084,122 +6105,122 @@ BEGIN
   VARLIST   f_nodecov 208 64 200 ., label("vars") option(nodecov) nomem
   TEXT      tx_nodecov_c 416 66 8 ., label(",")
   EDIT      f_nodecov_sub 428 64 150 ., nomem
-  TEXT      tx_h75 586 66 399 ., label("[, expressions allowed]")
+  TEXT      tx_h76 586 66 399 ., label("[, expressions allowed]")
   CHECKBOX  cx_nodeicov 10 85 190 ., label("nodeicov()") default(0) nomem
   VARLIST   f_nodeicov 208 85 200 ., label("vars") option(nodeicov) nomem
   TEXT      tx_nodeicov_c 416 87 8 ., label(",")
   EDIT      f_nodeicov_sub 428 85 150 ., nomem
-  TEXT      tx_h76 586 87 399 ., label("directed only")
+  TEXT      tx_h77 586 87 399 ., label("directed only")
   CHECKBOX  cx_nodeocov 10 106 190 ., label("nodeocov()") default(0) nomem
   VARLIST   f_nodeocov 208 106 200 ., label("vars") option(nodeocov) nomem
   TEXT      tx_nodeocov_c 416 108 8 ., label(",")
   EDIT      f_nodeocov_sub 428 106 150 ., nomem
-  TEXT      tx_h77 586 108 399 ., label("directed only")
+  TEXT      tx_h78 586 108 399 ., label("directed only")
   CHECKBOX  cx_nodefactor 10 127 190 ., label("nodefactor()") default(0) nomem
   VARLIST   f_nodefactor 208 127 200 ., label("vars") option(nodefactor) nomem
   TEXT      tx_nodefactor_c 416 129 8 ., label(",")
   EDIT      f_nodefactor_sub 428 127 150 ., nomem
-  TEXT      tx_h78 586 129 399 ., label("[, levels() levelvalues() base()]")
+  TEXT      tx_h79 586 129 399 ., label("[, levels() levelvalues() base()]")
   CHECKBOX  cx_nodeofactor 10 148 190 ., label("nodeofactor()") default(0) nomem
   VARLIST   f_nodeofactor 208 148 200 ., label("vars") option(nodeofactor) nomem
   TEXT      tx_nodeofactor_c 416 150 8 ., label(",")
   EDIT      f_nodeofactor_sub 428 148 150 ., nomem
-  TEXT      tx_h79 586 150 399 ., label("directed; [, levels() base()]")
+  TEXT      tx_h80 586 150 399 ., label("directed; [, levels() base()]")
   CHECKBOX  cx_nodeifactor 10 169 190 ., label("nodeifactor()") default(0) nomem
   VARLIST   f_nodeifactor 208 169 200 ., label("vars") option(nodeifactor) nomem
   TEXT      tx_nodeifactor_c 416 171 8 ., label(",")
   EDIT      f_nodeifactor_sub 428 169 150 ., nomem
-  TEXT      tx_h80 586 171 399 ., label("directed; [, levels() base()]")
+  TEXT      tx_h81 586 171 399 ., label("directed; [, levels() base()]")
   CHECKBOX  cx_nodematch 10 190 190 ., label("nodematch()") default(0) nomem
   VARLIST   f_nodematch 208 190 200 ., label("vars") option(nodematch) nomem
   TEXT      tx_nodematch_c 416 192 8 ., label(",")
   EDIT      f_nodematch_sub 428 190 150 ., nomem
-  TEXT      tx_h81 586 192 399 ., label("[, diff keep() levels() levelvalues()]")
+  TEXT      tx_h82 586 192 399 ., label("[, diff keep() levels() levelvalues()]")
   CHECKBOX  cx_nodematchdiff 10 211 190 ., label("nodematchdiff()") default(0) nomem
   VARLIST   f_nodematchdiff 208 211 200 ., label("vars") option(nodematchdiff) nomem
   TEXT      tx_nodematchdiff_c 416 213 8 ., label(",")
   EDIT      f_nodematchdiff_sub 428 211 150 ., nomem
-  TEXT      tx_h82 586 213 399 ., label("same as nodematch(vars, diff)")
+  TEXT      tx_h83 586 213 399 ., label("same as nodematch(vars, diff)")
   CHECKBOX  cx_nodemix 10 232 190 ., label("nodemix()") default(0) nomem
   VARLIST   f_nodemix 208 232 200 ., label("vars") option(nodemix) nomem
   TEXT      tx_nodemix_c 416 234 8 ., label(",")
   EDIT      f_nodemix_sub 428 232 150 ., nomem
-  TEXT      tx_h83 586 234 399 ., label("[, levels() levels2() base()]; also two-mode")
+  TEXT      tx_h84 586 234 399 ., label("[, levels() levels2() base()]; also two-mode")
   CHECKBOX  cx_mm 10 253 190 ., label("mm()") default(0) nomem
   VARLIST   f_mm 208 253 200 ., label("vars") option(mm) nomem
   TEXT      tx_mm_c 416 255 8 ., label(",")
   EDIT      f_mm_sub 428 253 150 ., nomem
-  TEXT      tx_h84 586 255 399 ., label("[, levels() levels2()]; one attribute")
+  TEXT      tx_h85 586 255 399 ., label("[, levels() levels2()]; one attribute")
   CHECKBOX  cx_absdist 10 274 190 ., label("absdist()  [absdiff]") default(0) nomem
   VARLIST   f_absdist 208 274 200 ., label("vars") option(absdist) nomem
   TEXT      tx_absdist_c 416 276 8 ., label(",")
   EDIT      f_absdist_sub 428 274 150 ., nomem
-  TEXT      tx_h85 586 276 399 ., label("[, pow(#)]")
+  TEXT      tx_h86 586 276 399 ., label("[, pow(#)]")
   CHECKBOX  cx_absdiffcat 10 295 190 ., label("absdiffcat()") default(0) nomem
   VARLIST   f_absdiffcat 208 295 200 ., label("vars") option(absdiffcat) nomem
   TEXT      tx_absdiffcat_c 416 297 8 ., label(",")
   EDIT      f_absdiffcat_sub 428 295 150 ., nomem
-  TEXT      tx_h86 586 297 399 ., label("[, levels() levelvalues() base()]")
+  TEXT      tx_h87 586 297 399 ., label("[, levels() levelvalues() base()]")
   CHECKBOX  cx_diff 10 316 190 ., label("diff()") default(0) nomem
   VARLIST   f_diff 208 316 200 ., label("vars") option(diff) nomem
   TEXT      tx_diff_c 416 318 8 ., label(",")
   EDIT      f_diff_sub 428 316 150 ., nomem
-  TEXT      tx_h87 586 318 399 ., label("[, pow() dir() signaction()]")
+  TEXT      tx_h88 586 318 399 ., label("[, pow() dir() signaction()]")
   CHECKBOX  cx_smalldiff 10 337 190 ., label("smalldiff()") default(0) nomem
   VARLIST   f_smalldiff 208 337 200 ., label("vars") option(smalldiff) nomem
   TEXT      tx_smalldiff_c 416 339 8 ., label(",")
   EDIT      f_smalldiff_sub 428 337 150 ., nomem
-  TEXT      tx_h88 586 339 399 ., label("needs , cutoff(#)")
+  TEXT      tx_h89 586 339 399 ., label("needs , cutoff(#)")
   CHECKBOX  cx_sociality 10 358 190 ., label("sociality()") default(0) nomem
   VARLIST   f_sociality 208 358 200 ., label("vars") option(sociality) nomem
   TEXT      tx_sociality_c 416 360 8 ., label(",")
   EDIT      f_sociality_sub 428 358 150 ., nomem
-  TEXT      tx_h89 586 360 399 ., label("[, nodes() levels()]; . = none; undirected")
+  TEXT      tx_h90 586 360 399 ., label("[, nodes() levels()]; . = none; undirected")
   CHECKBOX  cx_nodecovrange 10 379 190 ., label("nodecovrange()") default(0) nomem
   VARLIST   f_nodecovrange 208 379 200 ., label("vars") option(nodecovrange) nomem
   TEXT      tx_nodecovrange_c 416 381 8 ., label(",")
   EDIT      f_nodecovrange_sub 428 379 150 ., nomem
-  TEXT      tx_h90 586 381 399 ., label("dyad-dependent")
+  TEXT      tx_h91 586 381 399 ., label("dyad-dependent")
   CHECKBOX  cx_nodeocovrange 10 400 190 ., label("nodeocovrange()") default(0) nomem
   VARLIST   f_nodeocovrange 208 400 200 ., label("vars") option(nodeocovrange) nomem
   TEXT      tx_nodeocovrange_c 416 402 8 ., label(",")
   EDIT      f_nodeocovrange_sub 428 400 150 ., nomem
-  TEXT      tx_h91 586 402 399 ., label("directed; dyad-dependent")
+  TEXT      tx_h92 586 402 399 ., label("directed; dyad-dependent")
   CHECKBOX  cx_nodeicovrange 10 421 190 ., label("nodeicovrange()") default(0) nomem
   VARLIST   f_nodeicovrange 208 421 200 ., label("vars") option(nodeicovrange) nomem
   TEXT      tx_nodeicovrange_c 416 423 8 ., label(",")
   EDIT      f_nodeicovrange_sub 428 421 150 ., nomem
-  TEXT      tx_h92 586 423 399 ., label("directed; dyad-dependent")
+  TEXT      tx_h93 586 423 399 ., label("directed; dyad-dependent")
   CHECKBOX  cx_nodefactordistinct 10 43 190 ., label("nodefactordistinct()") default(0) nomem
   VARLIST   f_nodefactordistinct 208 43 200 ., label("vars") option(nodefactordistinct) nomem
   TEXT      tx_nodefactordistinct_c 416 45 8 ., label(",")
   EDIT      f_nodefactordistinct_sub 428 43 150 ., nomem
-  TEXT      tx_h93 586 45 399 ., label("[, levels() levelvalues()]; dyad-dependent")
+  TEXT      tx_h94 586 45 399 ., label("[, levels() levelvalues()]; dyad-dependent")
   CHECKBOX  cx_nodeofactordistinct 10 64 190 ., label("nodeofactordistinct()") default(0) nomem
   VARLIST   f_nodeofactordistinct 208 64 200 ., label("vars") option(nodeofactordistinct) nomem
   TEXT      tx_nodeofactordistinct_c 416 66 8 ., label(",")
   EDIT      f_nodeofactordistinct_sub 428 64 150 ., nomem
-  TEXT      tx_h94 586 66 399 ., label("directed; dyad-dependent")
+  TEXT      tx_h95 586 66 399 ., label("directed; dyad-dependent")
   CHECKBOX  cx_nodeifactordistinct 10 85 190 ., label("nodeifactordistinct()") default(0) nomem
   VARLIST   f_nodeifactordistinct 208 85 200 ., label("vars") option(nodeifactordistinct) nomem
   TEXT      tx_nodeifactordistinct_c 416 87 8 ., label(",")
   EDIT      f_nodeifactordistinct_sub 428 85 150 ., nomem
-  TEXT      tx_h95 586 87 399 ., label("directed; dyad-dependent")
+  TEXT      tx_h96 586 87 399 ., label("directed; dyad-dependent")
   TEXT      tx_s73_cov2 10 108 960 ., label("== Dyadic covariates (networks or matrices) ==")
   CHECKBOX  cx_edgecov 10 127 190 ., label("edgecov()") default(0) nomem
   COMBOBOX  f_edgecov 208 127 170 ., dropdown contents(netlist) option(edgecov) nomem
-  TEXT      tx_h96 386 129 599 ., label("a network or an n x n Stata matrix; also two-mode")
+  TEXT      tx_h97 386 129 599 ., label("a network or an n x n Stata matrix; also two-mode")
   CHECKBOX  cx_dyadcov 10 148 190 ., label("dyadcov()") default(0) nomem
   COMBOBOX  f_dyadcov 208 148 170 ., dropdown contents(netlist) option(dyadcov) nomem
-  TEXT      tx_h97 386 150 599 ., label("directed: 3 coefficients (mutual utri ltri)")
+  TEXT      tx_h98 386 150 599 ., label("directed: 3 coefficients (mutual utri ltri)")
   CHECKBOX  cx_hamming 10 169 190 ., label("hamming()") default(0) nomem
   COMBOBOX  f_hamming 208 169 170 ., dropdown contents(netlist) option(hamming) nomem
-  TEXT      tx_h98 386 171 599 ., label("Hamming distance to a reference network")
+  TEXT      tx_h99 386 171 599 ., label("Hamming distance to a reference network")
   CHECKBOX  cx_attrcov 10 190 190 ., label("attrcov(vars, mat())") default(0) nomem
   VARLIST   f_attrcov 208 190 200 ., label("vars") option(attrcov) nomem
   TEXT      tx_attrcov_c 416 192 8 ., label(",")
   EDIT      f_attrcov_sub 428 190 150 ., nomem
-  TEXT      tx_h99 586 192 399 ., label("matrix per level")
+  TEXT      tx_h100 586 192 399 ., label("matrix per level")
 END
 
 DIALOG two, tabtitle("Two-mode")
@@ -6209,148 +6230,148 @@ BEGIN
   TEXT      tx_s10_two 10 45 960 ., label("== Two-mode terms (mode-1 / mode-2) ==")
   CHECKBOX  cx_bcov1 10 64 267 ., label("bcov1()  [b1cov]") default(0) nomem
   VARLIST   f_bcov1 285 64 200 ., label("vars") option(bcov1) nomem
-  TEXT      tx_h100 493 66 492 ., label("two-mode only; node covariate")
+  TEXT      tx_h101 493 66 492 ., label("two-mode only; node covariate")
   CHECKBOX  cx_bfactor1 10 85 267 ., label("bfactor1()  [b1factor]") default(0) nomem
   VARLIST   f_bfactor1 285 85 200 ., label("vars") option(bfactor1) nomem
-  TEXT      tx_h101 493 87 492 ., label("two-mode only")
+  TEXT      tx_h102 493 87 492 ., label("two-mode only")
   CHECKBOX  cx_bdegree1 10 106 267 ., label("bdegree1()  [b1degree]") default(0) nomem
   EDIT      f_bdegree1 285 106 170 ., option(bdegree1) nomem
   TEXT      tx_bdegree1_c 463 108 8 ., label(",")
   EDIT      f_bdegree1_sub 475 106 150 ., nomem
-  TEXT      tx_h102 633 108 352 ., label("two-mode only; [, by() levels()]")
+  TEXT      tx_h103 633 108 352 ., label("two-mode only; [, by() levels()]")
   CHECKBOX  cx_bstar1 10 127 267 ., label("bstar1()  [b1star]") default(0) nomem
   EDIT      f_bstar1 285 127 170 ., option(bstar1) nomem
   TEXT      tx_bstar1_c 463 129 8 ., label(",")
   EDIT      f_bstar1_sub 475 127 150 ., nomem
-  TEXT      tx_h103 633 129 352 ., label("two-mode only; [, attr() levels()]")
+  TEXT      tx_h104 633 129 352 ., label("two-mode only; [, attr() levels()]")
   CHECKBOX  cx_bnodematch1 10 148 267 ., label("bnodematch1()  [b1nodematch]") default(0) nomem
   VARLIST   f_bnodematch1 285 148 200 ., label("vars") option(bnodematch1) nomem
   TEXT      tx_bnodematch1_c 493 150 8 ., label(",")
   EDIT      f_bnodematch1_sub 505 148 150 ., nomem
-  TEXT      tx_h104 663 150 322 ., label("two-mode only; [, diff alpha()]")
+  TEXT      tx_h105 663 150 322 ., label("two-mode only; [, diff alpha()]")
   CHECKBOX  cx_bgwdegree1 10 169 267 ., label("bgwdegree1()  [gwb1degree]") default(0) nomem
   EDIT      f_bgwdegree1 285 169 170 ., default("0.5") option(bgwdegree1) nomem
   TEXT      tx_bgwdegree1_c 463 171 8 ., label(",")
   EDIT      f_bgwdegree1_sub 475 169 150 ., nomem
-  TEXT      tx_h105 633 171 352 ., label("two-mode only; decay [, attr() levels()]")
+  TEXT      tx_h106 633 171 352 ., label("two-mode only; decay [, attr() levels()]")
   CHECKBOX  cx_bconcurrent1 10 190 267 ., label("bconcurrent1()  [b1concurrent]") default(0) nomem
   EDIT      f_bconcurrent1 285 190 170 ., default("all") option(bconcurrent1) nomem
-  TEXT      tx_h106 463 192 522 ., label("two-mode only; all  or  by(var) [levels()]")
+  TEXT      tx_h107 463 192 522 ., label("two-mode only; all  or  by(var) [levels()]")
   CHECKBOX  cx_bmindegree1 10 211 267 ., label("bmindegree1()  [b1mindegree]") default(0) nomem
   EDIT      f_bmindegree1 285 211 170 ., option(bmindegree1) nomem
-  TEXT      tx_h107 463 213 522 ., label("two-mode only; numlist of d")
+  TEXT      tx_h108 463 213 522 ., label("two-mode only; numlist of d")
   CHECKBOX  cx_bdegrange1 10 232 267 ., label("bdegrange1()  [b1degrange]") default(0) nomem
   EDIT      f_bdegrange1 285 232 170 ., option(bdegrange1) nomem
   TEXT      tx_bdegrange1_c 463 234 8 ., label(",")
   EDIT      f_bdegrange1_sub 475 232 150 ., nomem
-  TEXT      tx_h108 633 234 352 ., label("two-mode only; [, to() by()]")
+  TEXT      tx_h109 633 234 352 ., label("two-mode only; [, to() by()]")
   CHECKBOX  cx_bcovrange1 10 253 267 ., label("bcovrange1()  [b1covrange]") default(0) nomem
   VARLIST   f_bcovrange1 285 253 200 ., label("vars") option(bcovrange1) nomem
-  TEXT      tx_h109 493 255 492 ., label("two-mode only; one variable")
+  TEXT      tx_h110 493 255 492 ., label("two-mode only; one variable")
   CHECKBOX  cx_bfactordistinct1 10 274 267 ., label("bfactordistinct1()  [b1factordistinct]") default(0) nomem
   VARLIST   f_bfactordistinct1 285 274 200 ., label("vars") option(bfactordistinct1) nomem
   TEXT      tx_bfactordistinct1_c 493 276 8 ., label(",")
   EDIT      f_bfactordistinct1_sub 505 274 150 ., nomem
-  TEXT      tx_h110 663 276 322 ., label("two-mode only; [, levels()]")
+  TEXT      tx_h111 663 276 322 ., label("two-mode only; [, levels()]")
   CHECKBOX  cx_bsociality1 10 295 267 ., label("bsociality1()  [b1sociality]") default(0) nomem
   EDIT      f_bsociality1 285 295 170 ., default("-1") option(bsociality1) nomem
-  TEXT      tx_h111 463 297 522 ., label("two-mode only; node positions, -1 drops the first")
+  TEXT      tx_h112 463 297 522 ., label("two-mode only; node positions, -1 drops the first")
   CHECKBOX  cx_bstarmix1 10 316 267 ., label("bstarmix1()  [b1starmix]") default(0) nomem
   EDIT      f_bstarmix1 285 316 170 ., option(bstarmix1) nomem
   TEXT      tx_bstarmix1_c 463 318 8 ., label(",")
   EDIT      f_bstarmix1_sub 475 316 150 ., nomem
-  TEXT      tx_h112 633 318 352 ., label("two-mode only; k [, attr() base()]")
+  TEXT      tx_h113 633 318 352 ., label("two-mode only; k [, attr() base()]")
   CHECKBOX  cx_btwostar1 10 337 267 ., label("btwostar1()  [b1twostar]") default(0) nomem
   VARLIST   f_btwostar1 285 337 200 ., label("vars") option(btwostar1) nomem
   TEXT      tx_btwostar1_c 493 339 8 ., label(",")
   EDIT      f_btwostar1_sub 505 337 150 ., nomem
-  TEXT      tx_h113 663 339 322 ., label("two-mode only; [, attr2()]")
+  TEXT      tx_h114 663 339 322 ., label("two-mode only; [, attr2()]")
   CHECKBOX  cx_bdsp1 10 358 267 ., label("bdsp1()  [b1dsp]") default(0) nomem
   EDIT      f_bdsp1 285 358 170 ., option(bdsp1) nomem
-  TEXT      tx_h114 463 360 522 ., label("two-mode only; numlist of d")
+  TEXT      tx_h115 463 360 522 ., label("two-mode only; numlist of d")
   CHECKBOX  cx_bgwdsp1 10 379 267 ., label("bgwdsp1()  [gwb1dsp]") default(0) nomem
   EDIT      f_bgwdsp1 285 379 170 ., default("0.5") option(bgwdsp1) nomem
-  TEXT      tx_h115 463 381 522 ., label("two-mode only; fixed decay")
+  TEXT      tx_h116 463 381 522 ., label("two-mode only; fixed decay")
   CHECKBOX  cx_bcov2 10 400 267 ., label("bcov2()  [b2cov]") default(0) nomem
   VARLIST   f_bcov2 285 400 200 ., label("vars") option(bcov2) nomem
-  TEXT      tx_h116 493 402 492 ., label("two-mode only; node covariate")
+  TEXT      tx_h117 493 402 492 ., label("two-mode only; node covariate")
   CHECKBOX  cx_bfactor2 10 421 267 ., label("bfactor2()  [b2factor]") default(0) nomem
   VARLIST   f_bfactor2 285 421 200 ., label("vars") option(bfactor2) nomem
-  TEXT      tx_h117 493 423 492 ., label("two-mode only")
+  TEXT      tx_h118 493 423 492 ., label("two-mode only")
   CHECKBOX  cx_bdegree2 10 43 267 ., label("bdegree2()  [b2degree]") default(0) nomem
   EDIT      f_bdegree2 285 43 170 ., option(bdegree2) nomem
   TEXT      tx_bdegree2_c 463 45 8 ., label(",")
   EDIT      f_bdegree2_sub 475 43 150 ., nomem
-  TEXT      tx_h118 633 45 352 ., label("two-mode only; [, by() levels()]")
+  TEXT      tx_h119 633 45 352 ., label("two-mode only; [, by() levels()]")
   CHECKBOX  cx_bstar2 10 64 267 ., label("bstar2()  [b2star]") default(0) nomem
   EDIT      f_bstar2 285 64 170 ., option(bstar2) nomem
   TEXT      tx_bstar2_c 463 66 8 ., label(",")
   EDIT      f_bstar2_sub 475 64 150 ., nomem
-  TEXT      tx_h119 633 66 352 ., label("two-mode only; [, attr() levels()]")
+  TEXT      tx_h120 633 66 352 ., label("two-mode only; [, attr() levels()]")
   CHECKBOX  cx_bnodematch2 10 85 267 ., label("bnodematch2()  [b2nodematch]") default(0) nomem
   VARLIST   f_bnodematch2 285 85 200 ., label("vars") option(bnodematch2) nomem
   TEXT      tx_bnodematch2_c 493 87 8 ., label(",")
   EDIT      f_bnodematch2_sub 505 85 150 ., nomem
-  TEXT      tx_h120 663 87 322 ., label("two-mode only; [, diff alpha()]")
+  TEXT      tx_h121 663 87 322 ., label("two-mode only; [, diff alpha()]")
   CHECKBOX  cx_bgwdegree2 10 106 267 ., label("bgwdegree2()  [gwb2degree]") default(0) nomem
   EDIT      f_bgwdegree2 285 106 170 ., default("0.5") option(bgwdegree2) nomem
   TEXT      tx_bgwdegree2_c 463 108 8 ., label(",")
   EDIT      f_bgwdegree2_sub 475 106 150 ., nomem
-  TEXT      tx_h121 633 108 352 ., label("two-mode only; decay [, attr() levels()]")
+  TEXT      tx_h122 633 108 352 ., label("two-mode only; decay [, attr() levels()]")
   CHECKBOX  cx_bconcurrent2 10 127 267 ., label("bconcurrent2()  [b2concurrent]") default(0) nomem
   EDIT      f_bconcurrent2 285 127 170 ., default("all") option(bconcurrent2) nomem
-  TEXT      tx_h122 463 129 522 ., label("two-mode only; all  or  by(var) [levels()]")
+  TEXT      tx_h123 463 129 522 ., label("two-mode only; all  or  by(var) [levels()]")
   CHECKBOX  cx_bmindegree2 10 148 267 ., label("bmindegree2()  [b2mindegree]") default(0) nomem
   EDIT      f_bmindegree2 285 148 170 ., option(bmindegree2) nomem
-  TEXT      tx_h123 463 150 522 ., label("two-mode only; numlist of d")
+  TEXT      tx_h124 463 150 522 ., label("two-mode only; numlist of d")
   CHECKBOX  cx_bdegrange2 10 169 267 ., label("bdegrange2()  [b2degrange]") default(0) nomem
   EDIT      f_bdegrange2 285 169 170 ., option(bdegrange2) nomem
   TEXT      tx_bdegrange2_c 463 171 8 ., label(",")
   EDIT      f_bdegrange2_sub 475 169 150 ., nomem
-  TEXT      tx_h124 633 171 352 ., label("two-mode only; [, to() by()]")
+  TEXT      tx_h125 633 171 352 ., label("two-mode only; [, to() by()]")
   CHECKBOX  cx_bcovrange2 10 190 267 ., label("bcovrange2()  [b2covrange]") default(0) nomem
   VARLIST   f_bcovrange2 285 190 200 ., label("vars") option(bcovrange2) nomem
-  TEXT      tx_h125 493 192 492 ., label("two-mode only; one variable")
+  TEXT      tx_h126 493 192 492 ., label("two-mode only; one variable")
   CHECKBOX  cx_bfactordistinct2 10 211 267 ., label("bfactordistinct2()  [b2factordistinct]") default(0) nomem
   VARLIST   f_bfactordistinct2 285 211 200 ., label("vars") option(bfactordistinct2) nomem
   TEXT      tx_bfactordistinct2_c 493 213 8 ., label(",")
   EDIT      f_bfactordistinct2_sub 505 211 150 ., nomem
-  TEXT      tx_h126 663 213 322 ., label("two-mode only; [, levels()]")
+  TEXT      tx_h127 663 213 322 ., label("two-mode only; [, levels()]")
   CHECKBOX  cx_bsociality2 10 232 267 ., label("bsociality2()  [b2sociality]") default(0) nomem
   EDIT      f_bsociality2 285 232 170 ., default("-1") option(bsociality2) nomem
-  TEXT      tx_h127 463 234 522 ., label("two-mode only; node positions, -1 drops the first")
+  TEXT      tx_h128 463 234 522 ., label("two-mode only; node positions, -1 drops the first")
   CHECKBOX  cx_bstarmix2 10 253 267 ., label("bstarmix2()  [b2starmix]") default(0) nomem
   EDIT      f_bstarmix2 285 253 170 ., option(bstarmix2) nomem
   TEXT      tx_bstarmix2_c 463 255 8 ., label(",")
   EDIT      f_bstarmix2_sub 475 253 150 ., nomem
-  TEXT      tx_h128 633 255 352 ., label("two-mode only; k [, attr() base()]")
+  TEXT      tx_h129 633 255 352 ., label("two-mode only; k [, attr() base()]")
   CHECKBOX  cx_btwostar2 10 274 267 ., label("btwostar2()  [b2twostar]") default(0) nomem
   VARLIST   f_btwostar2 285 274 200 ., label("vars") option(btwostar2) nomem
   TEXT      tx_btwostar2_c 493 276 8 ., label(",")
   EDIT      f_btwostar2_sub 505 274 150 ., nomem
-  TEXT      tx_h129 663 276 322 ., label("two-mode only; [, attr2()]")
+  TEXT      tx_h130 663 276 322 ., label("two-mode only; [, attr2()]")
   CHECKBOX  cx_bdsp2 10 295 267 ., label("bdsp2()  [b2dsp]") default(0) nomem
   EDIT      f_bdsp2 285 295 170 ., option(bdsp2) nomem
-  TEXT      tx_h130 463 297 522 ., label("two-mode only; numlist of d")
+  TEXT      tx_h131 463 297 522 ., label("two-mode only; numlist of d")
   CHECKBOX  cx_bgwdsp2 10 316 267 ., label("bgwdsp2()  [gwb2dsp]") default(0) nomem
   EDIT      f_bgwdsp2 285 316 170 ., default("0.5") option(bgwdsp2) nomem
-  TEXT      tx_h131 463 318 522 ., label("two-mode only; fixed decay")
+  TEXT      tx_h132 463 318 522 ., label("two-mode only; fixed decay")
   CHECKBOX  cx_coincidence 10 337 267 ., label("coincidence()") default(0) nomem
   EDIT      f_coincidence 285 337 170 ., default("all") option(coincidence) nomem
-  TEXT      tx_h132 463 339 522 ., label("two-mode only; all  or  active(#)")
+  TEXT      tx_h133 463 339 522 ., label("two-mode only; all  or  active(#)")
   TEXT      tx_s325_two2 10 360 960 ., label("== Two-mode curved terms (estimated decay) ==")
   CHECKBOX  cx_bgwdegreefree1 10 379 267 ., label("bgwdegreefree1()  [gwb1degree, curved]") default(0) nomem
   EDIT      f_bgwdegreefree1 285 379 170 ., default("0.5") option(bgwdegreefree1) nomem
-  TEXT      tx_h133 463 381 522 ., label("two-mode only; start value of the decay (estimated)")
+  TEXT      tx_h134 463 381 522 ., label("two-mode only; start value of the decay (estimated)")
   CHECKBOX  cx_bgwdspfree1 10 400 267 ., label("bgwdspfree1()  [gwb1dsp, curved]") default(0) nomem
   EDIT      f_bgwdspfree1 285 400 170 ., default("0.5") option(bgwdspfree1) nomem
-  TEXT      tx_h134 463 402 522 ., label("two-mode only; start value of the decay (estimated)")
+  TEXT      tx_h135 463 402 522 ., label("two-mode only; start value of the decay (estimated)")
   CHECKBOX  cx_bgwdegreefree2 10 421 267 ., label("bgwdegreefree2()  [gwb2degree, curved]") default(0) nomem
   EDIT      f_bgwdegreefree2 285 421 170 ., default("0.5") option(bgwdegreefree2) nomem
-  TEXT      tx_h135 463 423 522 ., label("two-mode only; start value of the decay (estimated)")
+  TEXT      tx_h136 463 423 522 ., label("two-mode only; start value of the decay (estimated)")
   CHECKBOX  cx_bgwdspfree2 10 43 267 ., label("bgwdspfree2()  [gwb2dsp, curved]") default(0) nomem
   EDIT      f_bgwdspfree2 285 43 170 ., default("0.5") option(bgwdspfree2) nomem
-  TEXT      tx_h136 463 45 522 ., label("two-mode only; start value of the decay (estimated)")
+  TEXT      tx_h137 463 45 522 ., label("two-mode only; start value of the decay (estimated)")
 END
 
 DIALOG oper, tabtitle("Operators")
@@ -6360,53 +6381,53 @@ BEGIN
   EDIT      f_op_sum_terms 270 10 250 ., nomem
   TEXT      tx_op_sum_label 528 12 43 ., label("label:")
   EDIT      f_op_sum_label 571 10 100 ., nomem
-  TEXT      tx_h137 679 12 306 ., label("f1 | f2 ; label needed")
+  TEXT      tx_h138 679 12 306 ., label("f1 | f2 ; label needed")
   CHECKBOX  cx_op_prod 10 31 190 ., label("Prod()") default(0) nomem
   TEXT      tx_op_prod_terms 208 33 62 ., label("formulas:")
   EDIT      f_op_prod_terms 270 31 250 ., nomem
   TEXT      tx_op_prod_label 528 33 43 ., label("label:")
   EDIT      f_op_prod_label 571 31 100 ., nomem
-  TEXT      tx_h138 679 33 306 ., label("f1 | f2 ; label needed")
+  TEXT      tx_h139 679 33 306 ., label("f1 | f2 ; label needed")
   CHECKBOX  cx_op_s 10 52 190 ., label("S()") default(0) nomem
   TEXT      tx_op_s_terms 208 54 43 ., label("terms:")
   EDIT      f_op_s_terms 251 52 250 ., nomem
   TEXT      tx_op_s_attrs 509 54 43 ., label("attrs:")
   EDIT      f_op_s_attrs 552 52 100 ., nomem
-  TEXT      tx_h139 660 54 325 ., label("e.g. age>30")
+  TEXT      tx_h140 660 54 325 ., label("e.g. age>30")
   CHECKBOX  cx_op_f 10 73 190 ., label("F()") default(0) nomem
   TEXT      tx_op_f_terms 208 75 43 ., label("terms:")
   EDIT      f_op_f_terms 251 73 250 ., nomem
   TEXT      tx_op_f_filter 509 75 50 ., label("filter:")
   EDIT      f_op_f_filter 559 73 130 ., nomem
-  TEXT      tx_h140 697 75 288 ., label("one dyad-independent term")
+  TEXT      tx_h141 697 75 288 ., label("one dyad-independent term")
   CHECKBOX  cx_op_nmf 10 94 190 ., label("NodematchFilter()") default(0) nomem
   TEXT      tx_op_nmf_terms 208 96 43 ., label("terms:")
   EDIT      f_op_nmf_terms 251 94 250 ., nomem
   TEXT      tx_op_nmf_attrname 509 96 62 ., label("attrname:")
   EDIT      f_op_nmf_attrname 571 94 100 ., nomem
-  TEXT      tx_h141 679 96 306 ., label("attrname: variables")
+  TEXT      tx_h142 679 96 306 ., label("attrname: variables")
   CHECKBOX  cx_op_sym 10 115 190 ., label("Symmetrize()") default(0) nomem
   TEXT      tx_op_sym_terms 208 117 43 ., label("terms:")
   EDIT      f_op_sym_terms 251 115 250 ., nomem
   TEXT      tx_op_sym_rule 509 117 37 ., label("rule:")
   COMBOBOX  f_op_sym_rule 546 115 90 ., dropdownlist contents(l_f_op_sym_rule) values(l_f_op_sym_rule_v) nomem
-  TEXT      tx_h142 644 117 341 ., label("directed networks only")
+  TEXT      tx_h143 644 117 341 ., label("directed networks only")
   CHECKBOX  cx_op_proj 10 136 190 ., label("Project()") default(0) nomem
   TEXT      tx_op_proj_terms 208 138 43 ., label("terms:")
   EDIT      f_op_proj_terms 251 136 250 ., nomem
   TEXT      tx_op_proj_mode 509 138 37 ., label("mode:")
   COMBOBOX  f_op_proj_mode 546 136 60 ., dropdownlist contents(l_f_op_proj_mode) values(l_f_op_proj_mode_v) nomem
-  TEXT      tx_h143 614 138 371 ., label("two-mode networks only")
+  TEXT      tx_h144 614 138 371 ., label("two-mode networks only")
   CHECKBOX  cx_op_i 10 157 190 ., label("I()") default(0) nomem
   TEXT      tx_op_i_terms 208 159 43 ., label("terms:")
   EDIT      f_op_i_terms 251 157 300 ., nomem
-  TEXT      tx_h144 559 159 426 ., label("the terms themselves")
+  TEXT      tx_h145 559 159 426 ., label("the terms themselves")
   CHECKBOX  cx_op_for 10 178 190 ., label("For()") default(0) nomem
   TEXT      tx_op_for_loops 208 180 43 ., label("loops:")
   EDIT      f_op_for_loops 251 178 130 ., nomem
   TEXT      tx_op_for_terms 389 180 43 ., label("terms:")
   EDIT      f_op_for_terms 432 178 200 ., nomem
-  TEXT      tx_h145 640 180 345 ., label("loops: v = sex grp")
+  TEXT      tx_h146 640 180 345 ., label("loops: v = sex grp")
   CHECKBOX  cx_op_label 10 199 190 ., label("Label()") default(0) nomem
   TEXT      tx_op_label_terms 208 201 43 ., label("terms:")
   EDIT      f_op_label_terms 251 199 200 ., nomem
@@ -6429,7 +6450,7 @@ BEGIN
   EDIT      f_op_curve_params 489 262 80 ., nomem
   TEXT      tx_op_curve_map 577 264 31 ., label("map:")
   EDIT      f_op_curve_map 608 262 80 ., nomem
-  TEXT      tx_h146 696 264 289 ., label("map: rep | matrix(L)")
+  TEXT      tx_h147 696 264 289 ., label("map: rep | matrix(L)")
   CHECKBOX  cx_op_offset 10 283 190 ., label("Offset()") default(0) nomem
   TEXT      tx_op_offset_terms 208 285 43 ., label("terms:")
   EDIT      f_op_offset_terms 251 283 200 ., nomem
@@ -6437,10 +6458,10 @@ BEGIN
   EDIT      f_op_offset_coef 496 283 80 ., nomem
   TEXT      tx_op_offset_which 584 285 43 ., label("which:")
   EDIT      f_op_offset_which 627 283 80 ., nomem
-  TEXT      tx_h147 715 285 270 ., label("held at coef (default 0)")
+  TEXT      tx_h148 715 285 270 ., label("held at coef (default 0)")
   TEXT      tx_operators_extra 10 306 200 ., label("Other operator calls (typed)")
   EDIT      f_operators_extra 215 304 330 ., option(operators) nomem
-  TEXT      tx_h148 555 306 430 ., label("added to operators(); blank-separated")
+  TEXT      tx_h149 555 306 430 ., label("added to operators(); blank-separated")
 END
 
 DIALOG cons, tabtitle("Constraint")
@@ -6451,89 +6472,89 @@ BEGIN
   TEXT      tx_ch2_cons 290 45 270 ., label("obsconstraints()  (observation process)")
   CHECKBOX  cx_c_edges 10 64 120 ., label("edges") default(0) nomem
   CHECKBOX  o_cx_c_edges 290 64 120 ., label("edges") default(0) nomem
-  TEXT      tx_h149 570 66 415 ., label("keep the number of ties")
+  TEXT      tx_h150 570 66 415 ., label("keep the number of ties")
   CHECKBOX  cx_c_degrees 10 85 120 ., label("degrees") default(0) nomem
   CHECKBOX  o_cx_c_degrees 290 85 120 ., label("degrees") default(0) nomem
-  TEXT      tx_h150 570 87 415 ., label("keep node degrees (nodedegrees)")
+  TEXT      tx_h151 570 87 415 ., label("keep node degrees (nodedegrees)")
   CHECKBOX  cx_c_odegrees 10 106 120 ., label("odegrees") default(0) nomem
   CHECKBOX  o_cx_c_odegrees 290 106 120 ., label("odegrees") default(0) nomem
-  TEXT      tx_h151 570 108 415 ., label("directed")
+  TEXT      tx_h152 570 108 415 ., label("directed")
   CHECKBOX  cx_c_idegrees 10 127 120 ., label("idegrees") default(0) nomem
   CHECKBOX  o_cx_c_idegrees 290 127 120 ., label("idegrees") default(0) nomem
-  TEXT      tx_h152 570 129 415 ., label("directed")
+  TEXT      tx_h153 570 129 415 ., label("directed")
   CHECKBOX  cx_c_b1degrees 10 148 120 ., label("b1degrees") default(0) nomem
   CHECKBOX  o_cx_c_b1degrees 290 148 120 ., label("b1degrees") default(0) nomem
-  TEXT      tx_h153 570 150 415 ., label("two-mode")
+  TEXT      tx_h154 570 150 415 ., label("two-mode")
   CHECKBOX  cx_c_b2degrees 10 169 120 ., label("b2degrees") default(0) nomem
   CHECKBOX  o_cx_c_b2degrees 290 169 120 ., label("b2degrees") default(0) nomem
-  TEXT      tx_h154 570 171 415 ., label("two-mode")
+  TEXT      tx_h155 570 171 415 ., label("two-mode")
   CHECKBOX  cx_c_degreedist 10 190 120 ., label("degreedist") default(0) nomem
   CHECKBOX  o_cx_c_degreedist 290 190 120 ., label("degreedist") default(0) nomem
-  TEXT      tx_h155 570 192 415 ., label("degree distribution")
+  TEXT      tx_h156 570 192 415 ., label("degree distribution")
   CHECKBOX  cx_c_idegreedist 10 211 120 ., label("idegreedist") default(0) nomem
   CHECKBOX  o_cx_c_idegreedist 290 211 120 ., label("idegreedist") default(0) nomem
-  TEXT      tx_h156 570 213 415 ., label("in-degree distribution")
+  TEXT      tx_h157 570 213 415 ., label("in-degree distribution")
   CHECKBOX  cx_c_bd 10 232 120 ., label("bd") default(0) nomem
   EDIT      f_c_bd 135 232 130 ., nomem
   CHECKBOX  o_cx_c_bd 290 232 120 ., label("bd") default(0) nomem
   EDIT      o_f_c_bd 415 232 130 ., nomem
-  TEXT      tx_h157 570 234 415 ., label("attribs, maxout=, maxin=, minout=, minin=")
+  TEXT      tx_h158 570 234 415 ., label("attribs, maxout=, maxin=, minout=, minin=")
   CHECKBOX  cx_c_blocks 10 253 120 ., label("blocks") default(0) nomem
   EDIT      f_c_blocks 135 253 130 ., nomem
   CHECKBOX  o_cx_c_blocks 290 253 120 ., label("blocks") default(0) nomem
   EDIT      o_f_c_blocks 415 253 130 ., nomem
-  TEXT      tx_h158 570 255 415 ., label("attr, b1levels, b2levels, levels, levels2")
+  TEXT      tx_h159 570 255 415 ., label("attr, b1levels, b2levels, levels, levels2")
   CHECKBOX  cx_c_blockdiag 10 274 120 ., label("blockdiag") default(0) nomem
   EDIT      f_c_blockdiag 135 274 130 ., nomem
   CHECKBOX  o_cx_c_blockdiag 290 274 120 ., label("blockdiag") default(0) nomem
   EDIT      o_f_c_blockdiag 415 274 130 ., nomem
-  TEXT      tx_h159 570 276 415 ., label("attr, noncontig")
+  TEXT      tx_h160 570 276 415 ., label("attr, noncontig")
   CHECKBOX  cx_c_fixedas 10 295 120 ., label("fixedas") default(0) nomem
   EDIT      f_c_fixedas 135 295 130 ., nomem
   CHECKBOX  o_cx_c_fixedas 290 295 120 ., label("fixedas") default(0) nomem
   EDIT      o_f_c_fixedas 415 295 130 ., nomem
-  TEXT      tx_h160 570 297 415 ., label("fixed.dyads, present, absent")
+  TEXT      tx_h161 570 297 415 ., label("fixed.dyads, present, absent")
   CHECKBOX  cx_c_fixallbut 10 316 120 ., label("fixallbut") default(0) nomem
   EDIT      f_c_fixallbut 135 316 130 ., nomem
   CHECKBOX  o_cx_c_fixallbut 290 316 120 ., label("fixallbut") default(0) nomem
   EDIT      o_f_c_fixallbut 415 316 130 ., nomem
-  TEXT      tx_h161 570 318 415 ., label("free.dyads (network)")
+  TEXT      tx_h162 570 318 415 ., label("free.dyads (network)")
   CHECKBOX  cx_c_observed 10 337 120 ., label("observed") default(0) nomem
   CHECKBOX  o_cx_c_observed 290 337 120 ., label("observed") default(0) nomem
-  TEXT      tx_h162 570 339 415 ., label("only missing dyads vary")
+  TEXT      tx_h163 570 339 415 ., label("only missing dyads vary")
   CHECKBOX  cx_c_egocentric 10 358 120 ., label("egocentric") default(0) nomem
   EDIT      f_c_egocentric 135 358 130 ., nomem
   CHECKBOX  o_cx_c_egocentric 290 358 120 ., label("egocentric") default(0) nomem
   EDIT      o_f_c_egocentric 415 358 130 ., nomem
-  TEXT      tx_h163 570 360 415 ., label("attr (0/1 variable), direction")
+  TEXT      tx_h164 570 360 415 ., label("attr (0/1 variable), direction")
   CHECKBOX  cx_c_dyadnoise 10 379 120 ., label("dyadnoise") default(0) nomem
   EDIT      f_c_dyadnoise 135 379 130 ., nomem
   CHECKBOX  o_cx_c_dyadnoise 290 379 120 ., label("dyadnoise") default(0) nomem
   EDIT      o_f_c_dyadnoise 415 379 130 ., nomem
-  TEXT      tx_h164 570 381 415 ., label("p01, p10")
+  TEXT      tx_h165 570 381 415 ., label("p01, p10")
   TEXT      tx_n10_space 10 45 960 ., label("Missing ties: dyads that are missing in the network are detected automatically. They are left out of the")
   TEXT      tx_n31_space 10 66 960 ., label("(pseudo)likelihood and, in a dyad-dependent model, handled by the missing-data MCMLE as in R. Nothing to set here.")
   TEXT      tx_n52_space 10 87 960 ., label("Missing values in node covariates are refused (as in R): drop or impute them first.")
   TEXT      tx_constraints_extra 10 108 200 ., label("constraints()  typed terms")
   EDIT      f_constraints_extra 215 106 330 ., option(constraints) nomem
-  TEXT      tx_h165 555 108 430 ., label("e.g. blockdiag(g) + bd(maxout=5)")
+  TEXT      tx_h166 555 108 430 ., label("e.g. blockdiag(g) + bd(maxout=5)")
   TEXT      tx_obsconstraints_extra 10 129 200 ., label("obsconstraints()  typed terms")
   EDIT      f_obsconstraints_extra 215 127 330 ., option(obsconstraints) nomem
-  TEXT      tx_h166 555 129 430 ., label("e.g. fixallbut(unobserved); mcmle")
+  TEXT      tx_h167 555 129 430 ., label("e.g. fixallbut(unobserved); mcmle")
   TEXT      tx_freedyads 10 150 200 ., label("freedyads()")
   COMBOBOX  f_freedyads 215 148 150 ., dropdown contents(netlist) option(freedyads) nomem
-  TEXT      tx_h167 375 150 610 ., label("network: its ties mark the free dyads")
+  TEXT      tx_h168 375 150 610 ., label("network: its ties mark the free dyads")
   TEXT      tx_blockdiag 10 171 200 ., label("blockdiag()")
   VARNAME   f_blockdiag 215 169 150 ., label("var") option(blockdiag) nomem
-  TEXT      tx_h168 375 171 610 ., label("variable: only within-value dyads vary")
+  TEXT      tx_h169 375 171 610 ., label("variable: only within-value dyads vary")
   CHECKBOX  f_fixdensity 10 190 200 ., label("fixdensity") default(0) nomem
-  TEXT      tx_h169 220 192 765 ., label("hold the tie count fixed; method(mcmle)")
+  TEXT      tx_h170 220 192 765 ., label("hold the tie count fixed; method(mcmle)")
   TEXT      tx_mcmcprop 10 213 200 ., label("mcmcprop()")
   EDIT      f_mcmcprop 215 211 150 ., option(mcmcprop) nomem
-  TEXT      tx_h170 375 213 610 ., label("MCMC.prop hint formula, e.g. sparse")
+  TEXT      tx_h171 375 213 610 ., label("MCMC.prop hint formula, e.g. sparse")
   TEXT      tx_mcmcmaxedges 10 234 200 ., label("mcmcmaxedges()")
   EDIT      f_mcmcmaxedges 215 232 150 ., option(mcmcmaxedges) nomem
-  TEXT      tx_h171 375 234 610 ., label("stop sampling above this many ties")
+  TEXT      tx_h172 375 234 610 ., label("stop sampling above this many ties")
 END
 
 DIALOG est, tabtitle("Estimate")
@@ -6542,165 +6563,165 @@ BEGIN
   COMBOBOX  cb_sec_est 85 10 380 ., dropdownlist contents(l_sec_est) onselchangelist(l_sec_est_a) nomem
   TEXT      tx_method 10 45 200 ., label("method()")
   COMBOBOX  f_method 215 43 100 ., dropdownlist contents(l_f_method) values(l_f_method_v) option(method) nomem
-  TEXT      tx_h172 325 45 660 ., label("older spelling of estimate()")
+  TEXT      tx_h173 325 45 660 ., label("older spelling of estimate()")
   TEXT      tx_estimate 10 66 200 ., label("estimate()")
   COMBOBOX  f_estimate 215 64 100 ., dropdownlist contents(l_f_estimate) values(l_f_estimate_v) option(estimate) nomem
-  TEXT      tx_h173 325 66 660 ., label("mle (default), mple, cd, bayes (then see the Bayesian tab)")
+  TEXT      tx_h174 325 66 660 ., label("mle (default), mple, cd, bayes (then see the Bayesian tab)")
   TEXT      tx_mainmethod 10 87 200 ., label("mainmethod()")
   COMBOBOX  f_mainmethod 215 85 100 ., dropdownlist contents(l_f_mainmethod) values(l_f_mainmethod_v) option(mainmethod) nomem
-  TEXT      tx_h174 325 87 660 ., label("Monte Carlo algorithm")
+  TEXT      tx_h175 325 87 660 ., label("Monte Carlo algorithm")
   TEXT      tx_mpletype 10 108 200 ., label("mpletype()")
   COMBOBOX  f_mpletype 215 106 100 ., dropdownlist contents(l_f_mpletype) values(l_f_mpletype_v) option(mpletype) nomem
-  TEXT      tx_h175 325 108 660 ., label("penalized = Firth")
+  TEXT      tx_h176 325 108 660 ., label("penalized = Firth")
   TEXT      tx_mplecheck 10 129 200 ., label("mplecheck()")
   COMBOBOX  f_mplecheck 215 127 100 ., dropdownlist contents(l_f_mplecheck) values(l_f_mplecheck_v) option(mplecheck) nomem
-  TEXT      tx_h176 325 129 660 ., label("test whether the MPLE exists")
+  TEXT      tx_h177 325 129 660 ., label("test whether the MPLE exists")
   TEXT      tx_mplecovariance 10 150 200 ., label("mplecovariance()")
   COMBOBOX  f_mplecovariance 215 148 100 ., dropdownlist contents(l_f_mplecovariance) values(l_f_mplecovariance_v) option(mplecovariance) nomem
-  TEXT      tx_h177 325 150 660 ., label("dyad-dependent MPLE")
+  TEXT      tx_h178 325 150 660 ., label("dyad-dependent MPLE")
   TEXT      tx_init 10 171 200 ., label("init()")
   EDIT      f_init 215 169 180 ., option(init) nomem
-  TEXT      tx_h178 405 171 580 ., label("one value per coefficient; . leaves one free")
+  TEXT      tx_h179 405 171 580 ., label("one value per coefficient; . leaves one free")
   TEXT      tx_mcmleiterations 10 192 200 ., label("mcmleiterations()")
   EDIT      f_mcmleiterations 215 190 80 ., option(mcmleiterations) nomem
-  TEXT      tx_h179 305 192 680 ., label("default 60")
+  TEXT      tx_h180 305 192 680 ., label("default 60")
   TEXT      tx_mcmleconfidence 10 213 200 ., label("mcmleconfidence()")
   EDIT      f_mcmleconfidence 215 211 80 ., option(mcmleconfidence) nomem
-  TEXT      tx_h180 305 213 680 ., label("default 0.99")
+  TEXT      tx_h181 305 213 680 ., label("default 0.99")
   TEXT      tx_mcmletermination 10 234 200 ., label("mcmletermination()")
   COMBOBOX  f_mcmletermination 215 232 100 ., dropdownlist contents(l_f_mcmletermination) values(l_f_mcmletermination_v) option(mcmletermination) nomem
-  TEXT      tx_h181 325 234 660 ., label("stopping rule")
+  TEXT      tx_h182 325 234 660 ., label("stopping rule")
   TEXT      tx_mcmlesteplength 10 255 200 ., label("mcmlesteplength()")
   EDIT      f_mcmlesteplength 215 253 80 ., option(mcmlesteplength) nomem
-  TEXT      tx_h182 305 255 680 ., label("default 1")
+  TEXT      tx_h183 305 255 680 ., label("default 1")
   TEXT      tx_mcmlestepmargin 10 276 200 ., label("mcmlestepmargin()")
   EDIT      f_mcmlestepmargin 215 274 80 ., option(mcmlestepmargin) nomem
-  TEXT      tx_h183 305 276 680 ., label("default 0.05; . switches Hummel steps off")
+  TEXT      tx_h184 305 276 680 ., label("default 0.05; . switches Hummel steps off")
   TEXT      tx_mcmleeffectivesize 10 297 200 ., label("mcmleeffectivesize()")
   EDIT      f_mcmleeffectivesize 215 295 80 ., option(mcmleeffectivesize) nomem
-  TEXT      tx_h184 305 297 680 ., label("MCMLE.effectiveSize")
+  TEXT      tx_h185 305 297 680 ., label("MCMLE.effectiveSize")
   TEXT      tx_proposal 10 45 200 ., label("proposal()")
   COMBOBOX  f_proposal 215 43 100 ., dropdownlist contents(l_f_proposal) values(l_f_proposal_v) option(proposal) nomem
-  TEXT      tx_h203 325 45 660 ., label("Metropolis-Hastings proposal (default tnt)")
+  TEXT      tx_h204 325 45 660 ., label("Metropolis-Hastings proposal (default tnt)")
   TEXT      tx_cdnsteps 10 66 200 ., label("cdnsteps()")
   EDIT      f_cdnsteps 215 64 80 ., option(cdnsteps) nomem
-  TEXT      tx_h204 305 66 680 ., label("contrastive divergence; default 8")
+  TEXT      tx_h205 305 66 680 ., label("contrastive divergence; default 8")
   TEXT      tx_cdsamplesize 10 87 200 ., label("cdsamplesize()")
   EDIT      f_cdsamplesize 215 85 80 ., option(cdsamplesize) nomem
-  TEXT      tx_h205 305 87 680 ., label("CD draws; default 128 per coefficient")
+  TEXT      tx_h206 305 87 680 ., label("CD draws; default 128 per coefficient")
   TEXT      tx_saburnin 10 108 200 ., label("saburnin()")
   EDIT      f_saburnin 215 106 80 ., option(saburnin) nomem
-  TEXT      tx_h206 305 108 680 ., label("stochastic approximation; default 16384")
+  TEXT      tx_h207 305 108 680 ., label("stochastic approximation; default 16384")
   TEXT      tx_sainterval 10 129 200 ., label("sainterval()")
   EDIT      f_sainterval 215 127 80 ., option(sainterval) nomem
-  TEXT      tx_h207 305 129 680 ., label("default 1024")
+  TEXT      tx_h208 305 129 680 ., label("default 1024")
   TEXT      tx_saphase3 10 150 200 ., label("saphase3()")
   EDIT      f_saphase3 215 148 80 ., option(saphase3) nomem
-  TEXT      tx_h208 305 150 680 ., label("default 1000")
+  TEXT      tx_h209 305 150 680 ., label("default 1000")
   TEXT      tx_sagain 10 171 200 ., label("sagain()")
   EDIT      f_sagain 215 169 80 ., option(sagain) nomem
-  TEXT      tx_h209 305 171 680 ., label("initial gain; default 0.1")
+  TEXT      tx_h210 305 171 680 ., label("initial gain; default 0.1")
   TEXT      tx_sansub 10 192 200 ., label("sansub()")
   EDIT      f_sansub 215 190 80 ., option(sansub) nomem
-  TEXT      tx_h210 305 192 680 ., label("phase-2 sub-phases; default 4")
+  TEXT      tx_h211 305 192 680 ., label("phase-2 sub-phases; default 4")
   TEXT      tx_mcmcburnin 10 213 200 ., label("mcmcburnin()")
   EDIT      f_mcmcburnin 215 211 80 ., option(mcmcburnin) nomem
-  TEXT      tx_h211 305 213 680 ., label("default 16 x mcmcinterval (16384)")
+  TEXT      tx_h212 305 213 680 ., label("default 16 x mcmcinterval (16384)")
   TEXT      tx_mcmcinterval 10 234 200 ., label("mcmcinterval()")
   EDIT      f_mcmcinterval 215 232 80 ., option(mcmcinterval) nomem
-  TEXT      tx_h212 305 234 680 ., label("default 1024 (the old default was 50)")
+  TEXT      tx_h213 305 234 680 ., label("default 1024 (the old default was 50)")
   TEXT      tx_mcmcsamplesize 10 255 200 ., label("mcmcsamplesize()")
   EDIT      f_mcmcsamplesize 215 253 80 ., option(mcmcsamplesize) nomem
-  TEXT      tx_h213 305 255 680 ., label("default 3000")
+  TEXT      tx_h214 305 255 680 ., label("default 3000")
   TEXT      tx_seed 10 276 200 ., label("seed()")
   EDIT      f_seed 215 274 80 ., option(seed) nomem
-  TEXT      tx_h214 305 276 680 ., label("random-number seed")
+  TEXT      tx_h215 305 276 680 ., label("random-number seed")
   CHECKBOX  f_spcache 10 295 200 ., label("spcache") default(0) nomem
-  TEXT      tx_h215 220 297 765 ., label("shared-partner cache for dense undirected networks")
+  TEXT      tx_h216 220 297 765 ., label("shared-partner cache for dense undirected networks")
   CHECKBOX  f_nonative 10 316 200 ., label("nonative") default(0) nomem
-  TEXT      tx_h216 220 318 765 ., label("force the Mata backend (testing only)")
+  TEXT      tx_h217 220 318 765 ., label("force the Mata backend (testing only)")
   TEXT      tx_bridgesteps 10 45 200 ., label("bridgesteps()")
   EDIT      f_bridgesteps 215 43 80 ., option(bridgesteps) nomem
-  TEXT      tx_h217 305 45 680 ., label("bridges for the log-likelihood; default 16")
+  TEXT      tx_h218 305 45 680 ., label("bridges for the log-likelihood; default 16")
   TEXT      tx_bridgesamplesize 10 66 200 ., label("bridgesamplesize()")
   EDIT      f_bridgesamplesize 215 64 80 ., option(bridgesamplesize) nomem
-  TEXT      tx_h218 305 66 680 ., label("draws per bridge; default mcmcsamplesize()")
+  TEXT      tx_h219 305 66 680 ., label("draws per bridge; default mcmcsamplesize()")
   TEXT      tx_bridgeinterval 10 87 200 ., label("bridgeinterval()")
   EDIT      f_bridgeinterval 215 85 80 ., option(bridgeinterval) nomem
-  TEXT      tx_h219 305 87 680 ., label("thinning within bridges")
+  TEXT      tx_h220 305 87 680 ., label("thinning within bridges")
   CHECKBOX  f_nologlik 10 106 200 ., label("nologlik") default(0) nomem
-  TEXT      tx_h220 220 108 765 ., label("skip the bridge-sampling log-likelihood")
+  TEXT      tx_h221 220 108 765 ., label("skip the bridge-sampling log-likelihood")
   CHECKBOX  f_nomcmcsample 10 127 200 ., label("nomcmcsample") default(0) nomem
-  TEXT      tx_h221 220 129 765 ., label("do not post e(mcmcsample)")
+  TEXT      tx_h222 220 129 765 ., label("do not post e(mcmcsample)")
   CHECKBOX  f_verbose 10 148 200 ., label("verbose") default(0) nomem
-  TEXT      tx_h222 220 150 765 ., label("show iteration detail")
+  TEXT      tx_h223 220 150 765 ., label("show iteration detail")
   TEXT      tx_offset 10 171 200 ., label("offset()")
   EDIT      f_offset 215 169 250 ., option(offset) nomem
-  TEXT      tx_h223 475 171 510 ., label("coefname # [coefname # ...]: hold coefficients fixed")
+  TEXT      tx_h224 475 171 510 ., label("coefname # [coefname # ...]: hold coefficients fixed")
   TEXT      tx_coeflabel 10 192 200 ., label("coeflabel()")
   EDIT      f_coeflabel 215 190 250 ., option(coeflabel) nomem
-  TEXT      tx_h224 475 192 510 ., label("old new [old new ...]: rename coefficients")
+  TEXT      tx_h225 475 192 510 ., label("old new [old new ...]: rename coefficients")
   TEXT      tx_logstat 10 213 200 ., label("logstat()")
   EDIT      f_logstat 215 211 250 ., option(logstat) nomem
-  TEXT      tx_h225 475 213 510 ., label("coefficient names whose statistic is logged [, log0(#)]")
+  TEXT      tx_h226 475 213 510 ., label("coefficient names whose statistic is logged [, log0(#)]")
   TEXT      tx_expstat 10 234 200 ., label("expstat()")
   EDIT      f_expstat 215 232 250 ., option(expstat) nomem
-  TEXT      tx_h226 475 234 510 ., label("coefficient names whose statistic is exponentiated")
+  TEXT      tx_h227 475 234 510 ., label("coefficient names whose statistic is exponentiated")
 END
 
 DIALOG bayes, tabtitle("Bayesian")
 BEGIN
   TEXT      tx_chains 10 12 200 ., label("chains()")
   EDIT      f_chains 215 10 80 ., option(chains) nomem
-  TEXT      tx_h185 305 12 680 ., label("population of chains; default max(2 x coefficients, 4)")
+  TEXT      tx_h186 305 12 680 ., label("population of chains; default max(2 x coefficients, 4)")
   TEXT      tx_burnin 10 33 200 ., label("burnin()")
   EDIT      f_burnin 215 31 80 ., option(burnin) nomem
-  TEXT      tx_h186 305 33 680 ., label("adaptation iterations per chain; default 100")
+  TEXT      tx_h187 305 33 680 ., label("adaptation iterations per chain; default 100")
   TEXT      tx_iterations 10 54 200 ., label("iterations()")
   EDIT      f_iterations 215 52 80 ., option(iterations) nomem
-  TEXT      tx_h187 305 54 680 ., label("saved iterations per chain; default 1000")
+  TEXT      tx_h188 305 54 680 ., label("saved iterations per chain; default 1000")
   TEXT      tx_thin 10 75 200 ., label("thin()")
   EDIT      f_thin 215 73 80 ., option(thin) nomem
-  TEXT      tx_h188 305 75 680 ., label("keep every k-th iteration; default 1")
+  TEXT      tx_h189 305 75 680 ., label("keep every k-th iteration; default 1")
   TEXT      tx_auxiterations 10 96 200 ., label("auxiterations()")
   EDIT      f_auxiterations 215 94 80 ., option(auxiterations) nomem
-  TEXT      tx_h189 305 96 680 ., label("auxiliary network iterations per proposal; default 1000")
+  TEXT      tx_h190 305 96 680 ., label("auxiliary network iterations per proposal; default 1000")
   TEXT      tx_gamma 10 117 200 ., label("gamma()")
   EDIT      f_gamma 215 115 80 ., option(gamma) nomem
-  TEXT      tx_h190 305 117 680 ., label("start of the move scale; default 0.5")
+  TEXT      tx_h191 305 117 680 ., label("start of the move scale; default 0.5")
   TEXT      tx_proposalvar 10 138 200 ., label("proposalvar()")
   EDIT      f_proposalvar 215 136 80 ., option(proposalvar) nomem
-  TEXT      tx_h191 305 138 680 ., label("variance of the random noise; default 0.0025")
+  TEXT      tx_h192 305 138 680 ., label("variance of the random noise; default 0.0025")
   TEXT      tx_targetaccept 10 159 200 ., label("targetaccept()")
   EDIT      f_targetaccept 215 157 80 ., option(targetaccept) nomem
-  TEXT      tx_h192 305 159 680 ., label("acceptance rate to adapt towards; default 0.25")
+  TEXT      tx_h193 305 159 680 ., label("acceptance rate to adapt towards; default 0.25")
   TEXT      tx_dainflate 10 180 200 ., label("dainflate()")
   EDIT      f_dainflate 215 178 80 ., option(dainflate) nomem
-  TEXT      tx_h193 305 180 680 ., label("delayed-acceptance surrogate inflation; default 1.5")
+  TEXT      tx_h194 305 180 680 ., label("delayed-acceptance surrogate inflation; default 1.5")
   CHECKBOX  f_noadapt 10 199 200 ., label("noadapt") default(0) nomem
-  TEXT      tx_h194 220 201 765 ., label("keep the move scale fixed")
+  TEXT      tx_h195 220 201 765 ., label("keep the move scale fixed")
   CHECKBOX  f_nodelayed 10 220 200 ., label("nodelayed") default(0) nomem
-  TEXT      tx_h195 220 222 765 ., label("no delayed acceptance")
+  TEXT      tx_h196 220 222 765 ., label("no delayed acceptance")
   TEXT      tx_priormean 10 243 200 ., label("priormean()")
   EDIT      f_priormean 215 241 200 ., option(priormean) nomem
-  TEXT      tx_h196 425 243 560 ., label("prior means, one per coefficient; default 0")
+  TEXT      tx_h197 425 243 560 ., label("prior means, one per coefficient; default 0")
   TEXT      tx_priorvar 10 264 200 ., label("priorvar()")
   EDIT      f_priorvar 215 262 200 ., option(priorvar) nomem
-  TEXT      tx_h197 425 264 560 ., label("prior variances (one value or one per coefficient); default 100")
+  TEXT      tx_h198 425 264 560 ., label("prior variances (one value or one per coefficient); default 100")
   TEXT      tx_priorcov 10 285 200 ., label("priorcov()")
   EDIT      f_priorcov 215 283 150 ., option(priorcov) nomem
-  TEXT      tx_h198 375 285 610 ., label("name of a covariance matrix (instead of priorvar())")
+  TEXT      tx_h199 375 285 610 ., label("name of a covariance matrix (instead of priorvar())")
   TEXT      tx_priordecay 10 306 200 ., label("priordecay()")
   EDIT      f_priordecay 215 304 150 ., option(priordecay) nomem
-  TEXT      tx_h199 375 306 610 ., label("mean and sd of log(decay) for a free decay; default -0.693 0.75")
+  TEXT      tx_h200 375 306 610 ., label("mean and sd of log(decay) for a free decay; default -0.693 0.75")
   TEXT      tx_startvals 10 327 200 ., label("startvals()")
   EDIT      f_startvals 215 325 200 ., option(startvals) nomem
-  TEXT      tx_h200 425 327 560 ., label("starting values, one per coefficient")
+  TEXT      tx_h201 425 327 560 ., label("starting values, one per coefficient")
   TEXT      tx_bframe 10 348 200 ., label("frame()")
   EDIT      f_bframe 215 346 150 ., option(frame) nomem
-  TEXT      tx_h201 375 348 610 ., label("frame for the draws; default nwergm_bayes_draws")
+  TEXT      tx_h202 375 348 610 ., label("frame for the draws; default nwergm_bayes_draws")
   CHECKBOX  f_nodraws 10 367 200 ., label("nodraws") default(0) nomem
-  TEXT      tx_h202 220 369 765 ., label("do not keep the draws in a frame")
+  TEXT      tx_h203 220 369 765 ., label("do not keep the draws in a frame")
 END
 
 LIST netlist
@@ -7143,6 +7164,7 @@ BEGIN
 		optionarg /asis tri.f_dsp
 	}
 	optionarg /asis tri.f_type
+	optionarg /asis tri.f_gwcutoff
 	if tri.cx_gwesp {
 		require tri.f_gwesp
 		optionarg /asis tri.f_gwesp

@@ -112,4 +112,58 @@ nwwebuse florentine, nwclear
 quietly nwergm flomarriage, edges gwespfree(0.5) method(mple)
 assert abs(el(e(b), 1, 1) - (-1.73098)) < 1e-4 & abs(el(e(b), 1, 2) - 0.12349) < 1e-4
 di "PASS MPLE gwespfree Florentine unchanged"
+
+* ---- gwcutoff(): the number of counts of the block is min(gwcutoff, nodes - 2) (R: cutoff = 30); a count above it stops the fit (r(498)), as in R
+* a cutoff that cannot bind (at least nodes - 2) gives the default fit: 7 nodes, default 30
+quietly import delimited using "cscripts/curvedwidth_und7.csv", clear varnames(nonames)
+mkmat v*, matrix(A)
+clear
+nwset, mat(A) name(und7) undirected nooutput
+quietly nwergm und7, edges gwespfree(0.5) offset(gwesp_decay 0.5) seed(1) mcmcsamplesize(5000) mcmleiterations(20)
+matrix b0 = e(b)
+quietly nwergm und7, edges gwespfree(0.5) offset(gwesp_decay 0.5) seed(1) mcmcsamplesize(5000) mcmleiterations(20) gwcutoff(5)
+assert mreldif(e(b), b0) < 1e-10
+quietly nwergm und7, edges gwespfree(0.5) offset(gwesp_decay 0.5) seed(1) mcmcsamplesize(5000) mcmleiterations(20) gwcutoff(500)
+assert mreldif(e(b), b0) < 1e-10
+di "PASS gwcutoff(5) and gwcutoff(500) equal the default on 7 nodes"
+capture nwergm und7, edges gwespfree(0.5) gwcutoff(0)
+assert _rc == 198
+* the observed network above the cutoff
+capture nwergm und7, edges gwespfree(0.5) gwcutoff(1)
+assert _rc == 498
+capture nwergm und7, edges gwdspfree(0.5) gwcutoff(1)
+assert _rc == 498
+capture nwergm und7, edges gwdegreefree(0.5) gwcutoff(1)
+assert _rc == 498
+di "PASS the observed network above the cutoff: r(498)"
+* a simulated network above the cutoff (Mesa: the observed maximum is 5 shared partners on an edge; the native sampler stops)
+nwwebuse mesa, nwclear
+capture noisily nwergm mesa, edges gwespfree(0.25) seed(3) gwcutoff(5)
+assert _rc == 498
+capture noisily nwergm mesa, edges gwespfree(0.5) seed(3) gwcutoff(5) method(bayes) iterations(200) burnin(20) nodraws
+assert _rc == 498
+di "PASS a simulated network above the cutoff stops the fit with r(498) (MCMLE and Bayes)"
+* without the native sampler the cutoff cannot be enforced: refused
+capture nwergm mesa, edges gwespfree(0.25) seed(3) gwcutoff(30) nonative
+assert _rc == 498
+* directed and two-mode
+quietly import delimited using "cscripts/curvedwidth_dir5.csv", clear varnames(nonames)
+mkmat v*, matrix(D)
+clear
+nwset, mat(D) name(dir5) directed nooutput
+capture nwergm dir5, edges gwespfree(0.5) type(OTP) gwcutoff(1)
+assert _rc == 498
+di "PASS directed gwespfree(OTP) above the cutoff: r(498)"
+* the Mesa fit with the default cutoff (30) equals the fit with every count (gwcutoff(203)): the further counts are zero
+timer clear
+timer on 1
+quietly nwergm mesa, edges gwespfree(0.25) offset(gwesp_decay 0.25) seed(3)
+timer off 1
+matrix b30 = e(b)
+timer on 2
+quietly nwergm mesa, edges gwespfree(0.25) offset(gwesp_decay 0.25) seed(3) gwcutoff(203)
+timer off 2
+assert mreldif(e(b), b30) < 1e-4
+timer list
+di "PASS Mesa curved fit: gwcutoff(30) equals gwcutoff(203); seconds above (1: default, 2: 203)"
 di "ALL TESTS PASSED"

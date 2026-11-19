@@ -64,6 +64,7 @@ Option & Description\\
 \opt{gwespfree(\#)}, \opt{gwdspfree(\#)}, \opt{gwnspfree(\#)} & Curved forms with an estimated decay; the number is the starting value of the decay. Report \texttt{\_weight} and \texttt{\_decay}.\\
 \opt{gwdegreefree(\#)} & Curved gwdegree (undirected).\\
 \opt{gwodegreefree(\#)}, \opt{gwidegreefree(\#)} & Curved out- and in-degree versions (directed).\\
+\opt{gwcutoff(\#)} & Cutoff of the curved terms with an estimated decay (R: the term argument \texttt{cutoff}); default 30. A fit that simulates networks counts the dyads with 1, 2, \ldots, min(\#, nodes$-2$) shared partners (nodes of degree 1, \ldots, min(\#, nodes$-1$) for the degree terms) and stops with return code 498 when the observed or a simulated network has a larger count; raise the cutoff then. The pseudolikelihood ignores it.\\
 \opt{type(OTP|ITP|OSP|ISP|RTP)} & Definition of the shared partner for \emph{every} term of the model that has one (\opt{gwesp}, \opt{gwdsp}, \opt{gwnsp}, \opt{esp}, \opt{dsp}, \opt{gwespfree}, \ldots) on a directed network; default OTP; ignored on an undirected network. OTP is $i\to k\to j$, ITP $i\leftarrow k\leftarrow j$, OSP $i\to k\leftarrow j$, ISP $i\leftarrow k\to j$, RTP $i\leftrightarrow k\leftrightarrow j$.\\
 \bottomrule
 \end{longtable}
