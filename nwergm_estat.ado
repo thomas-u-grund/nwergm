@@ -11,7 +11,15 @@ program define nwergm_estat, rclass
 	_nwergm_libcheck
 	gettoken subcmd rest : 0, parse(" ,")
 	local subcmd = lower(trim("`subcmd'"))
-	if "`subcmd'" == "mcmcdiag" {
+	if "`subcmd'" == "mcmcdiag" & "`e(method)'" == "bayes" {
+		nwergm_estat_bayesdiag `rest'
+		return add
+	}
+	else if "`subcmd'" == "posterior" {
+		nwergm_estat_posterior `rest'
+		return add
+	}
+	else if "`subcmd'" == "mcmcdiag" {
 		nwergm_estat_mcmcdiag `rest'
 		return add
 		local 0 `"`rest'"'
@@ -411,6 +419,10 @@ end
 
 capture program drop nwergm_estat_ic
 program define nwergm_estat_ic, rclass
+	if "`e(method)'" == "bayes" {
+		di as err "{p 0 0 2}{bf:estat ic} is not available after {bf:estimate(bayes)}: a Bayesian fit has no maximum-likelihood log-likelihood.{p_end}"
+		exit 498
+	}
 	if missing(e(ll)) {
 		if "`e(method)'" == "mcmle" & e(curved) == 1 {
 			di as err "{p 0 0 2}no log-likelihood was stored for this fit: the log-likelihood of a model with a curved (estimated decay) term fitted by MCMLE is not computed, so AIC and BIC are not available{p_end}"
@@ -440,4 +452,191 @@ program define nwergm_estat_ic, rclass
 		di as txt "Monte Carlo standard error of the log-likelihood: " as res %7.5g e(ll_se)
 	}
 	return matrix S = `M'
+end
+
+
+// the frame with the draws of a Bayesian fit (recreated from the draws in memory if it has been dropped); returns its name in c_local
+capture program drop _nwergm_estat_frame
+program define _nwergm_estat_frame
+	args mac
+	local fr "`e(post_frame)'"
+	if "`fr'" == "" local fr nwergm_bayes_draws
+	capture frame `fr': confirm variable b1
+	if _rc {
+		capture mata: ErgmBayesFrame(__nwergm_bdraws, `=e(chains)', "`fr'")
+		capture frame `fr': confirm variable b1
+		if _rc {
+			di as err "{p 0 0 2}the posterior draws of this fit are no longer available (the frame {bf:`fr'} was dropped and they are not in memory); re-fit the model.{p_end}"
+			exit 498
+		}
+	}
+	c_local `mac' "`fr'"
+end
+
+// trace and density plots of the posterior draws, one row of two panels per coefficient
+capture program drop _nwergm_estat_bayesplot
+program define _nwergm_estat_bayesplot
+	syntax , FRAME(name) [NAME(string) WHAT(string) PARS(string)]
+	if "`name'" == "" local name "bayes"
+	if "`what'" == "" local what both
+	local names : colnames e(b)
+	local K : word count `names'
+	local nch = e(chains)
+	tempname fr
+	local plist ""
+	forvalues k = 1/`K' {
+		if e(sd)[1, `k'] > 0 local plist "`plist' `k'"
+	}
+	if "`pars'" != "" {
+		local sel ""
+		foreach q of local pars {
+			local pos : list posof "`q'" in names
+			if `pos' == 0 {
+				di as err "estat posterior: no coefficient named `q'."
+				exit 198
+			}
+			local sel "`sel' `pos'"
+		}
+		local plist "`sel'"
+	}
+	local ng 0
+	local glist ""
+	local cnt 0
+	foreach k of local plist {
+		local nm : word `k' of `names'
+		local tr ""
+		forvalues c = 1/`nch' {
+			local tr `"`tr' (line b`k' iter if chain == `c', lwidth(vthin))"'
+		}
+		local g1 "n`name'_t`k'"
+		local g2 "n`name'_d`k'"
+		if inlist("`what'", "trace", "both") {
+			frame `frame': twoway `tr', legend(off) title("`nm': trace", size(medsmall)) xtitle("") ytitle("") ylabel(, angle(horizontal) labsize(small)) nodraw name(`g1', replace) scheme(s2color)
+			local glist "`glist' `g1'"
+		}
+		if inlist("`what'", "density", "both") {
+			frame `frame': twoway kdensity b`k', title("`nm': posterior density", size(medsmall)) xtitle("") ytitle("") ylabel(, angle(horizontal) labsize(small)) legend(off) nodraw name(`g2', replace) scheme(s2color)
+			local glist "`glist' `g2'"
+		}
+	}
+	local np : word count `glist'
+	if `np' == 0 exit
+	local cols = cond("`what'" == "both", 2, 3)
+	graph combine `glist', cols(`cols') name(`name', replace) title("Bayesian ERGM: posterior draws")
+	foreach g of local glist {
+		capture graph drop `g'
+	}
+end
+
+// estat posterior: summary of the posterior, the draws saved to a Stata data file, trace and density plots
+capture program drop nwergm_estat_posterior
+program define nwergm_estat_posterior, rclass
+	syntax [, SAVing(string) REPLACE PLOT(string) NAME(string) PARS(string) Level(cilevel) noTABle]
+	if `"`e(cmd)'"' != "nwergm" | "`e(method)'" != "bayes" {
+		di as err "{p 0 0 2}{bf:estat posterior} is only available after {bf:nwergm, estimate(bayes)}.{p_end}"
+		exit 301
+	}
+	_nwergm_estat_frame fr
+	local names : colnames e(b)
+	local K : word count `names'
+	if "`level'" == "" local level = e(level)
+	if `level' != e(level) {
+		capture mata: ErgmBayesRequantile(`level')
+	}
+	if "`table'" == "" {
+		nwergm, level(`level')
+	}
+	tempname b sd med ci ess rhat
+	matrix `b' = e(b)
+	matrix `sd' = e(sd)
+	matrix `med' = e(median)
+	matrix `ci' = e(ci)
+	matrix `ess' = e(ess)
+	matrix `rhat' = e(rhat)
+	if `"`saving'"' != "" {
+		tempname fr2
+		capture frame drop `fr2'
+		frame copy `fr' `fr2'
+		local i 0
+		foreach nm of local names {
+			local ++i
+			local vn = strtoname("`nm'")
+			local vn = substr("`vn'", 1, 32)
+			capture frame `fr2': rename b`i' `vn'
+			if _rc {
+				capture frame `fr2': rename b`i' coef`i'
+			}
+			capture frame `fr2': label variable `vn' "`nm'"
+		}
+		local rep = cond("`replace'" != "", ", replace", "")
+		frame `fr2': save `saving' `rep'
+		frame drop `fr2'
+		di as txt "(draws saved: " as res `=e(ndraws)' as txt " rows, one per saved draw; chain and iter identify the chain and the iteration)"
+	}
+	if "`plot'" != "" {
+		if !inlist("`plot'", "trace", "density", "both") {
+			di as err "option plot() takes trace, density or both."
+			exit 198
+		}
+		_nwergm_estat_bayesplot, frame(`fr') name(`name') what(`plot') pars(`pars')
+	}
+	return matrix mean = `b'
+	return matrix sd = `sd'
+	return matrix median = `med'
+	return matrix ci = `ci'
+	return matrix ess = `ess'
+	return matrix rhat = `rhat'
+	return local frame "`fr'"
+end
+
+// estat mcmcdiag after a Bayesian fit: effective sample size, Monte Carlo standard error, Gelman-Rubin and Geweke statistics
+capture program drop nwergm_estat_bayesdiag
+program define nwergm_estat_bayesdiag, rclass
+	syntax [, PLOT NAME(string) PARS(string)]
+	_nwergm_estat_frame fr
+	local names : colnames e(b)
+	local K : word count `names'
+	local nch = e(chains)
+	tempname G
+	mata: st_matrix("`G'", ErgmBayesGeweke(`nch'))
+	tempname ess rhat rhatu sd
+	matrix `ess' = e(ess)
+	matrix `rhat' = e(rhat)
+	matrix `rhatu' = e(rhat_upper)
+	matrix `sd' = e(sd)
+	di
+	di as txt "Convergence diagnostics of the posterior sample (" as res e(chains) as txt " chains of " as res e(draws_per_chain) as txt " draws)"
+	di
+	local wn = 12
+	foreach nm of local names {
+		local wn = max(`wn', min(28, udstrlen("`nm'")))
+	}
+	di as txt "{hline `=`wn'+1'}{c TT}{hline 58}"
+	di as txt %`wn's "Coefficient" " {c |}" %9s "ESS" %10s "MCSE" %9s "R-hat" %10s "R-hat up." %10s "Geweke z" %9s "Lag-1 ac"
+	di as txt "{hline `=`wn'+1'}{c +}{hline 58}"
+	forvalues k = 1/`K' {
+		local nm : word `k' of `names'
+		if `sd'[1, `k'] == 0 continue
+		local mcse = `sd'[1, `k'] / sqrt(`ess'[1, `k'])
+		di as txt %`wn's abbrev("`nm'", `wn') " {c |}" as res %9.0f `ess'[1, `k'] %10.5f `mcse' %9.4f `rhat'[1, `k'] %10.4f `rhatu'[1, `k'] %10.3f `G'[1, `k'] %9.3f `G'[2, `k']
+	}
+	di as txt "{hline `=`wn'+1'}{c BT}{hline 58}"
+	di as txt "{p 0 0 2}MCSE: posterior standard deviation over the square root of the effective sample size. R-hat: Gelman-Rubin potential scale reduction (values near 1; below 1.1 is the usual rule), with its upper 95% limit. Geweke z: the largest absolute value over the chains (first 10% against last 50% of the chain). Lag-1 ac: mean lag-1 autocorrelation of the chains.{p_end}"
+	di
+	di as txt "Acceptance rate by chain:"
+	tempname acc
+	matrix `acc' = e(accept_chains)
+	local line ""
+	forvalues c = 1/`nch' {
+		local line "`line' `=string(`acc'[1, `c'], "%5.3f")'"
+	}
+	di as res "`line'"
+	di as txt "{p 0 0 2}Overall acceptance rate " as res %5.3f e(accept_rate) as txt "; the scale of the moves adapts during the burn-in towards " as res %4.2f e(targetaccept) as txt " (final factor " as res %6.4f e(gamma) as txt ").{p_end}"
+	if "`plot'" != "" {
+		_nwergm_estat_bayesplot, frame(`fr') name(`name') what(trace) pars(`pars')
+	}
+	return matrix ess = `ess'
+	return matrix rhat = `rhat'
+	return matrix geweke = `G'
+	return scalar accept_rate = e(accept_rate)
 end

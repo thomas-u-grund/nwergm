@@ -5786,8 +5786,9 @@ real rowvector _ergm_triad_bm(real matrix A){
 void ergm_gof_run(class ErgmModel scalar M, class ErgmGraph scalar G, real matrix Aobs, real rowvector Gobsstat,
 	real rowvector theta, real scalar nsim, real scalar burnin, real scalar interval,
 	pointer(real rowvector function) scalar proposalfn, real scalar directed, real scalar n1,
-	string rowvector groups, string scalar prefix){
+	string rowvector groups, string scalar prefix, | real matrix thetas, real matrix ties0){
 	real scalar s, g, k, ng
+	real rowvector ths
 	real matrix A, Smodel
 	real rowvector st
 	transmorphic scalar sims
@@ -5808,7 +5809,14 @@ void ergm_gof_run(class ErgmModel scalar M, class ErgmGraph scalar G, real matri
 	for (g=1; g<=ng; g++) asarray(sims, groups[g], J(nsim, 0, .))
 	for (s=1; s<=nsim; s++) {
 		// from the second draw on, the statistics of G are the previous draw (no recomputation)
-		if (s == 1) Smodel = ErgmMCMCSample(M, G, theta, burnin, interval, 1, proposalfn)
+		if (args() >= 14) {
+			// posterior predictive check: draw s has its own parameter vector and starts from the observed network
+			ths = thetas[s, .]
+			if (cols(ths) != M.nparam() & cols(ths) == M.ntheta()) ths = M.theta_to_eta(ths)
+			ergm_graph_set_ties(G, ties0)
+			Smodel = ErgmMCMCSample(M, G, ths, burnin, interval, 1, proposalfn)
+		}
+		else if (s == 1) Smodel = ErgmMCMCSample(M, G, theta, burnin, interval, 1, proposalfn)
 		else Smodel = ErgmMCMCSample(M, G, theta, 0, interval, 1, proposalfn, Smodel)
 		A = G.to_dense()
 		for (g=1; g<=ng; g++) {
@@ -9582,7 +9590,7 @@ real matrix ErgmNativeSampleCore(class ErgmModel scalar M, class ErgmGraph scala
 	string scalar convarlist
 	real colvector modevec
 	string scalar origframe, argstr, cmd, outvarlist, attrvarlist, modevarlist, covmatvarlist, maskvarlist
-	real scalar ncovcols
+	real scalar ncovcols, ebon
 	string scalar covtok
 
 	string rowvector outvarnames, attrvarnames, covmatvarnames, maskvarnames
@@ -9781,7 +9789,10 @@ real matrix ErgmNativeSampleCore(class ErgmModel scalar M, class ErgmGraph scala
 	// position (a fixed-density model is MCMLE-only, nwergm.ado itself
 	// requires method(mcmle) for fixdensity, so neither MPLE mode ever
 	// legitimately runs on one).
-	argstr = (obsmode ? "3 " : "0 ") + strofreal(n) + " " + strofreal(directed) + " " + strofreal(bipartite) + " " + strofreal(nties) + " " +
+	ebon = st_numscalar("__eb_on")
+	if (rows(ebon) * cols(ebon) != 1) ebon = 0
+	st_numscalar("__eb_on", 0)
+	argstr = (obsmode ? "3 " : (ebon == 1 ? "7 " : "0 ")) + strofreal(n) + " " + strofreal(directed) + " " + strofreal(bipartite) + " " + strofreal(nties) + " " +
 		strofreal(samplesize) + " " + strofreal(burnin) + " " + strofreal(interval) + " " +
 		strofreal(M.native_proposal) + " " + strofreal(rngseed, "%12.0f") + " " + strofreal(nattr) + " " + covtok + " " + strofreal(hasmask) + " " + strofreal(M.fixed_density) + " " + strofreal(ttab ? -p : p)
 	if (ttab) argstr = argstr + " " + strofreal(termcol) + " " + strofreal(wide)
@@ -15241,6 +15252,413 @@ void ergm_netobj_to_graph(pointer(class nw_def scalar) scalar netobj, class Ergm
 			G.toggle(i, nb[k])
 		}
 	}
+}
+
+/* ====================================================================
+   Bayesian ERGM (nwergm, method(bayes)): the exchange algorithm of Caimo and Friel (2011) with adaptive direction
+   sampling (R: Bergm::bergm(), version 6.0.0). The sampler itself is in the plugin (mode 7, ergm_bayes.h);
+   these functions set up the population of chains, call it and summarise the draws.
+   ==================================================================== */
+
+// quantile of a sorted column vector, R's type 7
+real scalar ergm_q7(real colvector xs, real scalar p){
+	real scalar n, h, lo
+	n = rows(xs)
+	if (n == 1) return(xs[1])
+	h = (n - 1) * p + 1
+	lo = floor(h)
+	if (lo >= n) return(xs[n])
+	return(xs[lo] + (h - lo) * (xs[lo+1] - xs[lo]))
+}
+
+// coda::effectiveSize for the chains of one parameter (x: nkeep x nch): the sum of n * var / spectrum0.ar over the chains
+real scalar ergm_bayes_ess(real matrix x){
+	real scalar c, n, s0, tot
+	n = rows(x)
+	tot = 0
+	for (c=1; c<=cols(x); c++) {
+		s0 = ergm_spec0_ar(x[., c])
+		tot = tot + (s0 == 0 ? 0 : n * variance(x[., c]) / s0)
+	}
+	return(tot)
+}
+
+// coda::gelman.diag(autoburnin = FALSE, multivariate = FALSE): point estimate and upper limit of the potential scale
+// reduction factor of one parameter (x: nkeep x nch)
+real rowvector ergm_bayes_rhat(real matrix x, real scalar conf){
+	real scalar N, m, c, w, b, vw, vb, cwb, V, varV, dfV, dfadj, R2f, R2r, muhat, bdf, wdf
+	real rowvector xbar, s2
+	N = rows(x); m = cols(x)
+	if (m < 2 | N < 4) return((., .))
+	xbar = mean(x)
+	s2 = J(1, m, .)
+	for (c=1; c<=m; c++) s2[c] = variance(x[., c])
+	w = mean(s2')
+	b = N * variance(xbar')
+	if (w <= 0) return((., .))
+	muhat = mean(xbar')
+	vw = variance(s2') / m
+	vb = 2 * b^2 / (m - 1)
+	cwb = (N / m) * (cross(s2' :- mean(s2'), (xbar:^2)' :- mean((xbar:^2)')) / (m - 1) - 2 * muhat * cross(s2' :- mean(s2'), xbar' :- mean(xbar')) / (m - 1))
+	V = (N - 1) * w / N + (1 + 1/m) * b / N
+	varV = ((N - 1)^2 * vw + (1 + 1/m)^2 * vb + 2 * (N - 1) * (1 + 1/m) * cwb) / N^2
+	dfV = 2 * V^2 / varV
+	dfadj = (dfV + 3) / (dfV + 1)
+	bdf = m - 1
+	wdf = 2 * w^2 / vw
+	R2f = (N - 1) / N
+	R2r = (1 + 1/m) * (1/N) * (b / w)
+	return((sqrt(dfadj * (R2f + R2r)), sqrt(dfadj * (R2f + invF(bdf, wdf, (1 + conf) / 2) * R2r))))
+}
+
+// the starting population of the chains (Bergm's .initial_population): around the pseudolikelihood estimate b0 with its
+// covariance V0 (V0 may be missing), in the working scale (the decay of a curved term on the log scale)
+real matrix ergm_bayes_start(real rowvector b0, real matrix V0, real rowvector isfree, real rowvector isdec, real rowvector fixval,
+		real rowvector pmean, real matrix prec, real scalar dmeanlog, real scalar dsdlog, real scalar nch){
+	real matrix th, Vf, L
+	real rowvector base, f
+	real scalar att, spread, nt, c, j, ok, k
+	real colvector g
+	nt = cols(b0)
+	th = J(nch, nt, 0)
+	spread = 1
+	for (att=1; att<=200; att++) {
+		spread = 1 + (att - 1) / 20
+		for (c=1; c<=nch; c++) {
+			for (j=1; j<=nt; j++) {
+				if (!isfree[j]) {
+					th[c, j] = fixval[j]
+					continue
+				}
+				if (isdec[j]) {
+					if (b0[j] < . & b0[j] > 0.05 & b0[j] < 5) th[c, j] = ln(b0[j]) + rnormal(1, 1, 0, min((0.5, dsdlog))) * spread
+					else th[c, j] = dmeanlog + rnormal(1, 1, 0, min((0.5, dsdlog))) * spread
+				}
+			}
+		}
+		g = selectindex(isfree :& !isdec)'
+		if (rows(g) > 0) {
+			base = b0
+			for (j=1; j<=nt; j++) if (base[j] >= .) base[j] = 0
+			ok = 0
+			if (rows(V0) == nt & cols(V0) == nt) {
+				Vf = V0[g, g]
+				if (!missing(Vf) & min(diagonal(Vf)) > 0) {
+					f = colmin((J(1, rows(g), 1) \ (1 :/ sqrt(diagonal(Vf)'))))
+					Vf = Vf :* (f' * f) * spread^2
+					L = .
+					if (!ergm_chol_ok(Vf, L)) ok = 0
+					else {
+						ok = 1
+						for (c=1; c<=nch; c++) th[c, g'] = base[g'] + (L * rnormal(rows(g), 1, 0, 1))'
+					}
+				}
+			}
+			if (!ok) for (c=1; c<=nch; c++) th[c, g'] = base[g'] + runiform(1, rows(g)) * 0.2 :- 0.1
+		}
+		ok = 1
+		for (c=1; c<=nch; c++) {
+			k = ergm_bayes_logprior(th[c, .], isfree, isdec, pmean, prec, dmeanlog, dsdlog)
+			if (k >= . | k < -1e300) {
+				ok = 0
+				break
+			}
+		}
+		if (ok) return(th)
+	}
+	errprintf("could not find starting values with positive prior density\n")
+	exit(498)
+}
+
+// lower Cholesky factor in L; returns 1 on success, 0 when S is not positive definite
+real scalar ergm_chol_ok(real matrix S, real matrix L){
+	L = cholesky(S)
+	return(!missing(L))
+}
+
+real scalar ergm_bayes_logprior(real rowvector w, real rowvector isfree, real rowvector isdec, real rowvector pmean, real matrix prec,
+		real scalar dmeanlog, real scalar dsdlog){
+	real rowvector d
+	real scalar q, j
+	d = w - pmean
+	q = -0.5 * (d * prec * d')
+	for (j=1; j<=cols(w); j++) if (isdec[j] & isfree[j]) q = q - 0.5 * ((w[j] - dmeanlog) / dsdlog)^2
+	return(q)
+}
+
+// runs the sampler. Returns the draws (chains * nkeep rows, chain after chain; columns: the parameters of the model on their
+// natural scale) and posts the run's statistics in the Stata scalars/matrices __eb_*
+real matrix ErgmBayesRun(class ErgmModel scalar M, class ErgmGraph scalar G, real rowvector obs, real matrix th0, real rowvector isfree,
+		real rowvector isdec, real rowvector fixval, real rowvector pmean, real matrix prec, real scalar dmeanlog, real scalar dsdlog,
+		real scalar burn, real scalar main, real scalar thin, real scalar aux, real scalar gamma, real scalar vprop,
+		real scalar adapt, real scalar target, real scalar da, real scalar dainflate){
+	real scalar nch, nt, nkeep, rc, gen
+	real matrix D, tout
+	real rowvector th
+	nch = rows(th0)
+	nt = cols(th0)
+	nkeep = floor(main / thin)
+	st_numscalar("__eb_nch", nch); st_numscalar("__eb_nt", nt)
+	st_numscalar("__eb_burn", burn); st_numscalar("__eb_main", main); st_numscalar("__eb_thin", thin)
+	st_numscalar("__eb_adapt", adapt); st_numscalar("__eb_target", target); st_numscalar("__eb_gamma", gamma)
+	st_numscalar("__eb_da", da); st_numscalar("__eb_dainflate", dainflate); st_numscalar("__eb_vprop", vprop)
+	st_numscalar("__eb_dmeanlog", dmeanlog); st_numscalar("__eb_dsdlog", dsdlog)
+	st_numscalar("__eb_ncurved", M.curved[M.nterms] ? M.npar[M.nterms] : 0)
+	st_matrix("__eb_par", (isfree \ isdec \ fixval \ pmean))
+	st_matrix("__eb_prec", prec)
+	st_matrix("__eb_theta0", th0)
+	st_matrix("__eb_acc", J(1, nch, 0))
+	st_numscalar("__eb_on", 1)
+	th = J(1, M.nparam(), 0)
+	D = ErgmNativeSampleCore(M, G, th, aux, 1, nch * nkeep, obs, G.all_ties(), tout)
+	st_numscalar("__eb_on", 0)
+	gen = st_numscalar("__ergm_native_gen")
+	if (rows(gen) * cols(gen) != 1) gen = .
+	if (!(gen >= 6)) {
+		errprintf("the native plugin is older than this version of nwergm (it cannot run the Bayesian sampler); reinstall the package or run nwinstall, buildplugin(nwergm)\n")
+		exit(498)
+	}
+	return(D[., 1..nt])
+}
+
+// summaries of the draws: posts the Stata matrices __eb_b (posterior mean), __eb_V, __eb_med, __eb_sd, __eb_lo, __eb_hi
+// (equal-tailed credible limits at `level'), __eb_ess, __eb_rhat (1 x nt); draws are kept in the Mata external __nwergm_bdraws
+void ErgmBayesSummary(real matrix D, real scalar nch, real rowvector isfree, real scalar level){
+	real scalar nt, nkeep, j, c, a
+	real matrix X, V
+	real colvector xs
+	real rowvector b, med, sd, lo, hi, ess, rh, ru
+	pointer(real matrix) scalar P
+	nt = cols(D)
+	nkeep = rows(D) / nch
+	b = J(1, nt, .); med = b; sd = b; lo = b; hi = b; ess = b; rh = b; ru = b
+	a = (1 - level / 100) / 2
+	for (j=1; j<=nt; j++) {
+		xs = sort(D[., j], 1)
+		b[j] = mean(D[., j])
+		med[j] = ergm_q7(xs, 0.5)
+		sd[j] = isfree[j] ? sqrt(variance(D[., j])) : 0
+		lo[j] = ergm_q7(xs, a)
+		hi[j] = ergm_q7(xs, 1 - a)
+		if (isfree[j]) {
+			X = colshape(D[., j]', nkeep)'
+			ess[j] = round(ergm_bayes_ess(X))
+			if (nch >= 2 & nkeep >= 4) {
+				X = ergm_bayes_rhat(X, 0.95)
+				rh[j] = X[1]
+				ru[j] = X[2]
+			}
+		}
+	}
+	V = isfree' :* variance(D) :* isfree
+	st_matrix("__eb_b", b); st_matrix("__eb_V", V); st_matrix("__eb_med", med); st_matrix("__eb_sd", sd)
+	st_matrix("__eb_lo", lo); st_matrix("__eb_hi", hi); st_matrix("__eb_ess", ess); st_matrix("__eb_rhat", rh)
+	st_matrix("__eb_rhatu", ru)
+}
+
+// the Bayesian fit: sets up parameters and priors, draws the posterior sample (ErgmBayesRun) and posts the summaries as the
+// Stata matrices __eb_*; the draws stay in the Mata external __nwergm_bdraws (chain after chain) and in the frame `fname'.
+// The matrices named bname/Vname hold the pseudolikelihood estimate and its covariance (theta space), pmname, pvname, pcname,
+// svname the optional prior mean, prior variances, prior covariance matrix and starting values ("" = not given).
+void ErgmBayesFit(class ErgmModel scalar M, class ErgmGraph scalar G, real rowvector obs, string scalar bname, string scalar Vname,
+		string scalar pmname, string scalar pvname, string scalar pcname, string scalar svname, real scalar dmeanlog, real scalar dsdlog,
+		real scalar nch, real scalar burn, real scalar main, real scalar thin, real scalar aux, real scalar gamma, real scalar vprop,
+		real scalar adapt, real scalar target, real scalar da, real scalar dainflate, real scalar level, string scalar fname){
+	real scalar nt, pf, j, nd, c, i, nk
+	real rowvector isfree, isdec, fixval, pmean, b0, sv, pv, med
+	real matrix V0, prec, S, th0, D, Sg, X
+	real colvector g
+	real scalar curved
+	string rowvector nms
+	external real matrix __nwergm_bdraws
+	nt = M.ntheta()
+	curved = (sum(M.curved) > 0)
+	isdec = J(1, nt, 0)
+	if (curved) {
+		if (sum(M.curved) != 1 | !M.curved[M.nterms]) {
+			errprintf("Bayesian estimation covers at most one curved term, and it must be the last term of the model\n")
+			exit(198)
+		}
+		if (M.curved[M.nterms] != 1) {
+			errprintf("Bayesian estimation covers curved terms of the geometrically weighted family only (not altkstar with a free decay)\n")
+			exit(198)
+		}
+		isfree = (cols(M.thfixed) == nt ? !M.thfixed : J(1, nt, 1))
+		fixval = (cols(M.thfixed) == nt ? M.thfixedvalue : J(1, nt, 0))
+		if (isfree[nt]) isdec[nt] = 1
+	}
+	else {
+		isfree = (cols(M.isfixed) == nt ? !M.isfixed : J(1, nt, 1))
+		fixval = (cols(M.fixedvalue) == nt ? M.fixedvalue : J(1, nt, 0))
+	}
+	fixval = editmissing(fixval, 0)
+	pf = sum(isfree)
+	if (pf < 1) {
+		errprintf("the model has no free parameters\n")
+		exit(198)
+	}
+	nd = sum(isdec)
+	g = selectindex(isfree :& !isdec)'
+	b0 = st_matrix(bname)
+	V0 = (Vname == "" ? J(0, 0, .) : st_matrix(Vname))
+	// priors: normal on the coefficients (default mean 0, variance 100, as Bergm), log-normal on the decay
+	pmean = J(1, nt, 0)
+	if (pmname != "") {
+		sv = st_matrix(pmname)
+		if (cols(sv) == 1 & nt > 1) sv = J(1, nt - nd, sv[1])
+		if (cols(sv) == nt - nd & nd > 0) {
+			pmean[selectindex(!isdec)] = sv
+		}
+		else if (cols(sv) == nt) pmean = sv
+		else {
+			errprintf("priormean() takes one value or one value per coefficient (%g)\n", nt)
+			exit(198)
+		}
+	}
+	S = diag(J(1, nt, 100))
+	if (pcname != "") {
+		S = st_matrix(pcname)
+		if (rows(S) == nt - nd & cols(S) == nt - nd & nd > 0) {
+			Sg = diag(J(1, nt, 1))
+			Sg[selectindex(!isdec), selectindex(!isdec)] = S
+			S = Sg
+		}
+		if (rows(S) != nt | cols(S) != nt) {
+			errprintf("priorcov() must be a %g x %g matrix\n", nt, nt)
+			exit(198)
+		}
+		S = (S + S') / 2
+	}
+	else if (pvname != "") {
+		pv = st_matrix(pvname)
+		if (cols(pv) == 1) pv = J(1, nt, pv[1])
+		if (cols(pv) == nt - nd & nd > 0) {
+			Sg = J(1, nt, 1)
+			Sg[selectindex(!isdec)] = pv
+			pv = Sg
+		}
+		if (cols(pv) != nt) {
+			errprintf("priorvar() takes one value or one value per coefficient (%g)\n", nt)
+			exit(198)
+		}
+		S = diag(pv)
+	}
+	prec = J(nt, nt, 0)
+	if (rows(g) > 0) {
+		Sg = S[g, g]
+		if (missing(cholesky(Sg))) {
+			errprintf("the prior covariance must be positive definite\n")
+			exit(198)
+		}
+		prec[g, g] = invsym(Sg)
+	}
+	if (nch <= 0) nch = max((2 * pf, 4))
+	if (nch < 3) {
+		errprintf("chains() must be at least 3\n")
+		exit(198)
+	}
+	if (svname != "") {
+		sv = st_matrix(svname)
+		if (cols(sv) != nt) {
+			errprintf("startvals() takes one value per coefficient (%g)\n", nt)
+			exit(198)
+		}
+		th0 = J(nch, nt, 0)
+		for (c=1; c<=nch; c++) for (j=1; j<=nt; j++) {
+			if (!isfree[j]) th0[c, j] = fixval[j]
+			else if (isdec[j]) th0[c, j] = ln(sv[j]) + (runiform(1, 1) * 0.2 - 0.1)
+			else th0[c, j] = sv[j] + (runiform(1, 1) * 0.2 - 0.1)
+		}
+	}
+	else th0 = ergm_bayes_start(b0, V0, isfree, isdec, fixval, pmean, prec, dmeanlog, dsdlog, nch)
+	D = ErgmBayesRun(M, G, obs, th0, isfree, isdec, fixval, pmean, prec, dmeanlog, dsdlog, burn, main, thin, aux, gamma, vprop, adapt, target, da, dainflate)
+	if (missing(D)) {
+		errprintf("the sampler returned missing draws\n")
+		exit(498)
+	}
+	ErgmBayesSummary(D, nch, isfree, level)
+	st_numscalar("__eb_nchains", nch)
+	st_numscalar("__eb_nkeep", floor(main / thin))
+	st_matrix("__eb_isfree", isfree)
+	st_matrix("__eb_isdec", isdec)
+	st_matrix("__eb_prmean", pmean)
+	st_matrix("__eb_prvar", S)
+	__nwergm_bdraws = D
+	if (fname != "") ErgmBayesFrame(D, nch, fname)
+}
+
+// the draws into a frame: b1..bK (natural scale), chain, iter
+void ErgmBayesFrame(real matrix D, real scalar nch, string scalar fname){
+	string scalar orig
+	real scalar nt, nkeep, k, r
+	string rowvector vn
+	nt = cols(D)
+	nkeep = rows(D) / nch
+	orig = st_framecurrent()
+	stata("capture frame drop " + fname)
+	stata("frame create " + fname)
+	st_framecurrent(fname)
+	st_addobs(rows(D))
+	vn = J(1, nt, "")
+	for (k=1; k<=nt; k++) vn[k] = "b" + strofreal(k)
+	r = st_addvar("double", vn)
+	r = st_addvar("int", "chain")
+	r = st_addvar("long", "iter")
+	st_store(., vn, D)
+	st_store(., "chain", ceil((1::rows(D)) :/ nkeep))
+	st_store(., "iter", mod((0::rows(D)-1), nkeep) :+ 1)
+	st_framecurrent(orig)
+}
+
+// credible limits at another level from the draws kept by ErgmBayesFit()
+void ErgmBayesRequantile(real scalar level){
+	external real matrix __nwergm_bdraws
+	real scalar j, a
+	real matrix ci
+	real colvector xs
+	if (rows(__nwergm_bdraws) == 0) exit(111)
+	a = (1 - level / 100) / 2
+	ci = J(2, cols(__nwergm_bdraws), .)
+	for (j=1; j<=cols(__nwergm_bdraws); j++) {
+		xs = sort(__nwergm_bdraws[., j], 1)
+		ci[1, j] = ergm_q7(xs, a)
+		ci[2, j] = ergm_q7(xs, 1 - a)
+	}
+	st_matrix("e(ci)", ci)
+	st_numscalar("e(level)", level)
+}
+
+// nsim parameter vectors drawn at random (without replacement when there are enough) from the posterior draws of the last
+// Bayesian fit, one per row
+real matrix ergm_bayes_pick(real scalar nsim){
+	external real matrix __nwergm_bdraws
+	real colvector idx
+	if (rows(__nwergm_bdraws) == 0) exit(111)
+	if (nsim <= rows(__nwergm_bdraws)) idx = order(runiform(rows(__nwergm_bdraws), 1), 1)[1::nsim]
+	else idx = ceil(runiform(nsim, 1) * rows(__nwergm_bdraws))
+	return(__nwergm_bdraws[idx, .])
+}
+
+// Geweke z (largest absolute value over the chains, row 1) and mean lag-1 autocorrelation (row 2) per parameter of the
+// draws of the last Bayesian fit
+real matrix ErgmBayesGeweke(real scalar nch){
+	external real matrix __nwergm_bdraws
+	real scalar nt, nkeep, j, c
+	real matrix X, out
+	real rowvector z
+	nt = cols(__nwergm_bdraws)
+	nkeep = rows(__nwergm_bdraws) / nch
+	out = J(2, nt, 0)
+	for (j=1; j<=nt; j++) {
+		if (variance(__nwergm_bdraws[., j]) == 0) continue
+		X = colshape(__nwergm_bdraws[., j]', nkeep)'
+		for (c=1; c<=nch; c++) {
+			z = ergm_geweke_z2(X[., c], 0.1, 0.5)
+			if (z[1] < . & abs(z[1]) > abs(out[1, j])) out[1, j] = z[1]
+			out[2, j] = out[2, j] + ergm_autocorr(X[., c], 1)[2, 1] / nch
+		}
+	}
+	return(out)
 }
 
 end

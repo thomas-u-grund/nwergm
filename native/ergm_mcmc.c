@@ -177,7 +177,7 @@
    network only if it fits the frame the caller supplied (otherwise it reports the number of ties it needs in
    __ergm_native_nties_out and writes nothing), so that the caller need not allocate one row per dyad. A plugin of generation 1
    (no such scalar) is always given the frame of one row per dyad by the Mata caller. */
-#define ERGM_NATIVE_GEN 5  /* 5: the SPDyad proposal (proposal code 3); 3: wide models (more than 256 slots, term table in frame variables, long output); 4: sparse dyadic covariates */
+#define ERGM_NATIVE_GEN 6  /* 6: mode 7, the exchange algorithm of the Bayesian ERGM (ergm_bayes.h); 5: the SPDyad proposal (proposal code 3); 3: wide models (more than 256 slots, term table in frame variables, long output); 4: sparse dyadic covariates */
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
@@ -3385,6 +3385,20 @@ static void fb_accept(double *cur, const double *chg, const long *tk, const doub
 }
 
 #include "ergm_mcmc_e6.h"
+#include "ergm_bayes.h"
+
+/* mode 7: the graph back to the observed network (the auxiliary network of the exchange algorithm starts there) */
+static void bayes_graph_reset(graph_t *g, const char *obsmap, const long *oi, const long *oj, long no, long **ti, long **tj, long *tcap) {
+	long e, ne = g->nties;
+	if (ne > *tcap) {
+		*tcap = ne + 1024;
+		*ti = (long *)realloc(*ti, (size_t)*tcap * sizeof(long));
+		*tj = (long *)realloc(*tj, (size_t)*tcap * sizeof(long));
+	}
+	for (e = 0; e < ne; e++) { (*ti)[e] = g->elist_i[e]; (*tj)[e] = g->elist_j[e]; }
+	for (e = 0; e < ne; e++) if (!obsmap[dyadkey(g, (*ti)[e], (*tj)[e])]) toggle(g, (*ti)[e], (*tj)[e]);
+	for (e = 0; e < no; e++) if (!has_edge(g, oi[e], oj[e])) toggle(g, oi[e], oj[e]);
+}
 
 STDLL stata_call(int argc, char *argv[]) {
 	char *argbuf;
@@ -3577,7 +3591,7 @@ STDLL stata_call(int argc, char *argv[]) {
 	}
 	/* SPDyad only where R uses it: one-mode networks, the single-toggle proposal (plain, masked or with degree
 	   bounds); the caller sends code 3 only then, this is a guard */
-	if (proposal_code == 3 && !(mode == 0 && !bipartite && !fixed_density && (e6c.code == 0 || e6c.code == E6_TNT) && e6c.dn_mode == 0 && !(e6c.bdK > 0 && e6c.bd_maxonly))) {
+	if (proposal_code == 3 && !((mode == 0 || mode == 7) && !bipartite && !fixed_density && (e6c.code == 0 || e6c.code == E6_TNT) && e6c.dn_mode == 0 && !(e6c.bdK > 0 && e6c.bd_maxonly))) {
 		proposal_code = 2;
 		g_spd_focus = -1.0;
 	}
@@ -4125,6 +4139,39 @@ STDLL stata_call(int argc, char *argv[]) {
 	if (e6c.code == 0) fb_build(nterms, termcodes, attridx, p1, attrs, n);
 	else fb_free();
 
+	/* mode 7 (Bayesian ERGM, exchange algorithm): the burn-in loop below draws the auxiliary network at each proposed parameter
+	   (burnin = the number of auxiliary iterations), starting from the observed network; ergm_bayes.h chooses the proposals */
+	{
+	bayes_t BY;
+	char *by_obsmap = NULL;
+	long *by_oi = NULL, *by_oj = NULL, by_no = 0, *by_ti = NULL, *by_tj = NULL, by_tcap = 0, by_rc = 0;
+	double *by_obs0 = NULL;
+	if (mode == 7) {
+		long e, nk;
+		if (g_ncon > 0 || g_nctx > 0 || e6c.code != 0 || e6c.bdK > 0 || e6c.dn_mode > 0) { SF_error("ergm_mcmc: the Bayesian fit does not cover operator terms or constraints\n"); free(cur); return(198); }
+		for (nk = 0; nk < nterms; nk++) if (g_opkind[nk]) { SF_error("ergm_mcmc: the Bayesian fit does not cover logstat() or expstat()\n"); free(cur); return(198); }
+		by_rc = bayes_init(&BY, nterms, obs);
+		if (by_rc) {
+			char msg[160];
+			snprintf(msg, sizeof(msg), "ergm_mcmc: bayes setup failed (%ld)\n", by_rc);
+			SF_error(msg);
+			bayes_free(&BY); free(cur); return(198);
+		}
+		by_no = g.nties;
+		by_oi = (long *)malloc((size_t)(by_no + 1) * sizeof(long)); by_oj = (long *)malloc((size_t)(by_no + 1) * sizeof(long));
+		by_obsmap = (char *)calloc((size_t)(n + 1) * (size_t)(n + 1), 1);
+		by_obs0 = (double *)malloc((size_t)(nterms + 1) * sizeof(double));
+		if (!by_oi || !by_oj || !by_obsmap || !by_obs0) { SF_error("ergm_mcmc: out of memory\n"); return(909); }
+		for (e = 0; e < by_no; e++) { by_oi[e] = g.elist_i[e]; by_oj[e] = g.elist_j[e]; by_obsmap[dyadkey(&g, by_oi[e], by_oj[e])] = 1; }
+		for (e = 0; e < nterms; e++) by_obs0[e] = obs[e];
+	}
+	for (;;) {
+	if (mode == 7) {
+		long q;
+		if (!bayes_next(&BY, &rng)) break;
+		for (q = 0; q < nterms; q++) { theta[q] = BY.prop_eta[q]; cur[q] = by_obs0[q]; }
+		bayes_graph_reset(&g, by_obsmap, by_oi, by_oj, by_no, &by_ti, &by_tj, &by_tcap);
+	}
 	for (step = 0; step < burnin; step++) {
 		long pi, pj;
 		double logratio, cutoff = 0.0, delta;
@@ -4213,7 +4260,33 @@ STDLL stata_call(int argc, char *argv[]) {
 		}
 	}
 
-	for (draw = 0; draw < samplesize; draw++) {
+	if (mode == 7) { bayes_done(&BY, &rng, cur); continue; }
+	break;
+	}
+	if (mode == 7) {
+		long c, ix, j;
+		char nm[64];
+		for (c = 0; c < BY.nch; c++) for (ix = 0; ix < BY.nkeep; ix++) for (j = 0; j < BY.nt; j++)
+			SF_vstore((int)(outcol_base + j), (int)(c * BY.nkeep + ix + 1), BY.out[((c * BY.nkeep) + ix) * BY.nt + j]);
+		for (c = 0; c < BY.nch; c++) SF_mat_store("__eb_acc", 1, (int)(c + 1), BY.main_it > 0 ? (double)BY.acc[c] / (double)BY.main_it : 0.0);
+		SF_scal_save("__eb_gamma_out", (ST_double)exp(BY.log_gamma));
+		SF_scal_save("__eb_nsim", (ST_double)BY.n_sim);
+		SF_scal_save("__eb_nsimburn", (ST_double)BY.n_sim_burn);
+		SF_scal_save("__eb_nda", (ST_double)BY.n_da_reject);
+		SF_scal_save("__eb_nprop", (ST_double)BY.n_prop);
+		SF_scal_save("__eb_useda", (ST_double)BY.use_da);
+		for (j = 0; j < BY.pf; j++) {
+			snprintf(nm, sizeof(nm), "__eb_dam%ld", j + 1);
+			SF_scal_save(nm, (ST_double)(BY.use_da ? BY.da_m[j] : 0.0));
+		}
+		naccept = 0; for (c = 0; c < BY.nch; c++) naccept += BY.acc[c];
+		ntried = BY.n_prop;
+		bayes_free(&BY);
+		free(by_oi); free(by_oj); free(by_obsmap); free(by_obs0); free(by_ti); free(by_tj);
+	}
+	}
+
+	for (draw = 0; draw < (mode == 7 ? 0 : samplesize); draw++) {
 		for (step = 0; step < interval; step++) {
 			long pi, pj;
 			double logratio, cutoff = 0.0, delta;

@@ -37,10 +37,14 @@ program _nwergm_gof, rclass
 		}
 	}
 
+	local __bayes = ("`e(method)'" == "bayes")
 	if `gofburnin' < 0 {
 		local gofburnin = 16384
 		if "`e(mcmc_burnin)'" != "" local gofburnin = e(mcmc_burnin)
+		// R's Bergm bgof(): each network is simulated at a posterior draw after 10,000 iterations from the observed network
+		if `__bayes' local gofburnin = 10000
 	}
+	if `gofinterval' < 0 & `__bayes' local gofinterval = 1
 	if `gofinterval' < 0 {
 		// R: the fit's interval, rescaled by (estimation sample size / gof sample size)
 		// after MPLE there is no MCMC sample: R's gof.ergm() uses its default interval of 1024
@@ -192,7 +196,17 @@ program _nwergm_gof, rclass
 	// back exactly afterwards, so that a later estat gof or nwergm simulate starts where the fit ended
 	tempname Afit
 	mata: `Afit' = __nwergm_last_G.all_ties()
-	mata: ergm_gof_run(__nwergm_last_M, __nwergm_last_G, `obsmat', `obsstat', st_matrix("`bmat'"), `nsim', `gofburnin', `gofinterval', `propfn', `dir', `n1', __gof_groups, "__gofE7")
+	if `__bayes' {
+		capture mata: __gof_th = ergm_bayes_pick(`nsim')
+		if _rc {
+			di as err "{p 0 0 2}the posterior draws of the Bayesian fit are no longer in memory; re-fit the model with nwergm first.{p_end}"
+			mata: mata drop `Afit' `obsmat' `obsstat' __gof_groups
+			exit 498
+		}
+		mata: ergm_gof_run(__nwergm_last_M, __nwergm_last_G, `obsmat', `obsstat', st_matrix("`bmat'"), `nsim', `gofburnin', `gofinterval', `propfn', `dir', `n1', __gof_groups, "__gofE7", __gof_th, `Afit')
+		mata: mata drop __gof_th
+	}
+	else mata: ergm_gof_run(__nwergm_last_M, __nwergm_last_G, `obsmat', `obsstat', st_matrix("`bmat'"), `nsim', `gofburnin', `gofinterval', `propfn', `dir', `n1', __gof_groups, "__gofE7")
 	mata: ergm_graph_set_ties(__nwergm_last_G, `Afit')
 	mata: mata drop `Afit'
 	mata: mata drop __gof_groups `obsmat' `obsstat'
@@ -246,7 +260,7 @@ program _nwergm_gof, rclass
 			local w = max(`w', min(28, udstrlen("`lb'")))
 		}
 		di
-		di as txt "Goodness of fit: `desc_`t'' (" as res `nsim' as txt " simulated networks)"
+		di as txt "Goodness of fit: `desc_`t'' (" as res `nsim' as txt " simulated networks" cond(`__bayes', ", at posterior draws", "") as txt ")"
 		di as txt "{hline `=`w'+1'}{c TT}{hline 52}"
 		di as txt %`w's "`hd'" " {c |}" %10s "Observed" %10s "Min" %10s "Mean" %10s "Max" %12s "MC p-value"
 		di as txt "{hline `=`w'+1'}{c +}{hline 52}"

@@ -149,6 +149,35 @@ program _nwergm_fit, eclass
 		MCMLETERMination(string) MCMLECONFidence(real 0.99) MCMLESTEPLength(real 1) MCMLESTEPMargin(real 0.05) ///
 		MCMLEEFFectivesize(real -1) CDNSteps(integer 8) CDSAMPLEsize(integer 0) SABURNin(integer 16384) SAINTERval(integer 1024) SAPHASE3(integer 1000) SAGAIN(real 0.1) SANSUB(integer 4) ///
 		CONSTRAINTS(string asis) OBSCONSTRAINTS(string asis) MCMCMAXEDGES(integer 0) MCMCPROP(string asis) * ]
+	// the options of estimate(bayes) (chains(), burnin(), iterations(), thin(), priormean(), ...) are split off here
+	local __bopts
+	if `"`options'"' != "" _nwergm_bayes_split __bopts options `"`options'"'
+	local __bayes 0
+	if lower("`estimate'") == "bayes" | lower("`method'") == "bayes" {
+		if "`estimate'" != "" & "`method'" != "" & lower("`estimate'") != lower("`method'") {
+			di as err "options estimate() and method() contradict each other; use one of them."
+			exit 198
+		}
+		local __bayes 1
+		local method "mcmle"
+		local estimate ""
+		foreach __bo in mainmethod init constraints obsconstraints structural operators submodel logstat expstat mcmcprop {
+			if `"``__bo''"' != "" {
+				di as err "{p 0 0 2}estimate(bayes) cannot be combined with option {bf:`__bo'()}.{p_end}"
+				exit 198
+			}
+		}
+		foreach __bo in fixdensity nonative {
+			if "``__bo''" != "" {
+				di as err "{p 0 0 2}estimate(bayes) cannot be combined with option {bf:`__bo'}.{p_end}"
+				exit 198
+			}
+		}
+	}
+	else if `"`__bopts'"' != "" {
+		di as err "{p 0 0 2}the option(s) {bf:`__bopts'} belong to {bf:estimate(bayes)}.{p_end}"
+		exit 198
+	}
 	// display options of the coefficient table (ci, level(), noci, nopvalues, cformat(), ...); any other option is
 	// refused here with Stata's usual message
 	local __ergm_tabopts `"`options'"'
@@ -2644,6 +2673,22 @@ program _nwergm_fit, eclass
 		capture mata: mata drop __ergm_obsstat
 		capture confirm number 0
 		mata: __ergm_obsstat = ergm_full_stat(__nwergm_last_M, __nwergm_last_G)
+		if `__bayes' {
+			if !`__ergm_native_used' {
+				di as err "{p 0 0 2}estimate(bayes) needs the native plugin, which is not available for this model or platform.{p_end}"
+				error 198
+			}
+			if `__ergm_nmiss' > 0 {
+				di as err "{p 0 0 2}estimate(bayes) does not cover networks with missing dyads.{p_end}"
+				error 198
+			}
+			_nwergm_bayes, netname(`netname') nodes(`nodes') directed(`directed') nrows(`__ergm_nrows') bmple(`__b_mple') vmple(`__V_mple') ///
+				coefnames(`__ergm_coefnames') obsties(`__ergm_obsties') native(`__ergm_native_used') curved(`__ergm_curved') ///
+				proposal(`proposal') bopts(`"`__bopts'"') tabopts(`"`__ergm_tabopts'"') ///
+				`=cond(`__spd', "trifocus(`__spdfocus')", "")' sub(`__sub')
+			mata: mata drop `__ergm_matatemps'
+			exit
+		}
 		tempname __fit
 		if `__obs_active' {
 			mata: `__fit' = ErgmMCMLEObs(__nwergm_last_M, __nwergm_last_G, __nwergm_obs_G, __nwergm_obs_par, __nwergm_obs_cols, `__theta0', `mcmleiterations', `mcmcburnin', `mcmcinterval', `mcmcsamplesize', ("`verbose'"!=""))
@@ -2913,6 +2958,263 @@ program _nwergm_fit, eclass
 	}
 
 	mata: mata drop `__ergm_matatemps'
+end
+
+// splits the options of the Bayesian fit off the option string of nwergm: returns them in c_local names given as arguments
+capture program drop _nwergm_bayes_split
+program _nwergm_bayes_split
+	version 14
+	args mbayes mrest
+	local 0 `", `3'"'
+	syntax [, CHAINS(string) BURNIN(string) ITERATIONS(string) THIN(string) AUXITERATIONS(string) GAMMA(string) NOADAPT ///
+		TARGETACCEPT(string) NODELAYED DAINFLATE(string) PROPOSALVAR(string) PRIORMEAN(string) PRIORVAR(string) PRIORCOV(string) ///
+		PRIORDECAY(string) STARTVALS(string) FRAME(string) NODRAWS * ]
+	local b
+	foreach o in chains burnin iterations thin auxiterations gamma targetaccept dainflate proposalvar priormean priorvar priorcov priordecay startvals frame {
+		if `"``o''"' != "" local b `"`b' `o'(``o'')"'
+	}
+	foreach o in noadapt nodelayed nodraws {
+		if "``o''" != "" local b `"`b' `o'"'
+	}
+	c_local `mbayes' `"`b'"'
+	c_local `mrest' `"`options'"'
+end
+
+
+capture program drop _nwergm_bayes
+program _nwergm_bayes, eclass
+	version 14
+	syntax , NETNAME(string) NODES(integer) DIRECTED(string) NROWS(integer) BMPLE(name) VMPLE(name) COEFNAMES(string asis) ///
+		OBSTIES(integer) NATIVE(integer) CURVED(integer) PROPOSAL(string) [BOPTS(string asis) TABOPTS(string asis) TRIFOCUS(string) SUB(integer 0)]
+	local bopts `bopts'
+	local tabopts `tabopts'
+	local 0 `", `bopts'"'
+	syntax [, CHAINS(integer 0) BURNIN(integer 100) ITERATIONS(integer 1000) THIN(integer 1) AUXITERATIONS(integer 1000) GAMMA(real 0.5) NOADAPT ///
+		TARGETACCEPT(real 0.25) NODELAYED DAINFLATE(real 1.5) PROPOSALVAR(real 0.0025) PRIORMEAN(numlist) PRIORVAR(numlist >0) PRIORCOV(name) ///
+		PRIORDECAY(numlist min=2 max=2) STARTVALS(numlist) FRAME(name) NODRAWS]
+	if `chains' != 0 & `chains' < 3 {
+		di as err "option chains() must be at least 3."
+		exit 198
+	}
+	if `burnin' < 0 | `iterations' < 1 | `thin' < 1 | `auxiterations' < 1 {
+		di as err "{p 0 0 2}options burnin() must be zero or positive, and iterations(), thin() and auxiterations() positive.{p_end}"
+		exit 198
+	}
+	if `thin' > `iterations' {
+		di as err "option thin() cannot exceed iterations()."
+		exit 198
+	}
+	if `gamma' <= 0 | `proposalvar' <= 0 | `dainflate' <= 0 {
+		di as err "options gamma(), proposalvar() and dainflate() must be positive."
+		exit 198
+	}
+	if `targetaccept' <= 0 | `targetaccept' >= 1 {
+		di as err "option targetaccept() must be between 0 and 1."
+		exit 198
+	}
+	local dmeanlog = ln(0.5)
+	local dsdlog = 0.75
+	if "`priordecay'" != "" {
+		local dmeanlog : word 1 of `priordecay'
+		local dsdlog : word 2 of `priordecay'
+		if `dsdlog' <= 0 {
+			di as err "option priordecay(): the standard deviation on the log scale must be positive."
+			exit 198
+		}
+	}
+	if "`priorvar'" != "" & "`priorcov'" != "" {
+		di as err "options priorvar() and priorcov() cannot be combined."
+		exit 198
+	}
+	if "`priorcov'" != "" {
+		capture confirm matrix `priorcov'
+		if _rc {
+			di as err "option priorcov(): matrix `priorcov' not found."
+			exit 111
+		}
+	}
+	if "`frame'" == "" local frame nwergm_bayes_draws
+	if "`nodraws'" != "" local frame ""
+	_nwergm_tabopts __t, `tabopts'
+	local level 95
+	if regexm(`"`__t'"', "level\(([0-9.]+)\)") local level = regexs(1)
+
+	tempname pm pv sv
+	if "`priormean'" != "" mata: st_matrix("`pm'", strtoreal(tokens("`priormean'")))
+	if "`priorvar'" != "" mata: st_matrix("`pv'", strtoreal(tokens("`priorvar'")))
+	if "`startvals'" != "" mata: st_matrix("`sv'", strtoreal(tokens("`startvals'")))
+	local pmn = cond("`priormean'" != "", "`pm'", "")
+	local pvn = cond("`priorvar'" != "", "`pv'", "")
+	local svn = cond("`startvals'" != "", "`sv'", "")
+	local adapt = ("`noadapt'" == "")
+	local da = ("`nodelayed'" == "")
+
+	// an unfinished earlier call must not leave the plugin switch on
+	capture scalar drop __eb_on
+	timer clear 97
+	timer on 97
+	mata: ErgmBayesFit(__nwergm_last_M, __nwergm_last_G, __ergm_obsstat, "`bmple'", "`vmple'", "`pmn'", "`pvn'", "`priorcov'", "`svn'", `dmeanlog', `dsdlog', ///
+		`chains', `burnin', `iterations', `thin', `auxiterations', `gamma', `proposalvar', `adapt', `targetaccept', `da', `dainflate', `level', "`frame'")
+	timer off 97
+	quietly timer list 97
+	local secs = r(t97)
+
+	tempname b V med sd lo hi ess rhat rhatu acc
+	matrix `b' = __eb_b
+	matrix `V' = __eb_V
+	local k = colsof(`b')
+	foreach m in med sd lo hi ess rhat rhatu {
+		matrix ``m'' = __eb_`m'
+		if "`m'" == "med" matrix `med' = __eb_med
+	}
+	matrix `acc' = __eb_acc
+	local nch = scalar(__eb_nchains)
+	local nkeep = scalar(__eb_nkeep)
+	local sumacc = 0
+	forvalues c = 1/`nch' {
+		local sumacc = `sumacc' + `acc'[1, `c']
+	}
+	local arate = `sumacc' / `nch'
+	local gammaend = scalar(__eb_gamma_out)
+	local nsim = scalar(__eb_nsim)
+	local nsimburn = scalar(__eb_nsimburn)
+	local nda = scalar(__eb_nda)
+	local nprop = scalar(__eb_nprop)
+	local useda = scalar(__eb_useda)
+	tempname ci prmean prvar isfree isdec
+	matrix `ci' = (`lo' \ `hi')
+	matrix `prmean' = __eb_prmean
+	matrix `prvar' = __eb_prvar
+	matrix `isfree' = __eb_isfree
+	matrix `isdec' = __eb_isdec
+	matrix coleq `b' = _
+	matrix coleq `V' = _
+	matrix roweq `V' = _
+	matrix colnames `b' = `coefnames'
+	matrix rownames `V' = `coefnames'
+	matrix colnames `V' = `coefnames'
+	foreach m in med sd ess rhat rhatu isfree isdec prmean {
+		matrix colnames ``m'' = `coefnames'
+		matrix rownames ``m'' = _
+	}
+	matrix colnames `ci' = `coefnames'
+	matrix rownames `ci' = lower upper
+	matrix rownames `prvar' = `coefnames'
+	matrix colnames `prvar' = `coefnames'
+	local ties "`obsties'"
+
+	ereturn post `b' `V', depname(`netname') obs(`nrows')
+	ereturn local cmd "nwergm"
+	if !`sub' _nwergm_tag set
+	ereturn local version "1.8.1"
+	ereturn local title "Bayesian exponential-family random graph model"
+	ereturn local depvar "`netname'"
+	ereturn local method "bayes"
+	ereturn local estimate "Bayes"
+	ereturn local directed "`directed'"
+	ereturn local proposal "`proposal'"
+	if "`trifocus'" != "" ereturn scalar trifocus = `trifocus'
+	ereturn local estat_cmd "nwergm_estat"
+	ereturn local post_frame "`frame'"
+	ereturn local priors "normal(priormean, priorvar) on the coefficients; log-normal(priordecay) on a free decay"
+	ereturn scalar N = `nrows'
+	ereturn scalar nodes = `nodes'
+	ereturn scalar ties = `ties'
+	ereturn scalar nmissing = 0
+	ereturn scalar curved = `curved'
+	ereturn scalar native = `native'
+	ereturn scalar converged = 1
+	ereturn scalar chains = `nch'
+	ereturn scalar burnin = `burnin'
+	ereturn scalar iterations = `iterations'
+	ereturn scalar thin = `thin'
+	ereturn scalar auxiterations = `auxiterations'
+	ereturn scalar ndraws = `nch' * `nkeep'
+	ereturn scalar draws_per_chain = `nkeep'
+	ereturn scalar accept_rate = `arate'
+	ereturn scalar gamma = `gammaend'
+	ereturn scalar gamma0 = `gamma'
+	ereturn scalar proposalvar = `proposalvar'
+	ereturn scalar targetaccept = `targetaccept'
+	ereturn scalar adapt = `adapt'
+	ereturn scalar delayed = `useda'
+	ereturn scalar da_rejections = `nda'
+	ereturn scalar nsim = `nsim' + `nsimburn'
+	ereturn scalar level = `level'
+	ereturn scalar seconds = `secs'
+	ereturn scalar mcmc_burnin = `auxiterations'
+	ereturn scalar mcmc_interval = 1
+	ereturn matrix median = `med'
+	ereturn matrix sd = `sd'
+	ereturn matrix ci = `ci'
+	ereturn matrix ess = `ess'
+	ereturn matrix rhat = `rhat'
+	ereturn matrix rhat_upper = `rhatu'
+	ereturn matrix accept_chains = `acc'
+	ereturn matrix prior_mean = `prmean'
+	ereturn matrix prior_var = `prvar'
+	ereturn matrix free = `isfree'
+	capture mata: st_matrix("e(obs_stats)", ergm_full_stat(__nwergm_last_M, __nwergm_last_G))
+	foreach s in nch nkeep nsimburn nda nprop useda gamma_out nsim {
+		capture scalar drop __eb_`s'
+	}
+	_nwergm_bayes_display, tabopts(`"`tabopts'"')
+end
+
+
+capture program drop _nwergm_bayes_display
+program _nwergm_bayes_display
+	version 14
+	syntax [, TABOPTS(string asis)]
+	local tabopts `tabopts'
+	_nwergm_tabopts __t, `tabopts'
+	local level = e(level)
+	if regexm(`"`__t'"', "level\(([0-9.]+)\)") {
+		local lv = regexs(1)
+		if `lv' != `level' {
+			capture confirm matrix __eb_dummy
+			capture mata: ErgmBayesRequantile(`lv')
+			if !_rc local level = `lv'
+		}
+	}
+	tempname b sd med ci ess rhat
+	matrix `b' = e(b)
+	matrix `sd' = e(sd)
+	matrix `med' = e(median)
+	matrix `ci' = e(ci)
+	matrix `ess' = e(ess)
+	matrix `rhat' = e(rhat)
+	local names : colnames `b'
+	local K = colsof(`b')
+	local wn = 12
+	foreach nm of local names {
+		local wn = max(`wn', min(28, udstrlen("`nm'")))
+	}
+	local wn = min(`wn', 28)
+	di
+	di as txt "Bayesian exponential-family random graph model" _col(52) "Chains" _col(66) "= " as res %6.0f e(chains)
+	di as txt "Network: " as res "`e(depvar)'" as txt "   Nodes: " as res e(nodes) as txt "   Ties: " as res e(ties) as txt _col(52) "Burn-in" _col(66) "= " as res %6.0f e(burnin)
+	di as txt "Directed: " as res cond("`e(directed)'" == "true", "Yes", "No") as txt "   Auxiliary iterations: " as res e(auxiterations) ///
+		as txt _col(52) "Iterations" _col(66) "= " as res %6.0f e(iterations)
+	di as txt "Acceptance rate: " as res %5.3f e(accept_rate) as txt _col(52) "Sample size" _col(66) "= " as res %6.0f e(ndraws)
+	di
+	local tw = `wn' + 1
+	local lw = 65
+	di as txt "{hline `tw'}{c TT}{hline `=`lw''}"
+	di as txt %`wn's "Coefficient" " {c |}" %9s "Mean" %10s "Std. dev." %10s "Median" %22s "[`level'% cred. interval]" %7s "ESS" %7s "R-hat"
+	di as txt "{hline `tw'}{c +}{hline `=`lw''}"
+	forvalues k = 1/`K' {
+		local nm : word `k' of `names'
+		local sdv = `sd'[1, `k']
+		if `sdv' == 0 {
+			di as txt %`wn's abbrev("`nm'", `wn') " {c |}" as res %9.4f `b'[1, `k'] as txt "  (fixed value, not estimated)"
+			continue
+		}
+		di as txt %`wn's abbrev("`nm'", `wn') " {c |}" as res %9.4f `b'[1, `k'] %10.4f `sdv' %10.4f `med'[1, `k'] %11.4f `ci'[1, `k'] %11.4f `ci'[2, `k'] %7.0f `ess'[1, `k'] %7.3f `rhat'[1, `k']
+	}
+	di as txt "{hline `tw'}{c BT}{hline `=`lw''}"
+	di as txt "{p 0 0 2}Posterior mean, standard deviation, median and equal-tailed credible interval of the pooled draws of all chains; ESS: effective sample size (sum over the chains); R-hat: Gelman-Rubin statistic.{p_end}"
+	if "`e(post_frame)'" != "" di as txt "{p 0 0 2}The draws are in frame {bf:`e(post_frame)'} (b1..b`K' in the order of the table, chain, iter); {bf:estat posterior} saves and plots them, {bf:estat mcmcdiag} shows the convergence diagnostics.{p_end}"
 end
 
 capture program drop nwergm_display
@@ -4151,6 +4453,10 @@ end
 capture program drop _nwergm_replay
 program _nwergm_replay
 	syntax [, *]
+	if "`e(method)'" == "bayes" {
+		_nwergm_bayes_display, tabopts(`"`options'"')
+		exit
+	}
 	local m = cond("`e(method)'" == "mple", "MPLE", cond("`e(estimate)'" == "CD", "CD", cond("`e(estimate)'" == "SA", "SA", "MCMLE")))
 	nwergm_display "`e(depvar)'" "`=e(nodes)'" "`e(directed)'" "`m'" "`=e(converged)'" "`=e(mcmle_iterations)'" "`=e(mcmc_samplesize)'" "`options'"
 	if "`e(ll)'" != "" & "`e(ll_method)'" != "" {
