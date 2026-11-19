@@ -1768,6 +1768,12 @@ program _nwergm_fit, eclass
 			mata: st_local("__ergm_maxdeg", strofreal(ergm_graph_max_shared_partners(__nwergm_last_G) + 1))
 		}
 		local __ergm_curved_maxd = max(1, min(`nodes' - 2, `__ergm_maxdeg'))
+		// Only the pseudolikelihood is bounded by the observed network (the further counts have a zero change statistic
+		// there). Every sampling estimator (MCMLE, Bayes, CD, SA) simulates networks in which a dyad can have more shared
+		// partners than in the observed one, up to nodes-2, and a count above the last column of the curved block would be
+		// dropped silently (the model would not be the model): these methods use all nodes-2 counts. The same holds for the
+		// other curved terms below (nodes-1 for the degree terms).
+		if "`method'" != "mple" local __ergm_curved_maxd = max(1, `nodes' - 2)
 		local __td_gwespfree "__netd_`++__ne_n'"
 		mata: `__td_gwespfree' = ErgmTermData()
 		mata: `__td_gwespfree'.levels = (1..`__ergm_curved_maxd')'
@@ -1860,6 +1866,7 @@ program _nwergm_fit, eclass
 			mata: st_local("__ergm_maxdeg", strofreal(ergm_graph_max_shared_partners(__nwergm_last_G) + 1))
 		}
 		local __ergm_curved_maxd = max(1, min(`nodes' - 2, `__ergm_maxdeg'))
+		if "`method'" != "mple" local __ergm_curved_maxd = max(1, `nodes' - 2)
 		local __td_gwdspfree "__netd_`++__ne_n'"
 		mata: `__td_gwdspfree' = ErgmTermData()
 		mata: `__td_gwdspfree'.levels = (1..`__ergm_curved_maxd')'
@@ -1892,6 +1899,7 @@ program _nwergm_fit, eclass
 			mata: st_local("__ergm_maxdeg", strofreal(ergm_graph_max_shared_partners(__nwergm_last_G) + 1))
 		}
 		local __ergm_curved_maxd = max(1, min(`nodes' - 2, `__ergm_maxdeg'))
+		if "`method'" != "mple" local __ergm_curved_maxd = max(1, `nodes' - 2)
 		local __td_gwnspfree "__netd_`++__ne_n'"
 		mata: `__td_gwnspfree' = ErgmTermData()
 		mata: `__td_gwnspfree'.levels = (1..`__ergm_curved_maxd')'

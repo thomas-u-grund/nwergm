@@ -24,11 +24,11 @@ program _nwergm_bip_curved
 			if "`o'" == "bgwdegreefree" mata: st_local("__maxd", strofreal(_bx_maxdeg(__nwergm_last_G, `m')))
 			else mata: st_local("__maxd", strofreal(_bx_maxsp(__nwergm_last_G, `m')))
 			mata: st_local("__other", strofreal(rows(_bx_nodes(__nwergm_last_G, 3 - `m')), "%18.0g"))
-			// maximum likelihood samples networks in which a node can have more partners than in the observed one:
-			// the degree counts then run over every possible value (the pseudolikelihood needs only the values up to the
-			// observed maximum + 1); the shared-partner counts keep the shorter range (a count per column of the sampler)
+			// maximum likelihood and the Bayesian estimator sample networks in which a node can have more partners, and a dyad more
+			// shared partners, than in the observed one: every possible value is a count (the
+			// pseudolikelihood needs only the values up to the observed maximum + 1, the further columns are zero there)
 			local maxd = max(1, min(`__other', `__maxd' + 1))
-			if `full' & "`o'" == "bgwdegreefree" local maxd = max(1, `__other')
+			if `full' local maxd = max(1, `__other')
 			capture mata: __nwbx_cnt = __nwbx_cnt + 1
 			if _rc mata: __nwbx_cnt = 1
 			mata: st_local("td", "__nwbx" + strofreal(__nwbx_cnt))
