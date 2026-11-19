@@ -3,6 +3,17 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [1.9.0] - 2026-11-19
+
+### Added
+- Bayesian ERGM: `nwergm ..., estimate(bayes)` (synonym `method(bayes)`), following R's Bergm 6.0.0 (`bergm()`): the exchange algorithm with adaptive direction sampling over a population of chains, adaptive move scale, delayed acceptance, normal priors (`priormean()`, `priorvar()`, `priorcov()`), a log-normal prior for a free decay (`priordecay()`), `chains()`, `burnin()`, `iterations()`, `thin()`, `auxiterations()`, `seed()`, `startvals()`, `level()`. The sampler is a new mode of the native plugin (the auxiliary network sampler of the ERGM fit is reused). Posterior mean in `e(b)`, covariance in `e(V)`, median, standard deviation, credible intervals, ESS, R-hat and acceptance rates in `e()`; the draws are kept in a frame.
+- `estat posterior` (summaries, draws saved to a data set, trace and density plots); `estat mcmcdiag` after a Bayesian fit (ESS, Monte Carlo standard error, R-hat, Geweke, autocorrelation, acceptance by chain); `estat gof` after a Bayesian fit is a posterior predictive check.
+- Dialogs: a Bayesian tab in `nwergm.dlg`, `estat posterior` and the `heidel` and `report` options of `estat mcmcdiag` in `nwergm_estat.dlg`.
+- Help file `nwergm_bayes`, manual chapter on Bayesian estimation, test `cscripts/test_nwergm_bayes.do`.
+
+### Notes
+- The plugin has a new generation number; Windows and Linux plugins must be rebuilt by the build workflow before release. The chains run one after another in one process (the plugin keeps global state), so there is no multi-core speed-up. Not available with `estimate(bayes)`: operators, constraints, `fixdensity`, `logstat()`, `expstat()`, `init()`, `mainmethod()`, `nonative`, missing dyads.
+
 ## [1.8.1] - 2026-11-18
 
 ### Changed

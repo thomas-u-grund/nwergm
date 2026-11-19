@@ -322,3 +322,12 @@ estimate), so R's bridge from the dyad-independent submodel seems to mishandle t
 ## Stata's `syntax` reports a repeated option as "option X() not allowed"
 
 `nwergm net, edges edgecov(a) edgecov(b)` stopped with "option edgecov() not allowed", which reads as if the term did not exist (a reader of the book was told to add "a second edgecov()"). `syntax` rejects any option given twice with that message. Since 1.5.11 `nwergm` first calls `_nwergm_dupopt`, which scans the top-level options (not names inside `structural()` or other parentheses) and stops with r(198) and "Give it once and list the networks in it: edgecov(a b)". Several networks or variables always go into one option.
+
+## Bayesian ERGM (1.9.0): plugin mode 7, subprograms and draw storage
+
+- The sampler is mode 7 of `ergm_mcmc.c` (`native/ergm_bayes.h`); its extra input goes through the Stata scalars `__eb_*` and matrices `__eb_par`, `__eb_prec`, `__eb_theta0`. The plugin generation is 6 (`ERGM_NATIVE_GEN`); a stale plugin would run mode 7 as an ordinary simulation, so `ErgmBayesRun` checks `__ergm_native_gen >= 6`. A rebuilt macOS plugin must be `rm`ed before it is copied over a loaded one.
+- The plugin keeps global static state: chains cannot run in threads, they run in sequence in one call.
+- Stata ado subprograms are private to their file: `_nwergm_bayes_split`, `_nwergm_bayes` and `_nwergm_bayes_display` live in `nwergm.ado` because they need `_nwergm_tabopts`; a separate ado file for them fails with "command ... is unrecognized".
+- The draws do not fit in a Stata BE matrix. They live in the Mata external `__nwergm_bdraws` (chain-major) and in the frame `nwergm_bayes_draws`; `estat gof` and `estat posterior` read them from there. After `clear all` the external is gone and the frame is the only copy.
+- `nodecov(wealth)` on the Florentine data mixes badly in the exchange algorithm (scale of the statistic); Bergm behaves the same. Rescale the covariate.
+- Tests of this feature compare with R's Bergm in constants (two seeds of 20,000 iterations); the Monte Carlo error of ADS chains is larger than the summed ESS suggests, so tolerances are 2 to 4 times the naive Monte Carlo error.

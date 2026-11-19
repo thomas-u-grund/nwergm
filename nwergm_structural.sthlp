@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.8.1  18nov2026 author: Thomas Grund}{...}
+{* *! version 1.9.0  19nov2026 author: Thomas Grund}{...}
 {title:Title}
 
 {p2colset 9 33 34 2}{...}
@@ -73,4 +73,4 @@ used).
 {helpb nwergm}, {helpb nwergm_estat}
 
 {hline}
-{pstd}{it:nwergm version 1.8.1, 18 November 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.9.0, 19 November 2026}{p_end}{* nwversion}

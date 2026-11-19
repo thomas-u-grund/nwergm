@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.8.1  18nov2026 author: Thomas Grund}{...}
+{* *! version 1.9.0  19nov2026 author: Thomas Grund}{...}
 {marker topic}
 {helpb nwtopical##analysis_statmodels:[NW-2.6.6] Statistical Estimation of Networks}
 
@@ -194,7 +194,7 @@ networks only{p_end}
 {marker estimation_control}{...}
 {syntab:Estimation control}
 {synopt:{opt method(mple|mcmle|cd)}}Estimation method; default {it:mcmle} unless the model is dyad-independent, in which case MPLE already is the MLE; {cmd:cd} is contrastive divergence. Further
-estimation options ({opt estimate()}, {opt mainmethod()}, {opt init()}, the MPLE and MCMLE controls) are described in {help nwergm_estimation}{p_end}
+estimation options ({opt estimate()}, {opt mainmethod()}, {opt init()}, the MPLE and MCMLE controls) are described in {help nwergm_estimation}; {cmd:estimate(bayes)} fits the model by Bayesian inference ({help nwergm_bayes}){p_end}
 {synopt:{opth offset(coefname # [coefname # ...])}}Hold one or more named coefficients fixed at a given value rather than estimating them, matching R ergm's own {cmd:offset()} formula
 wrapper. {bf:coefname} must be a coefficient this model would otherwise report (an option must still be typed to register the term, e.g. {opt triangle}, before {opt offset(triangle #)} can fix its own
 coefficient - {opt offset()} names an EXISTING coefficient, it does not add a second copy of the term). Works with both {opt method(mple)} and {opt method(mcmle)}. At least one coefficient in the
@@ -825,4 +825,4 @@ For a yes/no outcome on the actors of one network (smoking, adoption, taking a s
 {p_end}
 
 {hline}
-{pstd}{it:nwergm version 1.8.1, 18 November 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.9.0, 19 November 2026}{p_end}{* nwversion}
