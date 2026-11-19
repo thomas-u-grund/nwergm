@@ -3,7 +3,7 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
-## [1.10.0] - 2026-11-20
+## [1.10.0] - 2026-11-19
 
 ### Added
 - **ERGM for egocentrically sampled data: `nwergm ego`**, following R's ergm.ego 1.1.4 (Krivitsky and Morris 2017). The data in memory are the egos (one row per ego); the alters are in a second frame (`alters()`, `egoid()`, `alteregoid()`), or only the number of alters is given (`egodegree()`). Terms: `edges`, `degree()`, `degrange()`/`degrangeto()`, `concurrent`, `nodefactor()`, `nodematch()`, `nodematchdiff()`, `nodecov()`, `absdist()`. The statistics of the network are estimated from the egos (survey weights with `weights()`), the model is fitted to them on a pseudopopulation of `ppopsize()` nodes with the native Monte Carlo sampler (R's target statistics MCMLE), `popsize()` gives the network size adjustment (an offset on the number of ties during the sampling, R's `netsize.adj`), and the standard errors are R's: the design-based covariance of the estimated statistics through the information of the model. No network has to be declared. `ppopsize(auto|samp|pop|#)`, `ppopmul()` and `ppopwt(round|sample)` as in `control.ergm.ego()`.
@@ -17,7 +17,7 @@ project uses [Semantic Versioning](https://semver.org/).
 - No change to the plugin or to the core; the Mata library has new functions and `ErgmMCMLE()` accepts target statistics (an external vector set only by `nwergm ego`).
 - Not available (R has them): terms that need the ties among the alters (`esp`, `gwesp`, `triangle`, `transitiveties`), `degree1.5`, `nodemix`, `mm`, the bootstrap, jackknife and asymptotic covariance estimators, and the espartners statistic of `estat gof`. See `TODO.md`.
 
-## [1.9.0] - 2026-11-19
+## [1.9.0] - 2026-11-19 (not released separately; included in 1.10.0)
 
 ### Added
 - Bayesian ERGM: `nwergm ..., estimate(bayes)` (synonym `method(bayes)`), following R's Bergm 6.0.0 (`bergm()`): the exchange algorithm with adaptive direction sampling over a population of chains, adaptive move scale, delayed acceptance, normal priors (`priormean()`, `priorvar()`, `priorcov()`), a log-normal prior for a free decay (`priordecay()`), `chains()`, `burnin()`, `iterations()`, `thin()`, `auxiterations()`, `seed()`, `startvals()`, `level()`. The sampler is a new mode of the native plugin (the auxiliary network sampler of the ERGM fit is reused). Posterior mean in `e(b)`, covariance in `e(V)`, median, standard deviation, credible intervals, ESS, R-hat and acceptance rates in `e()`; the draws are kept in a frame.

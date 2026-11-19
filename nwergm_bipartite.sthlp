@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.10.0  20nov2026 nwergm_bipartite.sthlp  two-mode terms of nwergm}{...}
+{* *! version 1.10.0  19nov2026 nwergm_bipartite.sthlp  two-mode terms of nwergm}{...}
 {vieweralsosee "nwergm" "help nwergm"}{...}
 {viewerjumpto "Syntax" "nwergm_bipartite##syntax"}{...}
 {viewerjumpto "Terms" "nwergm_bipartite##terms"}{...}
@@ -75,4 +75,4 @@ The pseudolikelihood fit solves the logistic regression to a tighter tolerance t
 {p_end}
 
 {hline}
-{pstd}{it:nwergm version 1.10.0, 20 November 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.10.0, 19 November 2026}{p_end}{* nwversion}

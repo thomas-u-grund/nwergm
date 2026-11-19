@@ -5,7 +5,7 @@ d email: thomas.u.grund@gmail.com
 d GPL-3. Requires the core package nwcommands 3.24.0 or later.
 d Requires nwcommands (core), version 3.24.0 or later
 d Version: 1.10.0
-d Distribution-Date: 20nov2026
+d Distribution-Date: 19nov2026
 f _nwergm_bip.ado
 f _nwergm_bip_curved.ado
 f _nwergm_bipgof.ado

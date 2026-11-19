@@ -1,6 +1,6 @@
 # nwergm
 
-<!--version-->**Version 1.10.0** (released 20 November 2026)<!--/version-->
+<!--version-->**Version 1.10.0** (released 19 November 2026)<!--/version-->
 
 `nwergm` fits exponential-family random graph models (ERGM) to a network declared with `nwset`: maximum pseudolikelihood and Monte Carlo maximum likelihood estimation (with a native MCMC plugin), dyad-independent and dyad-dependent terms (structural, nodal and dyadic covariate, curved, bipartite terms, and the operator terms of ergm such as `Sum`, `S`, `F`, `Symmetrize` and `Project`), sampling constraints, missing data, simulation from a fit, goodness of fit and MCMC diagnostics (`estat gof`, `estat mcmcdiag`). A comparison with the R package `ergm` is in `docs/ERGM_COMPARISON.md`.
 

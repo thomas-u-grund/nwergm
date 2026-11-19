@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.10.0  20nov2026 author: Thomas Grund}{...}
+{* *! version 1.10.0  19nov2026 author: Thomas Grund}{...}
 
 {title:Title}
 
@@ -201,4 +201,4 @@ observed value, minimum, mean, maximum and Monte Carlo p-value{p_end}
 	{help nwergm}
 
 {hline}
-{pstd}{it:nwergm version 1.10.0, 20 November 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.10.0, 19 November 2026}{p_end}{* nwversion}
