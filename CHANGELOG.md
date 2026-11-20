@@ -3,10 +3,13 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.11.1] - 2026-11-20
 
 ### Changed
+- A curved fit with an estimated decay that stops with r(498) because a simulated network has a count above `gwcutoff()` now says what happened (the decay or weight moved to values at which the simulated networks degenerate; R stops in the same way for many seeds) and what to try. Fits that succeed are unchanged.
 - The dialog test `dlg/cmd_assembly_test.py` also checks the command that the estat dialog builds for the plot options of `estat gof` (`plot`, `panels`), `estat mcmcdiag` and `estat posterior` (`plot()`, `name()`, `pars()`, `saving()` or `gsaving()`, `export()`).
+
+Tested on macOS with Stata 17 BE against nwcommands 3.30.0 (develop): `test_nwergm_cutoffhint`, `test_nwergm_plots` and the dialog assembly test. Other Stata versions and operating systems: not tested yet.
 
 ## [1.11.0] - 2026-11-20
 
@@ -69,11 +72,6 @@ Tested on macOS with Stata 17 BE (the quick tests). Windows and Linux: not teste
 - **`nwergm simulate N, ...` after an earlier fit** stopped with r(198) "observation numbers out of range" when the data had fewer rows than the nodes of that fit (node attributes made with `set obs` and `generate`), and, with more rows, checked the attribute for missing values only in the first rows (the number of nodes of the earlier fit). The check now reads the number of nodes of the simulation. A message names the problem when the data have fewer rows than the nodes. The draws are unchanged.
 
 Tested on macOS with Stata 17 BE, Stata 18 BE and StataNow 19.5 MP (the full test suite). Windows and Linux: not tested for this version.
-
-## [Unreleased]
-
-### Changed
-- A curved fit with an estimated decay that stops with r(498) because a simulated network has a count above `gwcutoff()` now says what happened (the decay or weight moved to values at which the simulated networks degenerate; R stops in the same way for many seeds) and what to try. Fits that succeed are unchanged.
 
 ## [1.7.1] - 2026-11-13
 
