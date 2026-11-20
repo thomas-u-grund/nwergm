@@ -9,7 +9,7 @@ project uses [Semantic Versioning](https://semver.org/).
 - A curved fit with an estimated decay that stops with r(498) because a simulated network has a count above `gwcutoff()` now says what happened (the decay or weight moved to values at which the simulated networks degenerate; R stops in the same way for many seeds) and what to try. Fits that succeed are unchanged.
 - The dialog test `dlg/cmd_assembly_test.py` also checks the command that the estat dialog builds for the plot options of `estat gof` (`plot`, `panels`), `estat mcmcdiag` and `estat posterior` (`plot()`, `name()`, `pars()`, `saving()` or `gsaving()`, `export()`).
 
-Tested on macOS with Stata 17 BE against nwcommands 3.30.0 (develop): `test_nwergm_cutoffhint`, `test_nwergm_plots` and the dialog assembly test. Other Stata versions and operating systems: not tested yet.
+Tested on macOS with Stata 17 BE, on Linux (Ubuntu 22.04) and on Windows 11 (both StataNow 19.5 MP) against nwcommands 3.30.0: `test_nwergm_cutoffhint`, `test_nwergm_plots` and the dialog assembly test, and the ado test. Stata 18 on the Mac: not run.
 
 ## [1.11.0] - 2026-11-20
 
