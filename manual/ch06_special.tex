@@ -8,7 +8,7 @@ This chapter describes the parts of \nwergm{} that go beyond the plain options o
 nwergm [netname], edges structural(termlist) [other options]
 nwergm simulate nodes, edges structural(termlist) theta() [other options]
 \end{lstlisting}
-\emph{termlist} is a list of terms written like R's terms, separated by blanks: \emph{term} or \emph{term}\texttt{(}\emph{arguments}\texttt{)}. Arguments have R's names and defaults (\emph{name}\texttt{=}\emph{value}); values are numbers, variable names, network names, or lists of numbers separated by blanks (R's \texttt{c(1,2,3)} is written \texttt{d=1 2 3}), and R's logical arguments are written as bare words (\texttt{diff}, \texttt{fixed}, \texttt{semi}, \texttt{homophily}) or \emph{name}\texttt{=TRUE}. The first argument may be given without its name, as in R. For example,
+\emph{termlist} is a list of terms written like R's terms, separated by blanks: \emph{term} or \emph{term}\texttt{(}\emph{arguments}\texttt{)}. Arguments have R's names and defaults (\emph{name}\texttt{=}\emph{value}); values are numbers, variable names, network names, or lists of numbers separated by blanks (R's \texttt{c(1,2,3)} is written \texttt{d=1 2 3}), and R's logical arguments are written as bare words (\texttt{diff}, \texttt{fixed}, \texttt{semi}, \texttt{homophily}) or \emph{name}\texttt{=TRUE}. The first argument may be given without its name, as in R. A term that is an option of \nwergm{} itself is not a structural term: \opt{structural(gwesp(.5))} stops with a message that shows the call \texttt{nwergm net, edges gwesp(.5)}. For example,
 \begin{lstlisting}
 . nwergm mynet, edges structural(twopath triangle(attr=sex diff) cycle(k=3 4) altkstar(lambda=0.8 fixed))
 \end{lstlisting}

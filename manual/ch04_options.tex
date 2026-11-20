@@ -13,7 +13,7 @@ estat gof | estat mcmcdiag | estat ic
 predict, [pr|xb] matrix(name) | frame(name)
 nwergm version
 \end{lstlisting}
-\emph{netname} is the network to fit; the default is the current network. The option \opt{edges} is required (see Chapter~\ref{ch:start}). All other options are optional and can be given in any order. Options that take a \emph{varlist} take numeric node variables (ranges such as \texttt{x1-x3} and wildcards such as \texttt{x*} are expanded as in Stata; a token that is not a varlist is read as an expression, Section~\ref{sec:data}); options that take a \emph{numlist} accept ranges as in Stata, \opt{degree(0/3)} for R's \texttt{d=0:3}. In the tables, \emph{netname} is a network in memory and \emph{matname} a Stata matrix.
+\emph{netname} is the network to fit; the default is the current network. The option \opt{edges} is required (see Chapter~\ref{ch:start}). All other options are optional and can be given in any order. An option is given once: a repeated option (for example two \opt{edgecov()}) stops with return code 198 and a message that shows the form with one option, and several networks go into one option, \opt{edgecov(lazega\_fr lazega\_cow)}. Options that take a \emph{varlist} take numeric node variables (the categorical terms also take string variables; ranges such as \texttt{x1-x3} and wildcards such as \texttt{x*} are expanded as in Stata; a token that is not a varlist is read as an expression, Section~\ref{sec:data}); options that take a \emph{numlist} accept ranges as in Stata, \opt{degree(0/3)} for R's \texttt{d=0:3}. In the tables, \emph{netname} is a network in memory and \emph{matname} a Stata matrix.
 
 \section{Terms}
 
@@ -291,10 +291,12 @@ Command and option & Description (default)\\
 \texttt{estat gof} \opt{gof(statistics)} & Statistics to compare: \texttt{degree idegree odegree b1degree b2degree espartners dspartners distance triadcensus model}; a minus sign drops \texttt{model}. The default is that of R for the type of network.\\
 \opt{nsim(\#)}, \opt{seed(\#)} & Number of simulated networks (100, at least 2) and seed.\\
 \opt{gofburnin(\#)}, \opt{gofinterval(\#)} & Burn-in and interval. After a Monte Carlo fit the burn-in is \texttt{e(mcmc\_burnin)} and the interval \texttt{e(mcmc\_interval\_final)} times \texttt{e(mcmc\_samplesize)}$/$\opt{nsim()}, as in R; after a pseudolikelihood fit 16384 and 1024.\\
-\opt{plot}, \opt{maxdeg(\#)}, \opt{maxdist(\#)}, \opt{name(string)} & Graph of the degree and geodesic distributions (maximum degree 15, maximum distance 6, name \texttt{gof}).\\
+\opt{plot}, \opt{maxdeg(\#)}, \opt{maxdist(\#)}, \opt{panels}, \opt{name(string)} & Graph of the distributions, one panel per statistic of \opt{gof()} (the default picture of a one-mode network has a degree and a distance panel; \opt{panels} asks for one panel per statistic). Maximum degree 15 (also caps the shared-partner axes), maximum distance 6, name \texttt{gof}; \opt{name()} takes a trailing \texttt{, replace}.\\
+\opt{saving(filename)}, \opt{export(filename[, options])}, \emph{graph\_options} & Save the graph as a \texttt{.gph} file, export it with \texttt{graph export} (the extension sets the format), and pass options such as \opt{title()} (\opt{title("")} removes the default title) to \texttt{graph combine}. They need \opt{plot} (return code 198 otherwise) and the core 3.29.0 or later.\\
 \texttt{estat mcmcdiag} \opt{heidel} & Adds the Heidelberger--Welch test.\\
 \opt{report} & Adds the report of R's \texttt{mcmc.diagnostics()}.\\
-\opt{plot}, \opt{name(string)} & Trace and density plots (name \texttt{mcmcdiag}).\\
+\opt{plot}, \opt{name(string)}, \opt{saving(filename)}, \opt{export(filename[, options])}, \emph{graph\_options} & Trace and density plots (name \texttt{mcmcdiag}), saved, exported and given graph options as for \texttt{estat gof}; also after a Bayesian fit.\\
+\texttt{estat posterior} \opt{plot(trace|density|both)}, \opt{gsaving(filename)}, \opt{export(filename[, options])}, \emph{graph\_options} & Plots of the posterior draws after \texttt{estimate(bayes)}; \opt{gsaving()} saves the graph (\opt{saving()} is the file of the draws); the options need \opt{plot()}.\\
 \opt{pvalue(\#)}, \opt{eps(\#)} & Level of the Heidelberger--Welch test (one of 0.10, 0.05, 0.025, 0.01; default 0.05) and the relative half-width (0.1).\\
 \texttt{estat ic} & Log-likelihood, AIC and BIC.\\
 \texttt{predict} \opt{pr}, \opt{xb} & Conditional probability (default) or conditional log odds of each informative dyad.\\

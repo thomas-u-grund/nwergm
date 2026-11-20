@@ -1,4 +1,5 @@
-. estat gof, gof(idegree espartners distance) nsim(100) seed(2) plot name(gof)
+. estat gof, gof(idegree espartners distance) nsim(100) seed(2) plot xsize(6.5) ysize(5) name(go
+> f)
 
 Goodness of fit: model statistics (100 simulated networks)
 ------------------------------------------------------------------------

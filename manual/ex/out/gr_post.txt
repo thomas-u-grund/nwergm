@@ -1,0 +1,26 @@
+. nwclear
+
+. nwwebuse florentine, nwclear
+
+. quietly nwergm flomarriage, edges triangle estimate(bayes) iterations(5000) burnin(2000) seed(
+> 1)
+
+. estat posterior, plot(both) xsize(6.5) ysize(5) export("../fig/posterior.pdf") name(post, repl
+> ace)
+
+Bayesian exponential-family random graph model     Chains        =      4
+Network: flomarriage   Nodes: 16   Ties: 20        Burn-in       =   2000
+Directed: No   Auxiliary iterations: 1000          Iterations    =   5000
+Acceptance rate: 0.212                             Sample size   =  20000
+
+-------------------------------------------------------------------------------
+ Coefficient |     Mean Std. dev.    Median  [95% cred. interval]    ESS  R-hat
+-------------+-----------------------------------------------------------------
+       edges |  -1.5919    0.3372   -1.6114    -2.2198    -0.9292    738  1.004
+    triangle |  -0.2066    0.5770   -0.1405    -1.4660     0.6970    715  1.005
+-------------------------------------------------------------------------------
+Posterior mean, standard deviation, median and equal-tailed credible interval of the pooled
+draws of all chains; ESS: effective sample size (sum over the chains); R-hat: Gelman-Rubin
+statistic.
+The draws are in frame nwergm_bayes_draws (b1..b2 in the order of the table, chain, iter);
+estat posterior saves and plots them, estat mcmcdiag shows the convergence diagnostics.

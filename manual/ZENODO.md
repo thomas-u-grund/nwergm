@@ -1,66 +1,52 @@
-# Zenodo record for the nwergm manual
+# Zenodo record for the nwergm manual, series 1.11
 
-Metadata ready to paste into a new Zenodo upload. Nothing has been uploaded.
+Metadata ready to paste into a new version of the existing Zenodo record. Nothing has been uploaded.
 
-**DOI.** The all-versions ("Cite all versions") DOI of this manual is 10.5281/zenodo.23661331 (owner, 2026-10-28); it is printed on the title page and in the citation (`\manualdoi` in `nwergm_manual.tex`). The citation text always uses the all-versions DOI (master RELEASING.md B.10).
+**DOI.** The all-versions ("Cite all versions") DOI of this manual is 10.5281/zenodo.23661331 (concept record); it is printed in the citation of the manual (`\manualdoi` in `nwergm_manual.tex`, already set). The citation text always uses the all-versions DOI.
 
-**Labelling.** The title and the citation of the manual contain no version number. The Zenodo version label is the series "X.Y" (for example "1.3"; internal to Zenodo, not part of the citation), and the description says that the manual describes nwergm X.Y.x. The PDF title page has one line saying which series it describes (`\manualseries`); the exact package version of the examples is `\pkgversion`. The software version is cited separately, as printed by `nwergm version`. A patch release of the package (1.3.1, ...) does not get a new Zenodo version.
+**What is on Zenodo now** (public API, checked 2026-11-20): the concept record 23661331 has three versions: 23661332 (2026-10-26, file `nwergm_manual_1.3d.pdf`), 23728328 (2026-10-28, `nwergm_manual_1.3.pdf`) and 24084283 (2026-11-09, version label "1.5.4", file `nwergm_manual_1.5.4.pdf`). The series 1.6, 1.7, 1.8, 1.9, 1.10 and 1.11 were never uploaded; this upload covers all of them. (The label "1.5.4" of the last version was a patch version, not a series; from now on the label is the series "X.Y".)
 
-**Patch releases.** The manual of the series 1.8 holds for 1.8.x; a patch release changes no documented option or number. Title and citation stay unchanged; no new Zenodo version is needed for a patch.
+**File to upload.** `nwergm_manual_1.11.pdf` (124 pages).
 
 ## Metadata
 
 **Title.** nwergm: Exponential random graph models in Stata. Manual
 
-**Version.** 1.8 (the series label, internal to Zenodo: the manual describes nwergm 1.8.x; not part of the citation)
+**Version.** 1.11 (the series label, internal to Zenodo: the manual describes nwergm 1.11.x; not part of the citation)
 
-**Publication date.** 2026-10-26 (or the day of the upload)
+**Publication date.** Day of the upload.
 
-**Authors.** Grund, Thomas U. (RWTH Aachen University), ORCID 0000-0001-6751-5429 (as on the nwsaom record; remove it in the form if the author does not want it).
+**Authors.** Grund, Thomas U. (RWTH Aachen University), ORCID 0000-0001-6751-5429.
+
+**Resource type.** Publication, sub-type Software documentation.
+
+**License.** Creative Commons Attribution 4.0 International (CC-BY-4.0) for the manual; the code is GPL-3.0-only.
+
+**Language.** English
+
+**Keywords.** Stata; nwcommands; nwergm; exponential random graph model; ERGM; Bayesian ERGM; egocentric data; social network analysis; statistical network models; Monte Carlo maximum likelihood; pseudolikelihood; ergm; statnet
 
 **Description** (plain text, one paragraph):
 
-> This is the user manual and reference of nwergm, series 1.8 (examples produced with version 1.8.1 and the nwcommands core 3.27.0), a Stata package for exponential random graph models (ERGMs) of a single binary network. nwergm builds on the nwcommands core package and follows the R package ergm (statnet project), version 4.12.0, in its model, the names of its terms and its estimation algorithms. The manual explains the model and the estimators (maximum pseudolikelihood, Monte Carlo maximum likelihood, contrastive divergence, stochastic approximation), gives the syntax of every option, lists the terms of ergm with the status of each in nwergm, describes goodness of fit and Markov chain diagnostics, documents that the Monte Carlo sampling of the default fit follows ergm (ergm's default proposal SPDyad, interval and burn-in as in ergm, an adaptive sample size with a target effective sample size of 64, ergm's convergence test, and compiled sampling kernels, which make nwergm faster than ergm on the benchmark models of the manual), explains how the type of a network (binary, valued, two-mode) is handled, describes the coefficient tables (names in full, confidence intervals on request, the display options of Stata's estimation commands), shows worked examples with output, compares the results with ergm, states the limits of the package, and gives a translation table from ergm to nwergm. The do-files that produce every listing are in the repository. The package and the manual were prepared with the help of an AI coding assistant working under the author's direction, as stated in the manual.
-
-**License.** Creative Commons Attribution 4.0 International (CC-BY-4.0), as on the nwsaom manual record (the record there) (checked read-only on zenodo.org, record 23626696 of the concept DOI 10.5281/zenodo.23623807, 2026-10-26; resource type there: Publication, sub-type Software documentation). The code stays under GPL-3.0-only.
-
-**Resource type.** Publication, sub-type Software documentation (as the nwsaom record; this replaces the earlier proposal "Other").
-
-**Creators.** As on the nwsaom record, with the ORCID (see Authors).
-
-**Keywords.** Stata; nwcommands; nwergm; exponential random graph model; ERGM; social network analysis; statistical network models; Monte Carlo maximum likelihood; pseudolikelihood; ergm; statnet
-
-**Language.** English
+> This is the user manual and reference of nwergm, series 1.11 (examples produced with version 1.11.0 and the nwcommands core 3.29.0), a Stata package for exponential random graph models (ERGMs). nwergm builds on the nwcommands core package (version 3.29.0 or later) and follows the R packages ergm (statnet project, version 4.12.0), Bergm (version 6.0.0) and ergm.ego (version 1.1.4) in their models, the names of their terms and their estimation algorithms. The manual explains the model and the estimators (maximum pseudolikelihood, Monte Carlo maximum likelihood, contrastive divergence, stochastic approximation, Bayesian estimation by the exchange algorithm), gives the syntax of every option, lists the terms of ergm with the status of each in nwergm, and documents the Monte Carlo sampling of the default fit (ergm's default proposal SPDyad, adaptive sample size, ergm's convergence test, compiled sampling kernels), curved terms with an estimated decay and their cutoff, offsets and constraints, networks with missing dyads, valued and two-mode networks, and the coefficient tables and their display options. It describes the postestimation commands: goodness of fit with one panel for every statistic, Markov chain diagnostics and posterior summaries, each with plots that can be saved, exported and given graph options. It has chapters on Bayesian ERGMs (nwergm with estimate(bayes)) and on ERGMs for egocentrically sampled data (nwergm ego), shows worked examples with output, compares the results with ergm, states the limits of the package, and gives a translation table from ergm to nwergm. The do-files that produce every listing and figure are in the repository. Requirements: Stata 17 or later (tested with Stata 17, 18 and StataNow 19.5) and the nwcommands core 3.29.0 or later. The package and the manual were prepared with the help of an AI coding assistant working under the author's direction, as stated in the manual.
 
 **Related identifiers.** (relation, identifier, type)
 
 | Relation | Identifier | Type |
 |---|---|---|
-| Is supplement to | https://github.com/thomas-u-grund/nwergm/releases/tag/v1.8.1 | URL |
+| Is supplement to | https://github.com/thomas-u-grund/nwergm/releases/tag/v1.11.0 | URL |
 | Is supplement to | https://github.com/thomas-u-grund/nwergm | URL |
 | Requires | https://github.com/thomas-u-grund/nwcommands | URL |
-| Is related to (the manual of the sibling package) | 10.5281/zenodo.23623807 | DOI |
+| Is new version of | 10.5281/zenodo.24084283 | DOI |
 
-Confirm that the GitHub release v1.8.1 is published before the upload, because the first related identifier points to it. The nwsaom link is optional; it is sensible because both manuals describe packages of the same family.
+(The last row is set automatically when the upload is made with "New version" of the existing record.) Confirm that the GitHub release v1.11.0 is published before the upload.
 
 **Other fields.** Funding: none. Communities: none. Access: open.
 
 ## Steps for the owner
 
-0. Series 1.8 (18 November 2026): a new Zenodo version is needed, because the documented behaviour changed in 1.8.0: the coefficient tables show the names in full and leave out the confidence intervals at a linesize below 100 (options ci, noci and the other display options of Stata's estimation commands), and nwergm simulate keeps the data in memory. The listings were regenerated with nwergm 1.8.1 and the core 3.27.0. The description above already names series 1.8. Earlier: series 1.7 (13 November 2026): a new Zenodo version is needed, because the documented behaviour changed in 1.7.0: `offset()` works with curved terms (weight and decay fixed together or one at a time, as in ergm), and the categorical terms take string node attributes. The listings were regenerated with nwergm 1.7.0 and the core 3.23.0. The description above already names series 1.7. Earlier: series 1.6 (13 November 2026): a new Zenodo version is needed, because the documented behaviour changed in 1.6.0: the default `gofinterval()` of `estat gof` after a pseudolikelihood fit is 1,024 (as in R), `triangle` is accepted on directed networks, a negative decay of a geometrically weighted term is refused, the covariate options read a varlist (ranges and wildcards), long coefficient names are cut to 32 characters, a single-level factor term is dropped with a note, `nwergm` without arguments replays the last fit, and `estat gof` and `nwergm simulate` always start from the network of the fit. The listings and the comparison tables were regenerated with nwergm 1.6.0 and the core 3.22.0. The description above already names series 1.6. Earlier: series 1.5 (8 November 2026): a new Zenodo version is needed, because the documented behaviour changed. Since 1.5.0 the default proposal is R's SPDyad; since 1.5.1 the effective sample size, the burn-in test and the convergence test are computed with R's multivariate autocorrelation correction. Chapters 1, 2, 4, 7 and 9 describe both; Section 9.3 (new) documents the checks against ergm. The listings and comparison tables were regenerated with nwergm 1.5.1. In the description, "series 1.3 (examples produced with version 1.3.0 and the nwcommands core 3.10.0)" becomes "series 1.5 (examples produced with version 1.5.1 and the nwcommands core 3.17.2)", and "(interval and burn-in as in ergm, ...)" gains "ergm's default proposal SPDyad". Earlier: the series 1.3 was the first manual of nwergm on Zenodo. The listings, comparison tables and run times were regenerated with nwergm 1.3.0 and nwcommands 3.10.0. The run-time tables were remeasured on 27 October 2026 on an idle machine (R and nwergm in turn, median of seven fits): nwergm is 2.9 to 9.4 times faster than ergm 4.12.0 on the eight benchmark models; the description above carries no timing numbers and needs no change.
-1. For a later patch release (1.3.1, ...) nothing is uploaded: only `\pkgversion` and `\pkgdate` change (`tools/set_version.py`), the examples are rerun if their output changes, and the PDF is committed. A new Zenodo version only for 1.4 or 2.0 with changed documented behaviour: then change `\manualseries` too.
-2. On zenodo.org upload `manual/nwergm_manual.pdf` to the reserved record (DOI above), fill the fields above, and publish.
-3. Check that the all-versions DOI of the record is 10.5281/zenodo.23661331 (it is already in `\manualdoi`).
-4. Commit the rebuilt PDF (`git add -f manual/nwergm_manual.pdf`) on the branch that carries the manual.
-
-## Suggested edits after the DOI exists (not made)
-
-The DOI is 10.5281/zenodo.23661331 (all versions).
-
-1. `README.md` (repository), section Manual: add "Archived at Zenodo: https://doi.org/10.5281/zenodo.23661331". The PDF now has 104 pages; "about 100 pages" in the README is still right.
-2. `CITATION.cff`: add a `preferred-citation` as in nwsaom: type manual, title "nwergm: Exponential random graph models in Stata. Manual", author Grund, Thomas U., year 2026, publisher Zenodo, doi 10.5281/zenodo.23661331.
-3. `NOTICE.md`, section How to cite: add the line "Grund, T. U. (2026). nwergm: Exponential random graph models in Stata. Manual. Zenodo. https://doi.org/10.5281/zenodo.23661331".
-4. Website `nwergm/citation.md`: replace "There is no archived record with a DOI yet." by a sentence giving the manual's citation and the DOI, and change the block quote to the manual citation as above; the example "nwergm 1.1.1" and the text "(version 1.1.1)" become the current version (1.3.0).
-5. Website `citing.md`: nwergm leaves the list "nwergm, nwdynam and nwrem. These have no DOI" and gets its own entry with the manual citation, as nwsaom has; the version in the nwergm entry becomes 1.3.0.
-6. Website `index.md` (packages table) and `nwergm/index.md` (Version row): 1.1.1 becomes 1.3.0; add the "Manual" menu entry for nwergm (a copy of `website/nwsaom/manual.md` with the nwergm DOI, `nav_order` 10, permalink `/nwergm/manual/`); `news.md`: a dated entry "nwergm manual archived at Zenodo".
-7. Website pages that give the term counts: check for "125 of 139" (confirmed for ergm 4.12.0).
+1. Open https://zenodo.org/records/24084283 (or the record 23661331), click "New version", delete the old file, upload `nwergm_manual_1.11.pdf`.
+2. Fill the fields above (version "1.11", publication date, description, related identifiers); keep title, authors, resource type and licence.
+3. The DOI of the all-versions record is already in the manual (`\manualdoi`): no rebuild is needed. Publish.
+4. Commit the PDF in the nwergm repository (`manual/nwergm_manual.pdf`, `git add -f`), together with the changed sources (`manual/ch*.tex`, `manual/ex/ex07_graphs.do`, `manual/ex/out/`, `manual/fig/`, `manual/README.md`, `manual/ZENODO.md`).
+5. A patch release (1.11.1, ...) gets no new Zenodo version: change `\pkgversion` and `\pkgdate`, rerun the examples if their output changes, commit the PDF. A new Zenodo version only for 1.12 or 2.0 with changed documented behaviour (then also `\manualseries`).

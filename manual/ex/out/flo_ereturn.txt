@@ -38,8 +38,8 @@ macros:
              e(method) : "mcmle"
              e(depvar) : "flomarriage"
               e(title) : "Exponential-family random graph model (MCMLE)"
-            e(version) : "1.8.1"
-             e(fittag) : "18 Nov 2026 17:01:42 2"
+            e(version) : "1.11.0"
+             e(fittag) : "20 Nov 2026 14:16:57 2"
                 e(cmd) : "nwergm"
          e(properties) : "b V"
 
