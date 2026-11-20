@@ -54,6 +54,16 @@ CASES = {
     "nwergm_estat": [("default", [], "estat gof"),
                      ("posterior", ['call main.cb_which.setvalue "posterior"', 'call posterior.f_p_saving.setvalue "d"', "call posterior.f_p_replace.seton"],
                       "estat posterior, saving(d) replace"),
+                     ("gof plot", ['call main.cb_which.setvalue "gof"', "call gof.f_g_plot.seton", "call gof.f_g_panels.seton", 'call gof.f_g_name.setvalue "pg"',
+                                   'call gof.f_g_saving.setvalue "g1"', 'call gof.f_g_export.setvalue "g1.png, width(300)"'],
+                      "estat gof, name(pg) plot panels saving(g1) export(g1.png, width(300))"),
+                     ("mcmcdiag plot", ['call main.cb_which.setvalue "mcmcdiag"', "call mcmcdiag.f_m_plot.seton", 'call mcmcdiag.f_m_name.setvalue "pm"',
+                                        'call mcmcdiag.f_m_saving.setvalue "m1"', 'call mcmcdiag.f_m_export.setvalue "m1.png, width(300)"'],
+                      "estat mcmcdiag, name(pm) plot saving(m1) export(m1.png, width(300))"),
+                     ("posterior plot", ['call main.cb_which.setvalue "posterior"', 'call posterior.f_p_plot.setvalue "both"', 'call posterior.f_p_name.setvalue "pp"',
+                                         'call posterior.f_p_pars.setvalue "edges"', 'call posterior.f_p_gsaving.setvalue "p1"',
+                                         'call posterior.f_p_export.setvalue "p1.png, width(300)"'],
+                      "estat posterior, plot(both) name(pp) pars(edges) gsaving(p1) export(p1.png, width(300))"),
                      ("simulate from fit", ['call main.cb_which.setvalue "simfit"'], "nwergm simulate")],
 }
 
