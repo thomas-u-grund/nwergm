@@ -113,6 +113,28 @@ estat gof, nsim(10) seed(3) plot gof(degree distance) panels name(po2)
 graph describe po2
 estat gof, nsim(10) seed(3) plot gof(espartners) name(po3)
 graph describe po3
+* panels draws the statistics named in gof() (model statistics only when named or when gof() is not given)
+capture program drop _t_npanels
+program define _t_npanels, rclass
+	args g
+	quietly graph describe `g'
+	local c `"`r(command)'"'
+	local c2 : subinstr local c "__nwergm_gofp" "", all count(local n)
+	return scalar n = `n'
+end
+estat gof, nsim(10) seed(3) plot gof(espartners) panels name(po4) xsize(3.6)
+_t_npanels po4
+assert r(n) == 1
+estat gof, nsim(10) seed(3) plot gof(espartners model) name(po5)
+_t_npanels po5
+assert r(n) == 2
+estat gof, nsim(10) seed(3) plot gof(degree espartners distance) panels name(po6)
+_t_npanels po6
+assert r(n) == 3
+estat gof, nsim(10) seed(3) plot gof(espartners -model) panels name(po7)
+_t_npanels po7
+assert r(n) == 1
+di as text "  PASS: panels draw the statistics named in gof()"
 capture estat gof, nsim(10) seed(3) gof(degree) panels
 assert _rc == 198
 di as text "  PASS: one-mode picture kept by default, panels option, espartners panel"

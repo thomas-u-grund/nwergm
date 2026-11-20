@@ -119,7 +119,7 @@ summarize the simulated networks at each value, with the observed value overlaid
 goodness-of-fit plots and similar to R's {cmd:plot(gof())}. On a one-mode network, by default, the plot has two panels, the degree distribution (in-degree on a directed
 network) and the geodesic-distance distribution, as proportions; this is also what {opt plot} draws when {opt gof()} lists only
 {cmd:model}, {cmd:degree}, {cmd:idegree}, {cmd:odegree} and {cmd:distance}. Option {opt panels} (and any {opt gof()} that asks for
-{cmd:espartners}, {cmd:dspartners} or {cmd:triadcensus} other than the default set) draws one panel for each statistic of {opt gof()}: the model statistics,
+{cmd:espartners}, {cmd:dspartners} or {cmd:triadcensus} other than the default set) draws one panel for each statistic named in {opt gof()} (the model statistics only when {cmd:model} is named or {opt gof()} is not given): the model statistics,
 the degree distributions (in-degree and out-degree on a directed network), edgewise and dyadwise shared partners, the triad census and the minimum geodesic distance. On a two-mode network
 the plot always has one panel per statistic (the degrees of both modes, dyadwise shared partners, distance). Degrees, shared partners and distances are shown as proportions (of nodes,
 edges or dyads), the model statistics and the triad census as values; empty categories at the end of a distribution are not drawn in the panels of {opt panels}.

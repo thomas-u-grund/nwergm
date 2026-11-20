@@ -155,6 +155,8 @@ program _nwergm_gof, rclass
 		}
 	}
 	local hasmodel = (`nmodel' >= 0)
+	// the panels draw the statistics named in gof(); the model statistics only when named (or when gof() is not given)
+	local __modelpanel = (!`__gofgiven' | `nmodel' > 0)
 	if `hasmodel' local want "model `want'"
 	// plot: a one-mode network keeps the picture of the earlier versions (degree and geodesic distance, two panels) for the default
 	// statistics and for any gof() made of model, degree, idegree, odegree and distance only; the per-statistic panels are drawn for
@@ -375,6 +377,7 @@ program _nwergm_gof, rclass
 		local pgraphs ""
 		local pidx 0
 		foreach t of local want {
+			if "`t'" == "model" & !`__modelpanel' continue
 			local g "`gcode_`t''"
 			local ++pidx
 			tempname po ps
@@ -455,7 +458,7 @@ program _nwergm_gof, rclass
 			mata: mata drop `po' `ps'
 			local pgraphs "`pgraphs' `pg'"
 		}
-		_nw_gfinish title "Goodness-of-fit diagnostics: observed vs. `nsim' simulated draws", size(medium) gopts(`"`__gopts'"')
+		_nw_gfinish title "Goodness of fit, `nsim' simulated draws", size(medium) gopts(`"`__gopts'"')
 		local pttl0 `"`r(t)'"'
 		graph combine `pgraphs', cols(`=cond(`pidx' == 1, 1, 2)') `pttl0' name(`name', replace) `__gopts'
 		foreach pg of local pgraphs {
