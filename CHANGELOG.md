@@ -3,12 +3,19 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.11.0] - 2026-11-20
 
 ### Added
-- `estat gof, plot` draws one panel for every statistic of `gof()`, as `plot(gof())` of R's ergm does: model statistics, degree, in-degree and out-degree, the degrees of both modes of a two-mode network, edgewise and dyadwise shared partners, triad census and minimum geodesic distance. Before, the plot had a degree panel and a geodesic-distance panel for one-mode networks only, whatever `gof()` asked for. Empty categories at the end of a distribution are not drawn; `maxdeg()` also caps the shared-partner axes.
-- `saving()`, `export()` and graph options for `estat gof, plot` and `estat mcmcdiag, plot` (also after a Bayesian fit); for `estat posterior, plot()` the options are `gsaving()` (because `saving()` is the file of the draws), `export()` and graph options. They are passed to `graph combine`. Without the plot option they are an error (r(198)). The dialogs of `estat` have the entries.
-- Test `cscripts/test_nwergm_plots.do`.
+- `estat gof, plot` draws one panel for every statistic of `gof()`, as `plot(gof())` of R's ergm does: model statistics, degree, in-degree and out-degree, the degrees of both modes of a two-mode network, edgewise and dyadwise shared partners, triad census and minimum geodesic distance. Two-mode networks (for which 1.10.0 drew nothing) always get these panels. On a one-mode network the picture of 1.10.0 (a degree panel and a geodesic-distance panel) is kept for the default call and for `gof()` made of `model`, `degree`, `idegree`, `odegree` and `distance`, so that existing scripts draw the same pictures; the per-statistic panels appear there for `gof()` terms that picture never showed (`espartners`, `dspartners`, `triadcensus` outside the default set) and with the new option `panels`. Empty categories at the end of a distribution are not drawn in the new panels; `maxdeg()` also caps the shared-partner axes.
+- `saving()`, `export()` and graph options for `estat gof, plot` (also after `nwergm ego`, where graph options are not accepted) and for `estat mcmcdiag, plot` (also after a Bayesian fit); for `estat posterior, plot()` the options are `gsaving()` (because `saving()` is the file of the draws), `export()` and graph options. The graph options go to `graph combine`; the default titles are as before, `title()` replaces them and `title("")` removes them. Without `plot` they are an error (r(198)). `name()` accepts a trailing `, replace`. The dialogs of `estat` have the entries.
+- Test `cscripts/test_nwergm_plots.do`, with `cscripts/nwergm_plots_defaults.do`: with the environment variable `NWERGM_PLOT_REF` (a directory made by that do-file with 1.10.0) it checks that the pictures of the default calls, including the call of the Stata Journal article, are byte-identical in the exported PNG files.
+
+### Changed
+- The plots use the shared graph helper of the core (`_nw_gfinish`); **this release needs nwcommands 3.29.0 or later** for plots. With an older core, `estat gof, plot`, `estat mcmcdiag, plot` and `estat posterior, plot()` stop with a message and r(199); everything else works with the older core.
+- The error for options not allowed with `estat gof` after `nwergm ego` is printed correctly when the option contains a quotation mark (it ended in r(133) before).
+
+### Fixed
+- `estat gof, plot` after `nwergm ego` ended with r(3499); it draws the degree distribution of the egos against the simulated draws.
 
 ## [1.10.0] - 2026-11-19
 

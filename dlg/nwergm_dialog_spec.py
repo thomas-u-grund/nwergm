@@ -523,6 +523,7 @@ ESTAT = [
     ("g_maxdist", "gof", "maxdist", "edit", "maxdist()", None, "largest distance plotted; default 6", "5"),
     ("g_name", "gof", "name", "edit", "name()", None, "name of the graph", "gofgr"),
     ("g_plot", "gof", "plot", "check", "plot", None, "draw the comparison graphs", True),
+    ("g_panels", "gof", "panels", "check", "panels", None, "one panel per statistic of gof() on a one-mode network", True),
     ("g_saving", "gof", "saving", "edit", "saving()", None, "save the graph as a .gph file", "gofsv"),
     ("g_export", "gof", "export", "edit", "export()", None, "export the graph: filename[, options]", "gofex.png"),
     ("m_pvalue", "mcmcdiag", "pvalue", "combo", "pvalue()", ["", "0.10", "0.05", "0.025", "0.01"], "level of the stationarity test", "0.05"),

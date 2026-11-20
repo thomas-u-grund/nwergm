@@ -74,6 +74,63 @@ confirm file `"`out'/b2.gph"'
 confirm file `"`out'/b2.png"'
 di as text "  PASS: Bayesian plots"
 
+* ---- ego: saving() and export()
+capture frame drop alt
+frame create alt
+frame alt: quietly import delimited using "cscripts/ego/mesa_alter.csv", clear case(preserve) varnames(1)
+quietly import delimited using "cscripts/ego/mesa_ego.csv", clear case(preserve) varnames(1)
+rename egoID egoid
+frame alt: rename egoID egoid
+quietly nwergm ego, edges degree(1/3) nodefactor(Race Sex) nodematch(Race Sex) absdist(Grade) egoid(egoid) alters(alt) popsize(205) seed(11)
+capture erase `"`out'/e1.png"'
+estat gof, nsim(10) seed(5) plot name(pe1) saving(`"`out'/e1.gph"') export(`"`out'/e1.png"', width(800))
+graph describe pe1
+confirm file `"`out'/e1.gph"'
+confirm file `"`out'/e1.png"'
+capture estat gof, nsim(10) saving(`"`out'/x.gph"')
+assert _rc == 198
+capture estat gof, nsim(10) plot title("x")
+assert _rc == 198
+di as text "  PASS: ego gof plot, saving(), export()"
+
+* ---- one-mode: the earlier two-panel picture is kept for the default and for gof() of degree/distance terms; panels draws one panel per statistic
+nwclear
+nwwebuse florentine, nwclear
+qui nwergm flomarriage, edges gwesp(.5) `mc'
+estat gof, nsim(10) seed(3) plot gof(degree distance) name(po1)
+graph describe po1
+estat gof, nsim(10) seed(3) plot gof(degree distance) panels name(po2)
+graph describe po2
+estat gof, nsim(10) seed(3) plot gof(espartners) name(po3)
+graph describe po3
+capture estat gof, nsim(10) seed(3) gof(degree) panels
+assert _rc == 198
+di as text "  PASS: one-mode picture kept by default, panels option, espartners panel"
+
+* ---- default pictures unchanged: identical PNG files with the released version 1.10.0 (reference directory from NWERGM_PLOT_REF)
+local ref : env NWERGM_PLOT_REF
+if `"`ref'"' == "" {
+	di as text "  SKIPPED: default pictures vs released 1.10.0 (set NWERGM_PLOT_REF to a directory made by cscripts/nwergm_plots_defaults.do with the released version)"
+}
+else {
+	global NWP_OUT `"`c(tmpdir)'/nwergm_plots_test/defaults"'
+	do cscripts/nwergm_plots_defaults.do
+	local files und_default und_degdist und_explicit und_mcmcdiag dir_default dir_article bayes_both bayes_trace bayes_density bayes_mcmcdiag
+	local nfail 0
+	foreach f of local files {
+		quietly checksum `"`ref'/`f'.png"'
+		local c0 = r(checksum)
+		local s0 = r(filelen)
+		quietly checksum `"$NWP_OUT/`f'.png"'
+		if `c0' != r(checksum) | `s0' != r(filelen) {
+			di as error "  FAIL: default picture `f' differs from the released version"
+			local ++nfail
+		}
+	}
+	if `nfail' > 0 exit 9
+	di as text "  PASS: default pictures identical to the released version (`: word count `files'' pictures)"
+}
+
 * ---- error paths
 nwclear
 nwwebuse florentine, nwclear
@@ -100,4 +157,17 @@ assert _rc == 198
 capture estat mcmcdiag, saving(`"`out'/x.gph"')
 assert _rc == 198
 di as text "  PASS: error paths"
+* ---- an older core (no shared graph helper): a clear message and r(199) at plot time, nothing changes without a plot
+capture program drop _nw_gfinish
+program define _nw_gfinish
+	display as error "unrecognized command"
+	exit 199
+end
+capture estat gof, nsim(10) seed(3) plot
+assert _rc == 199
+capture estat mcmcdiag, plot
+assert _rc == 199
+estat gof, nsim(10) seed(3)
+program drop _nw_gfinish
+di as text "  PASS: older core: r(199) at plot time only"
 di as text "ALL TESTS PASSED"

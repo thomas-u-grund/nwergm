@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.10.0  19nov2026 author: Thomas Grund}{...}
+{* *! version 1.11.0  20nov2026 author: Thomas Grund}{...}
 
 {title:Title}
 
@@ -86,7 +86,7 @@ acceptable. {opt name()} sets the combined graph's name; default {cmd:mcmcdiag}.
 {title:estat gof}
 
 {p 8 17 2}
-{cmd:estat gof} [{cmd:,} {opt gof(statistics)} {opt nsim(#)} {opt seed(#)} {opt gofburnin(#)} {opt gofinterval(#)} {opt plot} {opt maxdeg(#)} {opt maxdist(#)} {opt name(string)} {opt sav:ing(filename)} {opt exp:ort(filename [, options])} {it:graph_options}]
+{cmd:estat gof} [{cmd:,} {opt gof(statistics)} {opt nsim(#)} {opt seed(#)} {opt gofburnin(#)} {opt gofinterval(#)} {opt plot} {opt maxdeg(#)} {opt maxdist(#)} {opt pan:els} {opt name(string)} {opt sav:ing(filename)} {opt exp:ort(filename [, options])} {it:graph_options}]
 
 {pstd}
 {cmd:estat gof} follows R's {cmd:gof()}: it simulates {opt nsim()} networks (default 100, at least 2) from the fitted model and,
@@ -114,17 +114,20 @@ means can change noticeably between runs; increase {opt nsim()} (and consider {o
 before treating a single run as a stable estimate.{p_end}
 
 {pstd}
-{opt plot} draws one panel for each statistic of {opt gof()} (as R's {cmd:plot(gof())}): the model statistics, the degree distributions (in-degree and out-degree on a
-directed network, the degrees of both modes on a two-mode network), edgewise and dyadwise shared partners, the triad census and the minimum geodesic distance.
-Degrees, shared partners and distances are shown as proportions (of nodes, edges or dyads), the model statistics and the triad census as values.
-A whisker (minimum to maximum), a box (interquartile range) and a median marker summarize the simulated networks at each
-value, with the observed value overlaid as a connected red line with circle markers, as in
-{cmd:nwsaom}'s goodness-of-fit plots. Empty categories at the end of a distribution are not drawn. {opt maxdeg()} (default 15) caps the
-degree and shared-partner axes (values above it are pooled into a single "{it:maxdeg}+" category); {opt maxdist()} (default 6)
-caps the geodesic-distance axis (the pairs farther apart and the unreached pairs are pooled into the last category, "NR" when no pair is pooled
-other than the unreached ones). {opt name()} sets the name of the combined graph (default {cmd:gof}), {opt saving()} saves it as a {cmd:.gph} file,
+{opt plot} draws the goodness-of-fit pictures as box-and-whisker panels: a whisker (minimum to maximum), a box (interquartile range) and a median marker
+summarize the simulated networks at each value, with the observed value overlaid as a connected red line with circle markers, as in {cmd:nwsaom}'s
+goodness-of-fit plots and similar to R's {cmd:plot(gof())}. On a one-mode network, by default, the plot has two panels, the degree distribution (in-degree on a directed
+network) and the geodesic-distance distribution, as proportions; this is also what {opt plot} draws when {opt gof()} lists only
+{cmd:model}, {cmd:degree}, {cmd:idegree}, {cmd:odegree} and {cmd:distance}. Option {opt panels} (and any {opt gof()} that asks for
+{cmd:espartners}, {cmd:dspartners} or {cmd:triadcensus} other than the default set) draws one panel for each statistic of {opt gof()}: the model statistics,
+the degree distributions (in-degree and out-degree on a directed network), edgewise and dyadwise shared partners, the triad census and the minimum geodesic distance. On a two-mode network
+the plot always has one panel per statistic (the degrees of both modes, dyadwise shared partners, distance). Degrees, shared partners and distances are shown as proportions (of nodes,
+edges or dyads), the model statistics and the triad census as values; empty categories at the end of a distribution are not drawn in the panels of {opt panels}.
+{opt maxdeg()} (default 15) caps the degree and shared-partner axes (values above it are pooled into a single "{it:maxdeg}+" category); {opt maxdist()} (default 6)
+caps the geodesic-distance axis (unreached pairs are pooled into their own "NR" category). {opt name()} sets the name of the combined graph (default {cmd:gof}), {opt saving()} saves it as a {cmd:.gph} file,
 {opt export()} exports it with {help graph export} (the extension of the file name sets the format, {it:options} are those of {cmd:graph export}) and
-further graph options, for example {cmd:title()} or {cmd:scheme()}, go to {help graph combine}. {opt saving()}, {opt export()} and graph options need {opt plot} (r(198)).{p_end}
+further graph options, for example {cmd:title()} or {cmd:scheme()}, go to {help graph combine}. {opt saving()}, {opt export()}, {opt panels} and graph options need {opt plot} (r(198)).
+The plot needs nwcommands 3.29.0 or later.{p_end}
 
 
 {title:Network types}
@@ -205,4 +208,4 @@ observed value, minimum, mean, maximum and Monte Carlo p-value{p_end}
 	{help nwergm}
 
 {hline}
-{pstd}{it:nwergm version 1.10.0, 19 November 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.11.0, 20 November 2026}{p_end}{* nwversion}

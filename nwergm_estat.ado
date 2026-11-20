@@ -1,4 +1,4 @@
-*! version 1.10.0  19nov2026 nwergm_estat
+*! version 1.11.0  20nov2026 nwergm_estat
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -47,9 +47,13 @@ capture program drop nwergm_estat_mcmcdiag
 program define nwergm_estat_mcmcdiag, rclass
 	syntax [, PLOT NAME(string) PVALUE(real 0.05) EPS(real 0.1) HEIDEL REPort SAVing(string) EXPort(string asis) *]
 	local __gopts `"`options'"'
-	if "`plot'" == "" & `"`saving'`export'`__gopts'"' != "" {
-		di as err "{p 0 0 2}saving(), export() and graph options need {bf:plot}.{p_end}"
-		exit 198
+	if "`plot'" != "" | `"`saving'`export'`__gopts'"' != "" {
+		_nwergm_corecheck "estat mcmcdiag, plot"
+		local __exopt ""
+		if `"`export'"' != "" local __exopt `"export(`"`export'"')"'
+		_nw_gfinish check, plot(`plot') name(`name') saving(`saving') `__exopt' gopts(`"`__gopts'"') default(mcmcdiag) nameok cmd(estat mcmcdiag)
+		local name `"`r(name)'"'
+		local saving `"`r(saving)'"'
 	}
 
 	if `"`e(cmd)'"' != "nwergm" {
@@ -251,10 +255,10 @@ program define nwergm_estat_mcmcdiag, rclass
 				legend(off) nodraw
 			local __combine_list `"`__combine_list' `tr`k'' `de`k''"'
 		}
-		local __ttl `"title("MCMC diagnostics: trace and density per statistic", size(medium))"'
-		if strpos(`"`__gopts'"', "title(") local __ttl
+		_nw_gfinish title "MCMC diagnostics: trace and density per statistic", size(medium) noblack gopts(`"`__gopts'"')
+		local __ttl `"`r(t)'"'
 		graph combine `__combine_list', cols(2) `__ttl' name(`name', replace) `__gopts'
-		_nwergm_gfin `name', saving(`saving') export(`export')
+		_nw_gfinish save, name(`name') saving(`saving') export(`"`export'"')
 		foreach __g of local __combine_list {
 			capture graph drop `__g'
 		}
@@ -538,10 +542,10 @@ program define _nwergm_estat_bayesplot
 	local np : word count `glist'
 	if `np' == 0 exit
 	local cols = cond("`what'" == "both", 2, 3)
-	local __ttl `"title("Bayesian ERGM: posterior draws")"'
-	if strpos(`"`__gopts'"', "title(") local __ttl
+	_nw_gfinish title "Bayesian ERGM: posterior draws", noblack gopts(`"`__gopts'"')
+	local __ttl `"`r(t)'"'
 	graph combine `glist', cols(`cols') name(`name', replace) `__ttl' `__gopts'
-	_nwergm_gfin `name', saving(`saving') export(`export')
+	_nw_gfinish save, name(`name') saving(`saving') export(`"`export'"')
 	foreach g of local glist {
 		capture graph drop `g'
 	}
@@ -551,9 +555,13 @@ end
 capture program drop nwergm_estat_posterior
 program define nwergm_estat_posterior, rclass
 	syntax [, SAVing(string) REPLACE PLOT(string) NAME(string) PARS(string) Level(cilevel) noTABle GSAVing(string) EXPort(string asis) *]
-	if "`plot'" == "" & `"`gsaving'`export'`options'"' != "" {
-		di as err "{p 0 0 2}gsaving(), export() and graph options need {bf:plot()}.{p_end}"
-		exit 198
+	if "`plot'" != "" | `"`gsaving'`export'`options'"' != "" {
+		_nwergm_corecheck "estat posterior, plot()"
+		local __exopt ""
+		if `"`export'"' != "" local __exopt `"export(`"`export'"')"'
+		_nw_gfinish check, plot(`plot') name(`name') saving(`"`gsaving'"') `__exopt' gopts(`"`options'"') default(bayes) nameok cmd(estat posterior)
+		local name `"`r(name)'"'
+		local gsaving `"`r(saving)'"'
 	}
 	if `"`e(cmd)'"' != "nwergm" | "`e(method)'" != "bayes" {
 		di as err "{p 0 0 2}{bf:estat posterior} is only available after {bf:nwergm, estimate(bayes)}.{p_end}"
@@ -601,7 +609,7 @@ program define nwergm_estat_posterior, rclass
 			di as err "option plot() takes trace, density or both."
 			exit 198
 		}
-		_nwergm_estat_bayesplot, frame(`fr') name(`name') what(`plot') pars(`pars') saving(`gsaving') export(`export') `options'
+		_nwergm_estat_bayesplot, frame(`fr') name(`name') what(`plot') pars(`pars') saving(`"`gsaving'"') export(`"`export'"') `options'
 	}
 	return matrix mean = `b'
 	return matrix sd = `sd'
@@ -616,9 +624,13 @@ end
 capture program drop nwergm_estat_bayesdiag
 program define nwergm_estat_bayesdiag, rclass
 	syntax [, PLOT NAME(string) PARS(string) SAVing(string) EXPort(string asis) *]
-	if "`plot'" == "" & `"`saving'`export'`options'"' != "" {
-		di as err "{p 0 0 2}saving(), export() and graph options need {bf:plot}.{p_end}"
-		exit 198
+	if "`plot'" != "" | `"`saving'`export'`options'"' != "" {
+		_nwergm_corecheck "estat mcmcdiag, plot"
+		local __exopt ""
+		if `"`export'"' != "" local __exopt `"export(`"`export'"')"'
+		_nw_gfinish check, plot(`plot') name(`name') saving(`saving') `__exopt' gopts(`"`options'"') default(bayes) nameok cmd(estat mcmcdiag)
+		local name `"`r(name)'"'
+		local saving `"`r(saving)'"'
 	}
 	_nwergm_estat_frame fr
 	local names : colnames e(b)
@@ -660,7 +672,7 @@ program define nwergm_estat_bayesdiag, rclass
 	di as res "`line'"
 	di as txt "{p 0 0 2}Overall acceptance rate " as res %5.3f e(accept_rate) as txt "; the scale of the moves adapts during the burn-in towards " as res %4.2f e(targetaccept) as txt " (final factor " as res %6.4f e(gamma) as txt ").{p_end}"
 	if "`plot'" != "" {
-		_nwergm_estat_bayesplot, frame(`fr') name(`name') what(trace) pars(`pars') saving(`saving') export(`export') `options'
+		_nwergm_estat_bayesplot, frame(`fr') name(`name') what(trace) pars(`pars') saving(`"`saving'"') export(`"`export'"') `options'
 	}
 	return matrix ess = `ess'
 	return matrix rhat = `rhat'

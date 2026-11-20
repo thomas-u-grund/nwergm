@@ -1,4 +1,4 @@
-*! version 1.10.0  19nov2026 _nwergm_gofpanel.ado -- one panel of the estat gof plot with free category labels
+*! version 1.11.0  20nov2026 _nwergm_gofpanel.ado -- one panel of the estat gof plot with free category labels
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -25,7 +25,7 @@ program define _nwergm_gofpanel
 		(scatter ymedian xval, mcolor(black) msymbol(diamond)) ///
 		(connected observed xval, lcolor(red) mcolor(red) msymbol(circle) lwidth(medthin)), ///
 		xlabel(`labs', angle(45) labsize(vsmall)) ylabel(, angle(horizontal) labsize(small)) ///
-		xtitle("") ytitle("`yttl'", size(small)) ///
-		title("`ttl'", size(small)) legend(off) nodraw name(`gname', replace)
+		xtitle("") ytitle("`yttl'", size(small) color(black)) ///
+		title("`ttl'", size(small) color(black)) legend(off) nodraw name(`gname', replace)
 	restore
 end

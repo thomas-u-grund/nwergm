@@ -1,4 +1,4 @@
-*! version 1.10.0  19nov2026 _nwergm_gof.ado -- estat gof after nwergm, following R's gof.ergm(): observed values against simulations from the fitted model
+*! version 1.11.0  20nov2026 _nwergm_gof.ado -- estat gof after nwergm, following R's gof.ergm(): observed values against simulations from the fitted model
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -8,10 +8,18 @@
 capture program drop _nwergm_gof
 program _nwergm_gof, rclass
 	syntax [, NSIM(integer 100) SEED(string) GOFBURNIN(integer -1) GOFINTERVAL(integer -1) ///
-		PLOT MAXDEG(integer 15) MAXDIST(integer 6) NAME(string) GOF(string) SAVing(string) EXPort(string asis) * ]
+		PLOT MAXDEG(integer 15) MAXDIST(integer 6) NAME(string) GOF(string) SAVing(string) EXPort(string asis) PANELs * ]
 	local __gopts `"`options'"'
-	if "`plot'" == "" & `"`saving'`export'`__gopts'"' != "" {
-		di as err "{p 0 0 2}saving(), export() and graph options need {bf:plot}.{p_end}"
+	if "`plot'" != "" | `"`saving'`export'`__gopts'"' != "" | "`panels'" != "" {
+		_nwergm_corecheck "estat gof, plot"
+		local __exopt ""
+		if `"`export'"' != "" local __exopt `"export(`"`export'"')"'
+		_nw_gfinish check, plot(`plot') name(`name') saving(`saving') `__exopt' gopts(`"`__gopts'"') default(gof) nameok cmd(estat gof)
+		local name `"`r(name)'"'
+		local saving `"`r(saving)'"'
+	}
+	if "`plot'" == "" & "`panels'" != "" {
+		di as err "{p 0 0 2}estat gof: option panels needs {bf:plot}.{p_end}"
 		exit 198
 	}
 	if `"`e(cmd)'"' != "nwergm" {
@@ -91,6 +99,7 @@ program _nwergm_gof, rclass
 	local gcode_triadcensus triad
 	local want ""
 	local hasmodel 1
+	local __gofgiven = (`"`gof'"' != "")
 	if `"`gof'"' == "" {
 		if `bip' local gof "b1degree b2degree dspartners distance"
 		else if `dir' local gof "idegree odegree espartners distance"
@@ -147,6 +156,22 @@ program _nwergm_gof, rclass
 	}
 	local hasmodel = (`nmodel' >= 0)
 	if `hasmodel' local want "model `want'"
+	// plot: a one-mode network keeps the picture of the earlier versions (degree and geodesic distance, two panels) for the default
+	// statistics and for any gof() made of model, degree, idegree, odegree and distance only; the per-statistic panels are drawn for
+	// two-mode networks, for gof() terms that picture never showed (espartners, dspartners, triadcensus, other than the default set)
+	// and whenever option panels is given
+	local __oldplot 0
+	if !`bip' & "`panels'" == "" {
+		local __defw = cond(`dir', "model idegree odegree espartners distance", "model degree espartners distance")
+		local __w1 = itrim(`"`want'"')
+		if !`__gofgiven' | `"`__w1'"' == `"`__defw'"' local __oldplot 1
+		else {
+			local __oldplot 1
+			foreach t of local want {
+				if !inlist("`t'", "model", "degree", "idegree", "odegree", "distance") local __oldplot 0
+			}
+		}
+	}
 
 	// ---- observed network
 	tempname obsG obsmat obsstat
@@ -324,8 +349,26 @@ program _nwergm_gof, rclass
 	return scalar burnin = `gofburnin'
 	return scalar interval = `gofinterval'
 
-	if "`plot'" != "" {
-		if "`name'" == "" local name "gof"
+	if "`plot'" != "" & `__oldplot' {
+		tempname obsdeg obsgeo degsumm geosumm panel1 panel2
+		local dg = cond(`dir', "ideg", "deg")
+		mata: `obsdeg' = ergm_gof_collapse(st_matrix("__gofE7_o_`dg'"), `maxdeg'+1, `nodes')
+		mata: `degsumm' = ergm_gof_sum5(ergm_gof_collapse(st_matrix("__gofE7_s_`dg'"), `maxdeg'+1, `nodes'))
+		mata: `obsgeo' = ergm_gof_collapse(st_matrix("__gofE7_o_dist"), `maxdist', 0)
+		mata: `geosumm' = ergm_gof_sum5(ergm_gof_collapse(st_matrix("__gofE7_s_dist"), `maxdist', 0))
+		_nwergm_gofplot `obsdeg' `degsumm' "Degree" "`panel1'" 0 `=`maxdeg'+2' "`maxdeg'+"
+		_nwergm_gofplot `obsgeo' `geosumm' "Geodesic distance" "`panel2'" 1 `=`maxdist'+1' "NR"
+		// the title as the earlier versions drew it (noblack: the colour of the scheme)
+		_nw_gfinish title "Goodness of fit: observed vs. `nsim' simulated draws", size(medium) noblack gopts(`"`__gopts'"')
+		local __t `"`r(t)'"'
+		graph combine `panel1' `panel2', cols(2) `__t' name(`name', replace) `__gopts'
+		capture graph drop `panel1'
+		capture graph drop `panel2'
+		mata: mata drop `obsdeg' `obsgeo' `degsumm' `geosumm'
+		_nw_gfinish save, name(`name') saving(`saving') export(`"`export'"')
+		di as txt "{p 0 0 2}(plot saved as {bf:`name'}; box and whiskers summarize the simulated draws, the red line with circles is the observed network){p_end}"
+	}
+	else if "`plot'" != "" {
 		// one panel per requested statistic, as plot.gof() of R's ergm: model statistics, degree distributions,
 		// edgewise and dyadwise shared partners, triad census, minimum geodesic distance (proportions, counts for the
 		// model statistics and the triad census); the observed network is the red line with circles
@@ -412,13 +455,13 @@ program _nwergm_gof, rclass
 			mata: mata drop `po' `ps'
 			local pgraphs "`pgraphs' `pg'"
 		}
-		local pttl0 `"title("Goodness-of-fit diagnostics: observed vs. `nsim' simulated draws", size(medium))"'
-		if strpos(`"`__gopts'"', "title(") local pttl0
+		_nw_gfinish title "Goodness-of-fit diagnostics: observed vs. `nsim' simulated draws", size(medium) gopts(`"`__gopts'"')
+		local pttl0 `"`r(t)'"'
 		graph combine `pgraphs', cols(`=cond(`pidx' == 1, 1, 2)') `pttl0' name(`name', replace) `__gopts'
 		foreach pg of local pgraphs {
 			capture graph drop `pg'
 		}
-		_nwergm_gfin `name', saving(`saving') export(`export')
+		_nw_gfinish save, name(`name') saving(`saving') export(`"`export'"')
 		di as txt "{p 0 0 2}(plot saved as {bf:`name'}; box and whiskers summarize the simulated draws, the red line with circles is the observed network){p_end}"
 	}
 	capture mata: mata drop __gofE7_x

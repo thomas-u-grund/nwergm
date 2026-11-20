@@ -1,4 +1,4 @@
-*! version 1.10.0  19nov2026 _nwergm_egogof.ado -- estat gof after nwergm ego, following R's gof.ergm.ego(): the statistics of the model and the degree distribution of the egos against simulations from the fitted model
+*! version 1.11.0  20nov2026 _nwergm_egogof.ado -- estat gof after nwergm ego, following R's gof.ergm.ego(): the statistics of the model and the degree distribution of the egos against simulations from the fitted model
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -7,14 +7,22 @@
 * or FITNESS FOR A PARTICULAR PURPOSE. See the file LICENSE for the full text.
 capture program drop _nwergm_egogof
 program _nwergm_egogof, rclass
-	syntax [, NSIM(integer 100) SEED(string) GOFBURNIN(integer -1) GOFINTERVAL(integer -1) GOF(string) PLOT NAME(string) * ]
+	syntax [, NSIM(integer 100) SEED(string) GOFBURNIN(integer -1) GOFINTERVAL(integer -1) GOF(string) PLOT NAME(string) SAVing(string) EXPort(string asis) * ]
 	if `"`e(cmd)'"' != "nwergm" | "`e(estimate)'" != "Ego" {
 		di as err "last nwergm ego estimates not found"
 		exit 301
 	}
 	if `"`options'"' != "" {
-		di as err "{p 0 0 2}option(s) {bf:`options'} not allowed with {bf:estat gof} after {bf:nwergm ego}; the options are nsim(), seed(), gof(), gofburnin(), gofinterval(), plot and name().{p_end}"
+		di as err `"{p 0 0 2}option(s) {bf:`options'} not allowed with {bf:estat gof} after {bf:nwergm ego}; the options are nsim(), seed(), gof(), gofburnin(), gofinterval(), plot, name(), saving() and export().{p_end}"'
 		exit 198
+	}
+	if "`plot'" != "" | `"`saving'`export'"' != "" {
+		_nwergm_corecheck "estat gof, plot"
+		local __exopt ""
+		if `"`export'"' != "" local __exopt `"export(`"`export'"')"'
+		_nw_gfinish check, plot(`plot') name(`name') saving(`saving') `__exopt' default(gof) nameok cmd(estat gof)
+		local name `"`r(name)'"'
+		local saving `"`r(saving)'"'
 	}
 	capture mata: __nwergm_last_G.n
 	if _rc {
@@ -105,12 +113,14 @@ program _nwergm_egogof, rclass
 		_nwergm_egogof_table `Sd' `Dd', names(`labs') title("degree, share of the nodes") first("Degree") nsim(`nsim') matname(`P')
 		return matrix gof_degree = `P'
 		if "`plot'" != "" {
-			if "`name'" == "" local name "gof"
+			// _nwergm_gofplot takes Mata matrices (the Stata matrices of the first version failed with r(3499))
 			tempname M5 S
+			mata: `S' = st_matrix("`Dd'")
 			mata: `M5' = ergm_gof_sum5(st_matrix("`Sd'"))
-			mata: st_matrix("`S'", `M5')
-			mata: mata drop `M5'
-			_nwergm_gofplot `Dd' `S' "Degree" "`name'" 0 `=`md'+2' "`md'+"
+			mata: st_local("__ncat", strofreal(cols(`S')))
+			_nwergm_gofplot `S' `M5' "Degree" "`name'" 0 `__ncat' "`=`__ncat'-1'+"
+			mata: mata drop `M5' `S'
+			_nw_gfinish save, name(`name') saving(`saving') export(`"`export'"')
 			di as txt "{p 0 0 2}(plot saved as {bf:`name'}; box and whiskers summarize the simulated draws, the red line with circles is the estimate from the egos){p_end}"
 		}
 	}

@@ -49,49 +49,51 @@ BEGIN
   TEXT      tx_h7 335 138 650 ., label("name of the graph")
   CHECKBOX  f_g_plot 10 157 200 ., label("plot") default(0) nomem
   TEXT      tx_h8 220 159 765 ., label("draw the comparison graphs")
-  TEXT      tx_g_saving 10 180 200 ., label("saving()")
-  EDIT      f_g_saving 215 178 110 ., option(saving) nomem
-  TEXT      tx_h9 335 180 650 ., label("save the graph as a .gph file")
-  TEXT      tx_g_export 10 201 200 ., label("export()")
-  EDIT      f_g_export 215 199 110 ., option(export) nomem
-  TEXT      tx_h10 335 201 650 ., label("export the graph: filename[, options]")
-  TEXT      tx_s220_gof 10 222 960 ., label("== gof(): statistics to compare (none ticked = the default for the network type) ==")
-  CHECKBOX  cx_gof_degree 10 241 280 ., label("degree") default(0) nomem
-  CHECKBOX  cx_gof_espartners 310 241 280 ., label("espartners") default(0) nomem
-  CHECKBOX  cx_gof_idegree 10 262 280 ., label("idegree") default(0) nomem
-  CHECKBOX  cx_gof_dspartners 310 262 280 ., label("dspartners") default(0) nomem
-  CHECKBOX  cx_gof_odegree 10 283 280 ., label("odegree") default(0) nomem
-  CHECKBOX  cx_gof_distance 310 283 280 ., label("distance") default(0) nomem
-  CHECKBOX  cx_gof_b1degree 10 304 280 ., label("b1degree") default(0) nomem
-  CHECKBOX  cx_gof_triadcensus 310 304 280 ., label("triadcensus") default(0) nomem
-  CHECKBOX  cx_gof_b2degree 10 325 280 ., label("b2degree") default(0) nomem
-  CHECKBOX  cx_gof_model 310 325 280 ., label("model") default(0) nomem
-  CHECKBOX  cx_gof_dropmodel 10 346 560 ., label("drop the model statistics (writes -model; use with 'model' unticked)") default(0) nomem
+  CHECKBOX  f_g_panels 10 178 200 ., label("panels") default(0) nomem
+  TEXT      tx_h9 220 180 765 ., label("one panel per statistic of gof() on a one-mode network")
+  TEXT      tx_g_saving 10 201 200 ., label("saving()")
+  EDIT      f_g_saving 215 199 110 ., option(saving) nomem
+  TEXT      tx_h10 335 201 650 ., label("save the graph as a .gph file")
+  TEXT      tx_g_export 10 222 200 ., label("export()")
+  EDIT      f_g_export 215 220 110 ., option(export) nomem
+  TEXT      tx_h11 335 222 650 ., label("export the graph: filename[, options]")
+  TEXT      tx_s241_gof 10 243 960 ., label("== gof(): statistics to compare (none ticked = the default for the network type) ==")
+  CHECKBOX  cx_gof_degree 10 262 280 ., label("degree") default(0) nomem
+  CHECKBOX  cx_gof_espartners 310 262 280 ., label("espartners") default(0) nomem
+  CHECKBOX  cx_gof_idegree 10 283 280 ., label("idegree") default(0) nomem
+  CHECKBOX  cx_gof_dspartners 310 283 280 ., label("dspartners") default(0) nomem
+  CHECKBOX  cx_gof_odegree 10 304 280 ., label("odegree") default(0) nomem
+  CHECKBOX  cx_gof_distance 310 304 280 ., label("distance") default(0) nomem
+  CHECKBOX  cx_gof_b1degree 10 325 280 ., label("b1degree") default(0) nomem
+  CHECKBOX  cx_gof_triadcensus 310 325 280 ., label("triadcensus") default(0) nomem
+  CHECKBOX  cx_gof_b2degree 10 346 280 ., label("b2degree") default(0) nomem
+  CHECKBOX  cx_gof_model 310 346 280 ., label("model") default(0) nomem
+  CHECKBOX  cx_gof_dropmodel 10 367 560 ., label("drop the model statistics (writes -model; use with 'model' unticked)") default(0) nomem
 END
 
 DIALOG mcmcdiag, tabtitle("MCMC")
 BEGIN
   TEXT      tx_m_pvalue 10 12 200 ., label("pvalue()")
   COMBOBOX  f_m_pvalue 215 10 100 ., dropdownlist contents(l_f_m_pvalue) values(l_f_m_pvalue_v) option(pvalue) nomem
-  TEXT      tx_h11 325 12 660 ., label("level of the stationarity test")
+  TEXT      tx_h12 325 12 660 ., label("level of the stationarity test")
   TEXT      tx_m_eps 10 33 200 ., label("eps()")
   EDIT      f_m_eps 215 31 110 ., option(eps) nomem
-  TEXT      tx_h12 335 33 650 ., label("half-width tolerance; default 0.1")
+  TEXT      tx_h13 335 33 650 ., label("half-width tolerance; default 0.1")
   TEXT      tx_m_name 10 54 200 ., label("name()")
   EDIT      f_m_name 215 52 110 ., option(name) nomem
-  TEXT      tx_h13 335 54 650 ., label("name of the combined graph")
+  TEXT      tx_h14 335 54 650 ., label("name of the combined graph")
   CHECKBOX  f_m_plot 10 73 200 ., label("plot") default(0) nomem
-  TEXT      tx_h14 220 75 765 ., label("trace and density plots")
+  TEXT      tx_h15 220 75 765 ., label("trace and density plots")
   TEXT      tx_m_saving 10 96 200 ., label("saving()")
   EDIT      f_m_saving 215 94 110 ., option(saving) nomem
-  TEXT      tx_h15 335 96 650 ., label("save the graph as a .gph file")
+  TEXT      tx_h16 335 96 650 ., label("save the graph as a .gph file")
   TEXT      tx_m_export 10 117 200 ., label("export()")
   EDIT      f_m_export 215 115 110 ., option(export) nomem
-  TEXT      tx_h16 335 117 650 ., label("export the graph: filename[, options]")
+  TEXT      tx_h17 335 117 650 ., label("export the graph: filename[, options]")
   CHECKBOX  f_m_heidel 10 136 200 ., label("heidel") default(0) nomem
-  TEXT      tx_h17 220 138 765 ., label("Heidelberger-Welch stationarity and half-width tests")
+  TEXT      tx_h18 220 138 765 ., label("Heidelberger-Welch stationarity and half-width tests")
   CHECKBOX  f_m_report 10 157 200 ., label("report") default(0) nomem
-  TEXT      tx_h18 220 159 765 ., label("print the full diagnostics table")
+  TEXT      tx_h19 220 159 765 ., label("print the full diagnostics table")
 END
 
 DIALOG ic, tabtitle("IC")
@@ -103,56 +105,56 @@ DIALOG posterior, tabtitle("Posterior")
 BEGIN
   TEXT      tx_p_saving 10 12 200 ., label("saving()")
   EDIT      f_p_saving 215 10 110 ., option(saving) nomem
-  TEXT      tx_h19 335 12 650 ., label("file for the draws (a Stata data file)")
+  TEXT      tx_h20 335 12 650 ., label("file for the draws (a Stata data file)")
   CHECKBOX  f_p_replace 10 31 200 ., label("replace") default(0) nomem
-  TEXT      tx_h20 220 33 765 ., label("replace an existing file")
+  TEXT      tx_h21 220 33 765 ., label("replace an existing file")
   TEXT      tx_p_plot 10 54 200 ., label("plot()")
   COMBOBOX  f_p_plot 215 52 100 ., dropdownlist contents(l_f_p_plot) values(l_f_p_plot_v) option(plot) nomem
-  TEXT      tx_h21 325 54 660 ., label("trace and density plots of the draws")
+  TEXT      tx_h22 325 54 660 ., label("trace and density plots of the draws")
   TEXT      tx_p_name 10 75 200 ., label("name()")
   EDIT      f_p_name 215 73 110 ., option(name) nomem
-  TEXT      tx_h22 335 75 650 ., label("name of the graph")
+  TEXT      tx_h23 335 75 650 ., label("name of the graph")
   TEXT      tx_p_pars 10 96 200 ., label("pars()")
   EDIT      f_p_pars 215 94 110 ., option(pars) nomem
-  TEXT      tx_h23 335 96 650 ., label("coefficients to plot; default all")
+  TEXT      tx_h24 335 96 650 ., label("coefficients to plot; default all")
   TEXT      tx_p_gsaving 10 117 200 ., label("gsaving()")
   EDIT      f_p_gsaving 215 115 110 ., option(gsaving) nomem
-  TEXT      tx_h24 335 117 650 ., label("save the graph as a .gph file")
+  TEXT      tx_h25 335 117 650 ., label("save the graph as a .gph file")
   TEXT      tx_p_export 10 138 200 ., label("export()")
   EDIT      f_p_export 215 136 110 ., option(export) nomem
-  TEXT      tx_h25 335 138 650 ., label("export the graph: filename[, options]")
+  TEXT      tx_h26 335 138 650 ., label("export the graph: filename[, options]")
   TEXT      tx_p_level 10 159 200 ., label("level()")
   EDIT      f_p_level 215 157 110 ., option(level) nomem
-  TEXT      tx_h26 335 159 650 ., label("credible level; default the level of the fit")
+  TEXT      tx_h27 335 159 650 ., label("credible level; default the level of the fit")
 END
 
 DIALOG simfit, tabtitle("Simulate")
 BEGIN
   TEXT      tx_s_nsim 10 12 200 ., label("nsim()")
   EDIT      f_s_nsim 215 10 110 ., option(nsim) nomem
-  TEXT      tx_h27 335 12 650 ., label("default 1")
+  TEXT      tx_h28 335 12 650 ., label("default 1")
   TEXT      tx_s_seed 10 33 200 ., label("seed()")
   EDIT      f_s_seed 215 31 110 ., option(seed) nomem
   TEXT      tx_s_output 10 54 200 ., label("output()")
   COMBOBOX  f_s_output 215 52 100 ., dropdownlist contents(l_f_s_output) values(l_f_s_output_v) option(output) nomem
-  TEXT      tx_h28 325 54 660 ., label("what to produce (default network)")
+  TEXT      tx_h29 325 54 660 ., label("what to produce (default network)")
   TEXT      tx_s_basis 10 75 200 ., label("basis()")
   COMBOBOX  f_s_basis 215 73 170 ., dropdown contents(netlist) option(basis) nomem
-  TEXT      tx_h29 395 75 590 ., label("start network (default: last network of the fit)")
+  TEXT      tx_h30 395 75 590 ., label("start network (default: last network of the fit)")
   TEXT      tx_s_coef 10 96 200 ., label("coef()")
   EDIT      f_s_coef 215 94 110 ., option(coef) nomem
-  TEXT      tx_h30 335 96 650 ., label("name of a Stata matrix with the coefficients")
+  TEXT      tx_h31 335 96 650 ., label("name of a Stata matrix with the coefficients")
   CHECKBOX  f_s_nosequential 10 115 200 ., label("nosequential") default(0) nomem
-  TEXT      tx_h31 220 117 765 ., label("restart every draw from the start network")
+  TEXT      tx_h32 220 117 765 ., label("restart every draw from the start network")
   TEXT      tx_s_burnin 10 138 200 ., label("burnin()")
   EDIT      f_s_burnin 215 136 110 ., option(burnin) nomem
   TEXT      tx_s_interval 10 159 200 ., label("interval()")
   EDIT      f_s_interval 215 157 110 ., option(interval) nomem
   TEXT      tx_s_generate 10 180 200 ., label("generate()")
   EDIT      f_s_generate 215 178 110 ., option(generate) nomem
-  TEXT      tx_h32 335 180 650 ., label("stub for the simulated networks")
+  TEXT      tx_h33 335 180 650 ., label("stub for the simulated networks")
   CHECKBOX  f_s_clear 10 199 200 ., label("clear") default(0) nomem
-  TEXT      tx_h33 220 201 765 ., label("needed with output(edgelist)")
+  TEXT      tx_h34 220 201 765 ., label("needed with output(edgelist)")
 END
 
 LIST netlist
@@ -258,6 +260,9 @@ BEGIN
 			optionarg /asis gof.f_g_name
 			if gof.f_g_plot {
 				put " plot"
+			}
+			if gof.f_g_panels {
+				put " panels"
 			}
 			optionarg /asis gof.f_g_saving
 			optionarg /asis gof.f_g_export
