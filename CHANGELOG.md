@@ -3,6 +3,11 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+- The dialog test `dlg/cmd_assembly_test.py` also checks the command that the estat dialog builds for the plot options of `estat gof` (`plot`, `panels`), `estat mcmcdiag` and `estat posterior` (`plot()`, `name()`, `pars()`, `saving()` or `gsaving()`, `export()`).
+
 ## [1.11.0] - 2026-11-20
 
 ### Added
