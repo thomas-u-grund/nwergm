@@ -45,7 +45,12 @@ end
 
 capture program drop nwergm_estat_mcmcdiag
 program define nwergm_estat_mcmcdiag, rclass
-	syntax [, PLOT NAME(string) PVALUE(real 0.05) EPS(real 0.1) HEIDEL REPort]
+	syntax [, PLOT NAME(string) PVALUE(real 0.05) EPS(real 0.1) HEIDEL REPort SAVing(string) EXPort(string asis) *]
+	local __gopts `"`options'"'
+	if "`plot'" == "" & `"`saving'`export'`__gopts'"' != "" {
+		di as err "{p 0 0 2}saving(), export() and graph options need {bf:plot}.{p_end}"
+		exit 198
+	}
 
 	if `"`e(cmd)'"' != "nwergm" {
 		di as err "last nwergm estimates not found"
@@ -246,9 +251,10 @@ program define nwergm_estat_mcmcdiag, rclass
 				legend(off) nodraw
 			local __combine_list `"`__combine_list' `tr`k'' `de`k''"'
 		}
-		graph combine `__combine_list', cols(2) ///
-			title("MCMC diagnostics: trace and density per statistic", size(medium)) ///
-			name(`name', replace)
+		local __ttl `"title("MCMC diagnostics: trace and density per statistic", size(medium))"'
+		if strpos(`"`__gopts'"', "title(") local __ttl
+		graph combine `__combine_list', cols(2) `__ttl' name(`name', replace) `__gopts'
+		_nwergm_gfin `name', saving(`saving') export(`export')
 		foreach __g of local __combine_list {
 			capture graph drop `__g'
 		}
@@ -485,7 +491,8 @@ end
 // trace and density plots of the posterior draws, one row of two panels per coefficient
 capture program drop _nwergm_estat_bayesplot
 program define _nwergm_estat_bayesplot
-	syntax , FRAME(name) [NAME(string) WHAT(string) PARS(string)]
+	syntax , FRAME(name) [NAME(string) WHAT(string) PARS(string) SAVing(string) EXPort(string asis) *]
+	local __gopts `"`options'"'
 	if "`name'" == "" local name "bayes"
 	if "`what'" == "" local what both
 	local names : colnames e(b)
@@ -531,7 +538,10 @@ program define _nwergm_estat_bayesplot
 	local np : word count `glist'
 	if `np' == 0 exit
 	local cols = cond("`what'" == "both", 2, 3)
-	graph combine `glist', cols(`cols') name(`name', replace) title("Bayesian ERGM: posterior draws")
+	local __ttl `"title("Bayesian ERGM: posterior draws")"'
+	if strpos(`"`__gopts'"', "title(") local __ttl
+	graph combine `glist', cols(`cols') name(`name', replace) `__ttl' `__gopts'
+	_nwergm_gfin `name', saving(`saving') export(`export')
 	foreach g of local glist {
 		capture graph drop `g'
 	}
@@ -540,7 +550,11 @@ end
 // estat posterior: summary of the posterior, the draws saved to a Stata data file, trace and density plots
 capture program drop nwergm_estat_posterior
 program define nwergm_estat_posterior, rclass
-	syntax [, SAVing(string) REPLACE PLOT(string) NAME(string) PARS(string) Level(cilevel) noTABle]
+	syntax [, SAVing(string) REPLACE PLOT(string) NAME(string) PARS(string) Level(cilevel) noTABle GSAVing(string) EXPort(string asis) *]
+	if "`plot'" == "" & `"`gsaving'`export'`options'"' != "" {
+		di as err "{p 0 0 2}gsaving(), export() and graph options need {bf:plot()}.{p_end}"
+		exit 198
+	}
 	if `"`e(cmd)'"' != "nwergm" | "`e(method)'" != "bayes" {
 		di as err "{p 0 0 2}{bf:estat posterior} is only available after {bf:nwergm, estimate(bayes)}.{p_end}"
 		exit 301
@@ -587,7 +601,7 @@ program define nwergm_estat_posterior, rclass
 			di as err "option plot() takes trace, density or both."
 			exit 198
 		}
-		_nwergm_estat_bayesplot, frame(`fr') name(`name') what(`plot') pars(`pars')
+		_nwergm_estat_bayesplot, frame(`fr') name(`name') what(`plot') pars(`pars') saving(`gsaving') export(`export') `options'
 	}
 	return matrix mean = `b'
 	return matrix sd = `sd'
@@ -601,7 +615,11 @@ end
 // estat mcmcdiag after a Bayesian fit: effective sample size, Monte Carlo standard error, Gelman-Rubin and Geweke statistics
 capture program drop nwergm_estat_bayesdiag
 program define nwergm_estat_bayesdiag, rclass
-	syntax [, PLOT NAME(string) PARS(string)]
+	syntax [, PLOT NAME(string) PARS(string) SAVing(string) EXPort(string asis) *]
+	if "`plot'" == "" & `"`saving'`export'`options'"' != "" {
+		di as err "{p 0 0 2}saving(), export() and graph options need {bf:plot}.{p_end}"
+		exit 198
+	}
 	_nwergm_estat_frame fr
 	local names : colnames e(b)
 	local K : word count `names'
@@ -642,7 +660,7 @@ program define nwergm_estat_bayesdiag, rclass
 	di as res "`line'"
 	di as txt "{p 0 0 2}Overall acceptance rate " as res %5.3f e(accept_rate) as txt "; the scale of the moves adapts during the burn-in towards " as res %4.2f e(targetaccept) as txt " (final factor " as res %6.4f e(gamma) as txt ").{p_end}"
 	if "`plot'" != "" {
-		_nwergm_estat_bayesplot, frame(`fr') name(`name') what(trace) pars(`pars')
+		_nwergm_estat_bayesplot, frame(`fr') name(`name') what(trace) pars(`pars') saving(`saving') export(`export') `options'
 	}
 	return matrix ess = `ess'
 	return matrix rhat = `rhat'

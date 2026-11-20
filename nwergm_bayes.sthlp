@@ -71,11 +71,11 @@ the posterior covariance matrix. The draws are kept in a frame.
 {title:Postestimation}
 
 {phang}
-{cmd:estat posterior} [{cmd:,} {opt saving(filename)} {opt replace} {opt plot(trace|density|both)} {opt name(string)} {opt pars(namelist)} {opt level(#)} {opt notable}]
-summarises the draws, saves them to a Stata data set and draws trace and density plots.
+{cmd:estat posterior} [{cmd:,} {opt saving(filename)} {opt replace} {opt plot(trace|density|both)} {opt name(string)} {opt gsav:ing(filename)} {opt exp:ort(filename [, options])} {it:graph_options} {opt pars(namelist)} {opt level(#)} {opt notable}]
+summarises the draws, saves them to a Stata data set and draws trace and density plots. {opt saving()} is the file of the draws; {opt gsaving()} saves the graph as a {cmd:.gph} file, {opt export()} exports it with {help graph export}, and graph options go to {help graph combine} (they need {opt plot()}).
 
 {phang}
-{cmd:estat mcmcdiag} [{cmd:,} {opt plot} {opt name(string)}] shows ESS, Monte Carlo standard error, R-hat with its upper limit, the Geweke z-score, the lag-1
+{cmd:estat mcmcdiag} [{cmd:,} {opt plot} {opt name(string)} {opt sav:ing(filename)} {opt exp:ort(filename [, options])} {it:graph_options}] shows ESS, Monte Carlo standard error, R-hat with its upper limit, the Geweke z-score, the lag-1
 autocorrelation and the acceptance rate of every chain.
 
 {phang}

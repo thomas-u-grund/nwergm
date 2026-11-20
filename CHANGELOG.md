@@ -3,6 +3,13 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+- `estat gof, plot` draws one panel for every statistic of `gof()`, as `plot(gof())` of R's ergm does: model statistics, degree, in-degree and out-degree, the degrees of both modes of a two-mode network, edgewise and dyadwise shared partners, triad census and minimum geodesic distance. Before, the plot had a degree panel and a geodesic-distance panel for one-mode networks only, whatever `gof()` asked for. Empty categories at the end of a distribution are not drawn; `maxdeg()` also caps the shared-partner axes.
+- `saving()`, `export()` and graph options for `estat gof, plot` and `estat mcmcdiag, plot` (also after a Bayesian fit); for `estat posterior, plot()` the options are `gsaving()` (because `saving()` is the file of the draws), `export()` and graph options. They are passed to `graph combine`. Without the plot option they are an error (r(198)). The dialogs of `estat` have the entries.
+- Test `cscripts/test_nwergm_plots.do`.
+
 ## [1.10.0] - 2026-11-19
 
 ### Added

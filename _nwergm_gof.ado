@@ -8,7 +8,12 @@
 capture program drop _nwergm_gof
 program _nwergm_gof, rclass
 	syntax [, NSIM(integer 100) SEED(string) GOFBURNIN(integer -1) GOFINTERVAL(integer -1) ///
-		PLOT MAXDEG(integer 15) MAXDIST(integer 6) NAME(string) GOF(string) ]
+		PLOT MAXDEG(integer 15) MAXDIST(integer 6) NAME(string) GOF(string) SAVing(string) EXPort(string asis) * ]
+	local __gopts `"`options'"'
+	if "`plot'" == "" & `"`saving'`export'`__gopts'"' != "" {
+		di as err "{p 0 0 2}saving(), export() and graph options need {bf:plot}.{p_end}"
+		exit 198
+	}
 	if `"`e(cmd)'"' != "nwergm" {
 		di as err "last nwergm estimates not found"
 		exit 301
@@ -319,22 +324,101 @@ program _nwergm_gof, rclass
 	return scalar burnin = `gofburnin'
 	return scalar interval = `gofinterval'
 
-	if "`plot'" != "" & !`bip' {
+	if "`plot'" != "" {
 		if "`name'" == "" local name "gof"
-		tempname obsdeg obsgeo degsumm geosumm panel1 panel2
-		local dg = cond(`dir', "ideg", "deg")
-		mata: `obsdeg' = ergm_gof_collapse(st_matrix("__gofE7_o_`dg'"), `maxdeg'+1, `nodes')
-		mata: `degsumm' = ergm_gof_sum5(ergm_gof_collapse(st_matrix("__gofE7_s_`dg'"), `maxdeg'+1, `nodes'))
-		mata: `obsgeo' = ergm_gof_collapse(st_matrix("__gofE7_o_dist"), `maxdist', 0)
-		mata: `geosumm' = ergm_gof_sum5(ergm_gof_collapse(st_matrix("__gofE7_s_dist"), `maxdist', 0))
-		_nwergm_gofplot `obsdeg' `degsumm' "Degree" "`panel1'" 0 `=`maxdeg'+2' "`maxdeg'+"
-		_nwergm_gofplot `obsgeo' `geosumm' "Geodesic distance" "`panel2'" 1 `=`maxdist'+1' "NR"
-		graph combine `panel1' `panel2', cols(2) ///
-			title("Goodness of fit: observed vs. `nsim' simulated draws", size(medium)) ///
-			name(`name', replace)
-		capture graph drop `panel1'
-		capture graph drop `panel2'
-		mata: mata drop `obsdeg' `obsgeo' `degsumm' `geosumm'
+		// one panel per requested statistic, as plot.gof() of R's ergm: model statistics, degree distributions,
+		// edgewise and dyadwise shared partners, triad census, minimum geodesic distance (proportions, counts for the
+		// model statistics and the triad census); the observed network is the red line with circles
+		local pgraphs ""
+		local pidx 0
+		foreach t of local want {
+			local g "`gcode_`t''"
+			local ++pidx
+			tempname po ps
+			local pg "__nwergm_gofp`pidx'"
+			mata: st_local("__K", strofreal(cols(st_matrix("__gofE7_o_`g'"))))
+			local labs ""
+			local pttl ""
+			local pyt "proportion of nodes"
+			if "`t'" == "model" {
+				mata: `po' = st_matrix("__gofE7_o_model")
+				mata: `ps' = ergm_gof_sum5(st_matrix("__gofE7_s_model"))
+				forvalues i = 1/`__K' {
+					mata: st_local("lb", __nwergm_last_M.coefnames[`i'])
+					local labs `"`labs' `i' "`lb'""'
+				}
+				local pttl "Model statistics"
+				local pyt "value"
+			}
+			else if "`t'" == "triadcensus" {
+				mata: `po' = st_matrix("__gofE7_o_triad")
+				mata: `ps' = ergm_gof_sum5(st_matrix("__gofE7_s_triad"))
+				forvalues i = 1/`__K' {
+					if `dir' local lb : word `i' of `dtri'
+					else local lb = `i' - 1
+					local labs `"`labs' `i' "`lb'""'
+				}
+				local pttl "Triad census"
+				local pyt "triads"
+			}
+			else if "`t'" == "distance" {
+				local keep = min(`maxdist', `__K' - 1)
+				mata: `po' = ergm_gof_collapse(st_matrix("__gofE7_o_dist"), `keep', 0)
+				mata: `ps' = ergm_gof_sum5(ergm_gof_collapse(st_matrix("__gofE7_s_dist"), `keep', 0))
+				forvalues i = 1/`keep' {
+					local labs `"`labs' `i' "`i'""'
+				}
+				local lastl = cond(`keep' == `__K' - 1, "NR", ">`keep'/NR")
+				local labs `"`labs' `=`keep'+1' "`lastl'""'
+				local pttl "Minimum geodesic distance"
+				local pyt "proportion of dyads"
+			}
+			else {
+				// degree-type distributions and shared partners: counts 0, 1, ..., the tail summed into one last category
+				local keep = min(`maxdeg' + 1, `__K')
+				mata: `po' = ergm_gof_collapse(st_matrix("__gofE7_o_`g'"), `keep', 0)
+				mata: `ps' = ergm_gof_collapse(st_matrix("__gofE7_s_`g'"), `keep', 0)
+				if `__K' <= `maxdeg' + 1 {
+					mata: `po' = `po'[., 1..`keep']
+					mata: `ps' = `ps'[., 1..`keep']
+				}
+				mata: `ps' = ergm_gof_sum5(`ps')
+				// as R's plot.gof(): the empty categories at the tail are not drawn (the collapsed last category stays when used)
+				mata: st_local("__nuse", strofreal(max(selectindex((`po' :> 0) :| (`ps'[., 5]' :> 0))) + 1))
+				local ncat = cond(`__K' <= `maxdeg' + 1, `keep', `keep' + 1)
+				local ncat = min(`ncat', `__nuse')
+				mata: `po' = `po'[., 1..`ncat']
+				mata: `ps' = `ps'[1..`ncat', .]
+				forvalues i = 1/`ncat' {
+					local lb = `i' - 1
+					if `i' == `keep' + 1 local lb "`=`keep'-1'+"
+					local labs `"`labs' `i' "`lb'""'
+				}
+				if "`t'" == "degree" local pttl "Degree"
+				else if "`t'" == "idegree" local pttl "In-degree"
+				else if "`t'" == "odegree" local pttl "Out-degree"
+				else if "`t'" == "b1degree" local pttl "Degree, first mode"
+				else if "`t'" == "b2degree" local pttl "Degree, second mode"
+				else if "`t'" == "espartners" {
+					local pttl "Edgewise shared partners"
+					local pyt "proportion of edges"
+				}
+				else {
+					local pttl "Dyadwise shared partners"
+					local pyt "proportion of dyads"
+				}
+			}
+			_nwergm_gofpanel, obs(`po') summ(`ps') ttl("`pttl'") yttl("`pyt'") gname(`pg') labs(`labs')
+			mata: mata drop `po' `ps'
+			local pgraphs "`pgraphs' `pg'"
+		}
+		local pttl0 `"title("Goodness-of-fit diagnostics: observed vs. `nsim' simulated draws", size(medium))"'
+		if strpos(`"`__gopts'"', "title(") local pttl0
+		graph combine `pgraphs', cols(`=cond(`pidx' == 1, 1, 2)') `pttl0' name(`name', replace) `__gopts'
+		foreach pg of local pgraphs {
+			capture graph drop `pg'
+		}
+		_nwergm_gfin `name', saving(`saving') export(`export')
 		di as txt "{p 0 0 2}(plot saved as {bf:`name'}; box and whiskers summarize the simulated draws, the red line with circles is the observed network){p_end}"
 	}
 	capture mata: mata drop __gofE7_x

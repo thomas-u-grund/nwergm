@@ -28,7 +28,7 @@ The following postestimation commands are available after {helpb nwergm}:
 {title:estat mcmcdiag}
 
 {p 8 17 2}
-{cmd:estat mcmcdiag} [{cmd:,} {opt heidel} {opt rep:ort} {opt plot} {opt name(string)} {opt pvalue(#)} {opt eps(#)}]
+{cmd:estat mcmcdiag} [{cmd:,} {opt heidel} {opt rep:ort} {opt plot} {opt name(string)} {opt sav:ing(filename)} {opt exp:ort(filename [, options])} {it:graph_options} {opt pvalue(#)} {opt eps(#)}]
 
 {pstd}
 {cmd:estat mcmcdiag} reports diagnostics for the final MCMC simulation {cmd:nwergm} ran
@@ -79,13 +79,14 @@ in the final MCMC sample - an analogous pair of diagnostic plots to R's {cmd:mcm
 produces, combined here into a single figure (one row per statistic) via {help graph combine}.
 A trace plot that drifts or shows long runs at one level, rather than a stationary-looking
 "fuzzy caterpillar", indicates poor mixing even when the numeric diagnostics above look
-acceptable. {opt name()} sets the combined graph's name; default {cmd:mcmcdiag}.
+acceptable. {opt name()} sets the combined graph's name; default {cmd:mcmcdiag}. {opt saving()} saves the graph as a {cmd:.gph} file, {opt export()} exports it with {help graph export}
+(the extension of the file name sets the format), and further graph options go to {help graph combine}.
 
 
 {title:estat gof}
 
 {p 8 17 2}
-{cmd:estat gof} [{cmd:,} {opt gof(statistics)} {opt nsim(#)} {opt seed(#)} {opt gofburnin(#)} {opt gofinterval(#)} {opt plot} {opt maxdeg(#)} {opt maxdist(#)} {opt name(string)}]
+{cmd:estat gof} [{cmd:,} {opt gof(statistics)} {opt nsim(#)} {opt seed(#)} {opt gofburnin(#)} {opt gofinterval(#)} {opt plot} {opt maxdeg(#)} {opt maxdist(#)} {opt name(string)} {opt sav:ing(filename)} {opt exp:ort(filename [, options])} {it:graph_options}]
 
 {pstd}
 {cmd:estat gof} follows R's {cmd:gof()}: it simulates {opt nsim()} networks (default 100, at least 2) from the fitted model and,
@@ -113,14 +114,17 @@ means can change noticeably between runs; increase {opt nsim()} (and consider {o
 before treating a single run as a stable estimate.{p_end}
 
 {pstd}
-{opt plot} (one-mode networks) draws the degree distribution (in-degree on a directed network) and the
-geodesic-distance distribution across the simulated networks, each as its own panel: a whisker
-(minimum-maximum), a box (interquartile range) and a median marker summarize the simulated networks at each
-value, with the observed proportion overlaid as a connected red line with circle markers, as in
-{cmd:nwsaom}'s goodness-of-fit plots and similar to R's {cmd:plot(gof())}. {opt maxdeg()} (default 15) caps the
-degree axis (values above it are pooled into a single "{it:maxdeg}+" category); {opt maxdist()} (default 6)
-caps the geodesic-distance axis (unreached pairs are pooled into their own "NR" category). {opt name()} sets
-the name of the combined graph; default {cmd:gof}.{p_end}
+{opt plot} draws one panel for each statistic of {opt gof()} (as R's {cmd:plot(gof())}): the model statistics, the degree distributions (in-degree and out-degree on a
+directed network, the degrees of both modes on a two-mode network), edgewise and dyadwise shared partners, the triad census and the minimum geodesic distance.
+Degrees, shared partners and distances are shown as proportions (of nodes, edges or dyads), the model statistics and the triad census as values.
+A whisker (minimum to maximum), a box (interquartile range) and a median marker summarize the simulated networks at each
+value, with the observed value overlaid as a connected red line with circle markers, as in
+{cmd:nwsaom}'s goodness-of-fit plots. Empty categories at the end of a distribution are not drawn. {opt maxdeg()} (default 15) caps the
+degree and shared-partner axes (values above it are pooled into a single "{it:maxdeg}+" category); {opt maxdist()} (default 6)
+caps the geodesic-distance axis (the pairs farther apart and the unreached pairs are pooled into the last category, "NR" when no pair is pooled
+other than the unreached ones). {opt name()} sets the name of the combined graph (default {cmd:gof}), {opt saving()} saves it as a {cmd:.gph} file,
+{opt export()} exports it with {help graph export} (the extension of the file name sets the format, {it:options} are those of {cmd:graph export}) and
+further graph options, for example {cmd:title()} or {cmd:scheme()}, go to {help graph combine}. {opt saving()}, {opt export()} and graph options need {opt plot} (r(198)).{p_end}
 
 
 {title:Network types}

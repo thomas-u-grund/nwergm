@@ -19,6 +19,8 @@ f _nwergm_getb.ado
 f _nwergm_gof.ado
 f _nwergm_egogof.ado
 f _nwergm_gofplot.ado
+f _nwergm_gofpanel.ado
+f _nwergm_gfin.ado
 f _nwergm_hints.ado
 f _nwergm_dupopt.ado
 f _nwergm_mcdiag.ado
