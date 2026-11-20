@@ -87,6 +87,16 @@ estat gof, nsim(10) seed(5) plot name(pe1) saving(`"`out'/e1.gph"') export(`"`ou
 graph describe pe1
 confirm file `"`out'/e1.gph"'
 confirm file `"`out'/e1.png"'
+* the PNG has the requested width (bytes 17-20 of the header)
+tempname __fh
+file open `__fh' using `"`out'/e1.png"', read binary
+file seek `__fh' 16
+file read `__fh' %1bu __b1
+file read `__fh' %1bu __b2
+file read `__fh' %1bu __b3
+file read `__fh' %1bu __b4
+file close `__fh'
+assert scalar(__b1)*16777216 + scalar(__b2)*65536 + scalar(__b3)*256 + scalar(__b4) == 800
 capture estat gof, nsim(10) saving(`"`out'/x.gph"')
 assert _rc == 198
 capture estat gof, nsim(10) plot title("x")

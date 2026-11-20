@@ -118,7 +118,12 @@ program _nwergm_egogof, rclass
 			mata: `S' = st_matrix("`Dd'")
 			mata: `M5' = ergm_gof_sum5(st_matrix("`Sd'"))
 			mata: st_local("__ncat", strofreal(cols(`S')))
-			_nwergm_gofplot `S' `M5' "Degree" "`name'" 0 `__ncat' "`=`__ncat'-1'+"
+			tempname __pg
+			_nwergm_gofplot `S' `M5' "Degree" "`__pg'" 0 `__ncat' "`=`__ncat'-1'+"
+			// the panel is drawn with nodraw; graph export needs a drawn graph on a computer without a display (Linux, r(693)), so, as for the
+			// other estat gof plots, the graph is made by graph combine
+			graph combine `__pg', cols(1) name(`name', replace)
+			capture graph drop `__pg'
 			mata: mata drop `M5' `S'
 			_nw_gfinish save, name(`name') saving(`saving') export(`"`export'"')
 			di as txt "{p 0 0 2}(plot saved as {bf:`name'}; box and whiskers summarize the simulated draws, the red line with circles is the estimate from the egos){p_end}"
