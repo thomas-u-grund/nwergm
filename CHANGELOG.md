@@ -17,6 +17,8 @@ project uses [Semantic Versioning](https://semver.org/).
 ### Fixed
 - `estat gof, plot` after `nwergm ego` ended with r(3499); it draws the degree distribution of the egos against the simulated draws.
 
+Tested on macOS with Stata 17 BE (the plot test and the ado test, against core 3.29.0); on Linux and on Windows with StataNow 19.5 MP (the plot tests and the package tests of this version). Stata 18 on the Mac was not run for this version. The package has no native change; the plugin is the one of 1.10.0.
+
 ## [1.10.0] - 2026-11-19
 
 ### Added
