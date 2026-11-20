@@ -764,6 +764,13 @@ see {help nwergm##native:Performance} below{p_end}
 {synopt:{bf:e(obs_stats)}}observed values of the model statistics (method(mple) only){p_end}
 
 
+{title:Manual}
+
+{pstd}
+A user manual (PDF in the {cmd:manual} folder of the package source) is archived at Zenodo, {browse "https://doi.org/10.5281/zenodo.23661331":doi:10.5281/zenodo.23661331}, all versions. Please cite it by that address and report the package version printed by {cmd:nwergm version}.
+{p_end}
+
+
 {marker provenance}{...}
 {title:References}
 
