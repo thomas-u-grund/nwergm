@@ -67,6 +67,9 @@ Tested on macOS with Stata 17 BE, Stata 18 BE and StataNow 19.5 MP (the full tes
 
 ## [Unreleased]
 
+### Changed
+- A curved fit with an estimated decay that stops with r(498) because a simulated network has a count above `gwcutoff()` now says what happened (the decay or weight moved to values at which the simulated networks degenerate; R stops in the same way for many seeds) and what to try. Fits that succeed are unchanged.
+
 ## [1.7.1] - 2026-11-13
 
 ### Changed

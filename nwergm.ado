@@ -2770,7 +2770,14 @@ program _nwergm_fit, eclass
 			mata: `__fit' = ErgmMCMLEObs(__nwergm_last_M, __nwergm_last_G, __nwergm_obs_G, __nwergm_obs_par, __nwergm_obs_cols, `__theta0', `mcmleiterations', `mcmcburnin', `mcmcinterval', `mcmcsamplesize', ("`verbose'"!=""))
 		}
 		else if `__ergm_curved' {
-			mata: `__fit' = ErgmMCMLE(__nwergm_last_M, __nwergm_last_G, `__theta0', `mcmleiterations', `mcmcburnin', `mcmcinterval', `mcmcsamplesize', `__ergm_propfn', ("`verbose'"!=""), __ergm_theta_c0_mcmle)
+			capture noisily mata: `__fit' = ErgmMCMLE(__nwergm_last_M, __nwergm_last_G, `__theta0', `mcmleiterations', `mcmcburnin', `mcmcinterval', `mcmcsamplesize', `__ergm_propfn', ("`verbose'"!=""), __ergm_theta_c0_mcmle)
+			if _rc {
+				local __rcfit = _rc
+				if `__rcfit' == 498 & `__ergm_cutact' {
+					di as err "{p 0 0 2}The Monte Carlo fit stopped because a simulated network has a count above {bf:gwcutoff(`gwcutoff')}. With a curved term whose decay is estimated this usually means that an iteration of the fit moved the decay (or the weight) to values at which the simulated networks degenerate (a few large clusters of triangles); R's {cmd:ergm} stops in the same way, for about half of the seeds on this kind of model. Raising {bf:gwcutoff()} only postpones the failure. Try a fixed decay ({bf:gwesp(#)}, {bf:gwdsp(#)}, ...), another {bf:seed()}, a larger {bf:mcmcsamplesize()}, or an {bf:offset()} on the decay; {bf:verbose} shows the path of the estimates.{p_end}"
+				}
+				exit `__rcfit'
+			}
 			mata: mata drop __ergm_theta_c0_mcmle
 		}
 		else {
