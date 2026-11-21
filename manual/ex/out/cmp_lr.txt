@@ -3,5 +3,5 @@
 Likelihood-ratio test
 Assumption: m1 nested within m2
 
- LR chi2(1) =  60.48
+ LR chi2(1) =  60.28
 Prob > chi2 = 0.0000

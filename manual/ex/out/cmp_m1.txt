@@ -19,12 +19,12 @@ nodematch_prac |   .9018349   .0939423     9.60   0.000
 -------------------------------------------------------
 
 MCMLE converged after 5 iteration(s).
-Evaluating log-likelihood at the estimate (bridge sampling with 16 bridges) ...
+Evaluating the log-likelihood exactly at the estimate ...
 
              Null Deviance:    6889.9  on 4970 degrees of freedom
-         Residual Deviance:    3404.6  on 4967 degrees of freedom
+         Residual Deviance:    3404.4  on 4967 degrees of freedom
 
-Log-likelihood: -1702.3120 (df = 3)   AIC:    3410.6   BIC:    3430.2
-Monte Carlo standard error of the log-likelihood:    .109
+Log-likelihood: -1702.2153 (df = 3)   AIC:    3410.4   BIC:    3430.0
+(Exact log-likelihood at the estimate; not a Monte Carlo value.)
 
 . estimates store m1

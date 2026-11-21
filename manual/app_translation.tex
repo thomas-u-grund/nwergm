@@ -34,7 +34,7 @@ R (\texttt{ergm}, \texttt{statnet}) & \texttt{nwergm}\\
 \texttt{control.ergm(CD.nsteps=)}, \texttt{SA.burnin} \ldots & \texttt{cdnsteps()}, \texttt{saburnin()}, \texttt{sainterval()}, \texttt{saphase3()}, \texttt{sagain()}, \texttt{sansub()}\\
 \texttt{control.ergm(MCMC.prop.weights=, MCMC.prop=, MCMC.maxedges=)} & \texttt{proposal()}, \texttt{mcmcprop()}, \texttt{mcmcmaxedges()}\\
 \texttt{control.ergm(seed=)} or \texttt{set.seed()} & \texttt{seed()}\\
-\texttt{control.ergm(bridge.nsteps=)}, \texttt{eval.loglik=FALSE} & \texttt{bridgesteps()}, \texttt{nologlik}\\
+\texttt{control.ergm(bridge.nsteps=)}, \texttt{eval.loglik=FALSE} & \texttt{bridgesteps()}, \texttt{nologlik}; \texttt{mcll} and \texttt{exactll} have no counterpart in \ergm{}\\
 \texttt{constraints = \textasciitilde edges}, \texttt{\textasciitilde bd(maxout=3)} & \texttt{constraints(edges)}, \texttt{constraints(bd(maxout=3))}\\
 \texttt{constraints = \textasciitilde fixallbut(free)}, \texttt{\textasciitilde blockdiag("g")} & \texttt{constraints(fixallbut(free))} or \texttt{freedyads(free)}; \texttt{constraints(blockdiag(g))} or \texttt{blockdiag(g)}\\
 \texttt{obs.constraints = \textasciitilde \ldots} & \texttt{obsconstraints(\ldots)}\\

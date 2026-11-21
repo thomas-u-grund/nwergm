@@ -19,7 +19,7 @@ scalars:
            e(nmissing) =  0
                  e(ll) =  -51.5534343475783
                e(ll_0) =  -83.17766166719343
-              e(ll_se) =  .000861690410224
+              e(ll_se) =  .0008780343429634
                e(df_m) =  3
                e(rank) =  3
                 e(bic) =  117.4693439235027
@@ -38,8 +38,8 @@ macros:
              e(method) : "mcmle"
              e(depvar) : "flomarriage"
               e(title) : "Exponential-family random graph model (MCMLE)"
-            e(version) : "1.11.0"
-             e(fittag) : "20 Nov 2026 14:16:57 2"
+            e(version) : "1.12.0"
+             e(fittag) : "21 Nov 2026 07:34:35 2"
                 e(cmd) : "nwergm"
          e(properties) : "b V"
 

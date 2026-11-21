@@ -80,7 +80,7 @@ After every fit \nwergm{} stores the log-likelihood as R's \texttt{logLik()} (Se
 . estimates store m2
 . lrtest m2 m1
 \end{lstlisting}
-The test is exact only to the extent that the log-likelihoods are: for Monte Carlo fits they carry the Monte Carlo standard error \texttt{e(ll\_se)}, which should be small compared with the differences that matter; for a pseudolikelihood fit of a dyad-dependent model the ``log-likelihood'' is the pseudolikelihood and a likelihood-ratio test is not valid. Wald tests of coefficients (\texttt{test}, \texttt{lincom}) work on \texttt{e(b)} and \texttt{e(V)}. Section~\ref{sec:comparing} has an example.
+The test is exact only to the extent that the log-likelihoods are: exact log-likelihoods (a model without dyad-dependent terms, or with \opt{mutual} as its only dyad-dependent term) have no error, bridge-sampling log-likelihoods carry the Monte Carlo standard error \texttt{e(ll\_se)}, which should be small compared with the differences that matter; for a pseudolikelihood fit of a dyad-dependent model the ``log-likelihood'' is the pseudolikelihood and a likelihood-ratio test is not valid. Wald tests of coefficients (\texttt{test}, \texttt{lincom}) work on \texttt{e(b)} and \texttt{e(V)}. Section~\ref{sec:comparing} has an example.
 
 \section{Prediction: \texttt{predict}}\label{sec:predict}
 
@@ -101,7 +101,7 @@ After a fit \texttt{nwergm} stores the following in \texttt{e()}. The listings i
 \texttt{e(N)} & Number of informative dyads (observed, not missing, not constrained).\\
 \texttt{e(nodes)}, \texttt{e(ties)} & Number of nodes and of observed ties.\\
 \texttt{e(nmissing)} & Number of missing dyads.\\
-\texttt{e(ll)}, \texttt{e(ll\_0)} & Log-likelihood and null log-likelihood (Section~\ref{sec:loglik}). Missing after a curved Monte Carlo fit and with \opt{nologlik}.\\
+\texttt{e(ll)}, \texttt{e(ll\_0)} & Log-likelihood and null log-likelihood (Section~\ref{sec:loglik}), evaluated at the final estimate. Missing after a curved Monte Carlo fit and with \opt{nologlik}.\\
 \texttt{e(ll\_se)} & Monte Carlo standard error of \texttt{e(ll)} (0 when exact).\\
 \texttt{e(df\_m)}, \texttt{e(rank)}, \texttt{e(df\_resid)} & Estimated coefficients (offsets excluded), rank, and $N-$\texttt{df\_m}.\\
 \texttt{e(deviance)}, \texttt{e(deviance\_0)} & Residual and null deviance, $-2$ times the log-likelihood.\\
@@ -131,6 +131,7 @@ After a fit \texttt{nwergm} stores the following in \texttt{e()}. The listings i
 \texttt{e(proposal)} & Proposal weights used (simulation-based fits).\\
 \texttt{e(trifocus)} & Share of triadic steps of the SPDyad proposal (0.25 by default; missing when SPDyad was not used, for example with \opt{mcmcprop(sparse)} or on a two-mode network).\\
 \texttt{e(ll\_method)} & How \texttt{e(ll)} was obtained: \texttt{exact}, \texttt{pseudolikelihood} or \texttt{bridge sampling}.\\
+\texttt{e(exactll)} & 1 when the log-likelihood was evaluated exactly in a fit by Monte Carlo maximum likelihood or with \opt{exactll}.\\
 \texttt{e(version)} & The release of \nwergm{} that produced the results.\\
 \texttt{e(fittag)} & An identifier of the fit (time stamp and counter), which the postestimation commands compare with the model in memory (Section~\ref{sec:replay}).\\
 \texttt{e(predict)}, \texttt{e(estat\_cmd)}, \texttt{e(properties)} & Postestimation dispatch.\\

@@ -23,7 +23,7 @@ effective size, burn-in test & from the multivariate autoregressive spectral den
 convergence & the estimating equations inside a tolerance region (0.1 of their covariance) at confidence 0.99; the sample is enlarged while the test fails & the same (\texttt{MCMLE.termination}) \\
 step & Hummel step length & the same \\
 iterations & at most 60 & the same (\texttt{MCMLE.maxit}) \\
-log-likelihood & bridge sampling with 16 bridges & the same (\texttt{bridge.nsteps}) \\
+log-likelihood & exact for a model without dyad-dependent terms and for a directed model with \texttt{mutual} as its only dyad-dependent term, otherwise bridge sampling with 16 bridges & bridge sampling with 16 bridges (\texttt{bridge.nsteps}), also for a model with \texttt{mutual}, where it approximates the exact value \\
 \bottomrule
 \end{longtable}
 }

@@ -27,4 +27,4 @@ Evaluating log-likelihood at the estimate (bridge sampling with 16 bridges) ...
          Residual Deviance:    3335.1  on 4965 degrees of freedom
 
 Log-likelihood: -1667.5558 (df = 5)   AIC:    3345.1   BIC:    3377.7
-Monte Carlo standard error of the log-likelihood:  .03905
+Monte Carlo standard error of the log-likelihood:  .35966

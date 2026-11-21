@@ -8,4 +8,4 @@ Akaike's information criterion and Bayesian information criterion
  flomarriage |      120      -83.178      -51.553     3    109.11    117.47
 -----------------------------------------------------------------------------
 Note: BIC uses N = number of informative dyads.
-Monte Carlo standard error of the log-likelihood:  .00086
+Monte Carlo standard error of the log-likelihood:  .00088

@@ -18,10 +18,10 @@ samepractice |   .8947619   .0972677     9.20   0.000
 -----------------------------------------------------
 
 MCMLE converged after 3 iteration(s).
-Evaluating log-likelihood at the estimate (bridge sampling with 16 bridges) ...
+Evaluating the log-likelihood exactly at the estimate ...
 
              Null Deviance:    6889.9  on 4970 degrees of freedom
-         Residual Deviance:    3403.9  on 4967 degrees of freedom
+         Residual Deviance:    3404.5  on 4967 degrees of freedom
 
-Log-likelihood: -1701.9427 (df = 3)   AIC:    3409.9   BIC:    3429.4
-Monte Carlo standard error of the log-likelihood:  .05836
+Log-likelihood: -1702.2283 (df = 3)   AIC:    3410.5   BIC:    3430.0
+(Exact log-likelihood at the estimate; not a Monte Carlo value.)

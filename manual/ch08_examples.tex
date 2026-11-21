@@ -1,6 +1,6 @@
 \chapter{Worked examples}\label{ch:examples}
 
-All output in this chapter was produced by the do-files in the directory \texttt{manual/ex} of the repository, run with \nwergm{}~\pkgversion{} and the \texttt{nwcommands} core~3.29.0 in Stata/BE~17 on macOS (Apple silicon), with the native plugin. Every Monte Carlo fit has a \opt{seed()}, so that the output can be reproduced on the same platform. The networks are loaded with their nodes in the saved order; Monte Carlo output depends on that order (Section~\ref{sec:seed}). The data are example networks of \texttt{nwcommands}, which are loaded from the web with \texttt{nwwebuse}; the Florentine marriage network, the Mesa High School network and the second Kapferer network are the networks \texttt{flomarriage}, \texttt{faux.mesa.high} and \texttt{kapferer2} of \ergm{}. Nothing in this chapter is a substantive analysis; the models are chosen to show the commands.
+All output in this chapter was produced by the do-files in the directory \texttt{manual/ex} of the repository, run with \nwergm{}~\pkgversion{} and the \texttt{nwcommands} core~3.33.0 in Stata/BE~17 on macOS (Apple silicon), with the native plugin. Every Monte Carlo fit has a \opt{seed()}, so that the output can be reproduced on the same platform. The networks are loaded with their nodes in the saved order; Monte Carlo output depends on that order (Section~\ref{sec:seed}). The data are example networks of \texttt{nwcommands}, which are loaded from the web with \texttt{nwwebuse}; the Florentine marriage network, the Mesa High School network and the second Kapferer network are the networks \texttt{flomarriage}, \texttt{faux.mesa.high} and \texttt{kapferer2} of \ergm{}. Nothing in this chapter is a substantive analysis; the models are chosen to show the commands.
 
 \section{The Florentine families: estimation methods and stored results}\label{sec:florentine}
 
@@ -119,13 +119,13 @@ A missing \emph{covariate} value is refused, as in \ergm{}:
 
 \section{Comparing models and predicting ties}\label{sec:comparing}
 
-Two models of the Lazega network, with and without the shared-partner term, are stored and compared. The log-likelihoods come from bridge sampling and carry a small Monte Carlo error (\texttt{e(ll\_se)}); the fits use a long interval and burn-in (\opt{mcmcinterval(1000) mcmcburnin(20000)}) as starting values of the adaptive sample.
+Two models of the Lazega network, with and without the shared-partner term, are stored and compared. The first model has \opt{mutual} as its only dyad-dependent term, so its log-likelihood is exact (\texttt{e(ll\_se)} is 0); the second has \opt{gwesp(0.5)}, and its log-likelihood comes from bridge sampling and carries a Monte Carlo error (\texttt{e(ll\_se)}), which the likelihood-ratio statistic inherits. The fits use a long interval and burn-in (\opt{mcmcinterval(1000) mcmcburnin(20000)}) as starting values of the adaptive sample.
 \showlog{cmp_m1}
 \showlog{cmp_m2}
 \texttt{estimates stats} and \texttt{lrtest} compare them:
 \showlog{cmp_ic}
 \showlog{cmp_lr}
-The shared-partner term improves the log-likelihood by 30.2, so that the likelihood-ratio statistic is 60.5 on one degree of freedom; AIC and BIC both prefer the model with \opt{gwesp(0.5)}. \texttt{predict} gives the conditional probability of each dyad, as a frame (one row per dyad) or a matrix:
+The shared-partner term improves the log-likelihood by 30.1, so that the likelihood-ratio statistic is 60.3 on one degree of freedom; AIC and BIC both prefer the model with \opt{gwesp(0.5)}. \texttt{predict} gives the conditional probability of each dyad, as a frame (one row per dyad) or a matrix:
 \showlog{cmp_pred}
 \showlog{cmp_predm}
 The average predicted probability, 0.115, is close to the density of the network, 0.116.
