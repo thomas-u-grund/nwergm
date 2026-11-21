@@ -479,6 +479,8 @@ ctl("bridgesteps", "out", "bridgesteps", "edit", "bridgesteps()", width=80, hint
 ctl("bridgesamplesize", "out", "bridgesamplesize", "edit", "bridgesamplesize()", width=80, hint="draws per bridge; default mcmcsamplesize()", smoke=dict(net="und", use=dict(main="100"), also={"mcmc_small": True, "triangle": True}))
 ctl("bridgeinterval", "out", "bridgeinterval", "edit", "bridgeinterval()", width=80, hint="thinning within bridges", smoke=dict(net="und", use=dict(main="10"), also={"mcmc_small": True, "triangle": True}))
 ctl("nologlik", "out", "nologlik", "check", "nologlik", hint="skip the bridge-sampling log-likelihood", smoke=dict(net="und", also={"mcmc_small": True, "triangle": True}))
+ctl("mcll", "out", "mcll", "check", "mcll", hint="Monte Carlo (bridge sampling) log-likelihood instead of the exact one", smoke=dict(net="und", also={"method": "mcmle", "mcmc_small": True}))
+ctl("exactll", "out", "exactll", "check", "exactll", hint="exact log-likelihood also after method(mple) (no dyad-dependent terms)", smoke=dict(net="und", also={"method": "mple"}))
 ctl("nomcmcsample", "out", "nomcmcsample", "check", "nomcmcsample", hint="do not post e(mcmcsample)", smoke=dict(net="und", also={"mcmc_small": True, "triangle": True}))
 ctl("verbose", "out", "verbose", "check", "verbose", hint="show iteration detail", smoke=dict(net="und", also={"method": "mple"}))
 

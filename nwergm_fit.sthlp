@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.11.1  20nov2026 nwergm_fit.sthlp}{...}
+{* *! version 1.12.0  21nov2026 nwergm_fit.sthlp}{...}
 {vieweralsosee "nwergm" "help nwergm"}{...}
 {viewerjumpto "Missing" "nwergm_fit##missing"}{...}
 {viewerjumpto "Fit" "nwergm_fit##fit"}{...}
@@ -38,8 +38,9 @@ them. Drop or impute the missing values first. For two-mode terms only the attri
 {pstd}
 After every fit {cmd:nwergm} stores the log-likelihood as R's {cmd:logLik()}: exact for a dyad-independent model (the
 pseudolikelihood is the likelihood), the pseudolikelihood after {opt method(mple)} of a dyad-dependent model, and for an MCMLE fit the
-likelihood is evaluated by bridge sampling from the dyad-independent submodel (R: {cmd:ergm.bridge.dindstart.llk}); {cmd:e(ll_se)} is the
-Monte Carlo standard error. The null model is the model with all coefficients zero ({it:N} x ln(1/2)).
+likelihood of a model with dyad-dependent terms is evaluated by bridge sampling from the dyad-independent submodel (R: {cmd:ergm.bridge.dindstart.llk}); {cmd:e(ll_se)} is the
+Monte Carlo standard error (it allows for the autocorrelation of the draws, also of a slowly mixing chain). A model without dyad-dependent terms, and a directed model whose only dyad-dependent
+term is {opt mutual} (the two arcs of a pair have four joint states and pairs are independent), also gets the exact value after {opt method(mcmle)}; the option {opt mcll} asks for the bridge-sampling value instead. The null model is the model with all coefficients zero ({it:N} x ln(1/2)).
 
 {p2colset 5 24 26 2}{...}
 {p2col:{cmd:e(ll)}, {cmd:e(ll_0)}}log-likelihood and null log-likelihood{p_end}
@@ -49,6 +50,7 @@ Monte Carlo standard error. The null model is the model with all coefficients ze
 {p2col:{cmd:e(aic)}, {cmd:e(bic)}}AIC and BIC, BIC with {it:N} = number of informative dyads{p_end}
 {p2col:{cmd:e(ll_se)}}Monte Carlo standard error of {cmd:e(ll)} (0 when exact){p_end}
 {p2col:{cmd:e(ll_method)}}{cmd:exact}, {cmd:pseudolikelihood} or {cmd:bridge sampling}{p_end}
+{p2col:{cmd:e(exactll)}}1 when the log-likelihood of an MCMLE fit, or of an {opt exactll} fit, was evaluated exactly{p_end}
 {p2colreset}{...}
 
 {pstd}
@@ -69,4 +71,4 @@ set to missing. The prediction is available for the most recent {cmd:nwergm} fit
 {phang}Handcock, M. S. and Gile, K. J. 2010. Modeling social networks from sampled data. {it:Annals of Applied Statistics} 4: 5-25.{p_end}
 
 {hline}
-{pstd}{it:nwergm version 1.11.1, 20 November 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.12.0, 21 November 2026}{p_end}{* nwversion}

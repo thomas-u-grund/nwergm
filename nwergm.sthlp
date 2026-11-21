@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.11.1  20nov2026 author: Thomas Grund}{...}
+{* *! version 1.12.0  21nov2026 author: Thomas Grund}{...}
 {marker topic}
 {helpb nwtopical##analysis_statmodels:[NW-2.6.6] Statistical Estimation of Networks}
 
@@ -202,7 +202,9 @@ coefficient - {opt offset()} names an EXISTING coefficient, it does not add a se
 model must remain free. In a model with a curved (free-decay) term the names are those of the coefficient table: the weight and the decay of the curved term
 (e.g. {bf:gwesp_weight} and {bf:gwesp_decay}) can be fixed together or one at a time, and other coefficients can be fixed while the curved term is estimated; a decay must not be negative. The fixed coefficient is reported at exactly the given value with standard error exactly 0 (matching
 R's own real output) and a zero row/column in {bf:e(V)} - see {bf:Remarks} below{p_end}
-{synopt:{opt nologlik}}Do not evaluate the log-likelihood of a dyad-dependent MCMLE fit by bridge sampling (R: {cmd:eval.loglik=FALSE}); {cmd:e(ll)}, AIC and BIC are then missing{p_end}
+{synopt:{opt mcll}}Evaluate the log-likelihood of an {opt method(mcmle)} fit by bridge sampling (a Monte Carlo value with its standard error {cmd:e(ll_se)}) even when the model has no dyad-dependent terms. By default the log-likelihood of such a model, and of a directed model whose only dyad-dependent term is {opt mutual}, is computed exactly at the estimate (the sum over the dyads, or over the pairs of dyads for {opt mutual}, of the log-likelihood of the dyad or pair; {cmd:e(ll_se)} is 0), as {cmd:logLik()} of R's ergm does for a dyad-independent model; AIC and BIC follow.{p_end}
+{synopt:{opt exactll}}Evaluate the log-likelihood exactly also after {opt method(mple)} for a model with {opt mutual} (otherwise the pseudolikelihood is reported); error r(198) for models with other dyad-dependent terms, for {opt mutual} with missing dyads or constraints, and together with {opt nologlik} or {opt mcll}{p_end}
+{synopt:{opt nologlik}}Do not evaluate the log-likelihood of an MCMLE fit by bridge sampling (R: {cmd:eval.loglik=FALSE}); {cmd:e(ll)}, AIC and BIC are then missing{p_end}
 {synopt:{opt bridgesteps(#)}}Number of bridges for the log-likelihood evaluation; default 16 (R: {cmd:bridge.nsteps}){p_end}
 {synopt:{opt bridgesamplesize(#)}}Draws per bridge; default the sample size of the last MCMLE iteration (with {cmd:mcmleeffectivesize(0)}: {opt mcmcsamplesize()}){p_end}
 {synopt:{opt bridgeinterval(#)}}MCMC thinning within the bridges; default the final MCMLE interval divided by the number of bridges{p_end}
@@ -833,4 +835,4 @@ For a yes/no outcome on the actors of one network (smoking, adoption, taking a s
 {p_end}
 
 {hline}
-{pstd}{it:nwergm version 1.11.1, 20 November 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.12.0, 21 November 2026}{p_end}{* nwversion}

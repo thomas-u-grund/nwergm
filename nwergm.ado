@@ -1,4 +1,4 @@
-*! version 1.11.1  20nov2026 nwergm
+*! version 1.12.0  21nov2026 nwergm
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -163,7 +163,7 @@ program _nwergm_fit, eclass
 		METHOD(string) MCMCBURNIN(integer -1) MCMCINTERVAL(integer 1024) ///
 		MCMCSAMPLESIZE(integer -1) MCMLEITERATIONS(integer 60) ///
 		PROPOSAL(string) SEED(string) VERBOSE SPCACHE NOMCMCSAMPLE NONATIVE ///
-		OFFSET(string) COEFLABEL(string) LOGSTAT(string) EXPSTAT(string) STRUCTURAL(string asis) OPERATORS(string asis) SUBMODEL(string) NOLOGLIK BRIDGESTEPS(integer 16) BRIDGESAMPLESIZE(integer 0) BRIDGEINTERVAL(integer 0) ///
+		OFFSET(string) COEFLABEL(string) LOGSTAT(string) EXPSTAT(string) STRUCTURAL(string asis) OPERATORS(string asis) SUBMODEL(string) NOLOGLIK EXACTLL MCLL BRIDGESTEPS(integer 16) BRIDGESAMPLESIZE(integer 0) BRIDGEINTERVAL(integer 0) ///
 		INIT(string) MPLETYPE(string) MPLECHECK(string) MPLECOVariance(string) ESTimate(string) MAINMETHOD(string) ///
 		MCMLETERMination(string) MCMLECONFidence(real 0.99) MCMLESTEPLength(real 1) MCMLESTEPMargin(real 0.05) ///
 		MCMLEEFFectivesize(real -1) CDNSteps(integer 8) CDSAMPLEsize(integer 0) SABURNin(integer 16384) SAINTERval(integer 1024) SAPHASE3(integer 1000) SAGAIN(real 0.1) SANSUB(integer 4) ///
@@ -2064,8 +2064,33 @@ program _nwergm_fit, eclass
 	if `__con_active' {
 		if `con_dind' == 0 local __ergm_dind 0
 	}
+	mata: st_local("__exkind", strofreal(ergm_exactll_kind(__nwergm_last_M)))
+	if "`exactll'" != "" {
+		if "`nologlik'" != "" | "`mcll'" != "" {
+			di as err "{p 0 0 2}options exactll and `=cond("`mcll'" != "", "mcll", "nologlik")' may not be combined{p_end}"
+			exit 198
+		}
+		if `__exkind' == 2 {
+			di as err "{p 0 0 2}option exactll needs a model without dyad-dependent terms (apart from {bf:mutual} in a directed network); the log-likelihood of this model has no exact form, drop exactll to evaluate it by bridge sampling{p_end}"
+			exit 198
+		}
+		if `__exkind' == 1 & (`__ergm_nmiss' > 0 | `__con_active' | `__obs_info') {
+			di as err "{p 0 0 2}option exactll with {bf:mutual} needs a network without missing dyads, constraints or observation constraints{p_end}"
+			exit 198
+		}
+	}
 	if "`method'" == "" {
 		local method = cond(`__ergm_dind' & "`mainmethod'" != "sa", "mple", "mcmle")
+	}
+	// the log-likelihood of an MCMLE fit of a model without dyad-dependent terms (and of a directed model with mutual) is
+	// evaluated exactly, unless mcll asks for the Monte Carlo (bridge sampling) value
+	local __exauto 0
+	if "`exactll'" == "" & "`method'" == "mcmle" & "`mcll'" == "" & "`nologlik'" == "" & !`__ego' & `__exkind' < 2 & !`__con_active' & !`__obs_info' {
+		if `__exkind' == 0 | `__ergm_nmiss' == 0 local __exauto 1
+	}
+	if "`mcll'" != "" & "`method'" != "mcmle" {
+		di as err "{p 0 0 2}option mcll applies to method(mcmle) only (the log-likelihood of method(mple) is exact for a dyad-independent model and a pseudolikelihood otherwise){p_end}"
+		exit 198
 	}
 	if "`method'" == "mple" & `__con_active' {
 		if `con_dind' == 0 di "{p 0 0 2}{txt}Maximum Pseudo-Likelihood (MPLE) estimation for ERGMs with dyad-dependent constraints is not implemented at this time. You may want to use {bf:method(mcmle)} instead.{p_end}"
@@ -2259,7 +2284,7 @@ program _nwergm_fit, eclass
 		("`method'" == "mple" & (("`__ergm_dind'" == "1" & "`mplecovariance'" != "bootstrap") | "`mplecovariance'" == "invhess"))) {
 		mata: st_local("__ergm_has_offset", strofreal(sum(__nwergm_last_M.isfixed)>0))
 		// global NWERGM_NOSPARSE (certification scripts only): keep the dense design, to compare the two
-		if !`__ergm_has_offset' & "$NWERGM_NOSPARSE" == "" mata: st_local("__ergm_sparse", strofreal(ergm_sp_use(__nwergm_last_M, __nwergm_last_G)))
+		if !`__ergm_has_offset' & "$NWERGM_NOSPARSE" == "" & "`exactll'" == "" & !(`__exauto' & `__exkind' == 1) mata: st_local("__ergm_sparse", strofreal(ergm_sp_use(__nwergm_last_M, __nwergm_last_G)))
 	}
 	if "`nonative'" == "" & !`__ergm_sparse' {
 		mata: __ergm_mple_native_setup_rc = ErgmNativeSetup(__nwergm_last_M, `__spdcode', __nwergm_last_G)
@@ -2495,7 +2520,7 @@ program _nwergm_fit, eclass
 		ereturn post `__b_mple' `__V_mple', depname(`netname') obs(`__ergm_nrows')
 		ereturn local cmd "nwergm"
 		if !`__sub' _nwergm_tag set
-		ereturn local version "1.11.1"
+		ereturn local version "1.12.0"
 		ereturn local title "Exponential-family random graph model (MPLE)"
 		ereturn local depvar "`netname'"
 		ereturn local method "mple"
@@ -2519,11 +2544,11 @@ program _nwergm_fit, eclass
 
 		nwergm_display "`netname'" "`nodes'" "`directed'" "MPLE" "" "" "" "`__ergm_tabopts'"
 		if `__ergm_sparse' {
-			_nwergm_fitstats, dmat(__nwergm_sp) method(mple) dind(`__ergm_dind') curved(0) sparse
+			_nwergm_fitstats, dmat(__nwergm_sp) method(mple) dind(`__ergm_dind') curved(0) sparse `exactll'
 			mata: st_local("__ergm_hassp", strofreal(findexternal("__nwergm_sp") != NULL))
 			if `__ergm_hassp' mata: mata drop __nwergm_sp
 		}
-		else _nwergm_fitstats, dmat(`__nw_D') method(mple) dind(`__ergm_dind') curved(`__ergm_curved')
+		else _nwergm_fitstats, dmat(`__nw_D') method(mple) dind(`__ergm_dind') curved(`__ergm_curved') `exactll'
 		if `__ergm_curved' {
 			// not when offset() fixes the decay (the last parameter)
 			mata: st_local("__ergm_decayfree", strofreal(anyof(ergm_thfree(__nwergm_last_M), __nwergm_last_M.ntheta())))
@@ -2929,7 +2954,7 @@ program _nwergm_fit, eclass
 		ereturn post `__b_mcmle' `__V_mcmle', depname(`netname') obs(`__ergm_nrows')
 		ereturn local cmd "nwergm"
 		if !`__sub' _nwergm_tag set
-		ereturn local version "1.11.1"
+		ereturn local version "1.12.0"
 		ereturn local title "Exponential-family random graph model (MCMLE)"
 		ereturn local depvar "`netname'"
 		ereturn local method "mcmle"
@@ -3044,7 +3069,7 @@ program _nwergm_fit, eclass
 		}
 		_nwergm_fitstats, dmat(`__dmatname') method(mcmle) propfn(`__ergm_propfn') mcmcburnin(`__br_burn') mcmcinterval(`__br_int') ///
 			mcmcsamplesize(`__br_ss') intervalfinal(`__ergm_interval_bridge') curved(`__ergm_curved') bridgesteps(`bridgesteps') ///
-			bridgesamplesize(`bridgesamplesize') bridgeinterval(`bridgeinterval') carry(`__ss_adapt') dcomp(`__dcname') `nologlik' `__sparseopt'
+			bridgesamplesize(`bridgesamplesize') bridgeinterval(`bridgeinterval') carry(`__ss_adapt') dcomp(`__dcname') `nologlik' `exactll' `=cond(`__exauto', "exactll", "")' `__sparseopt'
 		mata: st_local("__ergm_hassp", strofreal(findexternal("__nwergm_sp") != NULL))
 		if `__ergm_hassp' mata: mata drop __nwergm_sp
 		if `__ergm_curved' {
@@ -3229,7 +3254,7 @@ program _nwergm_bayes, eclass
 	ereturn post `b' `V', depname(`netname') obs(`nrows')
 	ereturn local cmd "nwergm"
 	if !`sub' _nwergm_tag set
-	ereturn local version "1.11.1"
+	ereturn local version "1.12.0"
 	ereturn local title "Bayesian exponential-family random graph model"
 	ereturn local depvar "`netname'"
 	ereturn local method "bayes"
@@ -4596,6 +4621,9 @@ program _nwergm_replay
 		di as txt "Log-likelihood: " as res %10.4f e(ll) as txt " (df = `k')   AIC: " as res %9.1f e(aic) as txt "   BIC: " as res %9.1f e(bic)
 		if e(ll_se) > 0 & e(ll_se) < . {
 			di as txt "Monte Carlo standard error of the log-likelihood: " as res %7.5g e(ll_se)
+		}
+		if "`e(exactll)'" == "1" {
+			di as txt "(Exact log-likelihood at the estimate; not a Monte Carlo value.)"
 		}
 		if "`e(method)'" == "mple" & "`e(ll_method)'" != "exact" {
 			di as txt "(For a dyad-dependent model fitted by MPLE, this is the pseudolikelihood.)"

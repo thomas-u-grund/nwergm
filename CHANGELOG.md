@@ -3,6 +3,19 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [1.12.0] - 2026-11-21
+
+### Changed
+- **The log-likelihood, AIC and BIC of an `method(mcmle)` fit of a model without dyad-dependent terms, and of a directed model whose only dyad-dependent term is `mutual`, are now exact** (R's `logLik()` of ergm is exact for a dyad-independent model). Until 1.11.1 they were Monte Carlo values (bridge sampling), which scatter from seed to seed. **The printed values change**: for the Lazega reciprocity model of the article (`edges mutual nodematch(officen practicen) nodeofactor(statusn) nodeifactor(statusn)`, seed 12345) the log-likelihood is -1970.51 (was -1971.79), AIC 3953.0 (was 3955.6), BIC 3992.1 (was 3994.7); `estimates stats` and `lrtest` follow (the likelihood-ratio test of that model against the model with `gwesp(.5)`: chi2 32.38, was 34.94). The output says that the value is exact, `e(ll_se)` is 0, `e(ll_method)` is `exact` and the new `e(exactll)` is 1. The value is evaluated at the estimate of the fit (for `mutual` from the four joint states of the two arcs of each pair; pairs are independent). Coefficients, standard errors and every other part of the output are unchanged. Fits with `method(mple)` of dyad-independent models were exact before and are unchanged.
+- **`e(ll_se)`, the Monte Carlo standard error of a bridge-sampling log-likelihood, was too small** for chains with long memory (reciprocity models): the autoregressive spectral estimate (order at most 10 log10 n, as in R's `spectrum0.ar`) does not see slow drifts and returned about the variance of independent draws. The variance of each bridge is now the larger of that estimate and the batch-means estimate; for the Lazega reciprocity model with `gwesp(.5)` the standard error is .35 (was .11), in agreement with the spread of the log-likelihood over 30 seeds (.31 to .36). The log-likelihood itself is unchanged; other values change slightly (flomarriage `gwesp(.5)`: .0031 to .00315).
+
+### Added
+- Option `mcll` for `method(mcmle)`: evaluate the log-likelihood by bridge sampling also for a model that has an exact value (reproduces the values of earlier versions). Not with `method(mple)`, `exactll` or `nologlik` (r(198)).
+- Option `exactll`: the exact log-likelihood also after `method(mple)` of a model with `mutual` (otherwise the pseudolikelihood); error r(198) for other dyad-dependent terms, for `mutual` with missing dyads or constraints, and together with `nologlik` or `mcll`.
+- Test `cscripts/test_nwergm_exactll.do` (full enumeration of all graphs on 4 nodes, directed and undirected, pair-by-pair sum for the 71 lawyers of Lazega, errors, `mcll`). The dialogs have `mcll` and `exactll`.
+
+Native code: unchanged (the plugin is the one of 1.10.0). The Mata library `lib/lnwergm.mlib` is rebuilt with Stata 17. The manual is left at its version.
+
 ## [1.11.1] - 2026-11-20
 
 ### Changed

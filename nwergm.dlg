@@ -1808,22 +1808,26 @@ BEGIN
 	est.tx_h220.show
 	est.f_nologlik.show
 	est.tx_h221.show
-	est.f_nomcmcsample.show
+	est.f_mcll.show
 	est.tx_h222.show
-	est.f_verbose.show
+	est.f_exactll.show
 	est.tx_h223.show
+	est.f_nomcmcsample.show
+	est.tx_h224.show
+	est.f_verbose.show
+	est.tx_h225.show
 	est.tx_offset.show
 	est.f_offset.show
-	est.tx_h224.show
+	est.tx_h226.show
 	est.tx_coeflabel.show
 	est.f_coeflabel.show
-	est.tx_h225.show
+	est.tx_h227.show
 	est.tx_logstat.show
 	est.f_logstat.show
-	est.tx_h226.show
+	est.tx_h228.show
 	est.tx_expstat.show
 	est.f_expstat.show
-	est.tx_h227.show
+	est.tx_h229.show
 END
 
 SCRIPT sh_est_2
@@ -1844,22 +1848,26 @@ BEGIN
 	est.tx_h220.hide
 	est.f_nologlik.hide
 	est.tx_h221.hide
-	est.f_nomcmcsample.hide
+	est.f_mcll.hide
 	est.tx_h222.hide
-	est.f_verbose.hide
+	est.f_exactll.hide
 	est.tx_h223.hide
+	est.f_nomcmcsample.hide
+	est.tx_h224.hide
+	est.f_verbose.hide
+	est.tx_h225.hide
 	est.tx_offset.hide
 	est.f_offset.hide
-	est.tx_h224.hide
+	est.tx_h226.hide
 	est.tx_coeflabel.hide
 	est.f_coeflabel.hide
-	est.tx_h225.hide
+	est.tx_h227.hide
 	est.tx_logstat.hide
 	est.f_logstat.hide
-	est.tx_h226.hide
+	est.tx_h228.hide
 	est.tx_expstat.hide
 	est.f_expstat.hide
-	est.tx_h227.hide
+	est.tx_h229.hide
 END
 
 SCRIPT hi_est_2
@@ -2755,26 +2763,30 @@ BEGIN
 	est.tx_h220.enable
 	est.f_nologlik.enable
 	est.tx_h221.enable
-	est.f_nomcmcsample.enable
+	est.f_mcll.enable
 	est.tx_h222.enable
-	est.f_verbose.enable
+	est.f_exactll.enable
 	est.tx_h223.enable
+	est.f_nomcmcsample.enable
+	est.tx_h224.enable
+	est.f_verbose.enable
+	est.tx_h225.enable
 	est.tx_offset.enable
 	est.f_offset.enable
-	est.tx_h224.enable
-	est.tx_coeflabel.enable
-	est.f_coeflabel.enable
-	est.tx_h225.enable
-	est.tx_logstat.enable
+	est.tx_h226.enable
 END
 
 SCRIPT ty_auto_20
 BEGIN
+	est.tx_coeflabel.enable
+	est.f_coeflabel.enable
+	est.tx_h227.enable
+	est.tx_logstat.enable
 	est.f_logstat.enable
-	est.tx_h226.enable
+	est.tx_h228.enable
 	est.tx_expstat.enable
 	est.f_expstat.enable
-	est.tx_h227.enable
+	est.tx_h229.enable
 	bayes.tx_chains.enable
 	bayes.f_chains.enable
 	bayes.tx_h186.enable
@@ -2806,14 +2818,14 @@ BEGIN
 	bayes.tx_h195.enable
 	bayes.f_nodelayed.enable
 	bayes.tx_h196.enable
-	bayes.tx_priormean.enable
-	bayes.f_priormean.enable
-	bayes.tx_h197.enable
-	bayes.tx_priorvar.enable
 END
 
 SCRIPT ty_auto_21
 BEGIN
+	bayes.tx_priormean.enable
+	bayes.f_priormean.enable
+	bayes.tx_h197.enable
+	bayes.tx_priorvar.enable
 	bayes.f_priorvar.enable
 	bayes.tx_h198.enable
 	bayes.tx_priorcov.enable
@@ -3725,26 +3737,30 @@ BEGIN
 	est.tx_h220.enable
 	est.f_nologlik.enable
 	est.tx_h221.enable
-	est.f_nomcmcsample.enable
+	est.f_mcll.enable
 	est.tx_h222.enable
-	est.f_verbose.enable
+	est.f_exactll.enable
 	est.tx_h223.enable
+	est.f_nomcmcsample.enable
+	est.tx_h224.enable
+	est.f_verbose.enable
+	est.tx_h225.enable
 	est.tx_offset.enable
 	est.f_offset.enable
-	est.tx_h224.enable
-	est.tx_coeflabel.enable
-	est.f_coeflabel.enable
-	est.tx_h225.enable
-	est.tx_logstat.enable
+	est.tx_h226.enable
 END
 
 SCRIPT ty_u_20
 BEGIN
+	est.tx_coeflabel.enable
+	est.f_coeflabel.enable
+	est.tx_h227.enable
+	est.tx_logstat.enable
 	est.f_logstat.enable
-	est.tx_h226.enable
+	est.tx_h228.enable
 	est.tx_expstat.enable
 	est.f_expstat.enable
-	est.tx_h227.enable
+	est.tx_h229.enable
 	bayes.tx_chains.enable
 	bayes.f_chains.enable
 	bayes.tx_h186.enable
@@ -3776,14 +3792,14 @@ BEGIN
 	bayes.tx_h195.enable
 	bayes.f_nodelayed.enable
 	bayes.tx_h196.enable
-	bayes.tx_priormean.enable
-	bayes.f_priormean.enable
-	bayes.tx_h197.enable
-	bayes.tx_priorvar.enable
 END
 
 SCRIPT ty_u_21
 BEGIN
+	bayes.tx_priormean.enable
+	bayes.f_priormean.enable
+	bayes.tx_h197.enable
+	bayes.tx_priorvar.enable
 	bayes.f_priorvar.enable
 	bayes.tx_h198.enable
 	bayes.tx_priorcov.enable
@@ -4695,26 +4711,30 @@ BEGIN
 	est.tx_h220.enable
 	est.f_nologlik.enable
 	est.tx_h221.enable
-	est.f_nomcmcsample.enable
+	est.f_mcll.enable
 	est.tx_h222.enable
-	est.f_verbose.enable
+	est.f_exactll.enable
 	est.tx_h223.enable
+	est.f_nomcmcsample.enable
+	est.tx_h224.enable
+	est.f_verbose.enable
+	est.tx_h225.enable
 	est.tx_offset.enable
 	est.f_offset.enable
-	est.tx_h224.enable
-	est.tx_coeflabel.enable
-	est.f_coeflabel.enable
-	est.tx_h225.enable
-	est.tx_logstat.enable
+	est.tx_h226.enable
 END
 
 SCRIPT ty_d_20
 BEGIN
+	est.tx_coeflabel.enable
+	est.f_coeflabel.enable
+	est.tx_h227.enable
+	est.tx_logstat.enable
 	est.f_logstat.enable
-	est.tx_h226.enable
+	est.tx_h228.enable
 	est.tx_expstat.enable
 	est.f_expstat.enable
-	est.tx_h227.enable
+	est.tx_h229.enable
 	bayes.tx_chains.enable
 	bayes.f_chains.enable
 	bayes.tx_h186.enable
@@ -4746,14 +4766,14 @@ BEGIN
 	bayes.tx_h195.enable
 	bayes.f_nodelayed.enable
 	bayes.tx_h196.enable
-	bayes.tx_priormean.enable
-	bayes.f_priormean.enable
-	bayes.tx_h197.enable
-	bayes.tx_priorvar.enable
 END
 
 SCRIPT ty_d_21
 BEGIN
+	bayes.tx_priormean.enable
+	bayes.f_priormean.enable
+	bayes.tx_h197.enable
+	bayes.tx_priorvar.enable
 	bayes.f_priorvar.enable
 	bayes.tx_h198.enable
 	bayes.tx_priorcov.enable
@@ -5665,26 +5685,30 @@ BEGIN
 	est.tx_h220.enable
 	est.f_nologlik.enable
 	est.tx_h221.enable
-	est.f_nomcmcsample.enable
+	est.f_mcll.enable
 	est.tx_h222.enable
-	est.f_verbose.enable
+	est.f_exactll.enable
 	est.tx_h223.enable
+	est.f_nomcmcsample.enable
+	est.tx_h224.enable
+	est.f_verbose.enable
+	est.tx_h225.enable
 	est.tx_offset.enable
 	est.f_offset.enable
-	est.tx_h224.enable
-	est.tx_coeflabel.enable
-	est.f_coeflabel.enable
-	est.tx_h225.enable
-	est.tx_logstat.enable
+	est.tx_h226.enable
 END
 
 SCRIPT ty_b_20
 BEGIN
+	est.tx_coeflabel.enable
+	est.f_coeflabel.enable
+	est.tx_h227.enable
+	est.tx_logstat.enable
 	est.f_logstat.enable
-	est.tx_h226.enable
+	est.tx_h228.enable
 	est.tx_expstat.enable
 	est.f_expstat.enable
-	est.tx_h227.enable
+	est.tx_h229.enable
 	bayes.tx_chains.enable
 	bayes.f_chains.enable
 	bayes.tx_h186.enable
@@ -5716,14 +5740,14 @@ BEGIN
 	bayes.tx_h195.enable
 	bayes.f_nodelayed.enable
 	bayes.tx_h196.enable
-	bayes.tx_priormean.enable
-	bayes.f_priormean.enable
-	bayes.tx_h197.enable
-	bayes.tx_priorvar.enable
 END
 
 SCRIPT ty_b_21
 BEGIN
+	bayes.tx_priormean.enable
+	bayes.f_priormean.enable
+	bayes.tx_h197.enable
+	bayes.tx_priorvar.enable
 	bayes.f_priorvar.enable
 	bayes.tx_h198.enable
 	bayes.tx_priorcov.enable
@@ -6651,22 +6675,26 @@ BEGIN
   TEXT      tx_h220 305 87 680 ., label("thinning within bridges")
   CHECKBOX  f_nologlik 10 106 200 ., label("nologlik") default(0) nomem
   TEXT      tx_h221 220 108 765 ., label("skip the bridge-sampling log-likelihood")
-  CHECKBOX  f_nomcmcsample 10 127 200 ., label("nomcmcsample") default(0) nomem
-  TEXT      tx_h222 220 129 765 ., label("do not post e(mcmcsample)")
-  CHECKBOX  f_verbose 10 148 200 ., label("verbose") default(0) nomem
-  TEXT      tx_h223 220 150 765 ., label("show iteration detail")
-  TEXT      tx_offset 10 171 200 ., label("offset()")
-  EDIT      f_offset 215 169 250 ., option(offset) nomem
-  TEXT      tx_h224 475 171 510 ., label("coefname # [coefname # ...]: hold coefficients fixed")
-  TEXT      tx_coeflabel 10 192 200 ., label("coeflabel()")
-  EDIT      f_coeflabel 215 190 250 ., option(coeflabel) nomem
-  TEXT      tx_h225 475 192 510 ., label("old new [old new ...]: rename coefficients")
-  TEXT      tx_logstat 10 213 200 ., label("logstat()")
-  EDIT      f_logstat 215 211 250 ., option(logstat) nomem
-  TEXT      tx_h226 475 213 510 ., label("coefficient names whose statistic is logged [, log0(#)]")
-  TEXT      tx_expstat 10 234 200 ., label("expstat()")
-  EDIT      f_expstat 215 232 250 ., option(expstat) nomem
-  TEXT      tx_h227 475 234 510 ., label("coefficient names whose statistic is exponentiated")
+  CHECKBOX  f_mcll 10 127 200 ., label("mcll") default(0) nomem
+  TEXT      tx_h222 220 129 765 ., label("Monte Carlo (bridge sampling) log-likelihood instead of the exact one")
+  CHECKBOX  f_exactll 10 148 200 ., label("exactll") default(0) nomem
+  TEXT      tx_h223 220 150 765 ., label("exact log-likelihood also after method(mple) (no dyad-dependent terms)")
+  CHECKBOX  f_nomcmcsample 10 169 200 ., label("nomcmcsample") default(0) nomem
+  TEXT      tx_h224 220 171 765 ., label("do not post e(mcmcsample)")
+  CHECKBOX  f_verbose 10 190 200 ., label("verbose") default(0) nomem
+  TEXT      tx_h225 220 192 765 ., label("show iteration detail")
+  TEXT      tx_offset 10 213 200 ., label("offset()")
+  EDIT      f_offset 215 211 250 ., option(offset) nomem
+  TEXT      tx_h226 475 213 510 ., label("coefname # [coefname # ...]: hold coefficients fixed")
+  TEXT      tx_coeflabel 10 234 200 ., label("coeflabel()")
+  EDIT      f_coeflabel 215 232 250 ., option(coeflabel) nomem
+  TEXT      tx_h227 475 234 510 ., label("old new [old new ...]: rename coefficients")
+  TEXT      tx_logstat 10 255 200 ., label("logstat()")
+  EDIT      f_logstat 215 253 250 ., option(logstat) nomem
+  TEXT      tx_h228 475 255 510 ., label("coefficient names whose statistic is logged [, log0(#)]")
+  TEXT      tx_expstat 10 276 200 ., label("expstat()")
+  EDIT      f_expstat 215 274 250 ., option(expstat) nomem
+  TEXT      tx_h229 475 276 510 ., label("coefficient names whose statistic is exponentiated")
 END
 
 DIALOG bayes, tabtitle("Bayesian")
@@ -7706,6 +7734,12 @@ BEGIN
 	optionarg /asis est.f_bridgeinterval
 	if est.f_nologlik {
 		put " nologlik"
+	}
+	if est.f_mcll {
+		put " mcll"
+	}
+	if est.f_exactll {
+		put " exactll"
 	}
 	if est.f_nomcmcsample {
 		put " nomcmcsample"

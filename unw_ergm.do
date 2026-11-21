@@ -15163,6 +15163,72 @@ real scalar ergm_term_is_dind(string scalar nm)
 		"b2factor","b1nodematch","b2nodematch","absdiff","sociality"), nm))
 }
 
+// exactll: which exact log-likelihood a model allows. 0: all terms dyad-independent (sum over the dyads of the Bernoulli
+// log-likelihood); 1: dyad-independent terms and mutual (directed; the two arcs of a pair have four joint states, pairs are
+// independent); 2: neither (no exact evaluation).
+real scalar ergm_exactll_kind(class ErgmModel scalar M)
+{
+	real scalar t, kind
+	kind = 0
+	for (t=1; t<=M.nterms; t++) {
+		if (ergm_term_is_dind(M.names[t])) continue
+		if (M.names[t] == "mutual") kind = 1
+		else return(2)
+	}
+	return(kind)
+}
+
+// exact log-likelihood at eta from the MPLE design D = (x | y) (rows in the order of build_mple_data(): i, then j, i != j)
+real scalar ergm_exact_ll(class ErgmModel scalar M, class ErgmGraph scalar G, real matrix D, real rowvector eta)
+{
+	real scalar kind, p, n, t, pos, mc, em
+	real colvector lp, i1, j1, r1, r2, a1, a2, a12, mx, y1, y2
+	real matrix tri
+	kind = ergm_exactll_kind(M)
+	if (kind == 2) return(.)
+	if (kind == 0) return(ergm_mple_ll(D, eta))
+	p = cols(eta)
+	n = G.n
+	if (!G.directed | rows(D) != n*(n-1)) return(.)
+	pos = 0
+	mc = 0
+	for (t=1; t<=M.nterms; t++) {
+		if (M.names[t] == "mutual") mc = pos + 1
+		pos = pos + M.npar[t]
+	}
+	if (mc == 0) return(.)
+	em = eta[mc]
+	tri = ergm_exactll_pairs(n)
+	i1 = tri[., 1]
+	j1 = tri[., 2]
+	r1 = (i1 :- 1) * (n-1) + j1 :- 1
+	r2 = (j1 :- 1) * (n-1) + i1
+	y1 = D[r1, p+1]
+	y2 = D[r2, p+1]
+	// the design must be the unmasked i-then-j one: the mutual statistic of (i,j) is the state of (j,i)
+	if (any(D[r1, mc] :!= y2) | any(D[r2, mc] :!= y1)) return(.)
+	lp = D[., 1..p] * eta' - D[., mc] * em
+	a1 = lp[r1]
+	a2 = lp[r2]
+	a12 = a1 + a2 :+ em
+	mx = rowmax((J(rows(a1), 1, 0), a1, a2, a12))
+	return(sum(y1 :* a1 + y2 :* a2 + y1 :* y2 :* em - mx - ln(exp(-mx) + exp(a1 - mx) + exp(a2 - mx) + exp(a12 - mx))))
+}
+
+// all pairs (i, j), i < j, of n nodes
+real matrix ergm_exactll_pairs(real scalar n)
+{
+	real matrix out
+	real scalar i, pos
+	out = J(n*(n-1)/2, 2, 0)
+	pos = 1
+	for (i=1; i<n; i++) {
+		out[|pos, 1 \ pos+n-i-1, 2|] = (J(n-i, 1, i), (i+1::n))
+		pos = pos + n - i
+	}
+	return(out)
+}
+
 // MPLE of the dyad-independent submodel (dyad-independent terms of the model; R: ergm.bridge.dindstart.llk).
 // Returns (log-likelihood, theta_d) with theta_d zero on dyad-dependent columns.
 real rowvector ergm_dind_submodel(class ErgmModel scalar M, real matrix D, | real colvector wt)
@@ -15194,6 +15260,25 @@ real rowvector ergm_dind_submodel(class ErgmModel scalar M, real matrix D, | rea
 
 // R's mkpath/ergm.bridge.llr for a straight-line path from theta to thetad (bidirectional shift of the
 // first attempt is 0, so the u points are the equally weighted midpoints). Returns (llr, variance of llr).
+// Monte Carlo variance of the mean of a draw series: the larger of the autoregressive spectral estimate at frequency 0
+// (R: spectrum0.ar) and the non-overlapping batch-means estimate. The autoregressive fit (order at most 10*log10(n))
+// does not see slow drifts of a chain with long memory (reciprocity models) and then reports a variance close to that
+// of independent draws; batch means see them.
+real scalar ergm_mcvar_mean(real colvector x)
+{
+	real scalar n, nb, bl, k, v1, v2
+	real colvector bm
+	n = rows(x)
+	v1 = variance(x) * ergm_spectral0_ar(x)[1] / n
+	nb = (n >= 300 ? 30 : floor(n / 10))
+	if (nb < 4) return(v1)
+	bl = floor(n / nb)
+	bm = J(nb, 1, 0)
+	for (k=1; k<=nb; k++) bm[k] = mean(x[|(k-1)*bl+1 \ k*bl|])
+	v2 = variance(bm) / nb
+	return(max((v1, v2)))
+}
+
 real rowvector ergm_bridge_llr(class ErgmModel scalar M, class ErgmGraph scalar G, real rowvector from,
 	real rowvector to, real rowvector obsstat, real scalar nsteps, real scalar burnin, real scalar between,
 	real scalar interval, real scalar samplesize, pointer scalar propfn, | real scalar carry)
@@ -15231,12 +15316,12 @@ real rowvector ergm_bridge_llr(class ErgmModel scalar M, class ErgmGraph scalar 
 			x = s * dth'
 			xo = so * dth'
 			llr = llr + (mean(x) - mean(xo)) / nsteps
-			vr = vr + (variance(x) * ergm_spectral0_ar(x)[1] / rows(x) + variance(xo) * ergm_spectral0_ar(xo)[1] / rows(xo)) / nsteps^2
+			vr = vr + (ergm_mcvar_mean(x) + ergm_mcvar_mean(xo)) / nsteps^2
 		}
 		else {
 			x = (s :- obsstat) * dth'
 			llr = llr + mean(x) / nsteps
-			vr = vr + variance(x) * ergm_spectral0_ar(x)[1] / rows(x) / nsteps^2
+			vr = vr + ergm_mcvar_mean(x) / nsteps^2
 		}
 	}
 	if (lazy) ergm_graph_load_ties(G, ties)

@@ -1,6 +1,6 @@
 # NOTICE
 
-<!--version-->**Version 1.11.1** (released 20 November 2026)<!--/version-->
+<!--version-->**Version 1.12.0** (released 21 November 2026)<!--/version-->
 
 nwergm is Copyright (C) 2026 Thomas U. Grund and is distributed under the GNU General Public License, version 3 (file `LICENSE`).
 

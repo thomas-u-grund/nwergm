@@ -1,4 +1,4 @@
-*! version 1.11.1  20nov2026 _nwergm_fitstats: log-likelihood, deviance, AIC/BIC of an nwergm fit (R: logLik.ergm, summary.ergm)
+*! version 1.12.0  21nov2026 _nwergm_fitstats: log-likelihood, deviance, AIC/BIC of an nwergm fit (R: logLik.ergm, summary.ergm)
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -9,7 +9,7 @@ capture program drop _nwergm_fitstats
 program _nwergm_fitstats, eclass
 	version 14
 	capture confirm number 0
-	syntax , DMAT(string) METHOD(string) [PROPFN(string) NOLOGLIK BRIDGESTEPS(integer 16) BRIDGESAMPLESIZE(integer 0) ///
+	syntax , DMAT(string) METHOD(string) [PROPFN(string) NOLOGLIK EXACTLL BRIDGESTEPS(integer 16) BRIDGESAMPLESIZE(integer 0) ///
 		BRIDGEINTERVAL(integer 0) MCMCBURNIN(integer 16384) MCMCINTERVAL(integer 1024) MCMCSAMPLESIZE(integer 3000) ///
 		INTERVALFINAL(integer 0) CURVED(integer 0) DIND(integer 1) CARRY(integer 0) DCOMP(string) QUIET SPARSE]
 	tempname b ll se
@@ -20,7 +20,18 @@ program _nwergm_fitstats, eclass
 	mata: __ergm_fs_b = st_matrix("`b'")
 	if `curved' mata: __ergm_fs_b = __nwergm_last_M.theta_to_eta(__ergm_fs_b)
 	local how "pseudolikelihood"
-	if "`method'" == "mple" {
+	if "`exactll'" != "" {
+		if "`sparse'" != "" mata: st_numscalar("`ll'", ergm_sp_ll(`dmat', __ergm_fs_b))
+		else mata: st_numscalar("`ll'", ergm_exact_ll(__nwergm_last_M, __nwergm_last_G, `dmat', __ergm_fs_b))
+		if missing(scalar(`ll')) {
+			mata: mata drop __ergm_fs_b
+			di as err "{p 0 0 2}option exactll: the design of the model could not be evaluated exactly (terms, missing dyads or constraints); drop exactll{p_end}"
+			exit 198
+		}
+		local how "exact"
+		if "`quiet'" == "" di as txt "{p 0 0 2}Evaluating the log-likelihood exactly at the estimate ...{p_end}"
+	}
+	else if "`method'" == "mple" {
 		if "`sparse'" != "" mata: st_numscalar("`ll'", ergm_sp_ll(`dmat', __ergm_fs_b))
 		else mata: st_numscalar("`ll'", ergm_mple_ll(`dmat', __ergm_fs_b))
 		if `dind' local how "exact"
@@ -66,6 +77,7 @@ program _nwergm_fitstats, eclass
 	ereturn scalar aic = -2 * scalar(`ll') + 2 * `k'
 	ereturn scalar bic = -2 * scalar(`ll') + ln(`N') * `k'
 	ereturn local ll_method "`how'"
+	if "`exactll'" != "" ereturn scalar exactll = 1
 	ereturn local predict "nwergm_p"
 	if "`quiet'" == "" {
 		di
@@ -77,6 +89,9 @@ program _nwergm_fitstats, eclass
 		di as txt "Log-likelihood: " as res %10.4f e(ll) as txt " (df = `k')   AIC: " as res %9.1f e(aic) as txt "   BIC: " as res %9.1f e(bic)
 		if e(ll_se) > 0 & e(ll_se) < . {
 			di as txt "Monte Carlo standard error of the log-likelihood: " as res %7.5g e(ll_se)
+		}
+		if "`exactll'" != "" {
+			di as txt "(Exact log-likelihood at the estimate; not a Monte Carlo value.)"
 		}
 		if "`method'" == "mple" & "`how'" != "exact" {
 			di as txt "(For a dyad-dependent model fitted by MPLE, this is the pseudolikelihood.)"
