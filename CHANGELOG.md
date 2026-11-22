@@ -3,6 +3,13 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+- **MPLE fits are faster on large networks; estimates unchanged to 1e-9.** The design matrix of the pseudolikelihood (one row per dyad) is reduced to its distinct rows with their counts without sorting it when all change statistics are small integers (edges, mutual, nodematch, triangles, shared-partner counts, integer covariates), and the log-likelihood, AIC and BIC are evaluated on the distinct rows. On a directed network of 1,000 actors (`edges mutual nodematch`) the fit takes about 0.9 s instead of 1.1 s (the step that reduces the design: 0.32 s to 0.13 s). Coefficients, standard errors, `e(mple_exists)` and `e(converged)` are identical; the log-likelihood differs only in the last digits (summation order, below 1e-8 absolute).
+
+Native code: unchanged. Mata library `lib/lnwergm.mlib`: rebuilt (new function `ergm_mple_compress_int()`); the core library it is compiled against is unchanged.
+
 ## [1.14.0] - 2026-11-22
 
 ### Changed

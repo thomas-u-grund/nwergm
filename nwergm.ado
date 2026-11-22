@@ -2562,7 +2562,12 @@ program _nwergm_fit, eclass
 			mata: st_local("__ergm_hassp", strofreal(findexternal("__nwergm_sp") != NULL))
 			if `__ergm_hassp' mata: mata drop __nwergm_sp
 		}
-		else _nwergm_fitstats, dmat(`__nw_D') method(mple) dind(`__ergm_dind') curved(`__ergm_curved') `exactll'
+		else {
+			// the pseudolikelihood is evaluated on the distinct rows of the design when it was compressed above
+			local __ergm_fs_dc ""
+			if "`__ergm_dcomp'" == "1" & "`exactll'" == "" local __ergm_fs_dc "dcomp(`__nw_Dc')"
+			_nwergm_fitstats, dmat(`__nw_D') method(mple) dind(`__ergm_dind') curved(`__ergm_curved') `__ergm_fs_dc' `exactll'
+		}
 		if `__ergm_curved' {
 			// not when offset() fixes the decay (the last parameter)
 			mata: st_local("__ergm_decayfree", strofreal(anyof(ergm_thfree(__nwergm_last_M), __nwergm_last_M.ntheta())))

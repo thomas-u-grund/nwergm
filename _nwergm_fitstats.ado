@@ -33,6 +33,7 @@ program _nwergm_fitstats, eclass
 	}
 	else if "`method'" == "mple" {
 		if "`sparse'" != "" mata: st_numscalar("`ll'", ergm_sp_ll(`dmat', __ergm_fs_b))
+		else if "`dcomp'" != "" mata: st_numscalar("`ll'", ergm_mple_ll(`dcomp'[., 1..cols(`dcomp')-1], __ergm_fs_b, `dcomp'[., cols(`dcomp')]))
 		else mata: st_numscalar("`ll'", ergm_mple_ll(`dmat', __ergm_fs_b))
 		if `dind' local how "exact"
 	}
