@@ -15,7 +15,7 @@ project uses [Semantic Versioning](https://semver.org/).
 
 Native code: unchanged. Mata library `lib/lnwergm.mlib`: rebuilt (new function `ergm_mple_compress_int()`); the core library it is compiled against (nwcommands 3.35.1) is unchanged.
 
-Tested on macOS with Stata 17 BE with nwcommands 3.35.1: TODO-GATES-BEFORE-RELEASE
+Tested on macOS with Stata 17 BE with nwcommands 3.35.1: 83 test files (every cscript that mentions the pseudolikelihood, including `test_nwergm_fitrepeat`, `_mple`, `_mpleflag`, `_est`, `_ll`, `_exactll`, `_libcheck`, `_helptext`, `_ado`, `_simnative`, `_simulate`, `_gof`, `_estat`, `_mcmle`, `_diopts`, `_plots` and `xt_errors_state`; 0 errors), a 34-model comparison with 1.14.0 (coefficients and covariance matrices bit-identical, log-likelihood within 4e-9), and a fresh install. Windows and Linux: TODO-GATES-BEFORE-RELEASE
 <!-- TODO-GATES-BEFORE-RELEASE: Windows and Linux: to be filled -->
 
 ## [1.14.0] - 2026-11-22
