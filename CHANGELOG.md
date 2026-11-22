@@ -3,6 +3,11 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+- Repeated fits in one Stata session no longer get slower. The graph of the previous fit and its backup copy stayed alive during the next fit and slowed down every Mata statement that touches a class object (the second and later fits took about twice as long at 1000 nodes). A plain graph is now kept as its tie list during the next fit and dropped. Test `test_nwergm_fitrepeat`.
+
 ## [1.14.0] - 2026-11-22
 
 ### Changed

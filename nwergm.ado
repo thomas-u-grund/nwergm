@@ -123,7 +123,7 @@ program _nwergm_run, eclass
 		_nwergm_fit `0'
 		exit
 	}
-	_nwergm_hold save
+	_nwergm_hold save compact
 	capture noisily _nwergm_fit `0'
 	local __ergm_rc = _rc
 	if `__ergm_rc' {
@@ -4590,7 +4590,15 @@ end
 // library must be visible by then (Stata indexes the .mlib files once per session): index it first if needed.
 capture quietly _nwergm_libcheck
 capture mata: mata drop ergm_bridge_from_netobj()
+capture mata: mata drop ergm_hold_rebuildG()
 mata:
+// rebuild a plain graph (no modes, mask or cache) from its node count, direction and tie list in elist order
+void ergm_hold_rebuildG(class ErgmGraph scalar G, real rowvector gnd, real matrix ties)
+{
+	real scalar k
+	G.init(gnd[1], gnd[2])
+	for (k=1; k<=rows(ties); k++) G.toggle(ties[k,1], ties[k,2])
+}
 void ergm_bridge_from_netobj(pointer(class nw_def scalar) scalar netobj,
 	class ErgmGraph scalar G, real scalar directed){
 	real scalar i, k
@@ -4783,11 +4791,12 @@ program _nwergm_hold
 end
 
 program _nwergm_hold_body
-	args what
+	args what how
 	if "`what'" == "save" {
 		capture mata: mata drop __nwergm_bak_M __nwergm_bak_G
 		capture mata: mata drop __nwergm_bak_mm
 		capture mata: mata drop __nwergm_bak_tag
+		capture mata: mata drop __nwergm_bak_ties __nwergm_bak_gnd
 		capture mata: st_local("__t", __nwergm_last_tag)
 		if _rc | `"`__t'"' == "" exit
 		capture mata: __nwergm_last_M.nparam()
@@ -4795,11 +4804,27 @@ program _nwergm_hold_body
 		capture mata: __nwergm_last_G.n
 		if _rc exit
 		mata: __nwergm_bak_M = ErgmModel()
-		mata: __nwergm_bak_G = ErgmGraph()
 		mata: ergm_ops_copyM(__nwergm_bak_M, __nwergm_last_M)
-		mata: ergm_ops_copyG(__nwergm_bak_G, __nwergm_last_G)
 		capture mata: __nwergm_bak_mm = __nwergm_missmat
 		mata: __nwergm_bak_tag = __nwergm_last_tag
+		// A live ErgmGraph (a pointer vector of asarrays) makes every later Mata statement that touches a class object
+		// slower (about 1.5 ms per statement at 1000 nodes), and the old graph and its backup copy (which shares the
+		// asarrays) stayed alive during the whole next fit: each fit after the first took about twice as long. A plain
+		// graph (no bipartite modes, no dyad mask, no shared-partner cache) is therefore kept as its tie list only,
+		// and the old graph is dropped; restore rebuilds it with the ties in the same order.
+		local __compact 0
+		if "`how'" == "compact" {
+			mata: st_local("__compact", strofreal(!__nwergm_last_G.bipartite & !__nwergm_last_G.has_dyadmask & !__nwergm_last_G.sp_cache_enabled))
+		}
+		if `__compact' {
+			mata: __nwergm_bak_ties = __nwergm_last_G.all_ties()
+			mata: __nwergm_bak_gnd = (__nwergm_last_G.n, __nwergm_last_G.directed)
+			mata: mata drop __nwergm_last_G
+		}
+		else {
+			mata: __nwergm_bak_G = ErgmGraph()
+			mata: ergm_ops_copyG(__nwergm_bak_G, __nwergm_last_G)
+		}
 	}
 	else if "`what'" == "restore" {
 		capture mata: st_local("__t", __nwergm_bak_tag)
@@ -4807,18 +4832,32 @@ program _nwergm_hold_body
 		capture mata: mata drop __nwergm_last_M
 		capture mata: mata drop __nwergm_last_G
 		mata: __nwergm_last_M = ErgmModel()
-		mata: __nwergm_last_G = ErgmGraph()
 		mata: ergm_ops_copyM(__nwergm_last_M, __nwergm_bak_M)
-		mata: ergm_ops_copyG(__nwergm_last_G, __nwergm_bak_G)
+		mata: st_local("__compact", strofreal(findexternal("__nwergm_bak_ties") != NULL))
+		if `__compact' {
+			mata: __nwergm_last_G = ErgmGraph()
+			mata: ergm_hold_rebuildG(__nwergm_last_G, __nwergm_bak_gnd, __nwergm_bak_ties)
+		}
+		else {
+			mata: __nwergm_last_G = ErgmGraph()
+			mata: ergm_ops_copyG(__nwergm_last_G, __nwergm_bak_G)
+		}
 		capture mata: mata drop __nwergm_missmat
 		capture mata: __nwergm_missmat = __nwergm_bak_mm
 		mata: __nwergm_last_tag = __nwergm_bak_tag
 		_nwergm_hold drop
 	}
 	else {
+		// a call that ended without error but built no new graph keeps the graph of the previous fit
+		capture mata: st_local("__need", strofreal(findexternal("__nwergm_bak_ties") != NULL & findexternal("__nwergm_last_G") == NULL))
+		if "`__need'" == "1" {
+			mata: __nwergm_last_G = ErgmGraph()
+			mata: ergm_hold_rebuildG(__nwergm_last_G, __nwergm_bak_gnd, __nwergm_bak_ties)
+		}
 		capture mata: mata drop __nwergm_bak_M __nwergm_bak_G
 		capture mata: mata drop __nwergm_bak_mm
 		capture mata: mata drop __nwergm_bak_tag
+		capture mata: mata drop __nwergm_bak_ties __nwergm_bak_gnd
 	}
 end
 
