@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.12.0  21nov2026 author: Thomas Grund}{...}
+{* *! version 1.13.0  22nov2026 author: Thomas Grund}{...}
 {marker topic}
 {helpb nwtopical##analysis_statmodels:[NW-2.6.6] Statistical Estimation of Networks}
 
@@ -739,7 +739,7 @@ and basic goodness of fit ({help nwergm_estat:estat gof}) are both available; se
 {synopt:{bf:e(converged)}}after {opt method(mcmle)}: 1 if MCMLE's own convergence test was satisfied; after {opt method(mcmle)}: also 0 when the maximum likelihood estimate does not exist (see
 {cmd:e(mle_exists)}); after {opt method(mple)}: 0 when the pseudolikelihood estimate does not exist (see
 {opt mplecheck()} in {help nwergm_estimation}; not with {cmd:mpletype(penalized)}), otherwise 1{p_end}
-{synopt:{bf:e(mple_exists)}}0 when the existence check found that the maximum pseudolikelihood estimate does not exist (the ties are separated by a statistic: the {cmd:The MPLE does not exist!}
+{synopt:{bf:e(mple_exists)}}posted unless {cmd:mplecheck(off)}: 0 when the existence check found that the maximum pseudolikelihood estimate does not exist (the ties are separated by a statistic: the {cmd:The MPLE does not exist!}
 warning), otherwise 1; after {opt method(mcmle)} this describes the starting value only{p_end}
 {synopt:{bf:e(mle_exists)}}after {opt method(mcmle)}: 0 when an observed statistic lies at the boundary of the final simulated statistics (no draw below it, or none above it; R: "at their
 smallest/greatest attainable values", coefficient -Inf/+Inf, for example {opt triangle} on a network without triangles), otherwise 1; not checked for curved terms, missing dyads or constraints{p_end}
@@ -847,4 +847,4 @@ For a yes/no outcome on the actors of one network (smoking, adoption, taking a s
 {p_end}
 
 {hline}
-{pstd}{it:nwergm version 1.12.0, 21 November 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.13.0, 22 November 2026}{p_end}{* nwversion}

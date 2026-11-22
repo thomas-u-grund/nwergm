@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.12.0  21nov2026 nwergm_fit.sthlp}{...}
+{* *! version 1.13.0  22nov2026 nwergm_fit.sthlp}{...}
 {vieweralsosee "nwergm" "help nwergm"}{...}
 {viewerjumpto "Missing" "nwergm_fit##missing"}{...}
 {viewerjumpto "Fit" "nwergm_fit##fit"}{...}
@@ -51,7 +51,7 @@ term is {opt mutual} (the two arcs of a pair have four joint states and pairs ar
 {p2col:{cmd:e(ll_se)}}Monte Carlo standard error of {cmd:e(ll)} (0 when exact){p_end}
 {p2col:{cmd:e(ll_method)}}{cmd:exact}, {cmd:pseudolikelihood} or {cmd:bridge sampling}{p_end}
 {p2col:{cmd:e(exactll)}}1 when the log-likelihood of an MCMLE fit, or of an {opt exactll} fit, was evaluated exactly{p_end}
-{p2col:{cmd:e(mple_exists)}}0 when the maximum pseudolikelihood estimate does not exist (separation), otherwise 1; see {help nwergm_estimation}{p_end}
+{p2col:{cmd:e(mple_exists)}}posted unless {cmd:mplecheck(off)}: 0 when the maximum pseudolikelihood estimate does not exist (separation), otherwise 1; see {help nwergm_estimation}{p_end}
 {p2col:{cmd:e(mle_exists)}}0 when the maximum likelihood estimate of an MCMLE fit does not exist (an observed statistic at the boundary of the simulated statistics), otherwise 1; {cmd:e(converged)} is then 0{p_end}
 {p2colreset}{...}
 
@@ -73,4 +73,4 @@ set to missing. The prediction is available for the most recent {cmd:nwergm} fit
 {phang}Handcock, M. S. and Gile, K. J. 2010. Modeling social networks from sampled data. {it:Annals of Applied Statistics} 4: 5-25.{p_end}
 
 {hline}
-{pstd}{it:nwergm version 1.12.0, 21 November 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.13.0, 22 November 2026}{p_end}{* nwversion}

@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.12.0  21nov2026 author: Thomas Grund}{...}
+{* *! version 1.13.0  22nov2026 author: Thomas Grund}{...}
 {vieweralsosee "nwergm" "help nwergm"}{...}
 {vieweralsosee "nwergm postestimation" "help nwergm_estat"}{...}
 {title:Title}
@@ -65,7 +65,7 @@ and, with {cmd:estimate(mple)}, reports the iterate of R's {cmd:glm()} (huge coe
 The maximum likelihood estimate may not exist either (for example a coefficient of {opt triangle} on a network without triangles); {cmd:nwergm} then sets {cmd:e(mle_exists)} and {cmd:e(converged)} to 0 and warns:
 an observed statistic is at the boundary of the simulated statistics (no simulated draw lies below it, or none above it), as in R's {cmd:ergm}, which fits such a coefficient at -Inf or +Inf. Otherwise {cmd:e(converged)} is the result of the MCMLE
 convergence test. With {cmd:mplecheck(off)} the {cmd:glm()} iterate is reported
-without the test, so nothing is known about the existence and {cmd:e(mple_exists)} is 1.
+without the test, so nothing is known about the existence and {cmd:e(mple_exists)} is not posted.
 
 {phang}
 {opt mplecov:ariance(invhess|godambe|bootstrap)} ({cmd:MPLE.covariance.method=}) replaces the inverse-Hessian covariance of a pseudolikelihood fit of a dyad-dependent model by the Godambe sandwich or
@@ -134,4 +134,4 @@ Konis, K. 2007. {it:Linear Programming Algorithms for Detecting Separated Data i
 Snijders, T. A. B. 2002. Markov chain Monte Carlo estimation of exponential random graph models. {it:Journal of Social Structure} 3(2).{p_end}
 
 {hline}
-{pstd}{it:nwergm version 1.12.0, 21 November 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.13.0, 22 November 2026}{p_end}{* nwversion}

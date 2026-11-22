@@ -1,4 +1,4 @@
-*! version 1.12.0  21nov2026 nwergm
+*! version 1.13.0  22nov2026 nwergm
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -2524,7 +2524,7 @@ program _nwergm_fit, eclass
 		ereturn post `__b_mple' `__V_mple', depname(`netname') obs(`__ergm_nrows')
 		ereturn local cmd "nwergm"
 		if !`__sub' _nwergm_tag set
-		ereturn local version "1.12.0"
+		ereturn local version "1.13.0"
 		ereturn local title "Exponential-family random graph model (MPLE)"
 		ereturn local depvar "`netname'"
 		ereturn local method "mple"
@@ -2548,7 +2548,8 @@ program _nwergm_fit, eclass
 
 		// a pseudolikelihood estimate that does not exist (separation) is not a converged fit: R's ergm reports -Inf/Inf coefficients, here they are
 		// large finite values. The penalised MPLE is finite by construction and is not flagged.
-		ereturn scalar mple_exists = `__ergm_mple_ok'
+		// with mplecheck(off) nothing is known about the existence, so e(mple_exists) is not posted
+		if "`mplecheck'" == "on" ereturn scalar mple_exists = `__ergm_mple_ok'
 		ereturn scalar converged = `__ergm_mple_ok' | "`mpletype'" == "penalized"
 		if !`__ergm_mple_ok' & "`mpletype'" != "penalized" {
 			di "{p 0 0 2}{err}Warning: the maximum pseudolikelihood estimate (MPLE) does not exist for this model and network, so the estimates are not reliable and e(converged) is set to 0.{p_end}"
@@ -2961,6 +2962,7 @@ program _nwergm_fit, eclass
 		// observed one (R: "Observed statistic(s) ... are at their smallest/greatest attainable values", coefficient -Inf/+Inf).
 		// Checked for fits without curved terms, missing dyads, observation constraints, sample-space constraints and ego data.
 		local __ergm_mle_ok 1
+		local __ergm_mcmle_test `__ergm_converged'
 		local __ergm_mle_bnd ""
 		if !`__ergm_curved' & !`__obs_active' & `__ergm_nmiss' == 0 & !`__con_active' & !`__ego' & "`method'" == "mcmle" & "`mainmethod'" != "sa" {
 			mata: __ergm_mb = ((__ergm_obsstat :<= colmin(`__fit'.finalsample)) :| (__ergm_obsstat :>= colmax(`__fit'.finalsample))) :& (__nwergm_last_M.isfixed :== 0)
@@ -2986,7 +2988,7 @@ program _nwergm_fit, eclass
 		ereturn post `__b_mcmle' `__V_mcmle', depname(`netname') obs(`__ergm_nrows')
 		ereturn local cmd "nwergm"
 		if !`__sub' _nwergm_tag set
-		ereturn local version "1.12.0"
+		ereturn local version "1.13.0"
 		ereturn local title "Exponential-family random graph model (MCMLE)"
 		ereturn local depvar "`netname'"
 		ereturn local method "mcmle"
@@ -3005,7 +3007,7 @@ program _nwergm_fit, eclass
 		ereturn scalar N = `__ergm_nrows'
 		ereturn scalar nodes = `nodes'
 		// the pseudolikelihood used as the starting value did not exist (separation): recorded, but the fit is judged by the MCMLE test
-		ereturn scalar mple_exists = `__ergm_mple_ok'
+		if "`mplecheck'" == "on" ereturn scalar mple_exists = `__ergm_mple_ok'
 		ereturn scalar mle_exists = `__ergm_mle_ok'
 		ereturn scalar converged = `__ergm_converged'
 		ereturn scalar mcmle_iterations = `__ergm_niter'
@@ -3085,7 +3087,8 @@ program _nwergm_fit, eclass
 		if !`__ergm_mle_ok' {
 			di "{p 0 0 2}{err}Warning: the maximum likelihood estimate does not exist for this model and network: the observed statistic(s)`__ergm_mle_names' lie at the boundary of the simulated statistics (their smallest or greatest attainable values), so their coefficients are infinite (R's ergm: -Inf/+Inf). The estimates are not reliable and e(converged) is set to 0.{p_end}"
 		}
-		else if `__ergm_converged' == 0 {
+		// independent of the warning above: the MCMLE test is reported whenever it failed (e(converged) is 0 also for a non-existent MLE)
+		if `__ergm_mcmle_test' == 0 {
 			di "{p 0 0 2}{err}Warning: MCMLE did NOT satisfy its own convergence test after `__ergm_niter' iterations.{p_end}"
 			di "{p 0 0 2}{err}Results are reported but should not be treated as a converged fit - consider increasing mcmleiterations()/mcmcsamplesize().{p_end}"
 		}
@@ -3292,7 +3295,7 @@ program _nwergm_bayes, eclass
 	ereturn post `b' `V', depname(`netname') obs(`nrows')
 	ereturn local cmd "nwergm"
 	if !`sub' _nwergm_tag set
-	ereturn local version "1.12.0"
+	ereturn local version "1.13.0"
 	ereturn local title "Bayesian exponential-family random graph model"
 	ereturn local depvar "`netname'"
 	ereturn local method "bayes"

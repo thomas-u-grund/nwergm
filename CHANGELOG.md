@@ -7,12 +7,23 @@ project uses [Semantic Versioning](https://semver.org/).
 
 ### Changed
 - **`nwergm simulate` runs on the native plugin for every term set the plugin supports** (it ran on the Mata sampler, except for `structural()` terms), about 25 to 150 times faster (for example 20 networks of 100 nodes with `edges gwesp(.5)` and burn-in 200,000: minutes instead of a few seconds). The random stream differs, so networks simulated with a given `seed()` differ from those of earlier versions; the distribution is the same. Models the plugin does not support stay on the Mata sampler. New option `nonative` gives the Mata sampler (and, for a given seed, exactly the networks of earlier versions).
-- **A pseudolikelihood estimate that does not exist is no longer reported as a converged fit.** When the existence check of `mplecheck(on)` finds that the maximum pseudolikelihood estimate does not exist (the ties are separated by a statistic, for example a covariate that perfectly predicts the ties, or `triangle` on a network without triangles), a `method(mple)` fit now stores `e(converged)` = 0 and prints a warning that the estimates are not reliable (R's `ergm` shows `-Inf`/`Inf` coefficients; the huge finite values of the `glm()` iterate are unchanged). `mpletype(penalized)` and `mplecheck(off)` are not flagged. Fits whose pseudolikelihood exists, and MCMLE fits whose observed statistics are inside the simulated ones, print exactly what they printed before; they now also store `e(converged)` = 1 after `method(mple)` (it was missing).
+
+## [1.13.0] - 2026-11-22
+
+### Changed
+- **A pseudolikelihood estimate that does not exist is no longer reported as a converged fit.** When the existence check of `mplecheck(on)` finds that the maximum pseudolikelihood estimate does not exist (the ties are separated by a statistic, for example a covariate that perfectly predicts the ties, or `triangle` on a network without triangles), a `method(mple)` fit now stores `e(converged)` = 0 and prints a warning that the estimates are not reliable (R's `ergm` shows `-Inf`/`Inf` coefficients; the huge finite values of the `glm()` iterate are unchanged). `mpletype(penalized)` and `mplecheck(off)` are not flagged (with `mplecheck(off)` the existence is unknown and `e(mple_exists)` is not posted). Fits whose pseudolikelihood exists, and MCMLE fits whose observed statistics are inside the simulated ones, print exactly what they printed before; they now also store `e(converged)` = 1 after `method(mple)` (it was missing).
 
 ### Added
-- `e(mple_exists)`: 0 when the existence check found that the maximum pseudolikelihood estimate does not exist, otherwise 1. After `method(mcmle)` it describes the starting value only.
-- `e(mle_exists)` after `method(mcmle)`: 0 when an observed statistic lies at the boundary of the final simulated statistics (no draw below it, or none above it: R's "at their smallest/greatest attainable values", coefficient -Inf/+Inf, for example `triangle` on a network without triangles), otherwise 1. The fit then stores `e(converged)` = 0, prints a warning that the maximum likelihood estimate does not exist and does not print "MCMLE converged". Not checked for curved terms, missing dyads, constraints and ego data.
+- `e(mple_exists)`: 0 when the existence check found that the maximum pseudolikelihood estimate does not exist, otherwise 1; not posted with `mplecheck(off)`. After `method(mcmle)` it describes the starting value only.
+- `e(mle_exists)` after `method(mcmle)`: 0 when an observed statistic lies at the boundary of the final simulated statistics (no draw below it, or none above it: R's "at their smallest/greatest attainable values", coefficient -Inf/+Inf, for example `triangle` on a network without triangles), otherwise 1. The fit then stores `e(converged)` = 0, prints a warning that the maximum likelihood estimate does not exist and does not print "MCMLE converged". The warning that the MCMLE convergence test failed is printed independently of it whenever the test failed. Not checked for curved terms, missing dyads, constraints and ego data.
 - Test `cscripts/test_nwergm_mpleflag.do` (separated dyad-independent and dyad-dependent models, both methods, the sparse and the dense design, `mplecheck(off)`, `mpletype(penalized)`, ordinary fits).
+
+### Help
+- `nwergm.sthlp`, `nwergm_fit.sthlp` and `nwergm_estimation.sthlp` describe `e(converged)`, `e(mple_exists)` and `e(mle_exists)` and the warnings.
+
+Native code and Mata library: unchanged (ado-only release; the plugin is the one of 1.10.0, `lib/lnwergm.mlib` and `unw_ergm.do` are those of 1.12.0). The manual is left at its version.
+
+Tested on macOS with Stata 17 BE with nwcommands 3.34.0 (key files `test_nwergm_mpleflag`, `_mple`, `_mcmle`, `_exactll`, `_est`, `_ll`, plus `_estat`, `_libcheck`, `_helptext`, `_diopts`, `_ado`, `_plots`, `xt_errors_state` and a fresh install), and on Windows 11 with StataNow 19.5 MP and nwcommands 3.34.0: all 95 test files on the preceding head (0 errors), and on the final head the six key files `test_nwergm_mpleflag`, `_mple`, `_mcmle`, `_exactll`, `_est` and `_ll` plus hand checks. Linux and Stata 18 on the Mac: not run. Ado-only release.
 
 ## [1.12.0] - 2026-11-21
 

@@ -54,7 +54,8 @@ foreach spec in "sep|edges nodematch(grp)" "ring|edges triangle" {
 	assert scalar(mx) > 10
 	* the same without the existence check: nothing is known, so nothing is flagged
 	nwergm `net', `trm' method(mple) mplecheck(off)
-	assert e(mple_exists) == 1
+	capture confirm scalar e(mple_exists)
+	assert _rc != 0
 	assert e(converged) == 1
 	* the penalised MPLE is finite by construction
 	nwergm `net', `trm' method(mple) mpletype(penalized)
@@ -63,6 +64,11 @@ foreach spec in "sep|edges nodematch(grp)" "ring|edges triangle" {
 	mata: st_numscalar("mx", max(abs(st_matrix("e(b)"))))
 	assert scalar(mx) < 10
 }
+* mplecheck(off) with method(mcmle): the existence of the pseudolikelihood is unknown, e(mple_exists) is not posted; e(converged) is the MCMLE test
+nwergm ring, edges triangle method(mcmle) mplecheck(off) seed(1)
+capture confirm scalar e(mple_exists)
+assert _rc != 0
+assert e(converged) < .
 di "PASS separated method(mple) flagged, mplecheck(off) and penalized exempt"
 
 * ---- method(mcmle): a statistic at the boundary of the simulated statistics (R: "at their smallest attainable values", -Inf): the maximum
@@ -84,6 +90,27 @@ foreach spec in "ring|edges triangle" "tree|edges triangle" {
 	assert scalar(mx) < 20
 }
 di "PASS zero-triangle networks, method(mcmle): e(mle_exists) = 0, e(converged) = 0"
+* the warning that the MCMLE test failed is not hidden by the MPLE / MLE warnings: one iteration, no MPLE, no MLE, test not satisfied
+tempfile wlog
+qui log using `"`wlog'"', text replace name(wl)
+nwergm tree, edges triangle method(mcmle) seed(1) mcmleiterations(1)
+qui log close wl
+assert e(converged) == 0 & e(mple_exists) == 0 & e(mle_exists) == 0
+local found_mple 0
+local found_mle 0
+local found_conv 0
+tempname fh
+file open `fh' using `"`wlog'"', read text
+file read `fh' line
+while r(eof) == 0 {
+	if strpos(`"`line'"', "The MPLE does not exist") local found_mple 1
+	if strpos(`"`line'"', "maximum likelihood estimate does not exist for this model") local found_mle 1
+	if strpos(`"`line'"', "MCMLE did NOT satisfy its own convergence test") local found_conv 1
+	file read `fh' line
+}
+file close `fh'
+assert `found_mple' & `found_mle' & `found_conv'
+di "PASS MCMLE non-convergence warning printed together with the MPLE and MLE warnings"
 * a separated model whose observed statistics are inside the simulated ones keeps the MCMLE test
 nwergm sep, edges nodematch(grp) method(mcmle) seed(1)
 assert e(mple_exists) == 0
