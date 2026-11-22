@@ -5,8 +5,18 @@ project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.15.0] - 2026-11-22
+
 ### Fixed
-- Repeated fits in one Stata session no longer get slower. The graph of the previous fit and its backup copy stayed alive during the next fit and slowed down every Mata statement that touches a class object (the second and later fits took about twice as long at 1000 nodes). A plain graph is now kept as its tie list during the next fit and dropped. Test `test_nwergm_fitrepeat`.
+- **Repeated fits in one Stata session no longer slow down on large networks.** The graph of the previous fit and its backup copy were both kept alive during the next fit and slowed down every Mata statement that touches a class object (about 0.5 to 1 s per fit at 1,000 nodes). A plain graph is now kept as its tie list during the next fit and dropped. Test `test_nwergm_fitrepeat`.
+
+### Changed
+- **MPLE fits are faster on large networks (the setup about 15% faster); estimates unchanged.** The design matrix of the pseudolikelihood (one row per dyad) is reduced to its distinct rows with their counts faster when all change statistics are small integers (edges, mutual, nodematch, triangles, shared-partner counts, integer covariates), and the log-likelihood, AIC and BIC are evaluated on the compressed rows. On a directed network of 1,000 actors (`edges mutual nodematch`) the fit takes about 0.9 s instead of 1.1 s. Coefficients and covariance matrix are bit-identical to 1.14.0 in a check of 34 models; the log-likelihood agrees to 1e-9.
+
+Native code: unchanged. Mata library `lib/lnwergm.mlib`: rebuilt (new function `ergm_mple_compress_int()`); the core library it is compiled against (nwcommands 3.35.1) is unchanged.
+
+Tested on macOS with Stata 17 BE with nwcommands 3.35.1: TODO-GATES-BEFORE-RELEASE
+<!-- TODO-GATES-BEFORE-RELEASE: Windows and Linux: to be filled -->
 
 ## [1.14.0] - 2026-11-22
 

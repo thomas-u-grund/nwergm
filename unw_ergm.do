@@ -14702,8 +14702,55 @@ real matrix ergm_mple_compress(real matrix D)
 	real matrix U
 	if (rows(D) < 20000) return(J(0, 0, .))
 	if (missing(D) > 0) return(J(0, 0, .))
-	U = uniqrows(D, 1)
+	U = ergm_mple_compress_int(D)
+	if (rows(U) == 0) U = uniqrows(D, 1)
 	if (rows(U) > rows(D) / 4) return(J(0, 0, .))
+	return(U)
+}
+
+// The distinct rows of D with their counts (sorted lexicographically, as uniqrows(D, 1) returns them) for a design of
+// small integers (indicator and count change statistics: edges, mutual, nodematch, triangles, ...): every row is coded
+// as one number (a mixed-radix key, exact in double precision) and counted without sorting a million rows. An empty
+// matrix is returned when D has a non-integer column or too many distinct codes: the caller then sorts the rows.
+real matrix ergm_mple_compress_int(real matrix D)
+{
+	real scalar n, p, j, i, K, nk
+	real rowvector lo, hi, rad, w
+	real colvector key, cnt, kk, nz, ck
+	real matrix U
+
+	n = rows(D)
+	p = cols(D)
+	if (n == 0 | p == 0) return(J(0, 0, .))
+	if (any(D :!= trunc(D))) return(J(0, 0, .))
+	lo = colmin(D)
+	hi = colmax(D)
+	rad = hi - lo :+ 1
+	K = 1
+	for (j=1; j<=p; j++) K = K * rad[j]
+	if (K > 1e6) return(J(0, 0, .))
+	w = J(1, p, 1)
+	for (j=p-1; j>=1; j--) w[j] = w[j+1] * rad[j+1]
+	key = (D :- lo) * w'
+	if (K <= 16) {
+		// a few codes: one pass over the rows for each
+		cnt = J(K, 1, 0)
+		for (i=1; i<=K; i++) cnt[i] = sum(key :== i - 1)
+	}
+	else {
+		cnt = J(K, 1, 0)
+		for (i=1; i<=n; i++) cnt[key[i] + 1] = cnt[key[i] + 1] + 1
+	}
+	nz = selectindex(cnt :> 0)
+	nk = rows(nz)
+	kk = nz :- 1
+	U = J(nk, p + 1, .)
+	for (j=1; j<=p; j++) {
+		ck = floor(kk :/ w[j])
+		kk = kk - ck * w[j]
+		U[., j] = ck :+ lo[j]
+	}
+	U[., p + 1] = cnt[nz]
 	return(U)
 }
 
