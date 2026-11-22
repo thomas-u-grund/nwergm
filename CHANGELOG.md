@@ -18,7 +18,7 @@ project uses [Semantic Versioning](https://semver.org/).
 
 Native code and Mata library: unchanged (ado-only release; the plugin is the one of 1.10.0, `lib/lnwergm.mlib` and `unw_ergm.do` are those of 1.12.0). The manual is left at its version.
 
-Tested on macOS with Stata 17 BE (`test_nwergm_mpleflag`, `_exactll`, `_mple`, `_mcmle`, `_est`, `_estat`, `_ll`, `_libcheck`, `_helptext`, `_diopts`, `_ado`, `_plots`, `xt_errors_state`, and a fresh install) and on Windows 11 (StataNow 19.5 MP; all 95 test files, 0 errors); the Mac runs used nwcommands 3.34.0. Linux and Stata 18 on the Mac: not run.
+Tested on macOS with Stata 17 BE with nwcommands 3.34.0 (key files `test_nwergm_mpleflag`, `_mple`, `_mcmle`, `_exactll`, `_est`, `_ll`, plus `_estat`, `_libcheck`, `_helptext`, `_diopts`, `_ado`, `_plots`, `xt_errors_state` and a fresh install), and on Windows 11 with StataNow 19.5 MP and nwcommands 3.34.0: all 95 test files on the preceding head (0 errors), and on the final head the six key files `test_nwergm_mpleflag`, `_mple`, `_mcmle`, `_exactll`, `_est` and `_ll` plus hand checks. Linux and Stata 18 on the Mac: not run. Ado-only release.
 
 ## [1.12.0] - 2026-11-21
 
