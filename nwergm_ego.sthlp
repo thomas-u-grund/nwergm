@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.13.0  22nov2026 author: Thomas Grund}{...}
+{* *! version 1.14.0  22nov2026 author: Thomas Grund}{...}
 {vieweralsosee "nwergm" "help nwergm"}{...}
 {vieweralsosee "nwergm estimation" "help nwergm_estimation"}{...}
 {vieweralsosee "nwergm postestimation" "help nwergm_estat"}{...}
@@ -126,4 +126,4 @@ Krivitsky, P. N. and M. Morris. 2017. Inference for social network models from e
 Krivitsky, P. N., M. S. Handcock and M. Morris. 2011. Adjusting for network size and composition effects in exponential-family random graph models. {it:Statistical Methodology} 8: 319-339.{p_end}
 
 {hline}
-{pstd}{it:nwergm version 1.13.0, 22 November 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.14.0, 22 November 2026}{p_end}{* nwversion}

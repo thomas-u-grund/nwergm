@@ -3,10 +3,14 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.14.0] - 2026-11-22
 
 ### Changed
-- **`nwergm simulate` runs on the native plugin for every term set the plugin supports** (it ran on the Mata sampler, except for `structural()` terms), about 25 to 150 times faster (for example 20 networks of 100 nodes with `edges gwesp(.5)` and burn-in 200,000: minutes instead of a few seconds). The random stream differs, so networks simulated with a given `seed()` differ from those of earlier versions; the distribution is the same. Models the plugin does not support stay on the Mata sampler. New option `nonative` gives the Mata sampler (and, for a given seed, exactly the networks of earlier versions).
+- **`nwergm simulate` runs on the native plugin for every term set the plugin supports** (it ran on the Mata sampler, except for `structural()` terms), about 45 to 200 times faster (for example 20 networks of 100 nodes with `edges gwesp(.5)` and burn-in 200,000: minutes instead of a few seconds). The random stream differs, so networks simulated with a given `seed()` differ from those of earlier versions; the distribution is the same. Models the plugin does not support stay on the Mata sampler. New option `nonative` gives the Mata sampler (and, for a given seed, exactly the networks of earlier versions).
+
+Native code and Mata library: unchanged (ado-only release; the plugin and `lib/lnwergm.mlib` are those of 1.13.0).
+
+Tested on macOS with Stata 17 BE with nwcommands 3.35.0 (key tests, the exact-enumeration chi-square for the native and the Mata sampler, and a comparison with R ergm 4.12.0 at long burn-in: |z| <= 1.8 for all statistics); on Linux (Ubuntu 22.04, StataNow 19.5 MP): nine tests, a 30-node `gwesp` simulation 10.0 s -> 0.10 s; on Windows 11 with StataNow 19.5 MP: eleven test files, a 30-node `gwesp` simulation 13.1 s -> 1.7 s. Stata 18: not run.
 
 ## [1.13.0] - 2026-11-22
 
