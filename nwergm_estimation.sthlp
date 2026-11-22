@@ -59,8 +59,11 @@ With a curved (free-decay) term, {cmd:init()} is available for {cmd:method(mple)
 {phang}
 {opt mplecheck(on|off)} ({cmd:MPLE.check=}) tests whether the MPLE exists (Konis 2007, a linear programme solved by a simplex routine). If it does not, {cmd:nwergm} warns
 {cmd:The MPLE does not exist!}
-and, with {cmd:estimate(mple)}, reports the iterate of R's {cmd:glm()} (huge coefficients, standard errors in the thousands), as R does; R's {cmd:ergm} shows such coefficients as {cmd:-Inf} or {cmd:Inf}. The estimate is then not a converged fit: {cmd:e(mple_exists)} is 0, {cmd:e(converged)} is 0 and a warning says that the estimates are not reliable
-(not with {cmd:mpletype(penalized)}, which is finite by construction). With {cmd:estimate(mle)} the pseudolikelihood is only the starting value: {cmd:e(mple_exists)} is 0, and {cmd:e(converged)} is the result of the MCMLE convergence test; the maximum likelihood estimate may not exist either (for example a coefficient of {opt triangle} on a network without triangles), in which case the estimate and its standard error of that coefficient are not meaningful. With {cmd:mplecheck(off)} the {cmd:glm()} iterate is reported
+and, with {cmd:estimate(mple)}, reports the iterate of R's {cmd:glm()} (huge coefficients, standard errors in the thousands), as R does; R's {cmd:ergm} shows such coefficients as {cmd:-Inf} or
+{cmd:Inf}. The estimate is then not a converged fit: {cmd:e(mple_exists)} is 0, {cmd:e(converged)} is 0 and a warning says that the estimates are not reliable
+(not with {cmd:mpletype(penalized)}, which is finite by construction). With {cmd:estimate(mle)} the pseudolikelihood is only the starting value: {cmd:e(mple_exists)} is 0, and {cmd:e(converged)} is
+the result of the MCMLE convergence test; the maximum likelihood estimate may not exist either (for example a coefficient of {opt triangle} on a network without triangles), in which case the estimate
+and its standard error of that coefficient are not meaningful. With {cmd:mplecheck(off)} the {cmd:glm()} iterate is reported
 without the test, so nothing is known about the existence and {cmd:e(mple_exists)} is 1.
 
 {phang}
