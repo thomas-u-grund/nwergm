@@ -6,6 +6,7 @@ project uses [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Changed
+- **`nwergm simulate` runs on the native plugin for every term set the plugin supports** (it ran on the Mata sampler, except for `structural()` terms), about 25 to 150 times faster (for example 20 networks of 100 nodes with `edges gwesp(.5)` and burn-in 200,000: minutes instead of a few seconds). The random stream differs, so networks simulated with a given `seed()` differ from those of earlier versions; the distribution is the same. Models the plugin does not support stay on the Mata sampler. New option `nonative` gives the Mata sampler (and, for a given seed, exactly the networks of earlier versions).
 - **A pseudolikelihood estimate that does not exist is no longer reported as a converged fit.** When the existence check of `mplecheck(on)` finds that the maximum pseudolikelihood estimate does not exist (the ties are separated by a statistic, for example a covariate that perfectly predicts the ties, or `triangle` on a network without triangles), a `method(mple)` fit now stores `e(converged)` = 0 and prints a warning that the estimates are not reliable (R's `ergm` shows `-Inf`/`Inf` coefficients; the huge finite values of the `glm()` iterate are unchanged). `mpletype(penalized)` and `mplecheck(off)` are not flagged. Fits whose pseudolikelihood exists, and MCMLE fits whose observed statistics are inside the simulated ones, print exactly what they printed before; they now also store `e(converged)` = 1 after `method(mple)` (it was missing).
 
 ### Added

@@ -514,7 +514,8 @@ also explains how missing dyads and missing covariate values are handled.
 {opt constraints(formula)}
 {opt seed(int)}
 {opt generate(string)}
-{opt spcache}]
+{opt spcache}
+{opt nonative}]
 
 {pstd}
 {cmd:nwergm simulate} draws one or more networks from a fully-specified ERGM (fixed
@@ -598,6 +599,11 @@ matching {cmd:nwergm}'s own control conventions rather than continuing one long 
 As in R's {cmd:simulate()}, {opt mcmcinterval()} defaults to 1,024 and {opt mcmcburnin()} to 16 times
 the interval (16,384). {cmd:mcmcburnin(3000) mcmcinterval(50)} is faster but much less
 reliable.
+
+{pstd}
+The draws are made by the native plugin whenever it supports the model (the Mata sampler otherwise, with the same results in
+distribution). {opt nonative} forces the Mata sampler, for testing and comparison; it is much slower. Networks drawn with a given
+{opt seed()} differ between the two samplers.
 
 {pstd}
 The C source of the plugin comes with the package: {cmd:net get nwergm, from(https://raw.githubusercontent.com/thomas-u-grund/nwergm/main)}

@@ -3480,7 +3480,7 @@ program nwergm_simulate
 		BIPARTITE(integer 0) ///
 		THETA(numlist) directed NSIM(integer 1) MCMCBURNIN(integer -1) ///
 		MCMCINTERVAL(integer 1024) PROPOSAL(string) SEED(string) GENERATE(string) SPCACHE ///
-		BASIS(string) CONSTRAINTS(string asis) MCMCPROP(string asis) ]
+		BASIS(string) CONSTRAINTS(string asis) MCMCPROP(string asis) NONATIVE ]
 	if `"`seed'"' != "" _nwergm_seed `seed', check
 	_nwergm_decaycheck, gwesp(`gwesp') gwdsp(`gwdsp') gwnsp(`gwnsp') gwdegree(`gwdegree') gwodegree(`gwodegree') gwidegree(`gwidegree') ///
 		bgwdegree1(`bgwdegree1') bgwdegree2(`bgwdegree2') bgwdsp1(`bgwdsp1') bgwdsp2(`bgwdsp2')
@@ -4513,20 +4513,20 @@ program nwergm_simulate
 		if `__ergm_spcache_used' {
 			mata: __nwergm_last_G.enable_sp_cache()
 		}
-		// ErgmNativeSetup() is likewise deliberately NOT called on this
-		// path (harmonisation unit 83): this loop calls ErgmMCMCSample()
-		// once PER SIMULATED NETWORK with samplesize=1, so `nsim' native
-		// plugin calls would each pay the native boundary's own fixed
-		// per-call overhead (frame create/drop, program define, dataset
-		// construction) for a single-row draw - exactly the "crossing
-		// the boundary too often" architecture this unit's own governing
-		// instructions warn against. __nwergm_last_M.native_enabled
-		// therefore simply stays at its ErgmModel::init() default of 0
-		// here, so every draw runs on the unmodified Mata sampler.
+		// ErgmNativeSetup() is called for every draw's graph (see below): the native sampler's per-call boundary cost is
+		// small against the Mata sampler's per-step cost (harmonisation unit 83 judged the opposite; measured otherwise).
 		// structural() terms have no Mata change statistic: they need the native sampler
 		if `__spd' mata: __nwergm_last_G.spd_focus = `__spdfocus'
+		// the native sampler is used whenever the plug-in supports the model (ErgmNativeSetup() leaves the Mata sampler
+		// in place otherwise); the option nonative keeps the Mata sampler (only structural() terms, which have no Mata
+		// change statistic, still run natively)
 		if !`__sim_con' {
-		mata: ns_native_setup(__nwergm_last_M, `=cond(`__spd', 3 + `__spdfocus' / 2, cond("`proposal'"=="tnt",2,1))', __nwergm_last_G)
+			if "`nonative'" == "" {
+				mata: __ergm_nsrc = ErgmNativeSetup(__nwergm_last_M, `=cond(`__spd', 3 + `__spdfocus' / 2, cond("`proposal'"=="tnt",2,1))', __nwergm_last_G)
+			}
+			else {
+				mata: ns_native_setup(__nwergm_last_M, `=cond(`__spd', 3 + `__spdfocus' / 2, cond("`proposal'"=="tnt",2,1))', __nwergm_last_G)
+			}
 		}
 		}
 		local __sim_burn = cond(`__sim_con' & `__s' > 1, 0, `mcmcburnin')
@@ -4569,6 +4569,7 @@ program nwergm_simulate
 	if `bipartite' != 0 {
 		mata: mata drop `__ergm_simmat_bip'
 	}
+	capture mata: mata drop __ergm_nsrc
 	mata: mata drop __nwergm_last_M __nwergm_last_G __gof_discard `__ergm_simmat' `__ergm_matatemps'
 end
 
