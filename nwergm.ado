@@ -2351,9 +2351,12 @@ program _nwergm_fit, eclass
 	// starting theta of (0-vector, weight0=0, decay0=`__ergm_curved_start')
 	// is built directly rather than needing a general "find this term's
 	// own theta position" accessor.
+	// remembers whether the pseudolikelihood estimate exists (0 = it does not); used below for e(mple_exists) and, with method(mple), e(converged)
+	local __ergm_mple_ok 1
 	if `__ergm_sparse' {
 		local __e7_ex 1
 		if "`mplecheck'" == "on" mata: st_local("__e7_ex", strofreal(ergm_sp_newton(__nwergm_sp, "`__b_mple'", "`__V_mple'")))
+		if !`__e7_ex' local __ergm_mple_ok 0
 		if !`__e7_ex' di "{err}Warning: The MPLE does not exist!"
 		if !`__e7_ex' | "`mplecheck'" != "on" mata: (void) ergm_sp_glm(__nwergm_sp, "`__b_mple'", "`__V_mple'")
 	}
@@ -2456,6 +2459,7 @@ program _nwergm_fit, eclass
 		local __e7_special 0
 		_nwergm_est mple `__nw_D' `__e7_sb' `__e7_sV' "`mpletype'" "`mplecheck'" `__ergm_has_offset' "`method'"
 		local __e7_special = r(special)
+		if r(exists) == 0 local __ergm_mple_ok 0
 		local __e7_rcx 0
 		// logit replaces e(): the results of the previous fit are held and put back if this fit is refused
 		tempname __e7_hold
@@ -2541,6 +2545,15 @@ program _nwergm_fit, eclass
 		// an MPLE fit's own e(native) undefined even when native routing
 		// was actually used for it.
 		ereturn scalar native = `__ergm_mple_native_used'
+
+		// a pseudolikelihood estimate that does not exist (separation) is not a converged fit: R's ergm reports -Inf/Inf coefficients, here they are
+		// large finite values. The penalised MPLE is finite by construction and is not flagged.
+		ereturn scalar mple_exists = `__ergm_mple_ok'
+		ereturn scalar converged = `__ergm_mple_ok' | "`mpletype'" == "penalized"
+		if !`__ergm_mple_ok' & "`mpletype'" != "penalized" {
+			di "{p 0 0 2}{err}Warning: the maximum pseudolikelihood estimate (MPLE) does not exist for this model and network, so the estimates are not reliable and e(converged) is set to 0.{p_end}"
+			di "{p 0 0 2}{err}Some coefficients are driven to large finite values by separation (R's ergm reports -Inf/Inf). Check the model, or use mpletype(penalized).{p_end}"
+		}
 
 		nwergm_display "`netname'" "`nodes'" "`directed'" "MPLE" "" "" "" "`__ergm_tabopts'"
 		if `__ergm_sparse' {
@@ -2972,6 +2985,8 @@ program _nwergm_fit, eclass
 		ereturn local estat_cmd "nwergm_estat"
 		ereturn scalar N = `__ergm_nrows'
 		ereturn scalar nodes = `nodes'
+		// the pseudolikelihood used as the starting value did not exist (separation): recorded, but the fit is judged by the MCMLE test
+		ereturn scalar mple_exists = `__ergm_mple_ok'
 		ereturn scalar converged = `__ergm_converged'
 		ereturn scalar mcmle_iterations = `__ergm_niter'
 		ereturn scalar mcmc_acceptrate = `__ergm_acceptrate'

@@ -359,3 +359,7 @@ Two Stata Journal articles under review ship replication packs that call `estat 
 - Check: `cscripts/test_nwergm_plots.do` with `NWERGM_PLOT_REF` = a directory made by `cscripts/nwergm_plots_defaults.do` run with the released version after `cscript` (PNG bytes differ between a fresh and a used Stata process).
 - `want` in `_nwergm_gof.ado` has a double blank after the model entry: compare lists with `itrim()`.
 - Before 1.11.0 `estat gof, plot` after `nwergm ego` ended in r(3499) (`_nwergm_gofplot` takes Mata matrices, not Stata matrices); a quotation mark in an option rejected after ego ended in r(133) ({bf:} inside plain quotes).
+
+## A separated model: method(mple) is flagged, method(mcmle) is not
+
+`e(mple_exists)` is 0 when the existence check of `mplecheck(on)` finds that the maximum pseudolikelihood estimate does not exist. With `method(mple)` that also sets `e(converged)` = 0 (the fit is the pseudolikelihood itself); with `method(mcmle)` the pseudolikelihood is only the starting value, `e(converged)` stays the result of the MCMLE test and a separated model (for example `triangle` on a network without triangles) can still print "MCMLE converged" with a finite, meaningless coefficient. The flag is set at the existence check (sparse branch `ergm_sp_newton`, dense branch `r(exists)` of `_nwergm_est mple`); a complete or empty network stops earlier with r(2000). A Windows validation patch set `e(converged)` = 0 in the MCMLE result block only, which does nothing for `method(mple)`: the two result blocks (`method(mple)` and MCMLE) are separate.

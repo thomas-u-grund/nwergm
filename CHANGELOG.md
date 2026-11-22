@@ -3,6 +3,15 @@
 All notable changes to nwergm are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+- **A pseudolikelihood estimate that does not exist is no longer reported as a converged fit.** When the existence check of `mplecheck(on)` finds that the maximum pseudolikelihood estimate does not exist (the ties are separated by a statistic, for example a covariate that perfectly predicts the ties, or `triangle` on a network without triangles), a `method(mple)` fit now stores `e(converged)` = 0 and prints a warning that the estimates are not reliable (R's `ergm` shows `-Inf`/`Inf` coefficients; the huge finite values of the `glm()` iterate are unchanged). `mpletype(penalized)` and `mplecheck(off)` are not flagged. Fits whose pseudolikelihood exists print exactly what they printed before; they now also store `e(converged)` = 1 after `method(mple)` (it was missing).
+
+### Added
+- `e(mple_exists)`: 0 when the existence check found that the maximum pseudolikelihood estimate does not exist, otherwise 1. After `method(mcmle)` it describes the starting value only: `e(converged)` remains the result of the MCMLE convergence test.
+- Test `cscripts/test_nwergm_mpleflag.do` (separated dyad-independent and dyad-dependent models, both methods, the sparse and the dense design, `mplecheck(off)`, `mpletype(penalized)`, ordinary fits).
+
 ## [1.12.0] - 2026-11-21
 
 ### Changed
