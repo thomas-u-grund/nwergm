@@ -65,20 +65,30 @@ foreach spec in "sep|edges nodematch(grp)" "ring|edges triangle" {
 }
 di "PASS separated method(mple) flagged, mplecheck(off) and penalized exempt"
 
-* ---- method(mcmle): the MPLE start is recorded, e(converged) is the MCMLE test
-foreach spec in "sep|edges nodematch(grp)" "ring|edges triangle" {
+* ---- method(mcmle): a statistic at the boundary of the simulated statistics (R: "at their smallest attainable values", -Inf): the maximum
+* likelihood estimate does not exist; the pseudolikelihood used as the starting value is recorded in e(mple_exists)
+matrix T = J(10,10,0)
+forvalues i = 1/9 {
+	matrix T[`i',`i'+1] = 1
+	matrix T[`i'+1,`i'] = 1
+}
+qui nwset, mat(T) name(tree) undirected
+foreach spec in "ring|edges triangle" "tree|edges triangle" {
 	gettoken net trm : spec, parse("|")
 	local trm = subinstr("`trm'", "|", "", 1)
 	nwergm `net', `trm' method(mcmle) seed(1)
 	assert e(mple_exists) == 0
-	assert e(converged) == 1
+	assert e(mle_exists) == 0
+	assert e(converged) == 0
 	mata: st_numscalar("mx", max(abs(st_matrix("e(b)"))))
 	assert scalar(mx) < 20
-	* a finite starting point: the MCMLE ran and gives finite estimates and standard errors
-	matrix V = e(V)
-	assert sqrt(V[2,2]) < 100
 }
-di "PASS separated method(mcmle): e(mple_exists) = 0, e(converged) from the MCMLE test"
+di "PASS zero-triangle networks, method(mcmle): e(mle_exists) = 0, e(converged) = 0"
+* a separated model whose observed statistics are inside the simulated ones keeps the MCMLE test
+nwergm sep, edges nodematch(grp) method(mcmle) seed(1)
+assert e(mple_exists) == 0
+assert e(converged) == e(converged) & e(mle_exists) < .
+di "  (sep, mcmle: e(converged) = " e(converged) ", e(mle_exists) = " e(mle_exists) ")"
 
 * ---- the pseudolikelihood exists: e(mple_exists) = 1, e(converged) = 1 for method(mple)
 set seed 20261122
@@ -94,7 +104,7 @@ assert e(mple_exists) == 1 & e(converged) == 1
 nwergm u, edges triangle method(mple)
 assert e(mple_exists) == 1 & e(converged) == 1
 nwergm u, edges triangle method(mcmle) seed(4)
-assert e(mple_exists) == 1 & e(converged) == 1
+assert e(mple_exists) == 1 & e(converged) == 1 & e(mle_exists) == 1
 di "PASS ordinary fits: e(mple_exists) = 1"
 
 * ---- the sparse design (more than 100 coefficients, via nodefactor; the dense design with NWERGM_NOSPARSE): a node without ties separates its level

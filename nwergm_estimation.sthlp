@@ -61,9 +61,10 @@ With a curved (free-decay) term, {cmd:init()} is available for {cmd:method(mple)
 {cmd:The MPLE does not exist!}
 and, with {cmd:estimate(mple)}, reports the iterate of R's {cmd:glm()} (huge coefficients, standard errors in the thousands), as R does; R's {cmd:ergm} shows such coefficients as {cmd:-Inf} or
 {cmd:Inf}. The estimate is then not a converged fit: {cmd:e(mple_exists)} is 0, {cmd:e(converged)} is 0 and a warning says that the estimates are not reliable
-(not with {cmd:mpletype(penalized)}, which is finite by construction). With {cmd:estimate(mle)} the pseudolikelihood is only the starting value: {cmd:e(mple_exists)} is 0, and {cmd:e(converged)} is
-the result of the MCMLE convergence test; the maximum likelihood estimate may not exist either (for example a coefficient of {opt triangle} on a network without triangles), in which case the estimate
-and its standard error of that coefficient are not meaningful. With {cmd:mplecheck(off)} the {cmd:glm()} iterate is reported
+(not with {cmd:mpletype(penalized)}, which is finite by construction). With {cmd:estimate(mle)} the pseudolikelihood is only the starting value: {cmd:e(mple_exists)} is 0.
+The maximum likelihood estimate may not exist either (for example a coefficient of {opt triangle} on a network without triangles); {cmd:nwergm} then sets {cmd:e(mle_exists)} and {cmd:e(converged)} to 0 and warns:
+an observed statistic is at the boundary of the simulated statistics (no simulated draw lies below it, or none above it), as in R's {cmd:ergm}, which fits such a coefficient at -Inf or +Inf. Otherwise {cmd:e(converged)} is the result of the MCMLE
+convergence test. With {cmd:mplecheck(off)} the {cmd:glm()} iterate is reported
 without the test, so nothing is known about the existence and {cmd:e(mple_exists)} is 1.
 
 {phang}

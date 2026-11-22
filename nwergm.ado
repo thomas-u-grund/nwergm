@@ -2956,6 +2956,25 @@ program _nwergm_fit, eclass
 		mata: st_local("__ergm_niter", strofreal(`__fit'.niter))
 		mata: st_local("__ergm_acceptrate", strofreal(`__fit'.acceptrate))
 		mata: st_local("__ergm_interval_final", strofreal(`__fit'.final_interval))
+		// the maximum likelihood estimate does not exist when an observed statistic is on the boundary of the final sample: no
+		// simulated draw lies below it (or none above it), so no finite coefficient can make the expected statistic equal the
+		// observed one (R: "Observed statistic(s) ... are at their smallest/greatest attainable values", coefficient -Inf/+Inf).
+		// Checked for fits without curved terms, missing dyads, observation constraints, sample-space constraints and ego data.
+		local __ergm_mle_ok 1
+		local __ergm_mle_bnd ""
+		if !`__ergm_curved' & !`__obs_active' & `__ergm_nmiss' == 0 & !`__con_active' & !`__ego' & "`method'" == "mcmle" & "`mainmethod'" != "sa" {
+			mata: __ergm_mb = ((__ergm_obsstat :<= colmin(`__fit'.finalsample)) :| (__ergm_obsstat :>= colmax(`__fit'.finalsample))) :& (__nwergm_last_M.isfixed :== 0)
+			mata: st_local("__ergm_mle_bnd", invtokens(strofreal(selectindex(__ergm_mb))))
+			mata: mata drop __ergm_mb
+			if "`__ergm_mle_bnd'" != "" {
+				local __ergm_mle_ok 0
+				local __ergm_mle_names ""
+				foreach __k of local __ergm_mle_bnd {
+					local __ergm_mle_names "`__ergm_mle_names' `: word `__k' of `__ergm_coefnames''"
+				}
+				local __ergm_converged 0
+			}
+		}
 
 		matrix coleq `__b_mcmle' = _
 		matrix coleq `__V_mcmle' = _
@@ -2987,6 +3006,7 @@ program _nwergm_fit, eclass
 		ereturn scalar nodes = `nodes'
 		// the pseudolikelihood used as the starting value did not exist (separation): recorded, but the fit is judged by the MCMLE test
 		ereturn scalar mple_exists = `__ergm_mple_ok'
+		ereturn scalar mle_exists = `__ergm_mle_ok'
 		ereturn scalar converged = `__ergm_converged'
 		ereturn scalar mcmle_iterations = `__ergm_niter'
 		ereturn scalar mcmc_acceptrate = `__ergm_acceptrate'
@@ -3062,7 +3082,10 @@ program _nwergm_fit, eclass
 			mata: st_matrix("e(mcmcsample)", `__fit'.finalsample)
 		}
 
-		if `__ergm_converged' == 0 {
+		if !`__ergm_mle_ok' {
+			di "{p 0 0 2}{err}Warning: the maximum likelihood estimate does not exist for this model and network: the observed statistic(s)`__ergm_mle_names' lie at the boundary of the simulated statistics (their smallest or greatest attainable values), so their coefficients are infinite (R's ergm: -Inf/+Inf). The estimates are not reliable and e(converged) is set to 0.{p_end}"
+		}
+		else if `__ergm_converged' == 0 {
 			di "{p 0 0 2}{err}Warning: MCMLE did NOT satisfy its own convergence test after `__ergm_niter' iterations.{p_end}"
 			di "{p 0 0 2}{err}Results are reported but should not be treated as a converged fit - consider increasing mcmleiterations()/mcmcsamplesize().{p_end}"
 		}
@@ -3071,7 +3094,7 @@ program _nwergm_fit, eclass
 			mata: mata drop `__ergm_matatemps'
 			exit
 		}
-		nwergm_display "`netname'" "`nodes'" "`directed'" "`=cond("`method'"=="cd","CD",cond("`mainmethod'"=="sa","SA","MCMLE"))'" "`__ergm_converged'" "`__ergm_niter'" "`mcmcsamplesize'" "`__ergm_tabopts'"
+		nwergm_display "`netname'" "`nodes'" "`directed'" "`=cond("`method'"=="cd","CD",cond("`mainmethod'"=="sa","SA","MCMLE"))'" "`=cond(`__ergm_mle_ok', "`__ergm_converged'", "2")'" "`__ergm_niter'" "`mcmcsamplesize'" "`__ergm_tabopts'"
 		local __dcname ""
 		if "`__ergm_dcomp'" == "1" local __dcname "`__nw_Dc'"
 		if `__ss_adapt' local __ergm_interval_bridge `__br_int'
@@ -3408,6 +3431,9 @@ program nwergm_display
 	else if "`method'" == "MCMLE" {
 		if "`converged'" == "1" {
 			di "{txt}MCMLE converged after `niter' iteration(s)."
+		}
+		else if "`converged'" == "2" {
+			di "{err}MCMLE stopped after `niter' iteration(s): no maximum likelihood estimate."
 		}
 		else {
 			di "{err}MCMLE did not converge after `niter' iteration(s)."

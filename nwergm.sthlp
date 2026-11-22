@@ -730,10 +730,13 @@ and basic goodness of fit ({help nwergm_estat:estat gof}) are both available; se
 {synopt:{bf:e(trifocus)}}share of triadic steps of the SPDyad proposal (missing when it is not used){p_end}
 {synopt:{bf:e(ties)}}number of observed ties{p_end}
 {synopt:{bf:e(curved)}}1 if the model has a curved (free-decay) term, 0 otherwise{p_end}
-{synopt:{bf:e(converged)}}after {opt method(mcmle)}: 1 if MCMLE's own convergence test was satisfied; after {opt method(mple)}: 0 when the pseudolikelihood estimate does not exist (see
+{synopt:{bf:e(converged)}}after {opt method(mcmle)}: 1 if MCMLE's own convergence test was satisfied; after {opt method(mcmle)}: also 0 when the maximum likelihood estimate does not exist (see
+{cmd:e(mle_exists)}); after {opt method(mple)}: 0 when the pseudolikelihood estimate does not exist (see
 {opt mplecheck()} in {help nwergm_estimation}; not with {cmd:mpletype(penalized)}), otherwise 1{p_end}
 {synopt:{bf:e(mple_exists)}}0 when the existence check found that the maximum pseudolikelihood estimate does not exist (the ties are separated by a statistic: the {cmd:The MPLE does not exist!}
 warning), otherwise 1; after {opt method(mcmle)} this describes the starting value only{p_end}
+{synopt:{bf:e(mle_exists)}}after {opt method(mcmle)}: 0 when an observed statistic lies at the boundary of the final simulated statistics (no draw below it, or none above it; R: "at their
+smallest/greatest attainable values", coefficient -Inf/+Inf, for example {opt triangle} on a network without triangles), otherwise 1; not checked for curved terms, missing dyads or constraints{p_end}
 {synopt:{bf:e(mcmle_iterations)}}number of MCMLE outer iterations run (method(mcmle) only){p_end}
 {synopt:{bf:e(mcmc_acceptrate)}}Metropolis-Hastings acceptance rate, final simulation (method(mcmle) only){p_end}
 {synopt:{bf:e(mcmc_burnin)}}MCMC burn-in steps used (method(mcmle) only){p_end}

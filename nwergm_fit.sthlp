@@ -52,6 +52,7 @@ term is {opt mutual} (the two arcs of a pair have four joint states and pairs ar
 {p2col:{cmd:e(ll_method)}}{cmd:exact}, {cmd:pseudolikelihood} or {cmd:bridge sampling}{p_end}
 {p2col:{cmd:e(exactll)}}1 when the log-likelihood of an MCMLE fit, or of an {opt exactll} fit, was evaluated exactly{p_end}
 {p2col:{cmd:e(mple_exists)}}0 when the maximum pseudolikelihood estimate does not exist (separation), otherwise 1; see {help nwergm_estimation}{p_end}
+{p2col:{cmd:e(mle_exists)}}0 when the maximum likelihood estimate of an MCMLE fit does not exist (an observed statistic at the boundary of the simulated statistics), otherwise 1; {cmd:e(converged)} is then 0{p_end}
 {p2colreset}{...}
 
 {pstd}
