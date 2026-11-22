@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.15.0  22nov2026 author: Thomas Grund}{...}
+{* *! version 1.15.1  22nov2026 author: Thomas Grund}{...}
 {vieweralsosee "nwergm" "help nwergm"}{...}
 {vieweralsosee "nwergm estimation" "help nwergm_estimation"}{...}
 {vieweralsosee "nwergm postestimation" "help nwergm_estat"}{...}
@@ -125,4 +125,4 @@ Caimo, A. and N. Friel. 2011. Bayesian inference for exponential random graph mo
 Caimo, A. and N. Friel. 2014. Bergm: Bayesian exponential random graphs in R. {it:Journal of Statistical Software} 61(2).{p_end}
 
 {hline}
-{pstd}{it:nwergm version 1.15.0, 22 November 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.15.1, 22 November 2026}{p_end}{* nwversion}
