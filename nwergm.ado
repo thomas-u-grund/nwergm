@@ -4542,7 +4542,20 @@ program nwergm_simulate
 		mata: `__ergm_simmat' = __nwergm_last_G.to_dense()
 
 		local __ergm_simname = cond(`nsim'==1, "`generate'", "`generate'_`__s'")
-		capture nwdrop `__ergm_simname'
+		// a draw is replaced when it exists; asking nwdrop for a name that does not exist costs far more than the draw itself
+		// once many networks are stored, so the name is looked up first (one compiled call)
+		local __sim_exists 1
+		if !(strpos("`__ergm_simname'", "*") | strpos("`__ergm_simname'", "?") | strpos("`__ergm_simname'", "~") | strpos("`__ergm_simname'", "-") | strpos("`__ergm_simname'", "$")) {
+			local __sim_exists 0
+			capture mata: nwf_syntax_named("`__ergm_simname'", 1)
+			if _rc == 0 {
+				capture confirm number `r(id)'
+				if _rc == 0 {
+					if `r(id)' > 0 local __sim_exists 1
+				}
+			}
+		}
+		if `__sim_exists' capture nwdrop `__ergm_simname'
 		qui drop _all
 		qui set obs `nodes'
 		if `bipartite' != 0 {
