@@ -5,7 +5,11 @@ project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.15.2] - 2026-11-23
+
 - `nwergm simulate` with a large `nsim()` is about twice as fast at `nsim(1000)`: a draw that does not exist yet is no longer passed to `nwdrop`, which took longer than the draw itself once many networks were stored (30 nodes, `edges mutual`, burn-in 0: 30 ms to 17 ms per draw at `nsim(1000)`, 9 ms to 8 ms at `nsim(100)`). The remaining growth with `nsim()` is the cost of storing each new network.
+
+Tested on macOS with Stata 17 BE with nwcommands 3.36.0: the simulate tests (`test_nwergm_simulate`, `_simnames`, `_simrepro`, `_simkeep`, `_simnative`). Ado-only release.
 
 ## [1.15.1] - 2026-11-22
 
