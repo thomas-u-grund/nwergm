@@ -265,6 +265,7 @@ Option & Description (default)\\
 \opt{bipartite(\#)} & Number of first-mode nodes of a two-mode network.\\
 \opt{nsim(\#)} & Number of networks (1), each with a fresh burn-in. Named \opt{generate()}\texttt{\_1}, \opt{generate()}\texttt{\_2}, \ldots\ for $\#>1$.\\
 \opt{generate(stub)} & Name of the networks (\texttt{ergmsim}).\\
+\opt{output(network|stats)} & \texttt{network} (default) stores every draw as a network; \texttt{stats} (R's \texttt{output = "stats"}) creates no networks and puts the statistics of the draws into a new frame named by \opt{generate()}: one row per draw, one variable per model term, no limit on the number of draws (a Stata matrix stops at 800 rows in Stata/BE); an existing frame of that name is replaced and the data in memory stay.\\
 \opt{mcmcburnin(\#)}, \opt{mcmcinterval(\#)} & Burn-in and interval (16384 and 1024, as in R's \texttt{control.simulate}; the burn-in is 16 times an interval given alone).\\
 \opt{proposal(uniform|tnt)} & Proposal (\texttt{tnt}).\\
 \opt{mcmcprop(hints)} & As for the fit (default SPDyad on one-mode networks). After a fit, \texttt{nwergm simulate} uses the proposal of the fit.\\

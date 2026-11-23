@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.15.2  23nov2026 author: Thomas Grund}{...}
+{* *! version 1.16.0  23nov2026 author: Thomas Grund}{...}
 {marker topic}
 {helpb nwtopical##analysis_statmodels:[NW-2.6.6] Statistical Estimation of Networks}
 
@@ -514,6 +514,7 @@ also explains how missing dyads and missing covariate values are handled.
 {opt constraints(formula)}
 {opt seed(int)}
 {opt generate(string)}
+{opt output(network|stats)}
 {opt spcache}
 {opt nonative}]
 
@@ -594,6 +595,14 @@ not carried over. {cmd:nwergm simulate} from a fitted model (without {it:nodes})
 matching {cmd:nwergm}'s own control conventions rather than continuing one long chain), named
 {opt generate()}{cmd:_1}, {opt generate()}{cmd:_2}, ... when {opt nsim()}{cmd: > 1} (default stub
 {cmd:ergmsim}), or plain {opt generate()} (default {cmd:ergmsim}) when {opt nsim(1)}.
+
+{pstd}
+{opt output(stats)} (R: {cmd:output = "stats"}; default {opt output(network)}) stores only the statistics of the draws and creates no networks:
+{opt generate()} then names a new frame with one row per draw and one variable per model term (an existing frame of that name is replaced; the
+data in memory stay as they are). A frame has no limit on the number of draws, where a Stata matrix stops at 800 rows in Stata/BE. This is the
+fast way to simulate many draws, for example {cmd:nwergm simulate 30, edges mutual theta(-3 1) directed nsim(1000) mcmcburnin(0) mcmcinterval(1) output(stats) generate(draws)},
+then {cmd:frame draws: summarize}: without {opt output(stats)} every draw is stored as a network, and storing each one costs more as more networks are
+in memory.
 
 {pstd}
 As in R's {cmd:simulate()}, {opt mcmcinterval()} defaults to 1,024 and {opt mcmcburnin()} to 16 times
@@ -847,4 +856,4 @@ For a yes/no outcome on the actors of one network (smoking, adoption, taking a s
 {p_end}
 
 {hline}
-{pstd}{it:nwergm version 1.15.2, 23 November 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.16.0, 23 November 2026}{p_end}{* nwversion}

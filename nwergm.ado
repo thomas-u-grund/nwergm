@@ -1,4 +1,4 @@
-*! version 1.15.2  23nov2026 nwergm
+*! version 1.16.0  23nov2026 nwergm
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -2524,7 +2524,7 @@ program _nwergm_fit, eclass
 		ereturn post `__b_mple' `__V_mple', depname(`netname') obs(`__ergm_nrows')
 		ereturn local cmd "nwergm"
 		if !`__sub' _nwergm_tag set
-		ereturn local version "1.15.2"
+		ereturn local version "1.16.0"
 		ereturn local title "Exponential-family random graph model (MPLE)"
 		ereturn local depvar "`netname'"
 		ereturn local method "mple"
@@ -2993,7 +2993,7 @@ program _nwergm_fit, eclass
 		ereturn post `__b_mcmle' `__V_mcmle', depname(`netname') obs(`__ergm_nrows')
 		ereturn local cmd "nwergm"
 		if !`__sub' _nwergm_tag set
-		ereturn local version "1.15.2"
+		ereturn local version "1.16.0"
 		ereturn local title "Exponential-family random graph model (MCMLE)"
 		ereturn local depvar "`netname'"
 		ereturn local method "mcmle"
@@ -3300,7 +3300,7 @@ program _nwergm_bayes, eclass
 	ereturn post `b' `V', depname(`netname') obs(`nrows')
 	ereturn local cmd "nwergm"
 	if !`sub' _nwergm_tag set
-	ereturn local version "1.15.2"
+	ereturn local version "1.16.0"
 	ereturn local title "Bayesian exponential-family random graph model"
 	ereturn local depvar "`netname'"
 	ereturn local method "bayes"
@@ -3488,7 +3488,7 @@ program nwergm_simulate
 		BIPARTITE(integer 0) ///
 		THETA(numlist) directed NSIM(integer 1) MCMCBURNIN(integer -1) ///
 		MCMCINTERVAL(integer 1024) PROPOSAL(string) SEED(string) GENERATE(string) SPCACHE ///
-		BASIS(string) CONSTRAINTS(string asis) MCMCPROP(string asis) NONATIVE ]
+		BASIS(string) CONSTRAINTS(string asis) MCMCPROP(string asis) NONATIVE OUTPUT(string) ]
 	if `"`seed'"' != "" _nwergm_seed `seed', check
 	_nwergm_decaycheck, gwesp(`gwesp') gwdsp(`gwdsp') gwnsp(`gwnsp') gwdegree(`gwdegree') gwodegree(`gwodegree') gwidegree(`gwidegree') ///
 		bgwdegree1(`bgwdegree1') bgwdegree2(`bgwdegree2') bgwdsp1(`bgwdsp1') bgwdsp2(`bgwdsp2')
@@ -3649,7 +3649,21 @@ program nwergm_simulate
 		di as err "{p 0 0 2}The triadic() hint cannot be used with a bipartite network (use .triadic, which R skips on a bipartite network).{p_end}"
 		error 198
 	}
+	// output(stats) (R: output = "stats"): the statistics of the draws as a Stata matrix (one row per draw, one column per
+	// model term), without storing the draws as networks
+	if "`output'" == "" local output "network"
+	if !inlist("`output'", "network", "stats") {
+		di "{err}output() must be {bf:network} or {bf:stats}."
+		exit 198
+	}
 	if "`generate'" == "" local generate "ergmsim"
+	if "`output'" == "stats" {
+		capture confirm names `generate'
+		if _rc | "`generate'" == "default" {
+			di "{err}With output(stats), generate() names the frame that receives the statistics: {bf:`generate'} is not a valid name for a new frame."
+			exit 198
+		}
+	}
 	if `"`seed'"' != "" {
 		_nwergm_seed `seed'
 	}
@@ -4499,7 +4513,12 @@ program nwergm_simulate
 			}
 		}
 	}
+	if "`output'" == "stats" local __keepdata 0
 	if `__keepdata' preserve
+	if "`output'" == "stats" {
+		mata: `__ergm_simmat' = J(1, 1, 0)
+		mata: __sim_stats = J(`nsim', __nwergm_last_M.nparam(), .)
+	}
 	forvalues __s = 1/`nsim' {
 		if !`__sim_con' {
 		capture mata: mata drop __nwergm_last_G
@@ -4539,6 +4558,10 @@ program nwergm_simulate
 		}
 		local __sim_burn = cond(`__sim_con' & `__s' > 1, 0, `mcmcburnin')
 		mata: __gof_discard = ErgmMCMCSample(__nwergm_last_M, __nwergm_last_G, st_matrix("`thetamat'"), `__sim_burn', `mcmcinterval', 1, `=cond(`__spd', "&ergm_propose_spdyad()", cond("`proposal'"=="tnt","&ergm_propose_tnt()","&ergm_propose_uniform()"))')
+		if "`output'" == "stats" {
+			mata: __sim_stats[`__s', .] = ergm_full_stat(__nwergm_last_M, __nwergm_last_G)
+			continue
+		}
 		mata: `__ergm_simmat' = __nwergm_last_G.to_dense()
 
 		local __ergm_simname = cond(`nsim'==1, "`generate'", "`generate'_`__s'")
@@ -4577,6 +4600,18 @@ program nwergm_simulate
 		}
 	}
 	if `__keepdata' restore
+	if "`output'" == "stats" {
+		// a frame has no matrix-size limit (a Stata matrix stops at c(max_matdim), 800 rows in Stata/BE) and leaves the data
+		// in memory alone; an existing frame of that name is replaced, as an existing draw is
+		capture frame drop `generate'
+		frame create `generate'
+		frame `generate' {
+			quietly set obs `nsim'
+			mata: ergm_post_stats(__sim_stats, ergm_coefnames32(__nwergm_last_M.coefnames))
+		}
+		mata: mata drop __sim_stats
+		di "{txt}Statistics of `nsim' simulated network" cond(`nsim' == 1, "", "s") " stored in the frame {bf:`generate'} (one row per draw, one variable per model term)."
+	}
 
 	// `__ergm_simmat_bip' is only ever assigned inside the `bipartite'!=0
 	// branch above - dropped conditionally on the SAME test, rather than
@@ -4607,6 +4642,7 @@ end
 // The Mata block below is compiled when this file is loaded and uses classes of the Mata library of the package, so the
 // library must be visible by then (Stata indexes the .mlib files once per session): index it first if needed.
 capture quietly _nwergm_libcheck
+capture mata: mata drop ergm_post_stats()
 capture mata: mata drop ergm_bridge_from_netobj()
 capture mata: mata drop ergm_hold_rebuildG()
 mata:
@@ -4617,6 +4653,27 @@ void ergm_hold_rebuildG(class ErgmGraph scalar G, real rowvector gnd, real matri
 	G.init(gnd[1], gnd[2])
 	for (k=1; k<=rows(ties); k++) G.toggle(ties[k,1], ties[k,2])
 }
+// one double variable per statistic (valid, distinct names) holding the column of the statistics of the draws
+void ergm_post_stats(real matrix S, string vector nm)
+{
+	string rowvector v
+	real scalar j, k
+	v = J(1, cols(S), "")
+	for (j = 1; j <= cols(S); j++) {
+		v[j] = strtoname(nm[j])
+		for (k = 1; k < j; k++) {
+			if (v[k] == v[j]) {
+				v[j] = strtoname(v[j] + "_" + strofreal(j))
+				break
+			}
+		}
+	}
+	for (j = 1; j <= cols(S); j++) {
+		(void) st_addvar("double", v[j])
+		st_store(., v[j], S[., j])
+	}
+}
+
 void ergm_bridge_from_netobj(pointer(class nw_def scalar) scalar netobj,
 	class ErgmGraph scalar G, real scalar directed){
 	real scalar i, k
