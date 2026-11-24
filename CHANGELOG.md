@@ -5,6 +5,8 @@ project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+- Fixed: a repeated `nwergm simulate ..., generate(NAME)` with draws that already exist gave wrong networks from the second draw on (bug in 1.15.2 and 1.16.0, introduced by the look-up of the draw name before `nwdrop`). The look-up set locals of the calling program, among them `directed`, so that the draws after the first were simulated as directed networks: about half as many edges and asymmetric matrices for an undirected model, and an undirected chain run as a directed one. The look-up now runs in a program of its own (`_nwergm_simexists`). Estimation, `output(stats)` and a first call with new names were not affected. New test `cscripts/test_nwergm_simreplace.do`.
+
 ## [1.16.0] - 2026-11-23
 
 - New option `output(stats)` for `nwergm simulate` from given coefficients (R: `output = "stats"`, as `nwergm simulate` after a fit already has): the statistics of the draws are stored in a new frame named by `generate()`, one row per draw and one variable per model term, and no networks are created. 1000 draws of a 30-node model take 1.7 s instead of 17 s, and the time per draw no longer depends on the number of draws. A frame has no size limit, where a Stata matrix stops at 800 rows in Stata/BE. Test `cscripts/test_nwergm_simstats.do`.

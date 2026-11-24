@@ -3452,6 +3452,21 @@ program nwergm_display
 	}
 end
 
+// Is a network of this name stored? The lookup runs in a program of its own: the compiled call sets locals (directed, nodes, valued, labs, ...)
+// of the program that calls it, and in nwergm_simulate that overwrote the local directed, so that every draw after the first of a repeated
+// generate() name was simulated as a directed network (bug in 1.15.2 and 1.16.0).
+capture program drop _nwergm_simexists
+program _nwergm_simexists, rclass
+	version 14
+	args name
+	return scalar id = 0
+	capture mata: nwf_syntax_named("`name'", 1)
+	if _rc == 0 {
+		capture confirm number `r(id)'
+		if _rc == 0 return scalar id = `r(id)'
+	}
+end
+
 /*
 	nwergm simulate (Part X's own example syntax): draws one or more
 	networks from a fully-specified ERGM (fixed theta, not estimated),
@@ -4569,14 +4584,8 @@ program nwergm_simulate
 		// once many networks are stored, so the name is looked up first (one compiled call)
 		local __sim_exists 1
 		if !(strpos("`__ergm_simname'", "*") | strpos("`__ergm_simname'", "?") | strpos("`__ergm_simname'", "~") | strpos("`__ergm_simname'", "-") | strpos("`__ergm_simname'", "$")) {
-			local __sim_exists 0
-			capture mata: nwf_syntax_named("`__ergm_simname'", 1)
-			if _rc == 0 {
-				capture confirm number `r(id)'
-				if _rc == 0 {
-					if `r(id)' > 0 local __sim_exists 1
-				}
-			}
+			_nwergm_simexists `__ergm_simname'
+			local __sim_exists = (r(id) > 0)
 		}
 		if `__sim_exists' capture nwdrop `__ergm_simname'
 		qui drop _all
