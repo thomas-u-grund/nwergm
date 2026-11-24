@@ -1,4 +1,4 @@
-*! version 1.16.0  23nov2026 nwergm
+*! version 1.16.1  24nov2026 nwergm
 * Copyright (C) 2026 Thomas U. Grund
 * This file is part of nwergm, a Stata package derived from the R package 'ergm (statnet)' (Mark S. Handcock, David R. Hunter, Carter T. Butts, Steven M. Goodreau, Pavel N. Krivitsky, Martina Morris and contributors; GPL-3 (+ file LICENSE)).
 * nwergm is free software: you can redistribute it and/or modify it under the terms of the GNU General
@@ -2524,7 +2524,7 @@ program _nwergm_fit, eclass
 		ereturn post `__b_mple' `__V_mple', depname(`netname') obs(`__ergm_nrows')
 		ereturn local cmd "nwergm"
 		if !`__sub' _nwergm_tag set
-		ereturn local version "1.16.0"
+		ereturn local version "1.16.1"
 		ereturn local title "Exponential-family random graph model (MPLE)"
 		ereturn local depvar "`netname'"
 		ereturn local method "mple"
@@ -2993,7 +2993,7 @@ program _nwergm_fit, eclass
 		ereturn post `__b_mcmle' `__V_mcmle', depname(`netname') obs(`__ergm_nrows')
 		ereturn local cmd "nwergm"
 		if !`__sub' _nwergm_tag set
-		ereturn local version "1.16.0"
+		ereturn local version "1.16.1"
 		ereturn local title "Exponential-family random graph model (MCMLE)"
 		ereturn local depvar "`netname'"
 		ereturn local method "mcmle"
@@ -3300,7 +3300,7 @@ program _nwergm_bayes, eclass
 	ereturn post `b' `V', depname(`netname') obs(`nrows')
 	ereturn local cmd "nwergm"
 	if !`sub' _nwergm_tag set
-	ereturn local version "1.16.0"
+	ereturn local version "1.16.1"
 	ereturn local title "Bayesian exponential-family random graph model"
 	ereturn local depvar "`netname'"
 	ereturn local method "bayes"
@@ -3449,6 +3449,21 @@ program nwergm_display
 	}
 	else {
 		di "{txt}{p 0 0 2}Maximum pseudolikelihood estimate; this is the maximum likelihood estimate only if the model is dyad-independent.{p_end}"
+	}
+end
+
+// Is a network of this name stored? The lookup runs in a program of its own: the compiled call sets locals (directed, nodes, valued, labs, ...)
+// of the program that calls it, and in nwergm_simulate that overwrote the local directed, so that every draw after the first of a repeated
+// generate() name was simulated as a directed network (bug in 1.15.2 and 1.16.0).
+capture program drop _nwergm_simexists
+program _nwergm_simexists, rclass
+	version 14
+	args name
+	return scalar id = 0
+	capture mata: nwf_syntax_named("`name'", 1)
+	if _rc == 0 {
+		capture confirm number `r(id)'
+		if _rc == 0 return scalar id = `r(id)'
 	}
 end
 
@@ -4569,14 +4584,8 @@ program nwergm_simulate
 		// once many networks are stored, so the name is looked up first (one compiled call)
 		local __sim_exists 1
 		if !(strpos("`__ergm_simname'", "*") | strpos("`__ergm_simname'", "?") | strpos("`__ergm_simname'", "~") | strpos("`__ergm_simname'", "-") | strpos("`__ergm_simname'", "$")) {
-			local __sim_exists 0
-			capture mata: nwf_syntax_named("`__ergm_simname'", 1)
-			if _rc == 0 {
-				capture confirm number `r(id)'
-				if _rc == 0 {
-					if `r(id)' > 0 local __sim_exists 1
-				}
-			}
+			_nwergm_simexists `__ergm_simname'
+			local __sim_exists = (r(id) > 0)
 		}
 		if `__sim_exists' capture nwdrop `__ergm_simname'
 		qui drop _all

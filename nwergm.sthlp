@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 1.16.0  23nov2026 author: Thomas Grund}{...}
+{* *! version 1.16.1  24nov2026 author: Thomas Grund}{...}
 {marker topic}
 {helpb nwtopical##analysis_statmodels:[NW-2.6.6] Statistical Estimation of Networks}
 
@@ -856,4 +856,4 @@ For a yes/no outcome on the actors of one network (smoking, adoption, taking a s
 {p_end}
 
 {hline}
-{pstd}{it:nwergm version 1.16.0, 23 November 2026}{p_end}{* nwversion}
+{pstd}{it:nwergm version 1.16.1, 24 November 2026}{p_end}{* nwversion}

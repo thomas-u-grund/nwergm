@@ -1,4 +1,4 @@
-*! version 1.16.0  23nov2026 _nwergm_getb.ado -- copy e(b) into a Stata matrix through Mata (works above c(max_matdim))
+*! version 1.16.1  24nov2026 _nwergm_getb.ado -- copy e(b) into a Stata matrix through Mata (works above c(max_matdim))
 * Copy e(b) into a Stata matrix through Mata. `matrix X = e(b)' refuses a
 * matrix wider than c(max_matdim) (800 in Stata/BE), although Mata can create
 * it and ereturn post accepts it: a model with one coefficient per node

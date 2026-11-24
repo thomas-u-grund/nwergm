@@ -367,3 +367,12 @@ Two Stata Journal articles under review ship replication packs that call `estat 
 ## `nwergm simulate` used the Mata sampler: native setup must run per draw's graph, and `nonative` is the old path
 
 `nwergm_simulate` builds a fresh `ErgmGraph` per simulated network and used to call only `ns_native_setup()` (which enables the plug-in for `structural()` terms alone), because a plug-in call per draw was judged too expensive (harmonisation unit 83). That was wrong by two orders of magnitude: the sampler's cost per MC step in Mata dominates, the boundary costs milliseconds. It now calls `ErgmNativeSetup()` (a model the plug-in does not support silently stays on Mata). Option `nonative` restores the previous call, so a given `seed()` reproduces the networks of versions before this change; with the native sampler the same seed gives different (equally distributed) networks. What still dominates a native simulate with many draws is creating the networks (`nwset`, `drop _all`) per draw.
+
+## A compiled helper that fills locals writes into the program that calls it
+
+`nwf_syntax_named()` (and `nwf_syntax_current()`, `nwf_syntax_info()`) of the core set locals of the calling program when the name is found: `directed`, `valued`, `nodes`,
+`selfloops`, `is2mode`, `istemporal`, `temporaltype`, `datasync`, `labs`, `__nwsx_info`. Inside a command that has options of the same names this overwrites them. In 1.15.2 and 1.16.0
+`nwergm simulate` looked up the name of a draw with `capture mata: nwf_syntax_named(...)` before `nwdrop`; when the draw existed, `directed` was set, and every draw after the first of a repeated
+`generate()` name was simulated as a directed network (undirected models: about half the edges, asymmetric matrices). Nothing failed and the first call was correct, which is why the simulate tests
+(all calls with new names, or reuse only in directed models or with `output(stats)`) did not see it. Call such helpers only from a program of their own (`_nwergm_simexists`), which discards the locals,
+and test repeated calls with the same `generate()` name for an undirected model, comparing the draws of the second call with those of the first.

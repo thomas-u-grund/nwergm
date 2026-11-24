@@ -5,6 +5,17 @@ project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.16.1] - 2026-11-24
+
+### Results that change (read before you re-run old analyses)
+
+- `nwergm simulate ..., generate(NAME)` called again with a name whose networks already exist (a do-file run twice, a loop, a repeated call in one session) gave wrong networks in versions 1.15.2 and 1.16.0: the first draw was right, and every later draw was simulated as a directed network, so that an undirected model gave about half as many edges and asymmetric matrices. Version 1.16.1 replaces the draws correctly. If you used a repeated `generate()` name with 1.15.2 or 1.16.0, run those simulations again. Model fits, `output(stats)` and a first call with new names were not affected.
+
+### Fixed
+
+- The look-up of an existing draw name that `nwergm simulate` makes before it replaces the draw changed the local macro `directed` of the command; it now runs in a program of its own (`_nwergm_simexists`) and leaves the command's settings alone.
+- New test `cscripts/test_nwergm_simreplace.do`: repeated `generate()` names for undirected and directed models, one draw and several draws, fewer draws in the second call.
+
 ## [1.16.0] - 2026-11-23
 
 - New option `output(stats)` for `nwergm simulate` from given coefficients (R: `output = "stats"`, as `nwergm simulate` after a fit already has): the statistics of the draws are stored in a new frame named by `generate()`, one row per draw and one variable per model term, and no networks are created. 1000 draws of a 30-node model take 1.7 s instead of 17 s, and the time per draw no longer depends on the number of draws. A frame has no size limit, where a Stata matrix stops at 800 rows in Stata/BE. Test `cscripts/test_nwergm_simstats.do`.
